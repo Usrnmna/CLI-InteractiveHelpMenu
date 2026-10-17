@@ -71,7 +71,11 @@ To upgrade an existing installation, run `bash update.sh` from the new source
 directory. Custom settings and edited files are preserved; conflicts include
 incoming copies for manual merging and a full backup.
 The [interactive update reviewer](docs/update-review.md) compares conflicts and
-lets each file be kept, replaced, or merged, with backups before saving.
+lets each file be kept, replaced, or merged, with backups before saving. Guided
+editing accepts or rejects individual changed blocks without an external editor.
+
+[Version 0.1.1 - Alpha packages](docs/releases.md) provide a verified installer,
+a compiled Linux launcher, source/runtime archives, and SHA-256 checksums.
 
 See [installation, updates, and removal](docs/installation.md) for custom paths
 and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,

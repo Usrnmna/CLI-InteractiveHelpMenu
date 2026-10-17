@@ -15,6 +15,7 @@ import sys
 import tempfile
 
 import installation as install
+from guided_merge import GuidedMerge
 
 
 MAX_TEXT_BYTES = 512 * 1024
@@ -179,6 +180,7 @@ class ReviewSession:
         if self.original.get(install.MARKER, (None, None))[1] != install.digest(self.manifest_bytes):
             raise ValueError("Installation metadata changed while opening review; retry.")
         self.choices = {}
+        self.guided_drafts = {}
 
     def validate_legacy_manifest(self):
         """Reconstruct old unversioned reports without trusting arbitrary targets.
@@ -349,7 +351,7 @@ def review_entry(session, name):
         for label, root in (("Local", session.prefix), ("Incoming", session.incoming)):
             print(label + ": " + display(json.dumps(file_state(root, name), sort_keys=True)))
         print("d diff | l local | i incoming | m merged draft | k keep local | r use incoming (delete if absent)")
-        print("e edit merge | x clear | b back")
+        print("g guided changes | e external editor | x clear | b back")
         command = input("Choice > ").strip().lower()
         try:
             if command in {"d", "l", "i"}:
@@ -376,13 +378,74 @@ def review_entry(session, name):
             elif command == "e":
                 session.edit(name)
                 return
+            elif command == "g":
+                guided_edit(session, name)
             elif command == "x":
                 session.choices.pop(name, None)
+                session.guided_drafts.pop(name, None)
             elif command == "b":
                 return
             else:
                 print("Unknown choice.")
         except (OSError, ValueError, SyntaxError, RecursionError) as error:
+            print(display(error))
+
+
+def guided_edit(session, name):
+    """Review individual changed blocks and queue a validated merge without an editor."""
+    local = session.content(name)
+    incoming = session.content(name, incoming=True)
+    text_content(local or b"")
+    text_content(incoming or b"")
+    draft = session.guided_drafts.get(name)
+    if draft is None:
+        draft = GuidedMerge(local, incoming)
+        session.guided_drafts[name] = draft
+    elif (draft.local, draft.incoming) != (local, incoming):
+        raise ValueError("Comparison files changed; clear the guided draft or reopen the report.")
+    if not draft.changes:
+        print("No changes to select.")
+        return
+    index = 0
+    while True:
+        kind, start, end, new_start, new_end = draft.changes[index]
+        decision = {None: "undecided", True: "accept incoming", False: "keep local"}[draft.accepted[index]]
+        print(f"\nGuided change {index + 1}/{len(draft.changes)}: {kind} [{decision}]")
+        print(f"Local lines {start + 1}-{end}; incoming lines {new_start + 1}-{new_end}")
+        lines = ["LOCAL (" + ("missing" if local is None else "present") + ")"]
+        lines += ["- " + line.decode("utf-8").rstrip("\n") for line in draft.local_lines[start:end]]
+        lines += ["INCOMING (" + ("deletion" if incoming is None else "present") + ")"]
+        lines += ["+ " + line.decode("utf-8").rstrip("\n") for line in draft.incoming_lines[new_start:new_end]]
+        paged(lines)
+        print("a accept | r reject | n/p next/previous | v preview | d queue result | b back")
+        command = input("Guided > ").strip().lower()
+        try:
+            if command in {"a", "r"}:
+                draft.decide(index, command == "a")
+                index = min(index + 1, len(draft.changes) - 1)
+            elif command == "n":
+                index = min(index + 1, len(draft.changes) - 1)
+            elif command == "p":
+                index = max(0, index - 1)
+            elif command == "v":
+                result = draft.result(require_complete=False)
+                print("Preview keeps undecided changes local.")
+                paged(text_content(result).splitlines() if result is not None else ["File absent."])
+            elif command == "d":
+                result = draft.result()
+                if result == local:
+                    session.choose(name, "local")
+                elif result == incoming:
+                    session.choose(name, "incoming")
+                else:
+                    session.choose(name, "edit", result)
+                print("Guided result queued; save from the review menu to apply it.")
+                return
+            elif command == "b":
+                return
+            else:
+                print("Select a guided editing command.")
+        except (ValueError, SyntaxError, RecursionError) as error:
             print(display(error))
 
 
@@ -400,7 +463,7 @@ def interactive(session):
         print(f"{len(session.choices)} queued; number: compare | n/p: pages | s: save | q: quit")
         command = input("Review > ").strip().lower()
         if command == "q":
-            if not session.choices or input("Discard queued choices? [y/N] > ").strip().lower() == "y":
+            if not (session.choices or session.guided_drafts) or input("Discard queued choices? [y/N] > ").strip().lower() == "y":
                 return
         elif command == "s":
             for name, (choice, data) in session.choices.items():

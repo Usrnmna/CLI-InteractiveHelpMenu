@@ -44,6 +44,8 @@ their execution checks, and the optional regeneration dependencies.
 | --- | --- |
 | [install.sh](../install.sh), [update.sh](../update.sh), [uninstall.sh](../uninstall.sh), [scripts/installation.py](../scripts/installation.py) | Per-user runtime ownership, updates preserving local edits, and managed Bash startup registration/removal |
 | [review-update.sh](../review-update.sh), [scripts/update_review.py](../scripts/update_review.py) | Update conflict comparison, explicit file choices, retained merge drafts, and backed-up saves |
+| [scripts/guided_merge.py](../scripts/guided_merge.py) | Byte-preserving acceptance or rejection of changed line blocks |
+| [native/cli_help.c](../native/cli_help.c), [scripts/build_release.py](../scripts/build_release.py) | Native convenience launcher and versioned installer/archive/checksum generation |
 | [bash/interactive-help.bash](../bash/interactive-help.bash) | Readline shortcut and buffer update |
 | [cli_help/core.py](../cli_help/core.py) | Profile validation, literal context parsing, insertion |
 | [cli_help/command_paths.py](../cli_help/command_paths.py) | Explicit subcommand paths, global-option arity, fixed help routes |
@@ -60,7 +62,9 @@ their execution checks, and the optional regeneration dependencies.
 | [config/drivers.example/](../config/drivers.example/) | Loadable pip and npm driver examples |
 | [tests/](../tests/) | Core contracts and actual Bash pseudoterminal interactions |
 
-Run validation from Linux or WSL:
+Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, and
+GCC installed. GCC is a build/test dependency; installed runtime packages do not
+require a compiler:
 
 ```bash
 bash tests/run.sh
@@ -100,8 +104,9 @@ The [Linux tests and documentation workflow](../.github/workflows/ci.yml) runs o
 pushes, pull requests, and manual dispatch. Each Ubuntu 24.04 test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
-Python 3.10 and 3.12. The tests use the Python standard library; media-generation
-dependencies and optional live-program compatibility probes are not required.
+Python 3.10 and 3.12. The tests use the Python standard library and GCC for
+native release-package tests; media-generation dependencies and optional
+live-program compatibility probes are not required.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
 Markdown links throughout the repository, including local files, images, heading
@@ -132,11 +137,11 @@ Conflict review checks are described in the [update review guide](update-review.
 
 The recorded functional validation was completed on 2026-10-17 using Ubuntu 24.04
 under WSL with Bash 5.2.21 and Python 3.12.3.
-All 285 tests passed, including 29 real Bash pseudoterminal tests, 18 bulk-scan
+All 307 tests passed, including 30 real Bash pseudoterminal tests, 18 bulk-scan
 tests, 20 review tests, 18 guided-editing tests, 21 installation tests, 25 update
-tests, 33 update-review tests, and 2,000
-deterministic generated cases within the mutation tests. The review,
-guided-editing, installation, update, and update-review tests each
+tests, 33 update-review tests, 12 guided-merge tests, 10 release-package tests,
+and 2,200 deterministic generated cases within the mutation and merge tests. The review,
+guided-editing, installation, update, update-review, and guided-merge tests each
 include one of the pseudoterminal tests.
 The suite includes command-format fixtures, deterministic mutation
 tests, driver loading, manual imports, and process-boundary checks in addition
@@ -154,8 +159,8 @@ Python version within the stated requirements.
 
 ## Extended tests and live compatibility reports
 
-The default suite is offline and requires no FFmpeg, VLC, GCC, npm, or pip
-installation. Its hand-authored format corpus and expected results are in
+The default suite is offline and requires no FFmpeg, VLC, npm, or pip
+installation. GCC is required to compile and test the release launcher. Its hand-authored format corpus and expected results are in
 [the help-format corpus](../tests/fixtures/help/README.md), including provenance and limits.
 It exercises each parsed flag's insertion, required arguments, aliases, source
 merging, and rejection of unsupported syntax. Executable fixtures record exact

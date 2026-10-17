@@ -25,8 +25,10 @@ APPLICATION = "cli-interactive-help"
 BEGIN = b"# >>> cli-interactive-help >>>"
 END = b"# <<< cli-interactive-help <<<"
 PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "review-update.sh",
-           "scripts/installation.py", "scripts/update_review.py", "bash/interactive-help.bash",
-           "cli_help/*.py", "profiles/*.json", "config/keys.example.json", "config/drivers.example/*.json")
+           "scripts/installation.py", "scripts/update_review.py", "scripts/guided_merge.py", "bash/interactive-help.bash",
+           "cli_help/*.py", "profiles/*.json", "config/keys.example.json", "config/drivers.example/*.json",
+           "VERSION", "cli-help")
+OPTIONAL_PAYLOAD = {"cli-help"}  # Compiled launcher is present in binary release bundles.
 
 
 def digest(data):
@@ -183,6 +185,8 @@ def stage_payload(staging):
     for pattern in PAYLOAD:
         matches = sorted(ROOT.glob(pattern))
         if not matches:
+            if pattern in OPTIONAL_PAYLOAD:
+                continue
             raise ValueError(f"Missing source payload: {pattern}")
         for source in matches:
             safe_path(source)
@@ -190,7 +194,7 @@ def stage_payload(staging):
             target = staging / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
-            if name in {"install.sh", "uninstall.sh", "update.sh", "review-update.sh"}:
+            if name in {"install.sh", "uninstall.sh", "update.sh", "review-update.sh", "cli-help"}:
                 target.chmod(0o755)
             files[name] = digest(target.read_bytes())
     environment = {key: value for key, value in os.environ.items() if not key.startswith("CLI_HELP_")}

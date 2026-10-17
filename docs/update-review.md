@@ -50,6 +50,7 @@ update findings remain in `report.json`; saved decisions are kept separately in
 | `m` | Read the queued edited merge |
 | `k` | Queue keeping the local file, including an intentional local deletion |
 | `r` | Queue the incoming version; an absent incoming file means deletion |
+| `g` | Accept or reject changed line blocks through guided terminal editing |
 | `e` | Open a retained draft in the configured editor and queue a valid result |
 | `x` | Clear the queued choice for this entry |
 | `b` | Return to the list without changing the queued choice |
@@ -69,7 +70,44 @@ outside the reviewer, then generate a fresh update report. Links are not followe
 to read or replace their targets. Special files such as FIFOs or sockets anywhere
 in the runtime prevent opening review and require manual handling first.
 
-## Editing a merge
+## Guided editing without an external editor
+
+Press `g` in an entry to compare individual changed blocks. Each block shows its
+local and incoming lines. Adjacent changed lines form one block; unchanged lines
+separate blocks. Additions, replacements, deletions, and empty-file existence
+changes are represented explicitly. This is a two-file comparison, not an
+automatic three-way merge against a pristine historical base.
+
+| Guided control | Behavior |
+| --- | --- |
+| `a` | Accept the current incoming change and advance |
+| `r` | Reject the incoming change, retaining local content, and advance |
+| `n` / `p` | Move forward or backward without changing decisions |
+| `v` | Preview the combined file; undecided blocks temporarily remain local |
+| `d` | Validate and queue the result after every block has a decision |
+| `b` | Return to the entry, retaining guided decisions for this session |
+
+Decisions can be revised by navigating back to a block. Original bytes, Unicode,
+line endings, and a missing final newline are preserved for selected lines.
+Accepting every change selects the complete incoming file, including a deletion;
+rejecting every change retains the local file. A missing file is distinct from
+a present empty file. Mixed choices are validated like other edited merges.
+Invalid JSON or Python syntax leaves the guided decisions available for correction.
+
+Guided editing compares the installed local file with incoming content. It does
+not use a previously queued external-editor merge as its base. Queuing a guided
+result replaces that entry's previous queued choice. `x` in the entry clears both
+the queued choice and guided decisions. Guided decisions are held in memory until
+queuing and saving; quitting discards unsaved decisions after confirmation.
+After a successful save, guided drafts reset and the final file-level decision
+is recorded in the review state. No external editor is launched in guided mode.
+
+Guided saves use the same complete runtime backups, stale-input checks, rollback,
+and ownership rules described below. Files remain unchanged until the main-menu
+save is confirmed. Binary, oversized, symlinked, or blocked paths cannot be merged
+through guided editing.
+
+## Editing a merge with an external editor
 
 Set `VISUAL` or `EDITOR` before opening the reviewer, for example:
 
@@ -168,6 +206,7 @@ exit the reviewer so stale choices cannot be applied accidentally.
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_update_review.py' -v
+python3 -m unittest discover -s tests -p 'test_guided_merge.py' -v
 bash tests/run.sh
 ```
 
@@ -177,3 +216,10 @@ malformed paths and metadata, symlinks, binary and oversized content, editor
 failures, terminal escaping, concurrent edits, locks, rollback, and interruption.
 A real Bash terminal test compares and resolves a conflict, saves it, and inserts
 an option through the reviewed installation without executing the pending command.
+
+Guided-change tests cover mixed acceptance and rejection, navigation and preview,
+retained decisions, invalid merge recovery, missing versus empty files, Unicode,
+line endings, 200 deterministic generated merges, backups, and stale inputs.
+A separate real Bash terminal workflow selects individual changes without an
+external editor, saves the merged installation, and inserts an option without
+executing the pending command.
