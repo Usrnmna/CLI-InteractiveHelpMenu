@@ -24,7 +24,8 @@ MARKER = ".cli-help-install.json"
 APPLICATION = "cli-interactive-help"
 BEGIN = b"# >>> cli-interactive-help >>>"
 END = b"# <<< cli-interactive-help <<<"
-PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "review-update.sh",
+PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "review-update.sh", "update-from-github.sh",
+           "scripts/release_update.py",
            "scripts/installation.py", "scripts/update_review.py", "scripts/guided_merge.py", "bash/interactive-help.bash",
            "cli_help/*.py", "profiles/*.json", "config/keys.example.json", "config/drivers.example/*.json",
            "VERSION", "cli-help")
@@ -194,7 +195,7 @@ def stage_payload(staging):
             target = staging / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
-            if name in {"install.sh", "uninstall.sh", "update.sh", "review-update.sh", "cli-help"}:
+            if name in {"install.sh", "uninstall.sh", "update.sh", "review-update.sh", "update-from-github.sh", "cli-help"}:
                 target.chmod(0o755)
             files[name] = digest(target.read_bytes())
     environment = {key: value for key, value in os.environ.items() if not key.startswith("CLI_HELP_")}
@@ -293,7 +294,20 @@ def replace_staged_file(source, destination):
     destination.chmod(mode)
 
 
-def update(prefix):
+def update_result(result_file, status, report=None):
+    """Write an optional exclusive completion record for the release updater.
+
+    A record is emitted only after a completed update or a no-op. A write failure
+    can occur after the runtime was switched; the update backup remains available.
+    """
+    if result_file is not None:
+        with result_file.open("x", encoding="utf-8") as stream:
+            json.dump({"schema_version": 1, "status": status, "report": str(report) if report else None}, stream)
+            stream.write("\n")
+    return status
+
+
+def update(prefix, result_file=None):
     """Merge an incoming distribution with local files, then swap with a backup.
 
     Retained edits keep their previous ownership hashes. New path collisions
@@ -355,7 +369,7 @@ def update(prefix):
             raise ValueError("Installed files changed during staging; no update was applied. Retry with editors closed.")
         if not any(report[key] for key in ("updated", "added", "removed", "adopted", "preserved")) and ownership == manifest["files"]:
             print(f"Already up to date: {prefix}")
-            return 0
+            return update_result(result_file, 0)
         manifest = {**manifest, "files": ownership}
         (candidate / MARKER).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         report.update(schema_version=1, incoming_files=files,
@@ -383,7 +397,7 @@ def update(prefix):
               + shlex.quote(str(recovery / "report.json")))
     print("Open a new interactive Bash session to load the updated adapter.")
     # A distinct status permits automation to detect a completed partial update.
-    return 2 if report["preserved"] else 0
+    return update_result(result_file, 2 if report["preserved"] else 0, recovery / "report.json")
 
 
 def uninstall(prefix):
@@ -420,11 +434,15 @@ def main():
     parser.add_argument("--prefix", help="Installation directory (default: XDG_DATA_HOME/cli-interactive-help)")
     parser.add_argument("--rc-file", help="Bash startup file for install (default: ~/.bashrc)")
     parser.add_argument("--no-rc", action="store_true", help="Install without editing a Bash startup file")
+    parser.add_argument("--result-file", help="Update only: write a new JSON completion record outside the installation")
+    parser.add_argument("--expected-version", help="Update only: refuse if the installed version changed before locking")
     args = parser.parse_args()
     if args.action != "install" and (args.rc_file or args.no_rc):
         parser.error("Update and uninstall preserve the startup settings saved during installation.")
     if args.no_rc and args.rc_file:
         parser.error("--no-rc and --rc-file cannot be combined.")
+    if args.action != "update" and (args.result_file or args.expected_version):
+        parser.error("--result-file and --expected-version are only valid for update.")
     try:
         if sys.version_info < (3, 10) or not sys.platform.startswith("linux"):
             raise ValueError("Installation requires Linux and Python 3.10 or newer.")
@@ -435,6 +453,10 @@ def main():
         prefix = safe_path(args.prefix or default)
         if prefix == Path(prefix.anchor) or prefix == Path.home():
             raise ValueError("The installation directory cannot be the filesystem root or home directory.")
+        result_file = safe_path(args.result_file) if args.result_file else None
+        if result_file is not None and (result_file == prefix or prefix in result_file.parents
+                                       or result_file.exists() or not result_file.parent.is_dir()):
+            raise ValueError("The completion record must be a new path outside the installation in an existing directory.")
         rc = None
         if args.action == "install" and not args.no_rc:
             rc = safe_path(args.rc_file or Path.home() / ".bashrc")
@@ -442,7 +464,14 @@ def main():
             if args.action == "install":
                 install(prefix, rc)
             elif args.action == "update":
-                return update(prefix)
+                if args.expected_version:
+                    version_file = safe_path(prefix / "VERSION")
+                    manifest = load_manifest(prefix)
+                    if (not version_file.is_file() or version_file.stat().st_size > 256
+                            or version_file.read_text().strip() != args.expected_version
+                            or digest(version_file.read_bytes()) != manifest["files"].get("VERSION")):
+                        raise ValueError("Installed version changed before the update lock; retry release discovery.")
+                return update(prefix, result_file)
             else:
                 uninstall(prefix)
     except (OSError, ValueError, subprocess.CalledProcessError, ImportError) as error:

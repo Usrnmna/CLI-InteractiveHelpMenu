@@ -14,6 +14,7 @@ directory.
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
 | Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Download, verify, install, or build versioned packages | [Release artifacts and build procedure](releases.md) |
+| Check GitHub releases, verify downloads, and upgrade with guided conflict review | [Updating from GitHub releases](github-updates.md) |
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |
 | Discovery modes, subcommands, cache settings, and insertion limits | [Discovery and execution boundaries](discovery-and-safety.md) |
 | Editable option definitions and loadable command adapters | [Help profiles and compatibility drivers](profiles-and-drivers.md) |

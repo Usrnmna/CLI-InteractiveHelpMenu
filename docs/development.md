@@ -45,6 +45,7 @@ their execution checks, and the optional regeneration dependencies.
 | [install.sh](../install.sh), [update.sh](../update.sh), [uninstall.sh](../uninstall.sh), [scripts/installation.py](../scripts/installation.py) | Per-user runtime ownership, updates preserving local edits, and managed Bash startup registration/removal |
 | [review-update.sh](../review-update.sh), [scripts/update_review.py](../scripts/update_review.py) | Update conflict comparison, explicit file choices, retained merge drafts, and backed-up saves |
 | [scripts/guided_merge.py](../scripts/guided_merge.py) | Byte-preserving acceptance or rejection of changed line blocks |
+| [update-from-github.sh](../update-from-github.sh), [scripts/release_update.py](../scripts/release_update.py) | GitHub release selection, bounded verified downloads, safe extraction, managed upgrades, and guided review routing |
 | [native/cli_help.c](../native/cli_help.c), [scripts/build_release.py](../scripts/build_release.py) | Native convenience launcher and versioned installer/archive/checksum generation |
 | [bash/interactive-help.bash](../bash/interactive-help.bash) | Readline shortcut and buffer update |
 | [cli_help/core.py](../cli_help/core.py) | Profile validation, literal context parsing, insertion |
@@ -132,16 +133,20 @@ Installation, updates, and removal are included in the same full suite. Their is
 and real-terminal checks are described in the
 [installation guide](installation.md#recovery-and-validation).
 Conflict review checks are described in the [update review guide](update-review.md#validation).
+Release-updater checks and its machine-readable installation completion record
+are described in the [GitHub update guide](github-updates.md#maintainer-interface-and-validation).
 
 ## Recorded validation
 
 The recorded functional validation was completed on 2026-10-17 using Ubuntu 24.04
 under WSL with Bash 5.2.21 and Python 3.12.3.
-All 307 tests passed, including 30 real Bash pseudoterminal tests, 18 bulk-scan
+All 355 tests passed, including 31 real Bash pseudoterminal tests, 18 bulk-scan
 tests, 20 review tests, 18 guided-editing tests, 21 installation tests, 25 update
 tests, 33 update-review tests, 12 guided-merge tests, 10 release-package tests,
+48 release-updater tests,
 and 2,200 deterministic generated cases within the mutation and merge tests. The review,
-guided-editing, installation, update, update-review, and guided-merge tests each
+guided-editing, installation, update, update-review, guided-merge, and
+release-updater tests each
 include one of the pseudoterminal tests.
 The suite includes command-format fixtures, deterministic mutation
 tests, driver loading, manual imports, and process-boundary checks in addition

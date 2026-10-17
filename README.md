@@ -28,6 +28,7 @@ The pending command runs only after a separate, ordinary Enter at the Bash promp
 | **Reusable help collections** | Import a manual or scan installed commands in bulk, with a report of successes, failures, and review needs |
 | **Guided corrections** | Edit options, categories, and driver settings through terminal forms, then preview and save with backups |
 | **Configurable controls** | Customize the launch shortcut and browser navigation keys |
+| **Verified release updates** | Check GitHub releases, preserve custom settings during upgrades, and resolve conflicts through guided review |
 
 ```mermaid
 flowchart LR
@@ -73,6 +74,11 @@ incoming copies for manual merging and a full backup.
 The [interactive update reviewer](docs/update-review.md) compares conflicts and
 lets each file be kept, replaced, or merged, with backups before saving. Guided
 editing accepts or rejects individual changed blocks without an external editor.
+
+The [GitHub release updater](docs/github-updates.md) checks and verifies published
+packages before upgrading. Run `bash update-from-github.sh --check` to inspect the
+stable channel, or add `--prerelease` to include alpha releases. Run without
+`--check` to upgrade; conflicts open the guided reviewer in an interactive terminal.
 
 [Version 0.1.1 - Alpha packages](docs/releases.md) provide a verified installer,
 a compiled Linux launcher, source/runtime archives, and SHA-256 checksums.

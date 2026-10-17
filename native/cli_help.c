@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[1], "update") == 0) relative = "update.sh";
         else if (strcmp(argv[1], "uninstall") == 0) relative = "uninstall.sh";
         else if (strcmp(argv[1], "review-update") == 0) relative = "review-update.sh";
+        else if (strcmp(argv[1], "update-from-github") == 0) relative = "update-from-github.sh";
         if (strcmp(relative, "cli_help/main.py") != 0) {
             program = "bash";
             first_argument = 2;
