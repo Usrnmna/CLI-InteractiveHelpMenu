@@ -24,7 +24,8 @@ MARKER = ".cli-help-install.json"
 APPLICATION = "cli-interactive-help"
 BEGIN = b"# >>> cli-interactive-help >>>"
 END = b"# <<< cli-interactive-help <<<"
-PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "scripts/installation.py", "bash/interactive-help.bash",
+PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "review-update.sh",
+           "scripts/installation.py", "scripts/update_review.py", "bash/interactive-help.bash",
            "cli_help/*.py", "profiles/*.json", "config/keys.example.json", "config/drivers.example/*.json")
 
 
@@ -189,7 +190,7 @@ def stage_payload(staging):
             target = staging / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
-            if name in {"install.sh", "uninstall.sh", "update.sh"}:
+            if name in {"install.sh", "uninstall.sh", "update.sh", "review-update.sh"}:
                 target.chmod(0o755)
             files[name] = digest(target.read_bytes())
     environment = {key: value for key, value in os.environ.items() if not key.startswith("CLI_HELP_")}
@@ -353,6 +354,8 @@ def update(prefix):
             return 0
         manifest = {**manifest, "files": ownership}
         (candidate / MARKER).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        report.update(schema_version=1, incoming_files=files,
+                      installed_manifest_sha256=digest((candidate / MARKER).read_bytes()))
         recovery = Path(tempfile.mkdtemp(prefix=prefix.name + ".update-backup-", dir=prefix.parent))
         print(f"Update backup and incoming files: {recovery}", flush=True)
         incoming.rename(recovery / "incoming")
@@ -371,6 +374,9 @@ def update(prefix):
         print(f"Recognized {len(report['adopted'])} resolved files matching the incoming distribution.")
     for entry in report["preserved"]:
         print(f"Manual merge required: {entry['path']} ({entry['reason']})")
+    if report["preserved"]:
+        print("Review conflicts: bash " + shlex.quote(str(ROOT / "review-update.sh")) + " "
+              + shlex.quote(str(recovery / "report.json")))
     print("Open a new interactive Bash session to load the updated adapter.")
     # A distinct status permits automation to detect a completed partial update.
     return 2 if report["preserved"] else 0

@@ -12,6 +12,7 @@ directory.
 | Topic | Guide |
 | --- | --- |
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
+| Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |
 | Discovery modes, subcommands, cache settings, and insertion limits | [Discovery and execution boundaries](discovery-and-safety.md) |
 | Editable option definitions and loadable command adapters | [Help profiles and compatibility drivers](profiles-and-drivers.md) |

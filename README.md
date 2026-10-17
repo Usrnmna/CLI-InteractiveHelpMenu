@@ -70,6 +70,8 @@ to remove the default installation. Edited files and custom collections are reta
 To upgrade an existing installation, run `bash update.sh` from the new source
 directory. Custom settings and edited files are preserved; conflicts include
 incoming copies for manual merging and a full backup.
+The [interactive update reviewer](docs/update-review.md) compares conflicts and
+lets each file be kept, replaced, or merged, with backups before saving.
 
 See [installation, updates, and removal](docs/installation.md) for custom paths
 and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,

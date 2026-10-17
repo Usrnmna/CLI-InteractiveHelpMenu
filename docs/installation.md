@@ -142,7 +142,12 @@ means an update completed with preserved conflicts requiring manual merging
 Status `1` indicates a validation or filesystem failure. A backup report records
 the planned changes; its presence alone does not prove the runtime switch completed.
 
-For each reported path, compare the installed file with `incoming/<path>`.
+Use the [interactive update reviewer](update-review.md) to compare local and
+incoming files, keep local changes, accept incoming files or deletions, or edit
+merged versions. The updater prints a ready-to-run review command. Review saves
+include full runtime backups and recorded decisions.
+
+For manual handling of each reported path, compare the installed file with `incoming/<path>`.
 Merge needed changes into the installed file, or copy the incoming version after
 retaining any required edits. Deleted files remain deleted until restored
 explicitly. Preserved paths keep their old ownership hashes, so uninstall retains
@@ -246,6 +251,7 @@ without command execution. Run them from the source checkout:
 ```bash
 python3 -m unittest discover -s tests -p 'test_installation.py' -v
 python3 -m unittest discover -s tests -p 'test_update.py' -v
+python3 -m unittest discover -s tests -p 'test_update_review.py' -v
 bash tests/run.sh
 ```
 
