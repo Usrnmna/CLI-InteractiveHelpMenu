@@ -67,7 +67,11 @@ The installer adds a marked block to `.bashrc` and backs up existing contents.
 Use `bash install.sh --no-rc` to skip startup registration, or `bash uninstall.sh`
 to remove the default installation. Edited files and custom collections are retained.
 
-See [installation and removal](docs/installation.md) for custom paths, updates,
+To upgrade an existing installation, run `bash update.sh` from the new source
+directory. Custom settings and edited files are preserved; conflicts include
+incoming copies for manual merging and a full backup.
+
+See [installation, updates, and removal](docs/installation.md) for custom paths
 and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,
 configuration, and loading directly from a checkout without installing.
 

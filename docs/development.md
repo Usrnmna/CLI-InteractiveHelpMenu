@@ -42,7 +42,7 @@ their execution checks, and the optional regeneration dependencies.
 
 | Path | Responsibility |
 | --- | --- |
-| [install.sh](../install.sh), [uninstall.sh](../uninstall.sh), [scripts/installation.py](../scripts/installation.py) | Per-user runtime ownership and managed Bash startup registration/removal |
+| [install.sh](../install.sh), [update.sh](../update.sh), [uninstall.sh](../uninstall.sh), [scripts/installation.py](../scripts/installation.py) | Per-user runtime ownership, updates preserving local edits, and managed Bash startup registration/removal |
 | [bash/interactive-help.bash](../bash/interactive-help.bash) | Readline shortcut and buffer update |
 | [cli_help/core.py](../cli_help/core.py) | Profile validation, literal context parsing, insertion |
 | [cli_help/command_paths.py](../cli_help/command_paths.py) | Explicit subcommand paths, global-option arity, fixed help routes |
@@ -122,7 +122,7 @@ IDs. The README badge reports this entire workflow; it is not a claim that a
 GitHub-hosted run has already completed. Forks should update the badge URLs and
 the exact workflow exclusion in `lychee.toml` to their own repository name.
 
-Installation and removal are included in the same full suite. Their isolated-home
+Installation, updates, and removal are included in the same full suite. Their isolated-home
 and real-terminal checks are described in the
 [installation guide](installation.md#recovery-and-validation).
 
@@ -130,10 +130,10 @@ and real-terminal checks are described in the
 
 The recorded functional validation was completed on 2026-10-17 using Ubuntu 24.04
 under WSL with Bash 5.2.21 and Python 3.12.3.
-All 227 tests passed, including 27 real Bash pseudoterminal tests, 18 bulk-scan
-tests, 20 review tests, 18 guided-editing tests, 21 installation tests, and 2,000
+All 252 tests passed, including 28 real Bash pseudoterminal tests, 18 bulk-scan
+tests, 20 review tests, 18 guided-editing tests, 21 installation tests, 25 update tests, and 2,000
 deterministic generated cases within the mutation tests. The review,
-guided-editing, and installation tests each
+guided-editing, installation, and update tests each
 include one of the pseudoterminal tests.
 The suite includes command-format fixtures, deterministic mutation
 tests, driver loading, manual imports, and process-boundary checks in addition

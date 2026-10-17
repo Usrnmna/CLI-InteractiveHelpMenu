@@ -187,7 +187,7 @@ class InstallationTests(unittest.TestCase):
         self.run_script("install", success=False)
         self.assertFalse(self.rc.exists())
 
-    def test_changed_installation_or_different_settings_require_explicit_removal(self):
+    def test_reinstall_refuses_different_files_or_startup_settings(self):
         self.run_script("install")
         self.run_script("install", "--no-rc", success=False)
         (self.prefix / "cli_help/core.py").write_text("# local modification\n")
