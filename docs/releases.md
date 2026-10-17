@@ -4,6 +4,11 @@
 
 ## Version 0.1.1 - Alpha
 
+The source tree additionally provides a [GitHub release updater](github-updates.md)
+for automatic package selection, verification, and guided conflict review. This
+feature was added after the `v0.1.1-alpha` artifacts; those published files remain
+unchanged. The guide describes adding the updater to an existing installation.
+
 The release identifier is `v0.1.1-alpha`. This alpha targets Linux and Bash;
 Python 3.10+ with `curses`, Bash 4.4+, and a UTF-8 terminal remain required.
 The native launcher is compiled for Linux x86_64 on Ubuntu 24.04 and requires

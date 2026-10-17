@@ -10,6 +10,10 @@ executed by comparison or saving.
 
 ## Opening a report
 
+The [GitHub release updater](github-updates.md) opens this reviewer automatically
+after an update with conflicts when a terminal is available. Deferred or
+noninteractive updates print a resume command referencing retained verified source.
+
 Run the command printed by an update that reports conflicts, or supply its exact
 report path from the source checkout:
 

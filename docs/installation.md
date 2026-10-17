@@ -80,6 +80,12 @@ checkout is no longer present.
 
 ## Updating an existing installation
 
+The [GitHub release updater](github-updates.md) can select, download, verify, and
+apply a published package automatically. It uses the same preservation and backup
+rules described below and opens the guided reviewer when conflicts remain.
+The local-source update path remains available for unpublished changes and
+offline distribution.
+
 Obtain the new source in a directory separate from the installation, then run:
 
 ```bash

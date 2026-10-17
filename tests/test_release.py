@@ -78,6 +78,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertTrue((runtime / "cli-help").read_bytes().startswith(b"\x7fELF"))
         self.assertIn("0.1.1-alpha", self.run_command([runtime / "cli-help", "--version"]).stdout)
         self.run_command([runtime / "cli-help", "--check"])
+        self.assertIn("--prerelease", self.run_command([runtime / "cli-help", "update-from-github", "--help"]).stdout)
         prefix = self.home / "app's $(touch SHOULD_NOT_EXIST); path"
         self.run_command([runtime / "cli-help", "install", "--prefix", prefix, "--no-rc"])
         self.run_command([prefix / "cli-help", "--check"])

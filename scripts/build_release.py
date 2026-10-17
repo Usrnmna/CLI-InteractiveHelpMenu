@@ -18,7 +18,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIRECTORIES = ("bash", "cli_help", "config", "docs", "native", "profiles", "scripts", "tests", ".github")
 SOURCE_FILES = ("VERSION", "README.md", "CHANGELOG.md", "install.sh", "uninstall.sh", "update.sh",
-                "review-update.sh", ".gitignore", ".gitattributes", ".editorconfig", "lychee.toml")
+                "review-update.sh", "update-from-github.sh", ".gitignore", ".gitattributes", ".editorconfig", "lychee.toml")
 
 
 def source_files(root):
