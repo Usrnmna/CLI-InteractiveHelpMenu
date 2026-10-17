@@ -1,0 +1,26 @@
+{
+  "command": ["grep"],
+  "description": "Search text using GNU grep options.",
+  "categories": [
+    {"name": "Matching", "description": "Choose the matching syntax and comparison rules.", "options": [
+      {"flag": "--ignore-case", "summary": "Ignore case distinctions"},
+      {"flag": "--extended-regexp", "summary": "Interpret extended regular expressions"},
+      {"flag": "--fixed-strings", "summary": "Interpret patterns as literal strings"},
+      {"flag": "--word-regexp", "summary": "Match whole words"},
+      {"flag": "--invert-match", "summary": "Select non-matching lines"},
+      {"flag": "--regexp=", "argument": "PATTERN", "summary": "Specify a search pattern"}
+    ]},
+    {"name": "Output", "description": "Choose the information printed for matches.", "options": [
+      {"flag": "--line-number", "summary": "Print line numbers"},
+      {"flag": "--count", "summary": "Print matching-line counts"},
+      {"flag": "--files-with-matches", "summary": "Print names of files containing matches"},
+      {"flag": "--only-matching", "summary": "Print only matched portions of lines"},
+      {"flag": "--context=", "argument": "LINES", "summary": "Print surrounding context lines"}
+    ]},
+    {"name": "Files", "description": "Control recursive searching and file selection.", "options": [
+      {"flag": "--recursive", "summary": "Search directories recursively"},
+      {"flag": "--include=", "argument": "GLOB", "summary": "Search only matching file names"},
+      {"flag": "--exclude=", "argument": "GLOB", "summary": "Skip matching file names"}
+    ]}
+  ]
+}

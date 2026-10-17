@@ -1,0 +1,7 @@
+[
+  {"command": "ffmpeg", "flags": {"-y": "", "-i": "input_file", "-f": "fmt", "-c": "codec", "-t": "duration", "-max_error_rate": "maximum error rate", "-map_metadata": "outfile[,metadata]:infile[,metadata]", "-metadata": "string=string"}, "excluded": ["-c:v"], "live_flags": ["-y", "-f", "-c", "-t"]},
+  {"command": "vlc", "flags": {"--audio": "", "--no-audio": "", "--volume": "<integer [0 .. 512]>", "--audio-language": "<string>", "--fullscreen": "", "--rate": "<float>"}, "excluded": [], "live_flags": ["--fullscreen"]},
+  {"command": "gcc", "flags": {"-c": "", "-o": "<file>", "-std=": "<standard>", "-I": "<directory>"}, "excluded": ["-Wa", "-Wp", "-Wl", "-###"], "live_flags": ["-c", "-o"]},
+  {"command": "npm", "flags": {}, "excluded": ["-h", "-l", "--key="], "live_flags": []},
+  {"command": "pip", "flags": {"--python": "<python>", "--keyring-provider": "<keyring_provider>", "--log": "<path>", "--no-input": ""}, "excluded": ["--install"], "live_flags": ["--isolated", "--no-input"]}
+]

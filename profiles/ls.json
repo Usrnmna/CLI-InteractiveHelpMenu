@@ -1,0 +1,31 @@
+{
+  "command": ["ls"],
+  "description": "List files and directory contents using GNU ls options.",
+  "categories": [
+    {"name": "Display", "description": "Control visible files and output formatting.", "options": [
+      {"flag": "--all", "summary": "Include entries beginning with a dot"},
+      {"flag": "--almost-all", "summary": "Include hidden entries except . and .."},
+      {"flag": "-l", "summary": "Use the long listing format"},
+      {"flag": "--human-readable", "summary": "Show readable sizes with -l or -s"},
+      {"flag": "--classify", "summary": "Append file-type indicators"},
+      {"flag": "--color=", "argument": "WHEN", "summary": "Control colored output", "detail": "Typical values are always, auto, and never."},
+      {"flag": "--inode", "summary": "Print each file's inode number"},
+      {"flag": "--size", "summary": "Print allocated size in blocks"},
+      {"flag": "--numeric-uid-gid", "summary": "Print numeric user and group identifiers"},
+      {"flag": "--quote-name", "summary": "Enclose entry names in double quotes"},
+      {"flag": "--escape", "summary": "Print C-style escapes for nongraphic characters"},
+      {"flag": "--hide=", "argument": "PATTERN", "summary": "Hide matching entries"}
+    ]},
+    {"name": "Sorting", "description": "Control ordering of directory entries.", "options": [
+      {"flag": "--reverse", "summary": "Reverse the sorting order"},
+      {"flag": "-t", "summary": "Sort by modification time, newest first"},
+      {"flag": "-S", "summary": "Sort by file size, largest first"},
+      {"flag": "--group-directories-first", "summary": "List directories before files"}
+    ]},
+    {"name": "Traversal", "description": "Control directory and symbolic-link handling.", "options": [
+      {"flag": "--recursive", "summary": "List subdirectories recursively"},
+      {"flag": "--directory", "summary": "List directories themselves"},
+      {"flag": "--dereference", "summary": "Show information for symbolic-link targets"}
+    ]}
+  ]
+}

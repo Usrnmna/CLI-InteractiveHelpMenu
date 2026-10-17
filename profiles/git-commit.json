@@ -1,0 +1,21 @@
+{
+  "command": ["git", "commit"],
+  "description": "Record staged changes in a Git commit.",
+  "categories": [
+    {"name": "Message", "description": "Choose the commit message source.", "options": [
+      {"flag": "--message", "argument": "MESSAGE", "summary": "Supply the commit message", "detail": "After insertion, enter a quoted message if it contains spaces."},
+      {"flag": "--file", "argument": "FILE", "summary": "Read the commit message from a file"},
+      {"flag": "--edit", "summary": "Open the message editor"}
+    ]},
+    {"name": "Content", "description": "Control the changes included in the commit.", "options": [
+      {"flag": "--all", "summary": "Stage modified and deleted tracked files"},
+      {"flag": "--patch", "summary": "Interactively choose changes"},
+      {"flag": "--amend", "summary": "Replace the current branch's tip commit", "detail": "This changes commit identity when the command is subsequently executed."}
+    ]},
+    {"name": "Inspection", "description": "Inspect proposed commit content and status.", "options": [
+      {"flag": "--dry-run", "summary": "Show what would be committed"},
+      {"flag": "--verbose", "summary": "Include a diff in the message template"},
+      {"flag": "--short", "summary": "Show short status in dry-run output"}
+    ]}
+  ]
+}

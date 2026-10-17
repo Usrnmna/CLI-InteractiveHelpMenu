@@ -1,0 +1,26 @@
+{
+  "command": ["tar"],
+  "description": "Create and inspect archives using GNU tar options.",
+  "categories": [
+    {"name": "Operation", "description": "Select the archive operation. Most primary operations are mutually exclusive.", "options": [
+      {"flag": "--create", "summary": "Create a new archive"},
+      {"flag": "--extract", "summary": "Extract files from an archive"},
+      {"flag": "--list", "summary": "List archive contents"},
+      {"flag": "--diff", "summary": "Compare archive members with filesystem files"}
+    ]},
+    {"name": "Paths", "description": "Choose the archive file and working directory.", "options": [
+      {"flag": "--file=", "argument": "ARCHIVE", "summary": "Specify the archive file"},
+      {"flag": "--directory=", "argument": "DIRECTORY", "summary": "Change directory during processing"},
+      {"flag": "--exclude=", "argument": "PATTERN", "summary": "Exclude matching files"}
+    ]},
+    {"name": "Compression", "description": "Select an archive compression method.", "options": [
+      {"flag": "--gzip", "summary": "Use gzip compression"},
+      {"flag": "--xz", "summary": "Use xz compression"},
+      {"flag": "--bzip2", "summary": "Use bzip2 compression"}
+    ]},
+    {"name": "Output", "description": "Control operation reporting.", "options": [
+      {"flag": "--verbose", "summary": "List processed files"},
+      {"flag": "--totals", "summary": "Print total bytes processed"}
+    ]}
+  ]
+}

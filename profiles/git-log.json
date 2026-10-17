@@ -1,0 +1,20 @@
+{
+  "command": ["git", "log"],
+  "description": "Inspect Git commit history.",
+  "categories": [
+    {"name": "Presentation", "description": "Control commit and graph formatting.", "options": [
+      {"flag": "--oneline", "summary": "Show each commit on one line"},
+      {"flag": "--graph", "summary": "Draw the commit graph"},
+      {"flag": "--decorate", "summary": "Show reference names"},
+      {"flag": "--stat", "summary": "Show change statistics"},
+      {"flag": "--patch", "summary": "Show each commit's patch"}
+    ]},
+    {"name": "Filtering", "description": "Select the commits shown.", "options": [
+      {"flag": "--max-count=", "argument": "COUNT", "summary": "Limit the number of commits"},
+      {"flag": "--author=", "argument": "PATTERN", "summary": "Filter by author"},
+      {"flag": "--grep=", "argument": "PATTERN", "summary": "Filter commit messages"},
+      {"flag": "--since=", "argument": "DATE", "summary": "Show commits newer than a date"},
+      {"flag": "--all", "summary": "Include all references"}
+    ]}
+  ]
+}

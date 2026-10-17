@@ -1,0 +1,53 @@
+{
+  "command": ["rsync"],
+  "description": "Copy and synchronize files locally or over a remote transport.",
+  "categories": [
+    {"name": "Transfer", "description": "Control which files are copied and how directory trees are traversed.", "options": [
+      {"flag": "--archive", "summary": "Enable archive mode", "detail": "Equivalent to -rlptgoD. Preserves common file attributes and recurses into directories. ACLs, extended attributes, and hard links require separate options."},
+      {"flag": "--recursive", "summary": "Recurse into directories"},
+      {"flag": "--update", "summary": "Skip files newer at the destination"},
+      {"flag": "--ignore-existing", "summary": "Skip destination files that already exist"}
+    ]},
+    {"name": "Preview", "description": "Inspect proposed changes before running a transfer.", "options": [
+      {"flag": "--dry-run", "summary": "Show a trial run without changing files", "detail": "Combine with --itemize-changes to inspect planned updates. Selecting this option only inserts text into the shell buffer."},
+      {"flag": "--itemize-changes", "summary": "Summarize changes for each file"}
+    ]},
+    {"name": "Filtering", "description": "Include and exclude paths using rsync pattern syntax.", "options": [
+      {"flag": "--exclude=", "argument": "PATTERN", "summary": "Exclude matching paths", "detail": "The cursor remains after the equals sign. Enter and quote the pattern as required by Bash."},
+      {"flag": "--include=", "argument": "PATTERN", "summary": "Include matching paths"},
+      {"flag": "--exclude-from=", "argument": "FILE", "summary": "Read exclusion patterns from a file"}
+    ]},
+    {"name": "Output", "description": "Control status and diagnostic output.", "options": [
+      {"flag": "--verbose", "summary": "Increase output detail"},
+      {"flag": "--progress", "summary": "Show transfer progress"},
+      {"flag": "--human-readable", "summary": "Format output numbers for readability"},
+      {"flag": "--stats", "summary": "Show transfer statistics"},
+      {"flag": "--quiet", "summary": "Suppress non-error messages"}
+    ]},
+    {"name": "Network", "description": "Configure transport and bandwidth.", "options": [
+      {"flag": "--compress", "summary": "Compress file data during transfer"},
+      {"flag": "--bwlimit=", "argument": "RATE", "summary": "Limit transfer bandwidth"},
+      {"flag": "--timeout=", "argument": "SECONDS", "summary": "Set an I/O timeout"},
+      {"flag": "--rsh=", "argument": "COMMAND", "summary": "Specify the remote shell command", "detail": "The command is entered manually as an option value. It is not invoked by the help browser."}
+    ]},
+    {"name": "Attributes", "description": "Preserve additional file metadata when supported by the filesystems.", "options": [
+      {"flag": "--acls", "summary": "Preserve ACLs"},
+      {"flag": "--xattrs", "summary": "Preserve extended attributes"},
+      {"flag": "--hard-links", "summary": "Preserve hard links"},
+      {"flag": "--numeric-ids", "summary": "Transfer numeric user and group identifiers"}
+    ]},
+    {"name": "Deletion", "description": "Deletion options affect destination data when the command is subsequently executed.", "options": [
+      {"flag": "--delete", "summary": "Delete extraneous destination files", "detail": "Review the source and destination carefully. A dry run can show proposed deletions before execution."},
+      {"flag": "--delete-after", "summary": "Delete extraneous files after transfer"}
+    ]},
+    {"name": "Comparison", "description": "Control file change detection.", "options": [
+      {"flag": "--checksum", "summary": "Compare checksums instead of modification time and size"},
+      {"flag": "--size-only", "summary": "Use file size to decide whether an update is needed"}
+    ]},
+    {"name": "Recovery", "description": "Retain partial transfers and backup copies.", "options": [
+      {"flag": "--partial", "summary": "Keep partially transferred files"},
+      {"flag": "--backup", "summary": "Keep backups of replaced destination files"},
+      {"flag": "--backup-dir=", "argument": "DIRECTORY", "summary": "Store backups in a separate directory"}
+    ]}
+  ]
+}

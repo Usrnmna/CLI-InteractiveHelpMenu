@@ -1,0 +1,26 @@
+# Match Git's LF policy without rewriting fixture whitespace on editor save.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{yml,yaml,json,md,toml}]
+indent_size = 2
+
+# Markdown hard breaks and help-parser fixtures may contain significant spaces.
+[*.md]
+trim_trailing_whitespace = false
+
+[tests/fixtures/help/**]
+trim_trailing_whitespace = false
+
+[docs/assets/*.{gif,png,jpg,jpeg,webp}]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset

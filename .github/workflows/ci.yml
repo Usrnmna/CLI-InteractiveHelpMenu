@@ -1,0 +1,56 @@
+name: Linux tests and documentation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-tests:
+    name: Linux tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.12']
+    env:
+      LC_ALL: C.UTF-8
+      TERM: xterm-256color
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run full Linux test suite
+        run: bash tests/run.sh
+
+  documentation:
+    name: Documentation links
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check local and external documentation links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          lycheeVersion: v0.24.2
+          args: --config lychee.toml --no-progress '**/*.md'
+          fail: true
+          failIfEmpty: true
+          output: tests/reports/documentation-links.md
+          jobSummary: true
