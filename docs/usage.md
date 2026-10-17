@@ -12,7 +12,9 @@ Commands in this guide are run from the repository root unless stated otherwise.
 - Optional: the Linux `man-db` tools and locally installed manual pages for
   manual-page discovery. Help-output discovery also works without `man`.
 
-From the project directory in Bash:
+For persistent per-user setup, use the [install and uninstall scripts](installation.md).
+For a temporary session without installation, run this from the project directory
+in Bash:
 
 ```bash
 source "$PWD/bash/interactive-help.bash"
@@ -48,8 +50,9 @@ Automatic discovery may invoke the installed program's fixed help route.
 The [discovery and safety guide](discovery-and-safety.md) explains manual-only
 mode, static-only mode, and execution boundaries.
 
-To load the plugin in future sessions, add a source statement using the actual
-checkout path to `~/.bashrc`. The prototype does not modify startup files.
+The installer manages persistent loading through a marked startup block.
+Alternatively, add a source statement using the actual checkout path to
+`~/.bashrc` manually. Sourcing the adapter itself does not modify startup files:
 
 ```bash
 source /absolute/path/to/CLI-InteractiveHelpMenu/bash/interactive-help.bash

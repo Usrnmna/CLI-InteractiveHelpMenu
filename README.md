@@ -50,10 +50,11 @@ Requirements:
 - Linux `man-db` and local manual pages for manual-based discovery, importing
   installed pages, and bulk scanning. Text-file imports do not require `man`.
 
-From the repository directory in an interactive Bash session:
+From the repository directory, install for the current user and load the browser:
 
 ```bash
-source "$PWD/bash/interactive-help.bash"
+bash install.sh
+source "${XDG_DATA_HOME:-$HOME/.local/share}/cli-interactive-help/bash/interactive-help.bash"
 ```
 
 1. Type `rsync --ar` without executing it.
@@ -62,10 +63,13 @@ source "$PWD/bash/interactive-help.bash"
 
 Arrow keys navigate the menu; `/` searches; Escape or Ctrl-C cancels.
 If Alt-H is unavailable, press Escape followed by `h`.
-The plugin does not change shell startup files automatically.
+The installer adds a marked block to `.bashrc` and backs up existing contents.
+Use `bash install.sh --no-rc` to skip startup registration, or `bash uninstall.sh`
+to remove the default installation. Edited files and custom collections are retained.
 
-See [setup, persistent loading, and complete controls](docs/usage.md) for other
-shortcuts, Vi keymaps, and browser configuration.
+See [installation and removal](docs/installation.md) for custom paths, updates,
+and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,
+configuration, and loading directly from a checkout without installing.
 
 ## Build and refine a help collection
 
