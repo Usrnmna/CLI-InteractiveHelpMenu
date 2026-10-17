@@ -221,4 +221,5 @@ supplied those options. These results establish parsing and literal insertion,
 not command execution, compilation, package installation, or media playback.
 
 The shell integration uses the documented
-[Bash `bind -x` interface](https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html).
+[Bash `bind -x` interface](https://tiswww.case.edu/php/chet/bash/bashref.html#Bash-Builtins)
+in the maintainer-hosted GNU Bash reference manual.
