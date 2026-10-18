@@ -36,6 +36,11 @@ that sign. Other options insert or reuse one following whitespace character.
 Argument placeholders are displayed as help and are never inserted literally.
 An option may also set `"argument_optional": true`. Optional arguments are
 displayed but do not force entry of a value before another option is selected.
+`argument_count` specifies how many following values are required (default `1`,
+integer range `1`–`16`). For example, jq's `--arg name value` has
+`"argument_count": 2`. Multiple values require a nonempty `argument` placeholder.
+An inline `=value` supplies the first value. The count is editable in JSON;
+guided edits preserve it, and clearing the argument also clears the count.
 
 Custom profiles can reside in a separate directory:
 
@@ -60,7 +65,7 @@ option documentation. JSON drivers add programs, nested subcommands, global-opti
 arity, fixed help requests, manual names, and positional boundaries without Python
 source changes. Static profiles still take precedence for the exact command path.
 
-To enable the included pip and npm examples from the checkout:
+To enable the included third-party driver collection from the checkout:
 
 ```bash
 export CLI_HELP_DRIVERS="$PWD/config/drivers.example"
@@ -71,8 +76,9 @@ python3 cli_help/main.py --discover npm install
 ```
 
 After loading the Bash adapter, pending lines such as `pip install --` and
-`npm --prefix project install --` can use Alt-H. `pip3` is a distinct executable
-name: a separate driver with `"command": "pip3"` can use the same pip routes.
+`npm --prefix project install --` can use Alt-H. A separate included `pip3`
+driver provides the same pip routes for that executable name. The
+[compatibility matrix](compatibility.md) lists all included programs and tested paths.
 To maintain an independent collection, copy the
 [example driver files](../config/drivers.example) into a local directory and set
 `CLI_HELP_DRIVERS` to that directory. Drivers are reloaded
@@ -103,7 +109,7 @@ A minimal driver for another program is:
 | `global_values` | Global options that consume one following value; attached short values and long `=value` forms are accepted |
 | `global_flags` | Global boolean flags; explicit `=true` and `=false` forms are accepted |
 | `paths[].command` | Exact subcommand words, or `[]` for root help |
-| `paths[].help` | Fixed argument array for the resolved executable; must begin with `help`, `--help`, `-h`, or `-help`; `[]` disables executable probing for that path |
+| `paths[].help` | Fixed argument array beginning with `help`, `--help`, `-h`, or `-help`, or exactly the declared command path followed by one of those selectors; `[]` disables executable probing for that path |
 | `paths[].man` | Literal manual name in sections 1 or 8; `null` disables the manual source |
 | `paths[].stop_at_positional` | Reject insertion after the first positional argument; unknown preceding option arity is also rejected |
 
@@ -128,6 +134,10 @@ The pip example uses `pip help install`; the npm example uses
 and flags are never forwarded. `npm run` sets a positional boundary so insertion
 cannot accidentally target the script's arguments. Root `npm --help` may have
 no option declarations; subcommand discovery supplies the useful option lists.
+Suffix selectors support fixed routes such as `terraform plan -help`,
+`aws s3 cp help`, and `docker compose up --help`. The words preceding a suffix
+selector must exactly match the declared path; additional arguments, templates,
+or a different action are rejected. These routes contain no pending buffer values.
 
 Profiles and drivers can also be generated through [manual import](manual-import.md)
 or [bulk scanning](bulk-scan.md). The [interactive reviewer](review.md) provides

@@ -80,6 +80,13 @@ column identifies the declaration. Unsupported joined syntax, such as GCC
 `-Wl,<options>` and FFmpeg `-c:v`, is omitted rather than truncated into a different
 flag. CR, CRLF, and LF help output is normalized.
 
+Additional supported formats include Wget's aligned aliases, pnpm's explicit
+`--[no-]` shorthand, kubectl defaults, AWS parenthesized value types, jq name/value
+pairs, and yt-dlp placeholders with an optional prefix and required remainder.
+These are conservative format rules rather than complete command grammars.
+The [third-party compatibility guide](compatibility.md) records tested paths and
+unsupported forms, including 7-Zip attached-value switches.
+
 Automatic subcommand discovery uses the built-in Git and Docker drivers and any
 loaded [JSON compatibility drivers](profiles-and-drivers.md#loadable-compatibility-drivers).
 Other programs retain top-level discovery unless an explicit subcommand profile
@@ -104,12 +111,17 @@ root help. Help for a resolved subcommand does not fall back to root options.
 | `git -c user.name=private branch --` | `man git-branch` |
 | `docker -H private-host run --` | `docker help run`, `man docker-run` |
 | `docker --context private container run --` | `docker help container run`, `man docker-container-run` |
+| `aws --profile private s3 cp --` with the included driver | `aws s3 cp help` |
+| `terraform -chdir=private plan --` with the included driver | `terraform plan -help` |
+| `docker compose up --` with the included driver | `docker compose up --help` |
 
 These examples abbreviate the fixed man-renderer flags. Git subcommand discovery
 uses direct manual lookups, avoiding action handlers and configured Git help
 viewers. A local manual page is therefore required for dynamic Git subcommand
-help. Docker requests use its dedicated help command; neither `docker run` nor
-`docker exec` is launched by discovery. The routes follow the documented
+help. Built-in Docker routes use its dedicated help command; neither `docker run` nor
+`docker exec` is launched by discovery. Included extension drivers can use an
+exact declared command path followed by a help selector. This permits CLI-specific
+help dispatch without forwarding pending arguments. The routes follow the documented
 [Git manual naming](https://git-scm.com/docs/user-manual) and Docker's
 [help-command implementation](https://github.com/docker/cli/blob/master/cli/cobra.go).
 Program startup and configured plugin metadata handling remain subject to the

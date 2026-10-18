@@ -25,9 +25,13 @@ from command_paths import help_route
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 3
+CACHE_VERSION = 4
 FLAG_PATTERN = re.compile(r"(?<![\w-])(--?[A-Za-z0-9][A-Za-z0-9_-]*)(?=$|[\s,=\[<])")
-ARGUMENT_PATTERN = re.compile(r"^(<[^<>]+>|\[[^\[\]]+\]|\{[^{}]+\}|[A-Z][A-Z0-9_-]*)(?=$|[\s,])")
+PARENTHESIZED_TYPE = r"\((?:string|list|integer|long|double|float|map|blob|timestamp)\)"
+ARGUMENT_PATTERN = re.compile(
+    r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_-]*|\[[^\[\]]+\]|\{[^{}]+\}|"
+    + PARENTHESIZED_TYPE + r"|[A-Z][A-Z0-9_-]*)(?=$|[\s,])"
+)
 ANSI_PATTERN = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]")
 
 
@@ -162,9 +166,27 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     stripped = line.strip()
     if not stripped.startswith("-"):
         return None
+    # Git documents a numeric shorthand before literal aliases. The shorthand
+    # itself is not insertable, but the explicitly separated aliases are.
+    stripped = re.sub(r"^-<[^<>]+>,\s*(?=-)", "", stripped)
+    # pnpm's explicit negation shorthand describes two literal boolean flags.
+    stripped = re.sub(r"--\[no-\]([A-Za-z0-9][A-Za-z0-9_-]*)(?=$|\s)",
+                      r"--\1, --no-\1", stripped)
+    # Wget aligns aliases with multiple spaces after the comma; those spaces
+    # belong to the declaration rather than the description column.
+    stripped = re.sub(r"([,|])\s+(?=--?[A-Za-z0-9])", r"\1 ", stripped)
     columns = re.split(r"\s{2,}|\t+", stripped, maxsplit=1)
     signature = columns[0]
     summary = columns[1].strip() if len(columns) == 2 else ""
+    typed_value = re.match("^(" + PARENTHESIZED_TYPE + r")(?=$|\s)", summary)
+    if typed_value:
+        signature += " " + typed_value.group(1)
+        summary = summary[typed_value.end():].strip()
+    # kubectl prints defaults followed by a colon on a separate declaration
+    # line. Boolean defaults do not make a flag require a following value.
+    if not summary and signature.endswith(":") and "=" in signature:
+        signature = signature[:-1]
+        signature = re.sub(r"=(?:true|false)(?=$|,\s*--?)", "", signature)
     matches = list(FLAG_PATTERN.finditer(signature))
     if not matches or matches[0].start() != 0:
         return None
@@ -183,6 +205,7 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
         flag = match.group(1)
         argument = ""
         optional = False
+        argument_count = 1
         if tail.startswith("[=") and "]" in tail:
             argument, _, remainder = tail[2:].partition("]")
             argument = "[=" + argument + "]"
@@ -195,10 +218,18 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
                 argument = value.group(1)
                 tail = tail[value.end():].strip()
         else:
+            # jq consumes both a variable name and a value/file. Treat only
+            # explicit paired metavariables as two values, not multiword prose.
+            pair = re.match(r"(?:name|NAME|<name>)\s+(?:value|VALUE|<value>|file|FILE|<file>)(?=$|\s)", tail)
             value = ARGUMENT_PATTERN.match(tail)
-            if value:
+            if pair:
+                argument, tail, argument_count = pair.group(), tail[pair.end():].strip(), 2
+            elif re.fullmatch(r"'[^'\n]+'|\"[^\"\n]+\"", tail):
+                # Terraform documents -var with a quoted key=value example.
+                argument, tail = tail, ""
+            elif value:
                 argument = value.group(1)
-                optional = argument.startswith("[")
+                optional = argument.startswith("[") and argument.endswith("]")
                 tail = tail[value.end():].strip()
             elif summary and re.fullmatch(r"[a-z][A-Za-z0-9_\[\],:=./ -]*", tail):
                 # A separate declaration column can contain lowercase types,
@@ -206,7 +237,10 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
                 argument, tail = tail, ""
         if tail and index == len(matches) - 1 and not summary:
             summary = tail
-        options.append({"flag": flag, "argument": argument, "argument_optional": optional})
+        option = {"flag": flag, "argument": argument, "argument_optional": optional}
+        if argument_count != 1:
+            option["argument_count"] = argument_count
+        options.append(option)
     # Shared argument syntax usually appears only after the last alias.
     argument_owner = next((option for option in reversed(options) if option["argument"]), None)
     if argument_owner:
@@ -214,6 +248,8 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
             if not option["argument"]:
                 option["argument"] = argument_owner["argument"]
                 option["argument_optional"] = argument_owner["argument_optional"]
+                if "argument_count" in argument_owner:
+                    option["argument_count"] = argument_owner["argument_count"]
     return options, summary
 
 
@@ -305,6 +341,8 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> d
                 previous["detail"] += "\n\n" + entry["detail"]
                 if not previous["argument"] and entry["argument"]:
                     previous.update({key: entry[key] for key in ("flag", "argument", "argument_optional")})
+                    if "argument_count" in entry:
+                        previous["argument_count"] = entry["argument_count"]
                 continue
             by_flag[identity] = entry
     if not by_flag:
@@ -400,6 +438,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
             return profile
     sources = []
     warnings = []
+    probe_failed = False
     probes = []
     if settings.mode == "auto" and help_arguments:
         probes.append((" ".join([name, *help_arguments]), [executable, *help_arguments]))
@@ -415,12 +454,14 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
             else:
                 warnings.append(f"No option declarations were parsed from {label}.")
         except ProbeError as error:
+            probe_failed = True
             warnings.append(f"{label}: {error}")
     try:
         profile = build_profile(command_path, sources)
     except HelpError as error:
         explanation = " ".join(warnings)
-        raise HelpError(f"{error} {explanation} Add a custom profile for this command.") from error
+        error_type = ProbeError if probe_failed else HelpError
+        raise error_type(f"{error} {explanation} Add a custom profile for this command.") from error
     profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": warnings,
                             "executable": executable, "scope": "subcommand" if subcommands else "top-level"}
     if warnings:

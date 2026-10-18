@@ -66,6 +66,9 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn(self.base + "/scripts/guided_merge.py", names)
             self.assertIn(self.base + "/docs/releases.md", names)
             self.assertIn(self.base + "/tests/test_release.py", names)
+            self.assertIn(self.base + "/tests/fixtures/help/matrix.json", names)
+            self.assertIn(self.base + "/tests/fixtures/help/captured.json", names)
+            self.assertFalse(any("/.cache/" in name for name in names))
 
     def test_normalized_archives_and_native_build_are_repeatable(self):
         second = self.home / "second"

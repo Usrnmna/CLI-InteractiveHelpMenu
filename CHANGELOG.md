@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Third-party compatibility coverage includes all essential, next, and extended
+  tiers: 49 command paths across 34 executable names, with loadable drivers,
+  independent sentinel expectations, and captured help excerpts.
+- Discovery recognizes aligned aliases, boolean negation shorthand, kubectl
+  defaults, AWS typed values, jq two-value options, and partially optional
+  placeholders. Fixed suffix-help routes support additional CLI conventions.
+- Live compatibility reports record versions, tiers, argument-count checks, and
+  exact insertion checks for every discovered flag. Known case selections retain
+  their assertions; missing and unsupported commands remain explicit.
 - GitHub release updater selects compatible archives, verifies sizes and SHA-256
   checksums, and preserves settings through the managed update workflow.
 - Stable and prerelease channels, exact version selection, check-only operation,

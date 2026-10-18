@@ -188,10 +188,12 @@ Bash terminal. The terminal workflow also verifies option insertion without
 execution of the pending command. Network fixtures do not establish availability
 of future GitHub releases or compatibility with every Linux distribution.
 
-On 2026-10-17, all 355 tests passed on Ubuntu 24.04 under WSL with Python
+The release-updater baseline on 2026-10-17 passed all 355 tests on Ubuntu 24.04 under WSL with Python
 3.12.3, including 48 release-updater tests and 31 real Bash terminal tests across
 the suite. Live GitHub discovery selected `v0.1.1-alpha`; its 569,002-byte native
 runtime archive downloaded, matched the published checksum and API digest, and
 extracted with the expected version. No downloaded code ran and no installation
 changed during that live network check. Upgrade application and guided review
 were exercised with isolated installations and offline release fixtures.
+Subsequent third-party command coverage and live-program results are documented
+in the [compatibility guide](compatibility.md).

@@ -1,7 +1,1258 @@
 [
-  {"command": "ffmpeg", "flags": {"-y": "", "-i": "input_file", "-f": "fmt", "-c": "codec", "-t": "duration", "-max_error_rate": "maximum error rate", "-map_metadata": "outfile[,metadata]:infile[,metadata]", "-metadata": "string=string"}, "excluded": ["-c:v"], "live_flags": ["-y", "-f", "-c", "-t"]},
-  {"command": "vlc", "flags": {"--audio": "", "--no-audio": "", "--volume": "<integer [0 .. 512]>", "--audio-language": "<string>", "--fullscreen": "", "--rate": "<float>"}, "excluded": [], "live_flags": ["--fullscreen"]},
-  {"command": "gcc", "flags": {"-c": "", "-o": "<file>", "-std=": "<standard>", "-I": "<directory>"}, "excluded": ["-Wa", "-Wp", "-Wl", "-###"], "live_flags": ["-c", "-o"]},
-  {"command": "npm", "flags": {}, "excluded": ["-h", "-l", "--key="], "live_flags": []},
-  {"command": "pip", "flags": {"--python": "<python>", "--keyring-provider": "<keyring_provider>", "--log": "<path>", "--no-input": ""}, "excluded": ["--install"], "live_flags": ["--isolated", "--no-input"]}
+  {
+    "command": "ffmpeg",
+    "flags": {
+      "-y": "",
+      "-i": "input_file",
+      "-f": "fmt",
+      "-c": "codec",
+      "-t": "duration",
+      "-max_error_rate": "maximum error rate",
+      "-map_metadata": "outfile[,metadata]:infile[,metadata]",
+      "-metadata": "string=string"
+    },
+    "excluded": [
+      "-c:v"
+    ],
+    "live_flags": [
+      "-y",
+      "-f",
+      "-c",
+      "-t"
+    ],
+    "tier": "essential",
+    "package": "ffmpeg",
+    "fixture": "ffmpeg.txt",
+    "version_args": [
+      "-version"
+    ],
+    "live_argument_counts": {
+      "-f": 1,
+      "-c": 1,
+      "-t": 1
+    }
+  },
+  {
+    "command": "vlc",
+    "flags": {
+      "--audio": "",
+      "--no-audio": "",
+      "--volume": "<integer [0 .. 512]>",
+      "--audio-language": "<string>",
+      "--fullscreen": "",
+      "--rate": "<float>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--fullscreen"
+    ],
+    "tier": "extended",
+    "package": "vlc",
+    "fixture": "vlc.txt",
+    "version_args": [
+      "--version"
+    ]
+  },
+  {
+    "command": "gcc",
+    "flags": {
+      "-c": "",
+      "-o": "<file>",
+      "-std=": "<standard>",
+      "-I": "<directory>"
+    },
+    "excluded": [
+      "-Wa",
+      "-Wp",
+      "-Wl",
+      "-###"
+    ],
+    "live_flags": [
+      "-c",
+      "-o"
+    ],
+    "tier": "next",
+    "package": "gcc",
+    "fixture": "gcc.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-o": 1
+    }
+  },
+  {
+    "command": "npm",
+    "flags": {},
+    "excluded": [
+      "-h",
+      "-l",
+      "--key="
+    ],
+    "live_flags": [],
+    "tier": "essential",
+    "package": "npm",
+    "fixture": "npm.txt",
+    "version_args": [
+      "--version"
+    ],
+    "allow_empty": true
+  },
+  {
+    "command": "pip",
+    "flags": {
+      "--python": "<python>",
+      "--keyring-provider": "<keyring_provider>",
+      "--log": "<path>",
+      "--no-input": ""
+    },
+    "excluded": [
+      "--install"
+    ],
+    "live_flags": [
+      "--isolated",
+      "--no-input"
+    ],
+    "tier": "essential",
+    "package": "pip",
+    "fixture": "pip.txt",
+    "version_args": [
+      "--version"
+    ]
+  },
+  {
+    "command": "git commit",
+    "tier": "essential",
+    "package": "git",
+    "fixture": "git-commit.txt",
+    "flags": {
+      "-m": "<msg>",
+      "--amend": "",
+      "--dry-run": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-m",
+      "--amend",
+      "--dry-run"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-m": 1
+    }
+  },
+  {
+    "command": "git log",
+    "tier": "essential",
+    "package": "git",
+    "fixture": "git-log.txt",
+    "flags": {
+      "--all": "",
+      "--oneline": "",
+      "--max-count=": "<number>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--all",
+      "--oneline",
+      "--max-count="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--max-count=": 1
+    }
+  },
+  {
+    "command": "git diff",
+    "tier": "essential",
+    "package": "git",
+    "fixture": "git-diff.txt",
+    "flags": {
+      "--stat": "",
+      "--name-only": "",
+      "--color": "[=<when>]"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--stat",
+      "--name-only",
+      "--color"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--color": 1
+    }
+  },
+  {
+    "command": "curl",
+    "tier": "essential",
+    "package": "curl",
+    "fixture": "curl.txt",
+    "flags": {
+      "-o": "<file>",
+      "--output": "<file>",
+      "-H": "<header/@file>",
+      "--header": "<header/@file>",
+      "--retry": "<num>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-o",
+      "--output",
+      "-H",
+      "--header",
+      "--retry"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-o": 1,
+      "--output": 1,
+      "-H": 1,
+      "--header": 1,
+      "--retry": 1
+    }
+  },
+  {
+    "command": "wget",
+    "tier": "essential",
+    "package": "wget",
+    "fixture": "wget.txt",
+    "flags": {
+      "-O": "FILE",
+      "--output-document=": "FILE",
+      "-q": "",
+      "--quiet": "",
+      "--timeout=": "SECONDS"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-O",
+      "--output-document=",
+      "-q",
+      "--quiet",
+      "--timeout="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-O": 1,
+      "--output-document=": 1,
+      "--timeout=": 1
+    }
+  },
+  {
+    "command": "rsync",
+    "tier": "essential",
+    "package": "rsync",
+    "fixture": "rsync.txt",
+    "flags": {
+      "-a": "",
+      "--archive": "",
+      "--exclude=": "PATTERN",
+      "--delete": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-a",
+      "--archive",
+      "--exclude=",
+      "--delete"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--exclude=": 1
+    }
+  },
+  {
+    "command": "docker run",
+    "tier": "essential",
+    "package": "docker",
+    "fixture": "docker-run.txt",
+    "flags": {
+      "-e": "list",
+      "--env": "list",
+      "-v": "list",
+      "--volume": "list",
+      "--rm": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-e",
+      "--env",
+      "-v",
+      "--volume",
+      "--rm"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-e": 1,
+      "--env": 1,
+      "-v": 1,
+      "--volume": 1
+    }
+  },
+  {
+    "command": "docker image ls",
+    "tier": "essential",
+    "package": "docker",
+    "fixture": "docker-image-ls.txt",
+    "flags": {
+      "-a": "",
+      "--all": "",
+      "--format": "string",
+      "-q": "",
+      "--quiet": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-a",
+      "--all",
+      "--format",
+      "-q",
+      "--quiet"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--format": 1
+    }
+  },
+  {
+    "command": "docker compose up",
+    "tier": "essential",
+    "package": "docker-compose",
+    "fixture": "docker-compose-up.txt",
+    "flags": {
+      "-d": "",
+      "--detach": "",
+      "--build": "",
+      "--timeout": "int"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-d",
+      "--detach",
+      "--build",
+      "--timeout"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--timeout": 1
+    }
+  },
+  {
+    "command": "pip install",
+    "tier": "essential",
+    "package": "pip",
+    "fixture": "pip-install.txt",
+    "flags": {
+      "-r": "<file>",
+      "--requirement": "<file>",
+      "--no-deps": "",
+      "--target": "<dir>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-r",
+      "--requirement",
+      "--no-deps",
+      "--target"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-r": 1,
+      "--requirement": 1,
+      "--target": 1
+    }
+  },
+  {
+    "command": "pip download",
+    "tier": "essential",
+    "package": "pip",
+    "fixture": "pip-download.txt",
+    "flags": {
+      "-d": "<dir>",
+      "--dest": "<dir>",
+      "--no-deps": "",
+      "--platform": "<platform>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-d",
+      "--dest",
+      "--no-deps",
+      "--platform"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-d": 1,
+      "--dest": 1,
+      "--platform": 1
+    }
+  },
+  {
+    "command": "pip3 install",
+    "tier": "essential",
+    "package": "pip",
+    "fixture": "pip3-install.txt",
+    "flags": {
+      "-r": "<file>",
+      "--requirement": "<file>",
+      "--no-deps": "",
+      "--target": "<dir>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-r",
+      "--requirement",
+      "--no-deps",
+      "--target"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-r": 1,
+      "--requirement": 1,
+      "--target": 1
+    }
+  },
+  {
+    "command": "uv pip install",
+    "tier": "essential",
+    "package": "uv",
+    "fixture": "uv-pip-install.txt",
+    "flags": {
+      "-r": "<REQUIREMENTS>",
+      "--requirements": "<REQUIREMENTS>",
+      "--no-deps": "",
+      "--python": "<PYTHON>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-r",
+      "--requirements",
+      "--no-deps",
+      "--python"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-r": 1,
+      "--requirements": 1,
+      "--python": 1
+    }
+  },
+  {
+    "command": "uv run",
+    "tier": "essential",
+    "package": "uv",
+    "fixture": "uv-run.txt",
+    "flags": {
+      "--no-sync": "",
+      "--python": "<PYTHON>",
+      "--directory": "<DIRECTORY>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-sync",
+      "--python",
+      "--directory"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--python": 1,
+      "--directory": 1
+    }
+  },
+  {
+    "command": "npm install",
+    "tier": "essential",
+    "package": "npm",
+    "fixture": "npm-install.txt",
+    "flags": {
+      "-S": "",
+      "--save": "",
+      "--no-save": "",
+      "--save-prod": "",
+      "--save-dev": "",
+      "-E": "",
+      "--save-exact": "",
+      "-g": "",
+      "--global": "",
+      "--install-strategy": "<hoisted|nested|shallow>",
+      "--omit": "<dev|optional|peer>",
+      "--ignore-scripts": "",
+      "--no-audit": "",
+      "--dry-run": "",
+      "-w": "<workspace-name>",
+      "--workspace": "<workspace-name>",
+      "-ws": "",
+      "--workspaces": "",
+      "--include-workspace-root": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-S",
+      "--save",
+      "--no-save",
+      "--save-prod",
+      "--save-dev",
+      "-E",
+      "--save-exact",
+      "-g",
+      "--global",
+      "--install-strategy",
+      "--omit",
+      "--ignore-scripts",
+      "--no-audit",
+      "--dry-run",
+      "-w",
+      "--workspace",
+      "-ws",
+      "--workspaces",
+      "--include-workspace-root"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--install-strategy": 1,
+      "--omit": 1,
+      "-w": 1,
+      "--workspace": 1
+    }
+  },
+  {
+    "command": "npm run",
+    "tier": "essential",
+    "package": "npm",
+    "fixture": "npm-run.txt",
+    "flags": {
+      "--if-present": "",
+      "--ignore-scripts": "",
+      "--workspace": "<workspace-name>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--if-present",
+      "--ignore-scripts",
+      "--workspace"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--workspace": 1
+    }
+  },
+  {
+    "command": "pnpm install",
+    "tier": "essential",
+    "package": "pnpm",
+    "fixture": "pnpm-install.txt",
+    "flags": {
+      "--offline": "",
+      "--frozen-lockfile": "",
+      "--ignore-scripts": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--offline",
+      "--frozen-lockfile",
+      "--ignore-scripts"
+    ],
+    "version_args": [
+      "--version"
+    ]
+  },
+  {
+    "command": "jq",
+    "tier": "essential",
+    "package": "jq",
+    "fixture": "jq.txt",
+    "flags": {
+      "-r": "",
+      "--raw-output": "",
+      "--arg": "name value",
+      "--slurpfile": "name file"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-r",
+      "--raw-output",
+      "--arg",
+      "--slurpfile"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "argument_counts": {
+      "--arg": 2,
+      "--slurpfile": 2
+    },
+    "live_argument_counts": {
+      "--arg": 2,
+      "--slurpfile": 2
+    }
+  },
+  {
+    "command": "rg",
+    "tier": "essential",
+    "package": "ripgrep",
+    "fixture": "rg.txt",
+    "flags": {
+      "-e": "<PATTERN>",
+      "--regexp": "<PATTERN>",
+      "-g": "<GLOB>",
+      "--glob": "<GLOB>",
+      "--color": "<WHEN>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-e",
+      "--regexp=",
+      "-g",
+      "--glob=",
+      "--color="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-e": 1,
+      "--regexp=": 1,
+      "-g": 1,
+      "--glob=": 1,
+      "--color=": 1
+    }
+  },
+  {
+    "command": "ffprobe",
+    "tier": "essential",
+    "package": "ffmpeg",
+    "fixture": "ffprobe.txt",
+    "flags": {
+      "-show_streams": "",
+      "-show_format": "",
+      "-select_streams": "stream_specifier"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-show_streams",
+      "-show_format",
+      "-select_streams"
+    ],
+    "version_args": [
+      "-version"
+    ],
+    "live_argument_counts": {
+      "-select_streams": 1
+    }
+  },
+  {
+    "command": "gh pr list",
+    "tier": "next",
+    "package": "gh",
+    "fixture": "gh-pr-list.txt",
+    "flags": {
+      "-L": "int",
+      "--limit": "int",
+      "-s": "string",
+      "--state": "string",
+      "--json": "fields"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-L",
+      "--limit",
+      "-s",
+      "--state",
+      "--json"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-L": 1,
+      "--limit": 1,
+      "-s": 1,
+      "--state": 1,
+      "--json": 1
+    }
+  },
+  {
+    "command": "gh repo clone",
+    "tier": "next",
+    "package": "gh",
+    "fixture": "gh-repo-clone.txt",
+    "flags": {
+      "-u": "string",
+      "--upstream-remote-name": "string"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-u",
+      "--upstream-remote-name"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-u": 1,
+      "--upstream-remote-name": 1
+    }
+  },
+  {
+    "command": "kubectl get",
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "kubectl-get.txt",
+    "flags": {
+      "-o": "string",
+      "--output": "string",
+      "-l": "string",
+      "--selector": "string",
+      "--watch": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-o",
+      "--output=",
+      "-l",
+      "--selector=",
+      "--watch"
+    ],
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "live_argument_counts": {
+      "-o": 1,
+      "--output=": 1,
+      "-l": 1,
+      "--selector=": 1
+    }
+  },
+  {
+    "command": "kubectl config view",
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "kubectl-config-view.txt",
+    "flags": {
+      "--minify": "",
+      "--flatten": "",
+      "--raw": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--minify",
+      "--flatten",
+      "--raw"
+    ],
+    "version_args": [
+      "version",
+      "--client=true"
+    ]
+  },
+  {
+    "command": "helm install",
+    "tier": "next",
+    "package": "helm",
+    "fixture": "helm-install.txt",
+    "flags": {
+      "-f": "strings",
+      "--values": "strings",
+      "--set": "stringArray",
+      "--wait": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-f",
+      "--values",
+      "--set",
+      "--wait"
+    ],
+    "version_args": [
+      "version",
+      "--short"
+    ],
+    "live_argument_counts": {
+      "-f": 1,
+      "--values": 1,
+      "--set": 1
+    }
+  },
+  {
+    "command": "aws s3 cp",
+    "tier": "next",
+    "package": "awscli",
+    "fixture": "aws-s3-cp.txt",
+    "flags": {
+      "--recursive": "",
+      "--exclude": "(string)",
+      "--include": "(string)"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--recursive",
+      "--exclude",
+      "--include"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--exclude": 1,
+      "--include": 1
+    }
+  },
+  {
+    "command": "aws ec2 describe-instances",
+    "tier": "next",
+    "package": "awscli",
+    "fixture": "aws-ec2-describe-instances.txt",
+    "flags": {
+      "--instance-ids": "(list)",
+      "--filters": "(list)",
+      "--dry-run": "",
+      "--no-dry-run": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--instance-ids",
+      "--filters",
+      "--dry-run",
+      "--no-dry-run"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--filters": 1,
+      "--instance-ids": 1
+    }
+  },
+  {
+    "command": "terraform plan",
+    "tier": "next",
+    "package": "terraform",
+    "fixture": "terraform-plan.txt",
+    "flags": {
+      "-out=": "path",
+      "-no-color": "",
+      "-var": "'foo=bar'"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-out=",
+      "-no-color",
+      "-var"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-out=": 1,
+      "-var": 1
+    }
+  },
+  {
+    "command": "terraform apply",
+    "tier": "next",
+    "package": "terraform",
+    "fixture": "terraform-apply.txt",
+    "flags": {
+      "-auto-approve": "",
+      "-parallelism=": "n",
+      "-no-color": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-auto-approve",
+      "-parallelism=",
+      "-no-color"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-parallelism=": 1
+    }
+  },
+  {
+    "command": "tofu plan",
+    "tier": "next",
+    "package": "opentofu",
+    "fixture": "tofu-plan.txt",
+    "flags": {
+      "-out=": "path",
+      "-no-color": "",
+      "-var": "'foo=bar'"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-out=",
+      "-no-color",
+      "-var"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-out=": 1,
+      "-var": 1
+    }
+  },
+  {
+    "command": "tofu apply",
+    "tier": "next",
+    "package": "opentofu",
+    "fixture": "tofu-apply.txt",
+    "flags": {
+      "-auto-approve": "",
+      "-parallelism=": "n",
+      "-no-color": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-auto-approve",
+      "-parallelism=",
+      "-no-color"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-parallelism=": 1
+    }
+  },
+  {
+    "command": "cargo build",
+    "tier": "next",
+    "package": "cargo",
+    "fixture": "cargo-build.txt",
+    "flags": {
+      "--release": "",
+      "--target": "[<TRIPLE>]",
+      "-p": "[<SPEC>]",
+      "--package": "[<SPEC>]"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--release",
+      "--target",
+      "-p",
+      "--package"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--target": 1,
+      "-p": 1,
+      "--package": 1
+    }
+  },
+  {
+    "command": "cmake",
+    "tier": "next",
+    "package": "cmake",
+    "fixture": "cmake.txt",
+    "flags": {
+      "-S": "<path-to-source>",
+      "-B": "<path-to-build>",
+      "-G": "<generator-name>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-S",
+      "-B",
+      "-G"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-S": 1,
+      "-B": 1,
+      "-G": 1
+    }
+  },
+  {
+    "command": "ninja",
+    "tier": "next",
+    "package": "ninja-build",
+    "fixture": "ninja.txt",
+    "flags": {
+      "-C": "DIR",
+      "-j": "N",
+      "-n": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-C",
+      "-j",
+      "-n"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-C": 1,
+      "-j": 1
+    }
+  },
+  {
+    "command": "clang",
+    "tier": "next",
+    "package": "clang",
+    "fixture": "clang.txt",
+    "flags": {
+      "-o": "<file>",
+      "-I": "<dir>",
+      "-c": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-o",
+      "-I",
+      "-c"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-o": 1,
+      "-I": 1
+    }
+  },
+  {
+    "command": "rclone copy",
+    "tier": "extended",
+    "package": "rclone",
+    "fixture": "rclone-copy.txt",
+    "flags": {
+      "--create-empty-src-dirs": "",
+      "--help": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--create-empty-src-dirs",
+      "--help"
+    ],
+    "version_args": [
+      "version"
+    ]
+  },
+  {
+    "command": "restic backup",
+    "tier": "extended",
+    "package": "restic",
+    "fixture": "restic-backup.txt",
+    "flags": {
+      "--exclude": "pattern",
+      "--tag": "tags",
+      "--dry-run": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--exclude",
+      "--tag",
+      "--dry-run"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--exclude": 1,
+      "--tag": 1
+    }
+  },
+  {
+    "command": "borg create",
+    "tier": "extended",
+    "package": "borgbackup",
+    "fixture": "borg-create.txt",
+    "flags": {
+      "--compression": "COMPRESSION",
+      "--exclude": "PATTERN",
+      "--dry-run": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--compression",
+      "--exclude",
+      "--dry-run"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--compression": 1,
+      "--exclude": 1
+    }
+  },
+  {
+    "command": "7z",
+    "tier": "extended",
+    "package": "7zip",
+    "fixture": "7z.txt",
+    "flags": {
+      "-y": ""
+    },
+    "excluded": [
+      "-o",
+      "-t"
+    ],
+    "live_flags": [
+      "-y"
+    ],
+    "version_args": [
+      "-h"
+    ]
+  },
+  {
+    "command": "7zz",
+    "tier": "extended",
+    "package": "7zip",
+    "fixture": "7zz.txt",
+    "flags": {
+      "-y": ""
+    },
+    "excluded": [
+      "-o",
+      "-t"
+    ],
+    "live_flags": [
+      "-y"
+    ],
+    "version_args": [
+      "-h"
+    ]
+  },
+  {
+    "command": "magick",
+    "tier": "extended",
+    "package": "imagemagick",
+    "fixture": "magick.txt",
+    "flags": {
+      "-resize": "geometry",
+      "-quality": "value",
+      "-strip": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-resize",
+      "-quality",
+      "-strip"
+    ],
+    "version_args": [
+      "-version"
+    ],
+    "live_argument_counts": {
+      "-resize": 1,
+      "-quality": 1
+    }
+  },
+  {
+    "command": "convert",
+    "tier": "extended",
+    "package": "imagemagick6",
+    "fixture": "convert.txt",
+    "flags": {
+      "-resize": "geometry",
+      "-quality": "value",
+      "-strip": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-resize",
+      "-quality",
+      "-strip"
+    ],
+    "version_args": [
+      "-version"
+    ],
+    "live_argument_counts": {
+      "-resize": 1,
+      "-quality": 1
+    }
+  },
+  {
+    "command": "yt-dlp",
+    "tier": "extended",
+    "package": "yt-dlp",
+    "fixture": "yt-dlp.txt",
+    "flags": {
+      "-f": "FORMAT",
+      "--format": "FORMAT",
+      "-o": "[TYPES:]TEMPLATE",
+      "--output": "[TYPES:]TEMPLATE",
+      "--no-playlist": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-f",
+      "--format",
+      "-o",
+      "--output",
+      "--no-playlist"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "-f": 1,
+      "--format": 1,
+      "-o": 1,
+      "--output": 1
+    }
+  },
+  {
+    "command": "rclone",
+    "tier": "extended",
+    "package": "rclone",
+    "fixture": "rclone.txt",
+    "flags": {
+      "--checksum": "",
+      "--dry-run": "",
+      "--transfers": "int"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--checksum",
+      "--dry-run",
+      "--transfers"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--transfers": 1
+    }
+  }
 ]

@@ -77,6 +77,20 @@ class DriverValidationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 parse_driver(document)
 
+    def test_suffix_help_must_match_the_exact_declared_path(self):
+        for selector in ("help", "--help", "-help", "-h"):
+            document = driver_document()
+            document["paths"][0]["help"] = ["image", "convert", selector]
+            name, driver = parse_driver(document)
+            self.assertEqual(driver.paths[("image", "convert")].arguments, ("image", "convert", selector))
+        for arguments in (["convert", "--help"], ["image", "delete", "--help"],
+                          ["image", "convert", "private-file", "--help"],
+                          ["image", "convert", "--output=private", "--help"], ["image", "convert"]):
+            document = driver_document()
+            document["paths"][0]["help"] = arguments
+            with self.subTest(arguments=arguments), self.assertRaises(ValueError):
+                parse_driver(document)
+
     def test_unknown_programs_keep_generic_root_discovery(self):
         registry = load_driver_registry()
         self.assertEqual(help_route("unknown-tool", (), registry).arguments, ("--help",))

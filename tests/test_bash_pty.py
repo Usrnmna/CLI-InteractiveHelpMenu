@@ -343,6 +343,31 @@ class BashIntegrationTests(unittest.TestCase):
         self.assertFalse(log.exists())
         self.assertFalse(marker.exists())
 
+    def test_suffix_help_driver_preserves_cloud_arguments_and_cancel(self):
+        from test_discovery import write_executable
+        folder = Path(self.temp.name)
+        binaries = folder / "bin"
+        binaries.mkdir()
+        log, marker = folder / "aws-calls", folder / "action-dispatched"
+        write_executable(binaries / "aws", "import json, pathlib, sys\n"
+                         f"pathlib.Path({str(log)!r}).write_text(json.dumps(sys.argv[1:]))\n"
+                         "if sys.argv[1:] != ['s3', 'cp', 'help']:\n"
+                         f"    pathlib.Path({str(marker)!r}).touch()\n"
+                         "print('Options:\\n  --recursive  Copy recursively.\\n  --exclude (string)  Exclude a pattern.')\n")
+        session = self.start(extra_environment={"PATH": str(binaries) + ":" + os.environ["PATH"],
+                                               "CLI_HELP_DRIVERS": str(ROOT / "config/drivers.example")})
+        line = "aws --profile private s3 cp 'private file' s3://private --rec"
+        session.open(line)
+        session.finish(b"\x1b")
+        self.assertEqual(session.read_buffer(), (line, len(line)))
+        session.send(session.trigger)
+        session.expect(b"Interactive help")
+        session.finish("\n")
+        expected = line[:-5] + "--recursive "
+        self.assertEqual(session.read_buffer(), (expected, len(expected)))
+        self.assertEqual(json.loads(log.read_text()), ["s3", "cp", "help"])
+        self.assertFalse(marker.exists())
+
     def test_imported_manual_profile_loads_and_inserts_without_target_execution(self):
         from test_discovery import MAN_TEXT, write_executable
         from manual_import import import_manual

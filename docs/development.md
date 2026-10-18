@@ -60,7 +60,7 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/main.py](../cli_help/main.py) | Terminal attachment and Bash response protocol |
 | [profiles/](../profiles/) | Editable command documentation |
 | [config/keys.example.json](../config/keys.example.json) | Complete browser key configuration example |
-| [config/drivers.example/](../config/drivers.example/) | Loadable pip and npm driver examples |
+| [config/drivers.example/](../config/drivers.example/) | Loadable third-party compatibility drivers |
 | [tests/](../tests/) | Core contracts and actual Bash pseudoterminal interactions |
 
 Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, and
@@ -138,34 +138,26 @@ are described in the [GitHub update guide](github-updates.md#maintainer-interfac
 
 ## Recorded validation
 
-The recorded functional validation was completed on 2026-10-17 using Ubuntu 24.04
-under WSL with Bash 5.2.21 and Python 3.12.3.
-All 355 tests passed, including 31 real Bash pseudoterminal tests, 18 bulk-scan
-tests, 20 review tests, 18 guided-editing tests, 21 installation tests, 25 update
-tests, 33 update-review tests, 12 guided-merge tests, 10 release-package tests,
-48 release-updater tests,
-and 2,200 deterministic generated cases within the mutation and merge tests. The review,
-guided-editing, installation, update, update-review, guided-merge, and
-release-updater tests each
-include one of the pseudoterminal tests.
-The suite includes command-format fixtures, deterministic mutation
-tests, driver loading, manual imports, and process-boundary checks in addition
-to the Bash tests. Bash syntax,
-static profiles, keybindings, and discovery configuration validation also passed.
-Live discovery was checked against installed `cp` help and its manual, and
-against `sed` in man-only mode. Subcommand discovery was checked against installed
-`git-commit` and `git-branch` manuals; a live manual-derived
-`git -C ... branch` insertion check passed.
-Docker routes were verified with instrumented executable fixtures, including
-real Bash insertion and cancellation. Live Docker validation was unavailable
-because Docker's WSL integration was not enabled. The CI matrix additionally
-checks Python 3.10; this does not establish compatibility with every Bash and
-Python version within the stated requirements.
+Functional validation uses Ubuntu 24.04 under WSL with Bash 5.2.21 and
+Python 3.12.3. The full suite covers real Bash pseudoterminal interactions,
+discovery, drivers, manual import, bulk scans, review forms, installation,
+updates, conflict review, native release packaging, and verified release updates.
+Deterministic mutation and merge cases are included. Bash syntax, static profiles,
+keybindings, and the supplied third-party driver collection are also validated.
+
+The [expanded compatibility matrix](compatibility.md#recorded-validation) records
+the current live results and remaining limits. Docker CLI and Compose help were
+checked using extracted Ubuntu packages; the tests required no running Docker
+daemon. A real Bash test also verifies AWS suffix-help routing, cancellation,
+and insertion with instrumented executables that record any action dispatch.
+The CI matrix additionally runs Python 3.10; local Python 3.12 results do not
+establish a GitHub CI result or compatibility with every supported version.
 
 ## Extended tests and live compatibility reports
 
-The default suite is offline and requires no FFmpeg, VLC, npm, or pip
-installation. GCC is required to compile and test the release launcher. Its hand-authored format corpus and expected results are in
+The default suite is offline and requires no third-party compatibility target
+installation. It validates the full supplied driver collection and all three
+compatibility tiers. GCC is required to compile and test the release launcher. Its hand-authored format corpus and expected results are in
 [the help-format corpus](../tests/fixtures/help/README.md), including provenance and limits.
 It exercises each parsed flag's insertion, required arguments, aliases, source
 merging, and rejection of unsupported syntax. Executable fixtures record exact
@@ -215,30 +207,31 @@ review pseudoterminal workflow corrects options, categories, globals, and routes
 without an editor, then previews and saves the result. The resulting profile
 passes literal insertion checks while the instrumented target remains uninvoked.
 
-For an opt-in report against programs installed on the current Linux machine:
+The [third-party compatibility guide](compatibility.md) contains the complete
+49-path matrix, driver activation, environment preparation, report interpretation,
+and recorded validation limits. A default live run now covers all three tiers
+and loads the supplied drivers automatically:
 
 ```bash
 python3 tests/live_compatibility.py --report tests/reports/live-programs.json
-python3 tests/live_compatibility.py --drivers config/drivers.example \
-  --case 'pip install' --case 'npm install' --case 'npm run' \
-  --report tests/reports/live-drivers.json
+python3 tests/live_compatibility.py --tier essential --report tests/reports/essential.json
 ```
 
-The report distinguishes `passed`, `failed`, `skipped` (missing executable), and
-`unsupported` (the default npm root case has no declarations). A failed case
-returns a nonzero exit status. `--require-all` additionally treats skipped and
-unsupported cases as failures. `--case` can be repeated for new driver paths.
-No packages are installed; only fixed help/manual requests and in-memory buffer
-edits run. Live reports are ignored by version control because availability and
-versions vary by machine.
+Reports distinguish passed, failed, skipped, and explicitly unsupported cases.
+They record versions, selected executable paths, sources, warnings, platform,
+Python version, and totals. Known `--case` selections retain sentinel assertions.
+Every discovered flag receives an exact insertion check; selected argument counts
+and excluded syntax are checked independently. Only fixed help, manual, and
+version requests run. Missing targets and unsupported npm root help do not become
+passes. `--require-all` makes both statuses fail the invocation.
 
-Live checks on Ubuntu 24.04 found usable FFmpeg, GCC, and pip options. The example
-drivers also found options for `pip install`, `npm install`, and `npm run`.
-VLC was absent and is covered only by the offline representative fixture. The GCC
-manual exceeded the 512 KiB source limit; GCC help-output fallback passed. Local
-npm subcommand manuals omitted option tables, so the dedicated help-output route
-supplied those options. These results establish parsing and literal insertion,
-not command execution, compilation, package installation, or media playback.
+The expanded offline corpus includes bounded captured excerpts alongside
+hand-authored specimens. Regressions cover alias alignment, negation shorthand,
+printed defaults, typed values, multiple required values, partially optional
+placeholders, exact suffix-help routes, driver packaging, and report policy.
+Earlier five-program results are superseded by the expanded matrix evidence;
+no compilation, package installation, cloud operation, backup, or media processing
+is performed by the live harness.
 
 The shell integration uses the documented
 [Bash `bind -x` interface](https://tiswww.case.edu/php/chet/bash/bashref.html#Bash-Builtins)

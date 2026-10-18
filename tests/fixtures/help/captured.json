@@ -1,0 +1,577 @@
+{
+  "ffmpeg": {
+    "source": [
+      "ffmpeg",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n-y                  overwrite output files\n-f fmt              force format\n-c codec            codec name\n-t duration         record or transcode \"duration\" seconds of audio/video\n",
+    "version": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "vlc": {
+    "source": [
+      "vlc",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -f, --fullscreen, --no-fullscreen \n                                 Fullscreen video output\n                                 (default disabled)\n",
+    "version": "VLC version 3.0.20 Vetinari (3.0.20-0-g6f0d0ab126b)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "gcc": {
+    "source": [
+      "gcc",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -Wa,<options>            Pass comma-separated <options> on to the assembler.\n  -Wp,<options>            Pass comma-separated <options> on to the preprocessor.\n  -Wl,<options>            Pass comma-separated <options> on to the linker.\n  -###                     Like -v but options quoted and commands not executed.\n  -c                       Compile and assemble, but do not link.\n  -o <file>                Place the output into <file>.\n",
+    "version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "npm": {
+    "source": [
+      "npm",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading. Local test home/environment paths replaced by placeholders.",
+    "text": "npm <command>\n\nUsage:\n\nnpm install        install all the dependencies in your project\nnpm install <foo>  add the <foo> dependency to your project\nnpm test           run this project's tests\nnpm run <foo>      run the script named <foo>\nnpm <command> -h   quick help on <command>\nnpm -l             display usage info for all commands\nnpm help <term>    search for help on <term>\nnpm help npm       more involved overview\n\nAll commands:\n\n    access, adduser, audit, bugs, cache, ci, completion,\n    config, dedupe, deprecate, diff, dist-tag, docs, doctor,\n    edit, exec, explain, explore, find-dupes, fund, get, help,\n    hook, init, install, install-ci-test, install-test, link,\n    ll, login, logout, ls, org, outdated, owner, pack, ping,\n    pkg, prefix, profile, prune, publish, query, rebuild, repo,\n    restart, root, run-script, search, set, shrinkwrap, star,\n    stars, start, stop, team, test, token, uninstall, unpublish,\n    unstar, update, version, view, whoami\n\nSpecify configs in the ini-formatted file:\n    <TEST_HOME>/.npmrc\nor on the command line via: npm <command> --key=value\n\nMore configuration info: npm help config\nConfiguration fields: npm help 7 config\n\nnpm@9.2.0 /usr/share/nodejs/npm\n",
+    "version": "9.2.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "pip": {
+    "source": [
+      "pip",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading. Local test home/environment paths replaced by placeholders.",
+    "text": "Options:\n  --isolated                  Run pip in an isolated mode, ignoring environment variables and user\n                              configuration.\n  --no-input                  Disable prompting for input.\n",
+    "version": "pip 24.0 from <TEST_ENV>/lib/python3.12/site-packages/pip (python 3.12)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "git commit": {
+    "source": [
+      "man",
+      "git-commit"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n                  [--dry-run] [(-c | -C | --squash) <commit> | --fixup [(amend|reword):]<commit>)]\n                  [-F <file> | -m <msg>] [--reset-author] [--allow-empty]\n           --autosquash. The -m option may be used to supplement the log message of the created\n           commit, but the additional commentary will be thrown away once the \"fixup!\" commit is\n           squashed into <commit> by git rebase --autosquash.\n       -m <msg>, --message=<msg>\n           Use the given <msg> as the commit message. If multiple -m options are given, their\n           values are concatenated as separate paragraphs.\n           --amend --no-edit amends a commit without changing its commit message.\n\n       --amend\n           Replace the tip of the current branch by creating a new commit. The recorded tree is\n           prepared as usual (including the effect of the -i and -o options and explicit\n       --dry-run\n           Do not create a commit, but show a list of paths that are to be committed, paths with\n           local changes that will be left uncommitted and paths that are untracked.\n",
+    "version": "git version 2.43.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "git log": {
+    "source": [
+      "man",
+      "git-log"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n       -<number>, -n <number>, --max-count=<number>\n           Limit the number of commits to output.\n\n       --all\n           Pretend as if all the refs in refs/, along with HEAD, are listed on the command line\n           as <commit>.\n       --oneline\n           This is a shorthand for \"--pretty=oneline --abbrev-commit\" used together.\n\n",
+    "version": "git version 2.43.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "git diff": {
+    "source": [
+      "man",
+      "git-diff"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n       --stat[=<width>[,<name-width>[,<count>]]]\n           Generate a diffstat. By default, as much space as necessary will be used for the\n           filename part, and the rest for the graph part. Maximum width defaults to terminal\n       --name-only\n           Show only names of changed files. The file names are often encoded in UTF-8. For more\n           information see the discussion about encoding in the git-log(1) manual page.\n       --color[=<when>]\n           Show colored diff.  --color (i.e. without =<when>) is the same as --color=always.\n           <when> can be one of always, never, or auto. It can be changed by the color.ui and\n",
+    "version": "git version 2.43.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "curl": {
+    "source": [
+      "curl",
+      "--help",
+      "all"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n -H, --header <header/@file> Pass custom header(s) to server\n -o, --output <file> Write to file instead of stdout\n     --retry <num> Retry request if transient problems occur\n",
+    "version": "curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "wget": {
+    "source": [
+      "wget",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -q,  --quiet                     quiet (no output)\n  -O,  --output-document=FILE      write documents to FILE\n  -T,  --timeout=SECONDS           set all timeout values to SECONDS\n",
+    "version": "GNU Wget 1.21.4 built on linux-gnu.",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "rsync": {
+    "source": [
+      "rsync",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n--archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)\n--delete                 delete extraneous files from dest dirs\n--exclude=PATTERN        exclude files matching PATTERN\n",
+    "version": "rsync  version 3.2.7  protocol version 31",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "docker run": {
+    "source": [
+      "docker",
+      "help",
+      "run"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -e, --env list                         Set environment variables\n      --rm                               Automatically remove the\n                                         container and its associated\n                                         anonymous volumes when it exits\n  -v, --volume list                      Bind mount a volume\n",
+    "version": "Docker version 29.1.3, build 29.1.3-0ubuntu3~24.04.2",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "docker image ls": {
+    "source": [
+      "docker",
+      "help",
+      "image",
+      "ls"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -a, --all             Show all images (default hides intermediate images)\n      --format string   Format output using a custom template:\n                        'table':            Print output in table format\n                        with column headers (default)\n  -q, --quiet           Only show image IDs\n",
+    "version": "Docker version 29.1.3, build 29.1.3-0ubuntu3~24.04.2",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "docker compose up": {
+    "source": [
+      "docker",
+      "compose",
+      "up",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --build                        Build images before starting containers\n  -d, --detach                       Detached mode: Run containers in the\n                                     background\n  -t, --timeout int                  Use this timeout in seconds for\n                                     container shutdown when attached or\n                                     when containers are already running\n",
+    "version": "Docker version 29.1.3, build 29.1.3-0ubuntu3~24.04.2",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "pip install": {
+    "source": [
+      "pip",
+      "help",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading. Local test home/environment paths replaced by placeholders.",
+    "text": "Options:\n  -r, --requirement <file>    Install from the given requirements file. This option can be used\n                              multiple times.\n  --no-deps                   Don't install package dependencies.\n  -t, --target <dir>          Install packages into <dir>. By default this will not replace\n                              existing files/folders in <dir>. Use --upgrade to replace existing\n                              packages in <dir> with new versions.\n",
+    "version": "pip 24.0 from <TEST_ENV>/lib/python3.12/site-packages/pip (python 3.12)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "pip download": {
+    "source": [
+      "pip",
+      "help",
+      "download"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading. Local test home/environment paths replaced by placeholders.",
+    "text": "Options:\n  --no-deps                   Don't install package dependencies.\n  -d, --dest <dir>            Download packages into <dir>.\n  --platform <platform>       Only use wheels compatible with <platform>. Defaults to the platform\n                              of the running system. Use this option multiple times to specify\n                              multiple platforms supported by the target interpreter.\n                              --implementation, --platform, and --python-version when using this\n                              option.\n",
+    "version": "pip 24.0 from <TEST_ENV>/lib/python3.12/site-packages/pip (python 3.12)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "pip3 install": {
+    "source": [
+      "pip3",
+      "help",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading. Local test home/environment paths replaced by placeholders.",
+    "text": "Options:\n  -r, --requirement <file>    Install from the given requirements file. This option can be used\n                              multiple times.\n  --no-deps                   Don't install package dependencies.\n  -t, --target <dir>          Install packages into <dir>. By default this will not replace\n                              existing files/folders in <dir>. Use --upgrade to replace existing\n                              packages in <dir> with new versions.\n",
+    "version": "pip 24.0 from <TEST_ENV>/lib/python3.12/site-packages/pip (python 3.12)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "uv pip install": {
+    "source": [
+      "uv",
+      "help",
+      "pip",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -r, --requirements <REQUIREMENTS>\n          Install the packages listed in the given files.\n\n      --no-deps\n          Ignore package dependencies, instead only installing those packages explicitly listed on\n          the command line or in the requirements files\n  -p, --python <PYTHON>\n          The Python interpreter into which packages should be installed.\n\n",
+    "version": "uv 0.13.1 (x86_64-unknown-linux-gnu)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "uv run": {
+    "source": [
+      "uv",
+      "help",
+      "run"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --no-sync\n          Avoid syncing the virtual environment.\n\n  -p, --python <PYTHON>\n          The Python interpreter to use for the run environment.\n\n      --directory <DIRECTORY>\n          Change to the given directory prior to running the command.\n\n",
+    "version": "uv 0.13.1 (x86_64-unknown-linux-gnu)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "npm install": {
+    "source": [
+      "npm",
+      "--help",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n[-S|--save|--no-save|--save-prod|--save-dev|--save-optional|--save-peer|--save-bundle]\n[-E|--save-exact] [-g|--global] [--install-strategy <hoisted|nested|shallow>]\n[--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]\n[--ignore-scripts] [--no-audit] [--no-bin-links] [--no-fund] [--dry-run]\n[-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\n[-ws|--workspaces] [--include-workspace-root] [--no-install-links]\n\naliases: add, i, in, ins, inst, insta, instal, isnt, isnta, isntal, isntall\n",
+    "version": "9.2.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "npm run": {
+    "source": [
+      "npm",
+      "--help",
+      "run"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n[-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\n[-ws|--workspaces] [--include-workspace-root] [--if-present] [--ignore-scripts]\n",
+    "version": "9.2.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "pnpm install": {
+    "source": [
+      "pnpm",
+      "help",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --[no-]frozen-lockfile            Don't generate a lockfile and fail if an\n                                        update is needed. This setting is on by\n                                        default in CI environments, so use\n      --ignore-scripts                  Don't run lifecycle scripts\n      --offline                         Trigger an error if any required\n                                        dependencies are not available in local\n                                        store\n",
+    "version": "9.15.9",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "jq": {
+    "source": [
+      "jq",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -r, --raw-output          output strings without escapes and quotes;\n      --raw-output0         implies -r and output NUL after each output;\n  -j, --join-output         implies -r and output without newline after\n                            each output;\n      --arg name value      set $name to the string value;\n      --slurpfile name file set $name to an array of JSON values read\n                            from the file;\n",
+    "version": "jq-1.7",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "rg": {
+    "source": [
+      "rg",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n    -e PATTERN, --regexp=PATTERN\n        A pattern to search for. This option can be provided multiple times,\n        where all patterns given are searched, in addition to any patterns\n        -e/--regexp flag, then all patterns provided are searched. Empty\n        pattern lines will match all input lines, and the newline is not\n        counted as part of the pattern.\n    -g GLOB, --glob=GLOB\n        Include or exclude files and directories for searching that match the\n        given glob. This always overrides any other ignore logic. Multiple glob\n    --color=WHEN\n        This flag controls when to use colors. The default setting is auto,\n        which means ripgrep will try to guess when to use colors. For example,\n",
+    "version": "ripgrep 14.1.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "ffprobe": {
+    "source": [
+      "ffprobe",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n-select_streams stream_specifier  select the specified streams\n-show_format        show format/container info\n-show_streams       show streams info\n",
+    "version": "ffprobe version 6.1.1-3ubuntu5 Copyright (c) 2007-2023 the FFmpeg developers",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "gh pr list": {
+    "source": [
+      "gh",
+      "help",
+      "pr",
+      "list"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --json fields       Output JSON with the specified fields\n  -L, --limit int         Maximum number of items to fetch (default 30)\n  -s, --state string      Filter by state: {open|closed|merged|all} (default \"open\")\n",
+    "version": "gh version 2.45.0 (2025-07-18 Ubuntu 2.45.0-1ubuntu0.3)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "gh repo clone": {
+    "source": [
+      "gh",
+      "help",
+      "repo",
+      "clone"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -u, --upstream-remote-name string   Upstream remote name when cloning a fork (default \"upstream\")\n\nINHERITED FLAGS\n",
+    "version": "gh version 2.45.0 (2025-07-18 Ubuntu 2.45.0-1ubuntu0.3)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "kubectl get": {
+    "source": [
+      "kubectl",
+      "help",
+      "get"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n    -o, --output='':\n\tOutput format. One of: (json, yaml, kyaml, name, go-template, go-template-file, template, templatefile, jsonpath, jsonpath-as-json, jsonpath-file, custom-columns, custom-columns-file, wide). See custom columns [https://kubernetes.io/docs/reference/kubectl/#custom-columns], golang template [http://golang.org/pkg/text/template/#pkg-overview] and jsonpath template [https://kubernetes.io/docs/reference/kubectl/jsonpath/].\n\n    -l, --selector='':\n\tSelector (label query) to filter on, supports '=', '==', '!=', 'in', 'notin'.(e.g. -l key1=value1,key2=value2,key3 in (value3)). Matching objects must satisfy all of the specified label constraints.\n\n    -w, --watch=false:\n\tAfter listing/getting the requested object, watch for changes.\n\n",
+    "version": "Client Version: v1.37.1",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "kubectl config view": {
+    "source": [
+      "kubectl",
+      "help",
+      "config",
+      "view"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n    --flatten=false:\n\tFlatten the resulting kubeconfig file into self-contained output (useful for creating portable kubeconfig files)\n\n    --minify=false:\n\tRemove all information not used by current-context from the output\n\n    --raw=false:\n\tDisplay raw byte data and sensitive data\n\n",
+    "version": "Client Version: v1.37.1",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "helm install": {
+    "source": [
+      "helm",
+      "help",
+      "install"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --rollback-on-failure                        if set, Helm will rollback (uninstall) the installation upon failure. The --wait flag will be default to \"watcher\" if --rollback-on-failure is set\n      --set stringArray                            set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)\n  -f, --values strings                             specify values in a YAML file or a URL (can specify multiple)\n      --wait WaitStrategy[=watcher]                wait until resources are ready (up to --timeout). Use '--wait' alone for 'watcher' strategy, or specify one of: 'watcher', 'hookOnly', 'legacy'. Default when flag is omitted: 'hookOnly'. (default hookOnly)\n      --wait-for-jobs                              if set and --wait enabled, will wait until all Jobs have been completed before marking the release as successful. It will wait for as long as --timeout\n\nGlobal Flags:\n",
+    "version": "v4.3.1+gc0d08d0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "aws s3 cp": {
+    "source": [
+      "aws",
+      "s3",
+      "cp",
+      "help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n          [--include <value>]\n          [--exclude <value>]\n          [--recursive]\n       --include  (string)  Don't exclude files or objects in the command that\n       match the specified pattern. See Use of Exclude and Include Filters for\n       details.\n       --exclude (string) Exclude all files or objects from the  command  that\n       matches the specified pattern.\n\n       --recursive (boolean) Command is performed on all files or objects  un-\n       der the specified directory or prefix.\n\n              --recursive\n\n       Output:\n              --recursive \\\n              --exclude \"*.jpg\"\n\n       Output:\n              --recursive \\\n              --exclude \"another/*\"\n\n       Output:\n              --recursive \\\n              --exclude \"*\" \\\n              --include \"*.log\"\n\n       Output:\n",
+    "version": "aws-cli/1.46.1 Python/3.12.3 Linux/5.15.153.1-microsoft-standard-WSL2 botocore/1.43.62",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "aws ec2 describe-instances": {
+    "source": [
+      "aws",
+      "ec2",
+      "describe-instances",
+      "help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n          [--instance-ids <value>]\n          [--dry-run | --no-dry-run]\n          [--filters <value>]\n       --instance-ids (list)\n          The instance IDs.\n\n       --dry-run | --no-dry-run (boolean)\n          Checks  whether you have the required permissions for the operation,\n          without actually making the request, and provides an error response.\n       --filters (list)\n          The filters.\n\n              --instance-ids i-1234567890abcdef0\n\n       Output:\n              --filters Name=instance-type,Values=m5.large\n\n       For example output, see Example 1.\n              --filters Name=instance-type,Values=t2.micro,t3.micro Name=availability-zone,Values=us-east-2c\n\n       For example output, see Example 1.\n              --filters file://filters.json\n\n       Contents of filters.json:\n              --filters \"Name=tag-key,Values=Owner\"\n\n       For example output, see Example 1.\n              --filters \"Name=tag-value,Values=my-team\"\n\n       For example output, see Example 1.\n              --filters \"Name=tag:Owner,Values=my-team\"\n\n       For example output, see Example 1.\n              --filters \"Name=instance-type,Values=t2.micro\" \\\n              --filters Name=tag-key,Values=Name \\\n              --filters Name=tag-key,Values=Name ^\n              --instance-ids i-0123a456700123456 \\\n              --filters \"Name=placement-group-name,Values=HDFS-Group-A\" \"Name=placement-partition-number,Values=7\"\n\n       The following shows only the relevant information from the output.\n              --filters \"Name=metadata-options.instance-metadata-tags,Values=enabled\" \\\n",
+    "version": "aws-cli/1.46.1 Python/3.12.3 Linux/5.15.153.1-microsoft-standard-WSL2 botocore/1.43.62",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "terraform plan": {
+    "source": [
+      "terraform",
+      "plan",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -var 'foo=bar'      Set a value for one of the input variables in the root\n                      module of the configuration. Use this option more than\n                      once to set more than one variable.\n  -no-color                  If specified, output won't contain any color.\n\n  -out=path                  Write a plan file to the given path. This can be\n                             used as input to the \"apply\" command.\n\n",
+    "version": "Terraform v1.16.6",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "terraform apply": {
+    "source": [
+      "terraform",
+      "apply",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -auto-approve          Skip interactive approval of plan before applying.\n\n  -no-color              If specified, output won't contain any color.\n\n  -parallelism=n         Limit the number of parallel resource operations.\n                         Defaults to 10.\n\n",
+    "version": "Terraform v1.16.6",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "tofu plan": {
+    "source": [
+      "tofu",
+      "plan",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -var 'foo=bar'          Set a value for one of the input variables in the root\n                          module of the configuration. Use this option more than\n                          once to set more than one variable.\n  -no-color                    Disable virtual terminal escape sequences.\n\n  -out=path                    Write a plan file to the given path. This can be\n                               used as input to the \"apply\" command.\n\n",
+    "version": "OpenTofu v1.13.1",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "tofu apply": {
+    "source": [
+      "tofu",
+      "apply",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -auto-approve                Skip interactive approval of plan before\n                               applying.\n\n  -no-color                    Disable virtual terminal escape sequences.\n\n  -parallelism=n               Limit the number of parallel resource operations.\n                               Defaults to 10.\n\n",
+    "version": "OpenTofu v1.13.1",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "cargo build": {
+    "source": [
+      "cargo",
+      "build",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -p, --package [<SPEC>]  Package to build (see `cargo help pkgid`)\n  -r, --release                 Build artifacts in release mode, with optimizations\n      --target [<TRIPLE>]       Build for the target triple\n",
+    "version": "cargo 1.75.0",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "cmake": {
+    "source": [
+      "cmake",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -S <path-to-source>          = Explicitly specify a source directory.\n  -B <path-to-build>           = Explicitly specify a build directory.\n  -G <generator-name>          = Specify a build system generator.\n",
+    "version": "cmake version 3.28.3",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "ninja": {
+    "source": [
+      "ninja",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -C DIR   change to DIR before doing anything else\n  -j N     run N jobs in parallel (0 means infinity) [default=66 on this system]\n  -n       dry run (don't run commands but act like they succeeded)\n\n",
+    "version": "1.11.1",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "clang": {
+    "source": [
+      "clang",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -c                      Only run preprocess, compile, and assemble steps\n  -I-                     Restrict all prior -I flags to double-quoted inclusion and remove current directory from include path\n  -index-header-map       Make the next included directory (-I or -F) an indexer header map\n  -I <dir>                Add directory to the end of the list of include search paths\n  -o <file>               Write output to <file>\n",
+    "version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "rclone copy": {
+    "source": [
+      "rclone",
+      "copy",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n      --create-empty-src-dirs   Create empty source dirs on destination after copy\n  -h, --help                    help for copy\n\nUse \"rclone [command] --help\" for more information about a command.\n",
+    "version": "rclone v1.60.1-DEV",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "restic backup": {
+    "source": [
+      "restic",
+      "backup",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -n, --dry-run                                do not upload or write any data, just show what would be done\n  -e, --exclude pattern                        exclude a pattern (can be specified multiple times)\n      --iexclude pattern                       same as --exclude pattern but ignores the casing of filenames\n      --tag tags                               add tags for the new snapshot in the format `tag[,tag,...]` (can be specified multiple times) (default [])\n",
+    "version": "restic 0.16.4 compiled with go1.22.2 on linux/amd64",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "borg create": {
+    "source": [
+      "borg",
+      "help",
+      "create"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -n, --dry-run         do not create a backup archive\n  -e PATTERN, --exclude PATTERN\n                        exclude paths matching PATTERN\n  -C COMPRESSION, --compression COMPRESSION\n                        select compression algorithm, see the output of the \"borg help\n                        compression\" command for details.\n",
+    "version": "borg 1.2.8",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "7z": {
+    "source": [
+      "7z",
+      "-h"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -o{Directory} : set Output directory\n  -t{Type} : Set type of archive\n  -y : assume Yes on all queries\n",
+    "version": "7-Zip 23.01 (x64) : Copyright (c) 1999-2023 Igor Pavlov : 2023-06-20",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "7zz": {
+    "source": [
+      "7zz",
+      "-h"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -o{Directory} : set Output directory\n  -t{Type} : Set type of archive\n  -y : assume Yes on all queries\n",
+    "version": "7-Zip (z) 23.01 (x64) : Copyright (c) 1999-2023 Igor Pavlov : 2023-06-20",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "magick": {
+    "source": [
+      "magick",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -quality value       JPEG/MIFF/PNG compression level\n  -resize geometry     resize the image\n  -strip               strip image of all profiles and comments\n",
+    "version": "Version: ImageMagick 7.1.2-34 Q16-HDRI x86_64 c5d4ca8a0:20261014 https://imagemagick.org",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "convert": {
+    "source": [
+      "convert",
+      "-help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -quality value       JPEG/MIFF/PNG compression level\n  -resize geometry     resize the image\n  -strip               strip image of all profiles and comments\n",
+    "version": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "yt-dlp": {
+    "source": [
+      "yt-dlp",
+      "--help"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n    --no-playlist                            Download only the video, if the URL refers to a video\n                                             and a playlist\n    -o, --output [TYPES:]TEMPLATE            Output filename template; see \"OUTPUT TEMPLATE\" for\n                                             details\n    --output-na-placeholder TEXT             Placeholder for unavailable fields in --output\n                                             (default: \"NA\")\n    -f, --format FORMAT                      Video format code, see \"FORMAT SELECTION\" for more\n                                             details\n",
+    "version": "2024.04.09",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  },
+  "rclone": {
+    "source": [
+      "rclone",
+      "help",
+      "flags"
+    ],
+    "normalization": "ANSI/overstrike removal; selected declarations and up to two continuation lines under an Options heading.",
+    "text": "Options:\n  -c, --checksum                             Skip based on checksum (if available) & size, not mod-time & size\n  -n, --dry-run                              Do a trial run with no permanent changes\n      --transfers int                        Number of file transfers to run in parallel (default 4)\n",
+    "version": "rclone v1.60.1-DEV",
+    "environment": "Ubuntu 24.04, WSL, x86_64; isolated test home",
+    "captured_on": "2026-10-17"
+  }
+}

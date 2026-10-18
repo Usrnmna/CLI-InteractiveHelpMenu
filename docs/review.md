@@ -46,7 +46,9 @@ operation and returns to the entry without applying its partial changes.
 
 An existing option's flag, summary, detail, argument placeholder, and argument
 optionality can be corrected through **Options → Edit**. Clearing the argument
-placeholder removes both its value requirement and optionality metadata.
+placeholder removes its value requirement, optionality metadata, and any
+`argument_count`. A retained multi-value count is preserved during guided edits;
+the count itself can be adjusted through [JSON editing](#optional-json-editing).
 **Options → Move/reorder** selects a destination category and position, with
 an additional choice to create a new category for the moved option. Moving or
 deleting the final option in a category removes that empty category.

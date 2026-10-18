@@ -44,6 +44,8 @@ class InstallationTests(unittest.TestCase):
         self.assertTrue(installed.startswith(original))
         self.assertEqual(self.rc.stat().st_mode & 0o777, 0o640)
         self.assertTrue((self.prefix / "cli_help/main.py").is_file())
+        for driver in (ROOT / "config/drivers.example").glob("*.json"):
+            self.assertEqual((self.prefix / "config/drivers.example" / driver.name).read_bytes(), driver.read_bytes())
         self.assertFalse((self.prefix / "tests").exists())
         backups = list(self.home.glob(".bashrc.cli-help-backup-*"))
         self.assertEqual(len(backups), 1)

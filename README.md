@@ -42,6 +42,11 @@ The browser includes curated help for `rsync`, GNU `grep`, GNU `ls`, GNU `tar`,
 is not installed. Other commands use discovery or an added help collection.
 Generated help is inferred and may require corrections.
 
+The [third-party compatibility matrix](docs/compatibility.md) covers 34 executable
+names, including Docker Compose, uv, npm, jq, kubectl, AWS CLI, Terraform,
+ImageMagick, and backup tools. Included drivers enable the listed nested command
+paths; the guide describes activation, live checks, and remaining syntax limits.
+
 ## Get started
 
 Requirements:
@@ -156,6 +161,7 @@ identifies the tested environment and remaining compatibility limits.
 | --- | --- |
 | Set up the browser and customize controls | [Usage and keybindings](docs/usage.md) |
 | Add or maintain command compatibility | [Profiles and drivers](docs/profiles-and-drivers.md) |
+| Enable third-party command paths and run compatibility checks | [Third-party compatibility matrix](docs/compatibility.md) |
 | Understand discovery, caching, and safe insertion | [Discovery and safety](docs/discovery-and-safety.md) |
 | Import, scan, and correct documentation | [Collection workflows](docs/README.md#help-collection-workflows) |
 | Inspect the implementation or run tests | [Architecture and validation](docs/development.md) |
