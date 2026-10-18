@@ -141,6 +141,7 @@ def edit_options(draft):
         else:
             option.pop("argument", None)
             option.pop("argument_optional", None)
+            option.pop("argument_count", None)
     elif action == "d":
         if not yes_no("Delete this option?"):
             return

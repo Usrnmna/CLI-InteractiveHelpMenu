@@ -56,6 +56,15 @@ class GuidedEditingTests(unittest.TestCase):
         self.assertNotIn("argument_optional", option)
         self.assertEqual(option["detail"], "")
 
+    def test_multiple_value_count_is_preserved_until_argument_is_cleared(self):
+        document = self.draft.document()
+        document["profile"]["categories"][0]["options"][0]["argument_count"] = 2
+        self.draft.text = json.dumps(document)
+        retained = self.apply(edit_options, ["e", "1", "", "", "", "", ""])
+        self.assertEqual(retained["profile"]["categories"][0]["options"][0]["argument_count"], 2)
+        cleared = self.apply(edit_options, ["e", "1", "", "", "", "/clear"])
+        self.assertNotIn("argument_count", cleared["profile"]["categories"][0]["options"][0])
+
     def test_blank_fields_retain_existing_values(self):
         document = self.apply(edit_options, ["e", "1", "", "", "", "", ""])
         self.assertEqual(document, DOCUMENT)

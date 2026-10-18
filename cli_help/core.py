@@ -87,6 +87,9 @@ def validate_profile(profile: dict, source: Path):
             require_text(option.get("argument", ""), "Option argument", True)
             if not isinstance(option.get("argument_optional", False), bool):
                 raise HelpError("argument_optional must be a boolean.")
+            count = option.get("argument_count", 1)
+            if type(count) is not int or not 1 <= count <= 16 or (count > 1 and not option.get("argument")):
+                raise HelpError("argument_count must be an integer from 1 to 16; multiple values require an argument.")
 
 
 def load_profiles(bundled: Path, custom: Path | None = None) -> list[dict]:
@@ -200,13 +203,13 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         raise HelpError("Move the cursor after the command or subcommand and a space.")
     previous = [token.value for token in tokens[path.argument_start:] if token.end <= start]
     options = {option["flag"].rstrip("="): option for category in profile["categories"] for option in category["options"]}
-    needs_value = False
+    values_remaining = 0
     driver = driver_registry.get(path.words[0])
     route = driver.paths.get(path.words[1:]) if driver else None
     stop_at_positional = route is not None and route.stop_at_positional
     for word in previous:
-        if needs_value:
-            needs_value = False
+        if values_remaining:
+            values_remaining -= 1
             continue
         if word == "--":
             raise HelpError("Options cannot be inserted after the -- end-of-options marker.")
@@ -217,8 +220,9 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
                 raise HelpError("Move the cursor before the first positional argument to insert this command's options.")
             if not option:
                 raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.")
-        needs_value = bool(option.get("argument")) and not option.get("argument_optional", False) and not equal
-    if needs_value:
+        if option.get("argument") and not option.get("argument_optional", False):
+            values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal)))
+    if values_remaining:
         raise HelpError("Enter the preceding option's argument before choosing another option.")
     return Context(line, point, start, end, query, profile)
 

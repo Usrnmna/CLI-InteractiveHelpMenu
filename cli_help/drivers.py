@@ -31,7 +31,8 @@ class Driver:
 def parse_driver(document: dict) -> tuple[str, Driver]:
     """Reject ambiguous schemas, executable templates, and nonliteral help routes.
 
-    Driver help arguments must begin with an explicit help selector. Drivers are
+    Driver help arguments must begin with an explicit help selector, or consist
+    exactly of the declared command path followed by a help selector. Drivers are
     trusted local configuration: these checks do not sandbox program startup or
     prove that an arbitrary executable honors its declared help selector.
     """
@@ -66,8 +67,10 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
             not isinstance(argument, str) or not re.fullmatch(r"[A-Za-z0-9_.:+/=-]+", argument) for argument in arguments
         ):
             raise ValueError("Driver help arguments must be fixed literal words without templates or shell syntax.")
-        if arguments and arguments[0] not in ("help", "--help", "-h", "-help"):
-            raise ValueError("Driver help arguments must begin with help, --help, -h, or -help.")
+        selectors = ("help", "--help", "-h", "-help")
+        suffix_help = bool(words) and arguments[:-1] == words and bool(arguments) and arguments[-1] in selectors
+        if arguments and arguments[0] not in selectors and not suffix_help:
+            raise ValueError("Driver help arguments must begin with a help selector or exactly match the command path followed by one.")
         manual = route.get("man")
         if manual is not None and (not isinstance(manual, str) or not WORD.fullmatch(manual)):
             raise ValueError("Driver man must be a literal manual name or null.")
