@@ -63,9 +63,9 @@ their execution checks, and the optional regeneration dependencies.
 | [config/drivers.example/](../config/drivers.example/) | Loadable third-party compatibility drivers |
 | [tests/](../tests/) | Core contracts and actual Bash pseudoterminal interactions |
 
-Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, and
-GCC installed. GCC is a build/test dependency; installed runtime packages do not
-require a compiler:
+Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, GCC,
+and tmux installed. GCC and tmux are test dependencies; installed runtime
+packages require neither:
 
 ```bash
 bash tests/run.sh
@@ -82,6 +82,43 @@ subcommand and global-option recognition, nested paths, and pending-argument
 isolation. Docker fixtures record every call and flag any action dispatch.
 These checks do not establish compatibility with every terminal emulator,
 customized Readline configuration, command version, or help format.
+
+## Rendered-screen regressions
+
+[test_terminal_screen.py](../tests/test_terminal_screen.py) launches isolated
+tmux servers and interactive Bash sessions with `TERM=tmux-256color`. It checks
+rendered cells, cursor coordinates, alternate-screen state, and numbered
+scrollback lines. Buffer snapshots are taken after screen comparisons because
+a `bind -x` snapshot callback can itself redraw the command. The harmless
+`rsync` fixture records unintended command execution.
+
+```bash
+python3 -m unittest discover -s tests -p 'test_terminal_screen.py' -v
+```
+
+The tests cover top and bottom placement, short and wrapped input, Escape and
+Ctrl-C cancellation, repeated opening, insertion across the right margin,
+resizing below the minimum size and back, and Ctrl-L recovery after shrinking
+a wrapped command. The tests skip explicitly when Linux or tmux is unavailable;
+CI installs tmux so this coverage runs in the Linux matrix.
+
+The wrapped-command shrink/reopen regression is marked `expectedFailure` while
+the defect remains unresolved. On Bash 5.2.21 with tmux 3.4, shrinking from
+100x24 to 60x16 and reopening the browser leaves duplicate prompt/command rows.
+The expected-failure assertion compares the rendered state before and after
+reopening. Setup separately requires successful menu interaction, preserved
+history, correct pending input, and no command execution, so failures in those
+prerequisites remain ordinary failures. Ctrl-L recovery is a separate passing
+test, not an expected failure. An unexpected success requires reviewing the
+environment or verified fix and removing the marker; it must not be ignored.
+
+An ordinary Bash resize control also reproduces duplicated rows. Terminal
+traces are consistent with stale Readline display geometry, but the exact
+upstream cause and behavior on other Bash/tmux versions remain unverified.
+Sending SIGWINCH to Bash after the widget or invoking an external no-op command
+did not resolve the issue in isolated diagnostic configurations. No runtime
+workaround is applied. The [display recovery instructions](usage.md#terminal-resizing-and-display-recovery)
+describe the verified manual recovery.
 
 ## Repository configuration
 
@@ -105,8 +142,8 @@ The [Linux tests and documentation workflow](../.github/workflows/ci.yml) runs o
 pushes, pull requests, and manual dispatch. Each Ubuntu 24.04 test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
-Python 3.10 and 3.12. The tests use the Python standard library and GCC for
-native release-package tests; media-generation dependencies and optional
+Python 3.10 and 3.12. The tests use the Python standard library, tmux for rendered
+terminal state, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
