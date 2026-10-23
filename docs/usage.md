@@ -84,6 +84,28 @@ Both list panes scroll to keep the selected item visible. The `rsync` profile
 contains nine categories, and the `ls` Display category contains twelve options,
 so scrolling can be exercised in an ordinary 24-row terminal.
 
+## Terminal resizing and display recovery
+
+The browser uses the terminal's alternate screen. Opening it from the bottom
+row preserves earlier output and scrollback at unchanged terminal dimensions.
+Resizing below 60 columns or 16 rows displays a minimum-size notice; Escape or
+Ctrl-C can still close the browser.
+
+With Bash 5.2.21 and tmux 3.4, shrinking a wrapped pending command from 100x24
+to 60x16 while the browser is open can leave duplicate prompt or command rows
+after closing and reopening the browser. The command buffer remains intact.
+Similar duplication occurs when resizing an ordinary Bash prompt in this
+environment; the behavior is not specific to menu placement on the bottom row.
+
+If stale rows remain, close the browser and press **Ctrl-L at the Bash prompt**.
+This redraws the pending command at the top of the viewport without executing
+it. In the tested tmux environment, earlier output remains available in
+scrollback. Ctrl-L changes the visible viewport rather than restoring its
+previous arrangement. Custom Readline bindings can assign Ctrl-L differently.
+
+The [rendered-screen validation notes](development.md#rendered-screen-regressions)
+describe the reproduction, test dependencies, and remaining limitation.
+
 ## Configurable keybindings
 
 The launch shortcut is a Bash Readline sequence. Set it before sourcing the
