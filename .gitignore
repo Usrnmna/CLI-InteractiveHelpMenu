@@ -21,12 +21,19 @@ htmlcov/
 # Tool homes are normally isolated below .cache/live-followup/. Protect accidental
 # checkout-local homes without hiding maintained drivers, profiles, or captures.
 /.azure/
+/.aws/
+/.ssh/
+/.gnupg/
+/.kube/
+/.docker/
 /.dotnet/
 /.nuget/
 /.bun/
 /.ansible/
 /.arduino15/
 /.config/gcloud/
+/.config/gh/
+/.config/cli-help/
 /.config/containers/
 /.local/share/containers/
 /.npm/
@@ -34,8 +41,27 @@ node_modules/
 /.lycheecache
 /dist/
 /lychee/
-# Temporary media sessions when TMPDIR points at the checkout root.
+# Private credential/history files when a tool HOME points at the checkout.
+/.git-credentials
+/.netrc
+/.pypirc
+/.bash_history
+/.python_history
+/.lesshst
+/.wget-hsts
+
+# Application/test temporary sessions when TMPDIR points at the checkout root.
 /cli-help-media-*/
+/cli-help-probe-*/
+/cli-help-review-*/
+/cli-help-screen-*/
+/cli-help-build-*/
+/cli-help-ignore-*/
+/.cli-help-rc-*
+/.review-state-*
+/.cli-help-install.json
+# Standalone local launcher builds; published release assets remain eligible.
+/cli-help
 .review-backups/
 .import.lock
 .scan.lock

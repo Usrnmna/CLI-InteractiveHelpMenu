@@ -140,6 +140,8 @@ A minimal driver for another program is:
 | `paths[].man` | Literal manual name in sections 1 or 8; `null` disables the manual source |
 | `paths[].stop_at_positional` | Reject insertion after the first positional argument; unknown preceding option arity is also rejected |
 | `paths[].stop_at_options` | Reject insertion after named child-argument delimiters; defaults to an empty array |
+| `paths[].option_values` | Unique literal options consuming one value before a child command; separate, long `=value`, and short attached values are supported |
+| `paths[].option_flags` | Unique literal parent boolean options; explicit `=true`/`=false` forms are supported |
 
 Every route requires at least one help or manual source. Omitted global lists
 are empty; the positional boundary defaults to false. Matching built-in routes
@@ -148,6 +150,25 @@ lists; conflicting arity is rejected. An omitted root route retains generic
 `--help` and same-name manual discovery. Duplicate program files, duplicate
 paths, unknown fields, invalid values, and files over 256 KiB are rejected before
 any probe. A changed help route or manual name changes the cache identity.
+
+Parent-option lists extend command recognition, not the executable help request.
+For example, the supplied `docker compose` route declares `-f`/`--file`, `-p`/
+`--project-name`, and `--profile`, permitting
+`docker compose -f local.yml --profile debug up --` to select the leaf route.
+Each parent level declares its own options; arity is not guessed or inherited
+from unrelated routes. Executable root options retain `global_values` and
+`global_flags`; nonempty parent lists on the root route are rejected. Nonempty
+parent lists enable strict scanning at that level. Unknown parent options,
+empty required parent values, and ambiguous bundles are rejected.
+Separate negative numeric values are accepted; other dash-leading values require
+an explicit attached spelling. Root global options retain their existing literal
+value grammar, including empty or dash-leading operands where the target supports
+them. Exact declared option names take precedence over short-option payload
+recognition. Attached parent/global short-option values are not editable option
+tokens, even when parsed help omits attached-value metadata.
+Existing routes without parent lists retain their
+previous parent-option behavior. The lists default to empty, cannot overlap,
+and are preserved by manual import and review saves.
 
 Drivers contain no executable Python, shell snippets, interpolation, or references
 to the pending buffer. Only their fixed help arrays and manual names become probe

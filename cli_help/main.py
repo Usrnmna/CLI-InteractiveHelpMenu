@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Entry point and NUL-delimited Bash buffer-edit protocol."""
 
+import sys
+
+# Passive modes must not create bytecode files while importing project modules.
+sys.dont_write_bytecode = True
+
 import argparse
 import json
 import locale
 import os
 from pathlib import Path
-import sys
 
 from core import HelpError, find_context, insert_option, load_profiles
 from discovery import Settings, discover
@@ -14,6 +18,26 @@ from command_paths import load_driver_registry
 
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+class SafeArgumentParser(argparse.ArgumentParser):
+    """Report usage errors without echoing unrecognized arguments or their values."""
+
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        self.exit(2, "interactive-help: invalid_arguments: Invalid command-line arguments; use --help for supported forms.\n")
+
+
+def buffer_input():
+    """Read the shared character cursor without including rejected values in errors."""
+    line = os.environ.get("CLI_HELP_LINE", "")
+    raw_point = os.environ.get("CLI_HELP_POINT", "0")
+    if not raw_point.isascii() or not raw_point.isdecimal() or len(raw_point) > 12:
+        raise HelpError("CLI_HELP_POINT must be a character offset within the pending line.", "invalid_cursor")
+    point = int(raw_point)
+    if not 0 <= point <= len(line):
+        raise HelpError("CLI_HELP_POINT must be a character offset within the pending line.", "invalid_cursor")
+    return line, point
 
 
 def choose_option(context, keys):
@@ -40,11 +64,13 @@ def choose_option(context, keys):
 
 def main():
     """Validate inputs, run the selector, and emit edits only after acceptance."""
-    parser = argparse.ArgumentParser(description="Browse command help without executing the pending command.")
+    parser = SafeArgumentParser(description="Browse command help without executing the pending command.")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--bash", action="store_true", help="Read the buffer and character cursor from CLI_HELP_LINE/CLI_HELP_POINT")
     mode.add_argument("--list-commands", action="store_true", help="List available command profiles")
     mode.add_argument("--check", action="store_true", help="Validate profiles and key configuration")
+    mode.add_argument("--doctor", action="store_true", help="Passively report runtime requirements and configuration as JSON")
+    mode.add_argument("--explain", action="store_true", help="Passively explain CLI_HELP_LINE/CLI_HELP_POINT as redacted JSON")
     mode.add_argument("--list-drivers", action="store_true", help="List built-in and configured driver paths")
     mode.add_argument("--import-man", metavar="COMMAND", nargs="+", help="Import manual documentation as a profile and manual-only driver")
     mode.add_argument("--scan-installed", action="store_true", help="Bulk import installed commands' manuals without executing the commands")
@@ -77,6 +103,19 @@ def main():
     if not args.scan_installed and (any((args.scan_path, args.include, args.exclude, args.scan_subcommands, args.strict_scan)) or args.limit is not None):
         parser.error("Scan options require --scan-installed")
     try:
+        if args.doctor or args.explain:
+            from diagnostics import doctor, explain
+            if args.doctor:
+                report = doctor(ROOT)
+            else:
+                try:
+                    line, point = buffer_input()
+                    report = explain(ROOT, line, point)
+                except HelpError as error:
+                    report = {"schema_version": 1, "mode": "explain", "status": "rejected",
+                              "code": error.code, "detail": str(error)}
+            print(json.dumps(report, ensure_ascii=True, indent=2))
+            return int(report["status"] in {"rejected", "attention_required"})
         if args.review_report:
             from review import run_review
             return run_review(args.review_report)
@@ -125,7 +164,8 @@ def main():
         locale.setlocale(locale.LC_ALL, "")
         if locale.getpreferredencoding(False).lower().replace("-", "") != "utf8":
             raise HelpError("A UTF-8 shell locale is required.")
-        context = find_context(os.environ.get("CLI_HELP_LINE", ""), int(os.environ.get("CLI_HELP_POINT", "0")), profiles,
+        line, point = buffer_input()
+        context = find_context(line, point, profiles,
                                discover=lambda command, subcommands=(), **invocation: discover(command, settings, subcommands=subcommands, driver_registry=drivers, **invocation),
                                driver_registry=drivers)
         selected = choose_option(context, keys)
@@ -136,8 +176,14 @@ def main():
         sys.stdout.buffer.write(response)
         sys.stdout.buffer.flush()
         return 0
-    except (HelpError, OSError, ValueError, ImportError) as error:
-        print(f"\ninteractive-help: {error}", file=sys.stderr)
+    except HelpError as error:
+        message = "".join(character if character.isprintable() else " " for character in str(error))
+        print(f"\ninteractive-help: {error.code}: {message}", file=sys.stderr)
+        return 1
+    except (OSError, ValueError, ImportError, RuntimeError, RecursionError, locale.Error):
+        # Unexpected system/configuration errors can embed paths, input values,
+        # or third-party output. Keep normal terminal diagnostics deterministic.
+        print("\ninteractive-help: runtime_error: Check runtime availability, permissions, and configuration; use --doctor for passive inspection.", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
         return 0

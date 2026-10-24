@@ -92,6 +92,15 @@ Both list panes scroll to keep the selected item visible. The `rsync` profile
 contains nine categories, and the `ls` Display category contains twelve options,
 so scrolling can be exercised in an ordinary 24-row terminal.
 
+## Passive troubleshooting
+
+Run `python3 cli_help/main.py --doctor` to inspect runtime availability and selected
+configuration without launching target programs. `--explain` uses the Bash
+helper's buffer/cursor environment inputs to report command recognition, profile
+provenance, cache state, and rejection codes while omitting pending operand values.
+See [passive diagnostics and troubleshooting](diagnostics.md) for invocation
+examples, statuses, privacy boundaries, and explicit active lookup instructions.
+
 ## Terminal resizing and display recovery
 
 The browser uses the terminal's alternate screen. Opening it from the bottom

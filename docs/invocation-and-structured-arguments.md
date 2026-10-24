@@ -63,9 +63,11 @@ interpreter-changing global `--python` form are rejected. Some supported switche
 especially `-S`, can make an installed module unavailable; that remains a discovery
 failure rather than a fallback to a different installation.
 
-Normal discovery invokes only fixed module help through the selected interpreter:
+Normal auto discovery invokes a fixed module version request, followed on a cache
+miss by fixed module help through the selected interpreter:
 `python3 -m pip help install`, for example. Pending package names, pytest test
 paths, `-p` plugins, Python code, and module search paths are never forwarded.
+Pip identity uses `--version`; pytest identity uses `--version --noconftest`.
 Pytest help uses `--help --noconftest` with plugin autoload disabled in a temporary
 working directory. Explicit interpreter isolation switches are retained. Ordinary
 JSON drivers cannot replace the selected interpreter or module help route.
@@ -75,9 +77,17 @@ system manual into the selected interpreter's result. Manual-only mode uses a
 fixed module manual without running Python and labels its installed-version
 context as unverified. Discovery-off mode requires an explicit reviewed profile
 whose command is, for example, `["python3", "-m", "pip", "install"]`; an ordinary
-`["pip", "install"]` profile cannot substitute. Cache version 7 includes the
+`["pip", "install"]` profile cannot substitute. Cache version 8 includes the
 interpreter invocation path, file identity, module, interpreter switches, route,
-mode, and executable variant evidence.
+mode, virtual-environment configuration identity, a hash of the probe HOME
+context, and executable variant evidence. Auto
+module lookups additionally fingerprint fixed version output before each cache
+read, detecting changed versions and reported pip import locations. Unrecognized
+or failed version responses disable cache reads and writes for that request;
+fresh help is still attempted. Same-version local edits with unchanged version
+output require expiration or explicit refresh. Man-only and discovery-off modes
+never perform module-version requests. [Passive explanations](diagnostics.md)
+label module cache candidates as unverified without invoking the interpreter.
 
 ## Keywords, joined selectors, and value groups
 

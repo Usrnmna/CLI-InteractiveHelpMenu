@@ -32,6 +32,7 @@ list, including pane focus, scrolling, required arguments, and cancellation.
 | **Reusable help collections** | Import a manual or scan installed commands in bulk, with a report of successes, failures, and review needs |
 | **Guided corrections** | Edit options, categories, and driver settings through terminal forms, then preview and save with backups |
 | **Configurable controls** | Customize the launch shortcut and browser navigation keys |
+| **Passive troubleshooting** | Inspect configuration and command recognition without help probes or disclosure of pending operand values |
 | **Verified release updates** | Check GitHub releases, preserve custom settings during upgrades, and resolve conflicts through guided review |
 
 ```mermaid
@@ -177,6 +178,7 @@ identifies the tested environment and remaining compatibility limits.
 | Set up the browser and customize controls | [Usage and keybindings](docs/usage.md) |
 | Add or maintain command compatibility | [Profiles and drivers](docs/profiles-and-drivers.md) |
 | Enable third-party command paths and run compatibility checks | [Third-party compatibility matrix](docs/compatibility.md) |
+| Inspect configuration and command recognition without probes | [Passive diagnostics and troubleshooting](docs/diagnostics.md) |
 | Understand discovery, caching, and safe insertion | [Discovery and safety](docs/discovery-and-safety.md) |
 | Import, scan, and correct documentation | [Collection workflows](docs/README.md#help-collection-workflows) |
 | Inspect the implementation or run tests | [Architecture and validation](docs/development.md) |

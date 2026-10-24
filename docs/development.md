@@ -58,6 +58,7 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/review.py](../cli_help/review.py) | Interactive scan review, draft editing, help preview, and backed-up saves |
 | [cli_help/review_forms.py](../cli_help/review_forms.py) | Guided option, category, and driver forms with validation before draft updates |
 | [cli_help/discovery.py](../cli_help/discovery.py) | Bounded help/man probes, parsing, merging, and cache |
+| [cli_help/diagnostics.py](../cli_help/diagnostics.py), [cli_help/errors.py](../cli_help/errors.py) | Passive configuration/context reports, bounded cache inspection, and safe reason-coded errors |
 | [cli_help/ui.py](../cli_help/ui.py) | Curses drawing, navigation, search, browser bindings |
 | [cli_help/main.py](../cli_help/main.py) | Terminal attachment and Bash response protocol |
 | [profiles/](../profiles/) | Editable command documentation |
@@ -67,7 +68,7 @@ their execution checks, and the optional regeneration dependencies.
 | [tools/capture_readme_media.py](../tools/capture_readme_media.py) | Actual PTY captures, public terminal media, and local capture provenance |
 
 Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, GCC,
-and tmux installed. GCC and tmux are test dependencies; installed runtime
+Git, and tmux installed. GCC, Git, and tmux are test dependencies; installed runtime
 packages require neither:
 
 ```bash
@@ -79,7 +80,8 @@ records the current matrix, full-suite results, live versions, missing dependenc
 and the distinction between deterministic edits and live documentation evidence.
 
 GitHub Actions runs the deterministic suite on Python 3.10 and 3.12 and retains
-the suite log and documentation-link report for 14 days, including failed runs.
+the suite log, fixed-input passive diagnostic reports, and documentation-link
+reports for 14 days, including failed runs.
 The Bash pipeline preserves the suite's exit status when recording its log.
 Only those report files are uploaded; isolated tool homes and downloaded binaries
 are excluded. Dependabot groups minor and patch updates for CI actions and
@@ -96,6 +98,34 @@ subcommand and global-option recognition, nested paths, and pending-argument
 isolation. Docker fixtures record every call and flag any action dispatch.
 These checks do not establish compatibility with every terminal emulator,
 customized Readline configuration, command version, or help format.
+
+## Context, diagnostics, and module freshness regressions
+
+[test_context_diagnostics.py](../tests/test_context_diagnostics.py) covers scoped
+parent options, independent route expectations, literal midline edits, missing
+values, child boundaries, metadata preservation, and fixed probe operands. Its
+passive-mode checks reject subprocess starts and filesystem writes; CLI checks
+also verify that bytecode and rejected input values are not emitted or persisted.
+[test_module_freshness.py](../tests/test_module_freshness.py) covers installed
+module-version changes under an unchanged interpreter, virtual-environment
+configuration, interpreter flags and HOME identity, TTL, refresh, unverified
+identity responses, cancellation, and mode-specific execution boundaries.
+An instrumented interpreter records exact version/help operands and detects
+pending-environment leakage or workload dispatch.
+
+[test_expansion_terminal.py](../tests/test_expansion_terminal.py) adds actual Bash
+adapter checks for Compose parent options and redacted errors. Rendered assertions
+cover leaf-menu identity, cancellation, resize recovery, literal insertion,
+cursor coordinates, alternate-screen restoration, and numbered scrollback.
+The [passive troubleshooting guide](diagnostics.md) documents the corresponding
+interfaces, report statuses, privacy boundaries, and timing limitations.
+[test_recommendation_review.py](../tests/test_recommendation_review.py) protects
+malformed-executable redaction before observation, attached parent values, exact
+option-name precedence, root-global literal compatibility, invalid configuration
+paths, shell-locale checks, and regular bounded cache reads. FIFO/symlink cases
+use isolated POSIX fixtures; growing-file checks enforce the actual read limit.
+Rendered review cases retain midline cursor positions on rejected attached
+values and exercise Git leaf edits after empty or dash-leading global operands.
 
 ## Rendered-screen regressions
 
@@ -152,11 +182,17 @@ significant whitespace in Markdown and help-parser fixtures.
 
 [.gitignore](../.gitignore) excludes local Python environments, caches, test
 reports, review backups, collection locks, and local environment files. The
+rules also exclude checkout-local credential homes, shell histories, application
+temporary sessions, installation receipts, and standalone launcher builds.
+Published release assets remain eligible for tracking.
 documented `generated-help/` output directory is also excluded. Generated
 collections in other locations require an appropriate ignore rule or an output
 path outside the checkout. Source, bundled profiles, example drivers, fixtures,
 workflow configuration, and published README media remain eligible for tracking.
 Ignore rules do not remove files already tracked by Git.
+[Ignore-policy regressions](../tests/test_repository_config.py) use an isolated
+Git repository to check private artifacts and maintained-file exceptions without
+changing the checkout index or consulting personal Git configuration.
 Environment-file templates ending in `.example`, `.sample`, or `.template`
 remain eligible for tracking, including names such as `.env.development.example`.
 Ignored caches and reports can contain local machine paths and downloaded tools;
@@ -168,6 +204,12 @@ It does not add application runtime dependencies or publish updates. The
 configuration follows GitHub's
 [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference).
 
+The [bug-report form](../.github/ISSUE_TEMPLATE/bug_report.yml) requests a minimal
+synthetic reproduction and environment details. The
+[pull-request template](../.github/pull_request_template.md) separates observed
+verification from remaining limitations. Both describe privacy precautions;
+diagnostic reports require local-path review and redaction before sharing.
+
 ## Continuous integration
 
 The [Linux tests and documentation workflow](../.github/workflows/ci.yml) runs on
@@ -175,8 +217,14 @@ pushes, pull requests, and manual dispatch. Each Ubuntu 24.04 test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
 Python 3.10 and 3.12. The tests use the Python standard library, tmux for rendered
-terminal state, and GCC for native release-package tests; media-generation dependencies and optional
+terminal state, Git for ignore-policy checks, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
+
+Before the suite, a separate passive smoke check invokes `--doctor` and
+`--explain` with fixed synthetic Compose input and discovery disabled. It checks
+route resolution, operand omission, and absence of an application cache directory.
+Only its two JSON reports and the suite log are uploaded by the test job;
+raw captures, arbitrary local reports, and tool homes are excluded.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
 Markdown links throughout the repository, including local files, images, heading

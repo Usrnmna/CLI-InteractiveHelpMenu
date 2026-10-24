@@ -2,13 +2,96 @@
 
 import json
 import shlex
+import sys
 import unittest
 
-from test_terminal_screen import TerminalTestCase, TMUX_AVAILABLE, PROMPT, HISTORY
+from test_terminal_screen import TerminalTestCase, TMUX_AVAILABLE, PROMPT, HISTORY, ROOT
+
+sys.path.insert(0, str(ROOT / "cli_help"))
 
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class ExpansionScreenTests(TerminalTestCase):
+    def test_attached_parent_value_rejection_preserves_midline_cursor_and_history(self):
+        for flag in ("-f", "-p"):
+            with self.subTest(flag=flag):
+                shell = self.start()
+                shell.text("docker() { printf executed > " + shlex.quote(str(shell.executed))
+                           + "; }; export CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example")))
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                line = "docker compose " + flag + "'café.yml' up --"
+                self.pending(shell, line)
+                point = line.index("café") + 2
+                shell.keys(*(["Left"] * (len(line) - point)))
+                shell.wait_for(lambda state: state.x == len(PROMPT) + point)
+                shell.keys("Escape", "h")
+                state = shell.wait_for(lambda value: value.alternate == 0 and "cursor_in_value" in " ".join(value.cells))
+                self.assertEqual(state.x, len(PROMPT) + point)
+                self.assertEqual(state.history_markers(), HISTORY)
+                self.assertEqual(shell.read_buffer(), (line, point))
+                self.assertFalse(shell.executed.exists())
+
+    def test_root_global_literal_values_preserve_rendered_leaf_edits(self):
+        for value in ("''", "-fixture"):
+            with self.subTest(value=value):
+                shell = self.start()
+                shell.text("git() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                line = "git -C " + value + " commit --m"
+                before = self.pending(shell, line)
+                menu = shell.open_menu()
+                self.assertIn("git commit", menu.cells[0])
+                shell.cancel("C-c")
+                self.assert_restored(shell, line, before)
+                shell.open_menu()
+                shell.keys("Enter")
+                self.assert_restored(shell, line[:-3] + "--message ")
+
+    def test_parent_options_keep_leaf_context_cancel_resize_and_literal_edit(self):
+        from test_context_diagnostics import LEAF, ROOT
+
+        shell = self.start()
+        self.configure(shell, [LEAF])
+        shell.text("docker() { printf executed > " + shlex.quote(str(shell.executed))
+                   + "; }; export CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example")))
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        line = "docker compose -f 'café.yml' --profile debug up --det"
+        before = self.pending(shell, line)
+        menu = shell.open_menu()
+        self.assertIn("docker compose up", menu.cells[0])
+        shell.cancel("C-c")
+        self.assert_restored(shell, line, before)
+        shell.open_menu()
+        shell.resize(60, 16)
+        shell.resize(100, 24)
+        shell.keys("Enter")
+        self.assert_restored(shell, line[:-5] + "--detach ")
+
+    def test_redacted_error_preserves_pending_line_cursor_and_scrollback(self):
+        from test_context_diagnostics import ROOT
+
+        shell = self.start()
+        shell.text("kubectl() { printf executed > " + shlex.quote(str(shell.executed))
+                   + "; }; export CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example")))
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        line = "kubectl --token=SCREEN_PRIVATE_SENTINEL get --"
+        self.pending(shell, line)
+        shell.keys("Escape", "h")
+        state = shell.wait_for(lambda value: value.alternate == 0 and "unsupported_option" in " ".join(value.cells))
+        # The pending input remains visible by design. Only the error row is
+        # inspected for disclosure; command buffers are not diagnostic reports.
+        error_rows = [row for row in state.cells if "interactive-help:" in row]
+        self.assertTrue(error_rows)
+        self.assertTrue(all("SCREEN_PRIVATE_SENTINEL" not in row for row in error_rows))
+        self.assertEqual(state.history_markers(), HISTORY)
+        self.assertEqual(state.x, (len(PROMPT) + len(line)) % state.columns)
+        self.assertEqual(shell.read_buffer(), (line, len(line)))
+        self.assertFalse(shell.executed.exists())
+
     def test_optional_numeric_value_preserves_rendered_edit_and_argument_entry(self):
         from test_optional_integer_values import PROFILE
 
