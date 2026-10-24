@@ -28,6 +28,9 @@
 - Documentation and terminal demonstrations reflect the development tree.
   Source packages include the media generator and its optional requirements.
   Dependency updates cover pinned GitHub Actions and optional media tools.
+- The README demonstration builds a multi-option rsync command and scrolls
+  the twelve-option ls Display category. Capture checks verify visible states,
+  valued insertions, cancellation, and pending commands without execution.
 
 ## Version 0.1.1 - Alpha
 
