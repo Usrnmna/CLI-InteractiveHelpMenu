@@ -2,13 +2,16 @@
 
 [Project overview](../README.md) · [Installation](installation.md) · [Documentation index](README.md)
 
-## Current local candidate
+## Version 0.1.2 - Alpha
 
-The current [VERSION](../VERSION) is `0.1.2-alpha`. This is an unpublished local
-candidate, rebuilt with the maintained repository configuration in the ignored
-directory `dist/candidate-v0.1.2-alpha-config/`. Earlier candidates remain preserved.
-Building it does not create a tag, commit, GitHub release, or remote upgrade.
-The [Unreleased changelog](../CHANGELOG.md#unreleased) describes the included work.
+The [VERSION](../VERSION) value `0.1.2-alpha` identifies the alpha prerelease tag
+`v0.1.2-alpha`. Published assets are listed on
+[GitHub Releases](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
+The [versioned changelog](../CHANGELOG.md#version-012---alpha) and
+[release notes](release-notes-v0.1.2-alpha.md) describe the included work.
+Final distributable files are built from the exact release commit into a new
+ignored directory, such as `dist/release-v0.1.2-alpha/`. Local candidates and
+historical packages remain separate; building alone does not publish a release.
 The [candidate validation guide](release-candidate.md) covers exact-source
 checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.
 
@@ -18,7 +21,7 @@ checksums. Source hashes identify inputs; checksums do not authenticate a publis
 The [GitHub updater](github-updates.md) uses version ordering and never treats
 different contents at an equal version as an upgrade.
 
-The candidate targets Linux and Bash;
+The prerelease targets Linux and Bash;
 Python 3.10+ with `curses`, Bash 4.4+, and a UTF-8 terminal remain required.
 The native launcher is compiled for Linux x86_64 on Ubuntu 24.04 and requires
 glibc 2.34 or newer. Systems with an older glibc or a different C library can use
@@ -49,7 +52,8 @@ checksums must remain unchanged. They are used as isolated upgrade fixtures.
 
 ## Verify and install
 
-From the local candidate directory, verify before installation:
+Download the eleven named release files into one directory, or use a verified
+local build. Verify before installation:
 
 ```bash
 sha256sum -c SHA256SUMS.checksum
@@ -109,8 +113,8 @@ GCC is required in addition to the runtime dependencies. From Linux x86_64:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/candidate-v0.1.2-alpha-config
-cd dist/candidate-v0.1.2-alpha-config
+python3 scripts/build_release.py --output dist/release-v0.1.2-alpha
+cd dist/release-v0.1.2-alpha
 sha256sum -c SHA256SUMS.checksum
 ```
 
@@ -156,3 +160,18 @@ exercise installer/update/removal paths, reject corrupted embedded payloads, and
 confirm literal argument forwarding. Building artifacts does not itself publish
 a GitHub release. Publication requires a separate explicit decision after source,
 package, and documentation verification; no automatic publication is configured.
+
+## Release provenance and publication
+
+The annotated release tag identifies the verified source commit. A clean checkout
+of that commit supplies the packaged inputs; every manifest hash must agree with
+the corresponding Git blob. Working-tree line-ending conversion can produce
+different bytes despite a clean Git status, so a prior local candidate is reused
+only after this comparison succeeds.
+
+Release assets are prepared in a draft with the prerelease flag enabled and
+latest-stable selection disabled. Publication follows source/package verification
+and successful required hosted checks. Downloaded published assets are compared
+byte for byte with the tested local files. The release body records the source
+commit and current verification evidence without including private reports.
+Checksums establish integrity rather than independent publisher authentication.

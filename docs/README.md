@@ -7,9 +7,9 @@ complete operating instructions, configuration references, and implementation
 evidence. Shell command examples assume the repository root as the working
 directory.
 
-The operating guides describe the current working tree, including unreleased
-changes listed in the [changelog](../CHANGELOG.md#unreleased). The version marker
-is `0.1.2-alpha`, an unpublished local candidate. The
+The operating guides describe `0.1.2-alpha` and the current working tree. The
+[versioned changelog](../CHANGELOG.md#version-012---alpha) and
+[release notes](release-notes-v0.1.2-alpha.md) record the prerelease scope. The
 [preserved alpha artifacts](releases.md#version-011---alpha) contain an older
 snapshot. Dated reviews below retain the results and limitations of their own runs.
 
@@ -20,6 +20,7 @@ snapshot. Dated reviews below retain the results and limitations of their own ru
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
 | Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Download, verify, install, or build versioned packages | [Release artifacts and build procedure](releases.md) |
+| Changes, requirements, package selection, and limits for v0.1.2-alpha | [v0.1.2-alpha release notes](release-notes-v0.1.2-alpha.md) |
 | Verify current source provenance, package lifecycles, and installed terminal behavior | [Local release candidate validation](release-candidate.md) |
 | Check GitHub releases, verify downloads, and upgrade with guided conflict review | [Updating from GitHub releases](github-updates.md) |
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |

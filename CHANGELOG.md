@@ -2,9 +2,15 @@
 
 ## Unreleased
 
-The current `VERSION` is `0.1.2-alpha`. This snapshot is a local candidate;
-publication and tagging are separate actions. Preserved `0.1.1-alpha` artifacts
-remain unchanged. See the [candidate validation procedure](docs/release-candidate.md).
+No additional changes are recorded after `v0.1.2-alpha`.
+
+## Version 0.1.2 - Alpha
+
+The `v0.1.2-alpha` prerelease contains the foundational command-context,
+diagnostics, compatibility, terminal, collection, and packaging work below.
+Preserved `0.1.1-alpha` artifacts remain unchanged. See the
+[release notes](docs/release-notes-v0.1.2-alpha.md) and
+[package validation procedure](docs/release-candidate.md).
 
 - Release selection excludes nested credential homes, caches, recovery state,
   and generated evidence while retaining source fixtures and public media.

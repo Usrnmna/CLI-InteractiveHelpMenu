@@ -5,10 +5,12 @@
 
 ## Identity and evidence boundaries
 
-`VERSION` contains `0.1.2-alpha`. The candidate at
-`dist/candidate-v0.1.2-alpha-config/` is local and unpublished. Earlier candidates
-at `dist/candidate-v0.1.2-alpha/` and `dist/candidate-v0.1.2-alpha-review/` remain
-preserved for comparison. Historical packages in
+`VERSION` contains `0.1.2-alpha`. Local candidates at
+`dist/candidate-v0.1.2-alpha/`, `dist/candidate-v0.1.2-alpha-review/`, and
+`dist/candidate-v0.1.2-alpha-config/` remain preserved as unpublished snapshots.
+Their inputs can predate the release even when the versions agree. The
+[release guide](releases.md#release-provenance-and-publication) describes the
+tagged source and separately published prerelease assets. Historical packages in
 `releases/v0.1.1-alpha/` remain separate. A version identifies ordering; the
 manifest's source hashes identify the inputs. GitHub update checks only consider
 published versions newer than the installed version, regardless of source hashes.
@@ -25,13 +27,13 @@ Run the documented full suite after the last included edit:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/candidate-v0.1.2-alpha-config
-(cd dist/candidate-v0.1.2-alpha-config && sha256sum -c SHA256SUMS.checksum)
+python3 scripts/build_release.py --output dist/candidate-v0.1.2-alpha-recheck
+(cd dist/candidate-v0.1.2-alpha-recheck && sha256sum -c SHA256SUMS.checksum)
 ```
 
 The builder refuses an existing output directory. If further edits require
 another candidate, select a new ignored directory, such as
-`dist/candidate-v0.1.2-alpha-recheck/`; retain the earlier candidate for comparison.
+`dist/candidate-v0.1.2-alpha-recheck-2/`; retain the earlier candidate for comparison.
 The five artifacts, five individual checksum files, and aggregate checksum use
 the existing release format. No artifact is uploaded automatically.
 
@@ -39,7 +41,7 @@ The package regression harness can inspect and exercise these exact artifacts
 instead of building its own temporary candidate:
 
 ```bash
-export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.1.2-alpha-config"
+export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.1.2-alpha-recheck"
 export CLI_HELP_TEST_HISTORICAL_DIR="$PWD/releases/v0.1.1-alpha"
 python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v
 python3 -B -m unittest discover -s tests -p test_release_terminal.py -v
@@ -82,7 +84,7 @@ and isolated locations rather than personal shell files. For example, from the
 repository root:
 
 ```bash
-candidate="$PWD/dist/candidate-v0.1.2-alpha-config"
+candidate="$PWD/dist/candidate-v0.1.2-alpha-recheck"
 scratch=$(mktemp -d)
 mkdir -p "$scratch/home" "$scratch/config" "$scratch/cache" "$scratch/data" "$scratch/tmp"
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \

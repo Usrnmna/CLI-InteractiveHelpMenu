@@ -41,11 +41,15 @@ remain unchanged. If no newer eligible release is published, the check reports
 no update. A release check does not obtain unreleased checkout changes, even
 when their `VERSION` matches the installed alpha.
 
-The `0.1.2-alpha` checkout is an unpublished local candidate. Install or update
-from its [verified local artifacts](release-candidate.md) to use that snapshot.
+The `v0.1.2-alpha` version line is a prerelease. Use `--prerelease --check` to
+inspect eligible published alpha packages; availability is determined by the
+[GitHub Releases listing](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
+An older same-version local candidate requires a
+[verified local-source update](installation.md#updating-an-existing-installation)
+to obtain different source contents.
 A different source hash with the same version never makes a package eligible
 for a GitHub upgrade; equal versions remain excluded. Local validation does not
-establish that any corresponding release or asset is available on GitHub.
+establish remote asset availability or successful distribution.
 
 Inside a custom installation, the installed wrapper targets its own directory.
 From a source checkout, the default is

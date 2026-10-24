@@ -11,8 +11,9 @@ Automatic resize recovery also uses the standard Linux `stty` utility.
 These procedures describe the current checkout. The
 [published alpha packages](releases.md#version-011---alpha) contain an older
 snapshot; their version marker does not identify the later development fixes.
-The `0.1.2-alpha` checkout and [local candidate](release-candidate.md) contain the
-current functionality. Local candidate preparation does not publish an upgrade.
+The `v0.1.2-alpha` [prerelease formats](releases.md) contain the current
+foundational functionality. [Local candidates](release-candidate.md) remain
+separate snapshots; preparation alone does not publish an upgrade.
 
 ## Installation
 

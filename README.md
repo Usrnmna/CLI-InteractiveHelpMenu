@@ -97,12 +97,13 @@ packages before upgrading. Run `bash update-from-github.sh --check` to inspect t
 stable channel, or add `--prerelease` to include alpha releases. Run without
 `--check` to upgrade; conflicts open the guided reviewer in an interactive terminal.
 
-The current checkout is `0.1.2-alpha`, prepared as an unpublished local candidate.
-The [release guide](docs/releases.md) describes its installer, Linux launcher,
-source/runtime archives, checksums, and source provenance. The preserved
-`0.1.1-alpha` packages contain an older snapshot. Use the checkout or a locally
-built candidate for the functionality described here; a GitHub release check
-does not obtain unpublished changes.
+Version `0.1.2-alpha` is an alpha prerelease. The
+[release guide](docs/releases.md) describes its installer, Linux launcher,
+source/runtime archives, checksums, and source provenance. Published assets are
+listed on [GitHub Releases](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
+The preserved `0.1.1-alpha` packages contain an older snapshot. Local builds can
+contain changes beyond a release tag; compare source manifests rather than
+version strings. GitHub release checks do not obtain unpublished changes.
 
 See [installation, updates, and removal](docs/installation.md) for custom paths
 and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,
