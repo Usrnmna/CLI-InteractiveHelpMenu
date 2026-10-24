@@ -4,7 +4,7 @@ import curses
 from dataclasses import dataclass
 import os
 from pathlib import Path
-import textwrap
+import unicodedata
 
 from core import HelpError, read_json
 
@@ -103,10 +103,64 @@ def display_text(value: str) -> str:
     return "".join(char if char.isprintable() else " " for char in value)
 
 
+def cell_width(character):
+    """Measure ordinary Unicode cells; ambiguous-width and emoji clusters remain terminal-dependent."""
+    if unicodedata.category(character) in {"Mn", "Me"}:
+        return 0
+    return 2 if unicodedata.east_asian_width(character) in {"W", "F"} else 1
+
+
+def clip_cells(text, width):
+    """Keep complete base/combining characters inside a cell budget."""
+    result, used = [], 0
+    for char in display_text(text):
+        size = cell_width(char)
+        if used + size > width:
+            break
+        if size or result:
+            result.append(char)
+            used += size
+    return "".join(result)
+
+
+def wrap_cells(text, width):
+    """Wrap normalized paragraphs by terminal cells, splitting long words safely."""
+    lines, current, used = [], [], 0
+    for char in display_text(text).expandtabs():
+        size = cell_width(char)
+        if used + size > width:
+            split = max((index for index, value in enumerate(current) if value.isspace()), default=-1)
+            if split >= 0:
+                lines.append("".join(current[:split]).rstrip())
+                current = current[split + 1:]
+            else:
+                lines.append("".join(current))
+                current = []
+            used = sum(cell_width(value) for value in current)
+        if (current or not char.isspace()) and (size or current):
+            current.append(char)
+            used += size
+    if current:
+        lines.append("".join(current).rstrip())
+    return lines or [""]
+
+
+def escape_delay():
+    """Validate an explicit slow-terminal override while retaining the 40 ms default."""
+    try:
+        delay = int(os.environ.get("CLI_HELP_ESCAPE_DELAY", "40"))
+    except ValueError:
+        raise HelpError("CLI_HELP_ESCAPE_DELAY requires 20-1000 milliseconds.", "invalid_escape_delay") from None
+    if not 20 <= delay <= 1000:
+        raise HelpError("CLI_HELP_ESCAPE_DELAY requires 20-1000 milliseconds.", "invalid_escape_delay")
+    return delay
+
+
 def write(screen, row, column, text, width, attribute=0):
     """Clip text and tolerate resize races and wide characters at terminal edges."""
     try:
-        screen.addnstr(row, column, display_text(text), max(0, width), attribute)
+        clipped = clip_cells(text, max(0, width))
+        screen.addnstr(row, column, clipped, len(clipped), attribute)
     except curses.error:
         pass
 
@@ -138,7 +192,8 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     first_option = max(0, browser.selected - rows + 1)
     for row, index in enumerate(range(first_option, min(len(options), first_option + rows)), 4):
         option = options[index]
-        label = option["flag"] + (" " + option["argument"] if option.get("argument") else "")
+        separator = "" if option.get("argument_style") == "attached_only" or option["flag"].endswith("=") else "=" if option.get("argument_style") == "equals" else " "
+        label = option["flag"] + (separator + option["argument"] if option.get("argument") else "")
         if option.get("kind") == "keyword":
             label += " [keyword]"
         text = ("> " if index == browser.selected else "  ") + label + "  " + option["summary"]
@@ -158,8 +213,10 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
         detail += "\n\n" + option["summary"] + "\n" + option.get("detail", "")
         if option.get("argument"):
             label = "Optional argument: " if option.get("argument_optional") else "Argument required: "
+            if option.get("argument_style") == "attached_only":
+                label = "Optional attached argument: " if option.get("argument_optional") else "Attached argument required: "
             detail += "\n" + label + option["argument"] + ". Enter its value after insertion."
-    lines = [wrapped for paragraph in detail.splitlines() for wrapped in (textwrap.wrap(display_text(paragraph), width - 2) or [""])]
+    lines = [wrapped for paragraph in detail.splitlines() for wrapped in wrap_cells(paragraph, width - 2)]
     detail_rows = height - detail_row - 4
     browser.detail_offset = min(browser.detail_offset, max(0, len(lines) - detail_rows))
     for row, text in enumerate(lines[browser.detail_offset:browser.detail_offset + detail_rows], detail_row + 1):
@@ -183,7 +240,7 @@ def run_browser(screen, profile, query, keys, preview=False):
     curses.raw()
     screen.keypad(True)
     screen.timeout(150)
-    curses.set_escdelay(40)
+    curses.set_escdelay(escape_delay())
     actions = {NAMED_KEYS.get(key, key): action for action, names in keys.items() for key in names}
     if "\n" in actions:
         actions["\r"] = actions["\n"]

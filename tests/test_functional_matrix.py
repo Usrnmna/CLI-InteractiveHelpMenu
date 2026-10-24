@@ -191,7 +191,12 @@ class PrioritizedInventoryTests(unittest.TestCase):
             words = case["command"].split()
             with self.subTest(command=words):
                 if len(words) > 1:
-                    help_route(words[0], tuple(words[1:]), REGISTRY)
+                    if case.get("profile_only"):
+                        self.assertIn(words, [profile["command"] for profile in BUNDLED])
+                        with self.assertRaises(ValueError):
+                            help_route(words[0], tuple(words[1:]), REGISTRY)
+                    else:
+                        help_route(words[0], tuple(words[1:]), REGISTRY)
 
     def test_profiles_are_complete_and_unique(self):
         for profile in BUNDLED:
@@ -319,7 +324,8 @@ class InsertionContractTests(unittest.TestCase):
                     edited, point = insert_option(ctx, option)
                     expected = prefix + option["flag"] + suffix
                     self.assertEqual(edited, expected)
-                    self.assertEqual(point, len(prefix + option["flag"]) + (0 if option["flag"].endswith("=") else 1))
+                    joined = option["flag"].endswith("=") or option.get("argument_style") == "attached_only"
+                    self.assertEqual(point, len(prefix + option["flag"]) + (0 if joined else 1))
 
     def test_value_options_reserve_their_slot(self):
         rsync = profile_for("rsync")

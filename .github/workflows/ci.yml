@@ -64,6 +64,7 @@ jobs:
           explanation = json.loads((reports / "diagnostics-explain.json").read_text())
           assert doctor["status"] == "ok"
           assert doctor["configuration"]["driver_selection"]["supplied_selected"]
+          assert doctor["configuration"]["escape_delay_ms"] == 40
           assert explanation["resolved_command"] == ["docker", "compose", "up"]
           assert explanation["code"] == "discovery_disabled"
           assert explanation["route"]["kind"] == "configured"
@@ -77,15 +78,27 @@ jobs:
               profiles = folder / "profiles"
               drivers.mkdir()
               profiles.mkdir()
+              binaries = folder / "bin"
+              binaries.mkdir()
+              target_started = folder / "target-started"
+              fixture = binaries / "fixture"
+              fixture.write_text("#!" + sys.executable + "\nfrom pathlib import Path\nPath(" + repr(str(target_started)) + ").touch()\n")
+              fixture.chmod(0o700)
               driver = {"command": "fixture", "paths": [{"command": [],
                   "help": ["--help", "--token=" + private_constant, "--password", private_constant],
                   "man": "private-" + private_constant}]}
               (drivers / "fixture.json").write_text(json.dumps(driver))
               for filename, command in (("root.json", ["fixture"]), ("leaf.json", ["fixture", "review-leaf"])):
                   profile = {"command": command, "description": "CI fixture",
-                      "categories": [{"name": "Options", "options": [{"flag": "--flag", "summary": "Fixture flag"}]}]}
+                      "categories": [{"name": "Options", "options": [
+                          {"flag": "--flag", "summary": "Fixture flag"},
+                          {"flag": "-a", "bundle": True, "summary": "First fixture flag"},
+                          {"flag": "-b", "bundle": True, "summary": "Second fixture flag"},
+                          {"flag": "-n", "argument": "COUNT", "argument_style": "attached_only",
+                           "bundle": True, "summary": "Attached fixture value"}]}]}
                   (profiles / filename).write_text(json.dumps(profile))
-              environment = dict(os.environ, CLI_HELP_DRIVERS=str(drivers), CLI_HELP_PROFILES=str(profiles))
+              environment = dict(os.environ, CLI_HELP_DRIVERS=str(drivers), CLI_HELP_PROFILES=str(profiles),
+                  PATH=str(binaries) + os.pathsep + os.environ["PATH"])
               for filename, command, kind in (("diagnostics-private-driver.json", "fixture", "configured"),
                                                ("diagnostics-static-profile.json", "fixture review-leaf", "profile_only")):
                   prefix = command + " --fl"
@@ -104,6 +117,51 @@ jobs:
                       assert report["route"]["help_arguments"] == []
                       assert report["profile"]["kind"] == "custom"
                   (reports / filename).write_text(result.stdout)
+              # Collection inspection uses the same private fixture without
+              # starting its target or changing any collection-owned bytes.
+              before = {path.relative_to(folder).as_posix(): path.read_bytes()
+                  for path in folder.rglob('*') if path.is_file()}
+              result = subprocess.run([sys.executable, "-B", "cli_help/main.py", "--check-collection", str(folder)],
+                  env=environment, check=True, capture_output=True, text=True, timeout=10)
+              assert private_constant not in result.stdout + result.stderr
+              assert pending_operand not in result.stdout + result.stderr
+              report = json.loads(result.stdout)
+              assert report["status"] == "attention_required"
+              assert {item["code"] for item in report["findings"]} == {"profile_route_missing"}
+              assert report["inspection_complete"]
+              after = {path.relative_to(folder).as_posix(): path.read_bytes()
+                  for path in folder.rglob('*') if path.is_file()}
+              assert before == after
+              (reports / "diagnostics-collection.json").write_text(result.stdout)
+              prefix = "fixture -abn --fl"
+              environment.update(CLI_HELP_LINE=prefix + " '" + pending_operand + "'", CLI_HELP_POINT=str(len(prefix)))
+              result = subprocess.run([sys.executable, "-B", "cli_help/main.py", "--explain"],
+                  env=environment, capture_output=True, text=True, timeout=10)
+              assert result.returncode == 1
+              assert private_constant not in result.stdout + result.stderr
+              assert pending_operand not in result.stdout + result.stderr
+              report = json.loads(result.stdout)
+              assert report["status"] == "rejected"
+              assert report["code"] == "option_value_required"
+              (reports / "diagnostics-bundle-rejection.json").write_text(result.stdout)
+              # Invalid collection input is retained exactly; inspection does
+              # not attempt recovery, start a target, or expose its contents.
+              (drivers / "fixture.json").write_text(json.dumps([private_constant]))
+              before = {path.relative_to(folder).as_posix(): path.read_bytes()
+                  for path in folder.rglob('*') if path.is_file()}
+              result = subprocess.run([sys.executable, "-B", "cli_help/main.py", "--check-collection", str(folder)],
+                  env=environment, capture_output=True, text=True, timeout=10)
+              assert result.returncode == 1
+              assert private_constant not in result.stdout + result.stderr
+              assert pending_operand not in result.stdout + result.stderr
+              report = json.loads(result.stdout)
+              assert report["status"] == "invalid"
+              assert "collection_json_invalid" in {item["code"] for item in report["findings"]}
+              after = {path.relative_to(folder).as_posix(): path.read_bytes()
+                  for path in folder.rglob('*') if path.is_file()}
+              assert before == after
+              assert not target_started.exists()
+              (reports / "diagnostics-collection-invalid.json").write_text(result.stdout)
           assert not Path(os.environ["CLI_HELP_CACHE_DIR"]).exists()
           PY
       - name: Run full Linux test suite
@@ -125,6 +183,9 @@ jobs:
             tests/reports/ci/diagnostics-explain.json
             tests/reports/ci/diagnostics-private-driver.json
             tests/reports/ci/diagnostics-static-profile.json
+            tests/reports/ci/diagnostics-collection.json
+            tests/reports/ci/diagnostics-collection-invalid.json
+            tests/reports/ci/diagnostics-bundle-rejection.json
           if-no-files-found: warn
           retention-days: 14
 

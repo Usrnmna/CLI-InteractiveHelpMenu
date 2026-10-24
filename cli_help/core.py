@@ -9,6 +9,7 @@ import shlex
 from command_paths import load_driver_registry, resolve_path
 from invocation import module_driver, resolve_invocation
 from errors import HelpError
+from arguments import VALUE_STYLES, option_tokens, value_forms
 
 
 @dataclass(frozen=True)
@@ -112,10 +113,27 @@ def validate_profile(profile: dict, source: Path):
             count = option.get("argument_count", 1)
             if type(count) is not int or not 1 <= count <= 16 or (count > 1 and not option.get("argument")):
                 raise HelpError("argument_count must be an integer from 1 to 16; multiple values require an argument.")
+            if "argument_style" in option:
+                if (not isinstance(option["argument_style"], str) or option["argument_style"] not in VALUE_STYLES or not option.get("argument") or kind != "flag"
+                        or count != 1 or "attached" in option
+                        or flag.endswith("=") and option["argument_style"] != "equals"):
+                    raise HelpError("argument_style requires one flag value, a supported style, and no legacy attached field.")
+            if not isinstance(option.get("bundle", False), bool):
+                raise HelpError("bundle must be a boolean.")
+            if option.get("bundle") and (kind != "flag" or not re.fullmatch(r"-[A-Za-z0-9]", flag)
+                    or count != 1 or option.get("argument_optional")
+                    or option.get("argument") and not value_forms(option) & {"separate", "attached"}):
+                raise HelpError("Bundle members require single-character flags and unambiguous required-value forms.")
             if "optional_value_kind" in option:
                 if (option["optional_value_kind"] != "nonnegative_integer" or not option.get("argument")
-                        or not option.get("argument_optional") or count != 1):
+                        or not option.get("argument_optional") or count != 1
+                        or option.get("argument_style") not in (None, "separate")):
                     raise HelpError("optional_value_kind requires nonnegative_integer and one optional argument.")
+    all_options = [option for category in categories for option in category["options"]]
+    if any(option.get("argument_style") or option.get("bundle") for option in all_options):
+        canonical_flags = [option["flag"].rstrip("=") for option in all_options]
+        if len(canonical_flags) != len(set(canonical_flags)):
+            raise HelpError("Explicit argument syntax requires unique option names, including equals spellings.")
 
 
 def load_profiles(bundled: Path, custom: Path | None = None) -> list[dict]:
@@ -297,7 +315,12 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
                and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
             raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
+        if query not in options:
+            parsed = option_tokens(query, options, strict=False)
+            if parsed:
+                raise HelpError("Move to an empty argument; an existing bundle or attached payload cannot be replaced.", "cursor_in_bundle")
     values_remaining = 0
+    strict_value = False
     optional_integer_pending = False
     driver = driver_registry.get(path.words[0])
     route = driver.paths.get(path.words[1:]) if driver else None
@@ -320,6 +343,8 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
             group_values = (group_values + 1) % group["argument_count"]
             continue
         if values_remaining:
+            if strict_value and (not word or word.startswith("-") and not re.fullmatch(r"-[0-9]+(?:\.[0-9]+)?", word)):
+                raise HelpError("Complete the declared value; attach dash-leading nonnumeric values explicitly.", "option_value_required")
             values_remaining -= 1
             continue
         if word == "--":
@@ -329,13 +354,11 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         key, equal, _ = word.partition("=")
         if invocation.module == "pip" and key == "--python":
             raise HelpError("pip --python changes the interpreter; this module form is unsupported.")
-        option = options.get(key, {})
-        attached = False
-        if not option:
-            for candidate, metadata in options.items():
-                if metadata.get("attached") and word.startswith(candidate) and len(word) > len(candidate):
-                    option, attached = metadata, True
-                    break
+        parsed = option_tokens(word, options)
+        option = parsed[-1][1] if parsed else {}
+        attached = parsed[-1][2] if parsed else False
+        if any(name in boundary_options for name, _, _ in parsed):
+            raise HelpError("Move before the declared child-argument boundary.", "child_argument_boundary")
         if group and not option and not word.startswith("-"):
             group_values = 1
             continue
@@ -348,6 +371,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
                 raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.", "unsupported_option")
         if option.get("argument") and not option.get("argument_optional", False):
             values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal) or attached))
+            strict_value = bool(option.get("argument_style") or len(parsed) > 1)
         optional_integer_pending = option.get("optional_value_kind") == "nonnegative_integer" and not (equal or attached)
     if values_remaining:
         raise HelpError("Enter the preceding option's argument before choosing another option.", "option_value_required")
@@ -368,12 +392,15 @@ def insert_option(context: Context, option: dict) -> tuple[str, int]:
     if option not in allowed:
         raise HelpError("The selected option is absent from the active profile.")
     flag = option["flag"]
+    if option.get("argument_style") == "equals" and not flag.endswith("="):
+        flag += "="
     suffix = context.line[context.end:]
     has_separator = bool(suffix) and suffix[0] in " \t"
-    separator = "" if flag.endswith("=") or has_separator else " "
+    joined = flag.endswith("=") or option.get("argument_style") == "attached_only"
+    separator = "" if joined or has_separator else " "
     replacement = flag + separator
     line = context.line[:context.start] + replacement + suffix
     point = context.start + len(replacement)
-    if not flag.endswith("=") and not separator and has_separator:
+    if not joined and not separator and has_separator:
         point += 1
     return line, point

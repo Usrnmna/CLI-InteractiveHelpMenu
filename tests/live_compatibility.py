@@ -91,7 +91,7 @@ def check_curated_case(words, registry, record, case, timeout):
         variant = None
         if profile.get("identity"):
             variant = verify_command_variant(words[0], record["executable"], settings, words[1:])
-        route = help_route(words[0], tuple(words[1:]), registry)
+        route = help_route(words[0], tuple(case.get("documentation_path", words[1:])), registry)
         probes = []
         if route.arguments:
             arguments = ("--help", "--noconftest") if words == ["pytest"] else route.arguments
@@ -122,7 +122,7 @@ def check_curated_case(words, registry, record, case, timeout):
         context = find_context(line, len(line), [profile], driver_registry=registry,
                                discover=lambda *args, **kwargs: profile)
         for option in options:
-            suffix = "" if option["flag"].endswith("=") else " "
+            suffix = "" if option["flag"].endswith("=") or option.get("argument_style") == "attached_only" else " "
             expected = " ".join(words) + " " + option["flag"] + suffix
             if insert_option(context, option) != (expected, len(expected)):
                 raise HelpError("Curated literal insertion invariant failed.")

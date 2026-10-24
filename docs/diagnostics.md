@@ -21,6 +21,8 @@ by this passive check. Terminal availability is informational, so redirected
 diagnostic output remains supported. The selected profile, driver, key, and cache
 locations are reported with configuration validity and discovery settings.
 Other environment values and configuration file contents are omitted.
+`configuration.escape_delay_ms` reports the validated curses key-sequence delay;
+invalid values produce `invalid_escape_delay` without reproducing the value.
 The UTF-8 check examines the shell locale rather than Python UTF-8 mode. An ASCII
 `C` locale remains incompatible even when Python's preferred encoding is UTF-8.
 Unexpandable configuration home paths produce an attention/rejection report
@@ -171,3 +173,14 @@ Exit status `0` means passive inspection completed, including an explicit
 context or runtime/configuration attention is required. Status `2` indicates
 invalid CLI arguments. No diagnostic status establishes rendered terminal or
 operational third-party compatibility.
+
+## Collection consistency
+
+`--check-collection DIRECTORY` inspects collection-owned metadata and evidence
+without executing discovery, writing files, or altering locks. It is independent
+of the pending buffer and personal configuration. Reports distinguish invalid
+metadata from intentional unpaired collections, stale review evidence, and
+uncertain lock ownership. [Collection inspection and explicit recovery](collection-recovery.md)
+documents the JSON statuses, reason codes, bounds, privacy, and separate
+snapshot-bound restoration action. Recovery is an explicit write operation;
+it is not part of passive inspection or normal browser startup.

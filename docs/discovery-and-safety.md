@@ -93,7 +93,9 @@ does not make the whole argument optional. Lowercase placeholders without a
 separate declaration column, including some GNU find manual forms, can still
 lack inferred argument requirements and need manual review.
 The [third-party compatibility guide](compatibility.md) records tested paths and
-unsupported forms, including 7-Zip attached-value switches.
+unsupported forms, including generic 7-Zip attached-value declarations. The
+[explicit syntax guide](argument-syntax.md) describes the curated static subset;
+it does not change generic discovery or its requests.
 
 Automatic subcommand discovery uses the built-in Git and Docker drivers and any
 loaded [JSON compatibility drivers](profiles-and-drivers.md#loadable-compatibility-drivers).
@@ -255,12 +257,13 @@ backslash escapes. It rejects pipelines, redirection, compound commands,
 multiline input, shell substitutions, unclosed quotes, insertion into positional
 arguments or `--option=value` tokens, and option insertion after `--`. A known
 option that requires a separate value must receive that value before another
-option can be inserted. Unknown options and combined short flags are not fully
-parsed for argument arity.
+option can be inserted. Unknown options and general combined short flags are not
+assigned guessed arity. Explicit styles and bundles use only their declared
+forms, as specified in the [argument-syntax reference](argument-syntax.md).
 An apparent payload attached to a known short value option is not an editable
 option prefix, even when the captured help does not explicitly mark attachment.
 This rejection protects values such as `sed -i.bak`; it does not add general
-attached-value or short-bundle parsing. Explicit selected-route arity can protect
+attached-value or short-bundle inference. Explicit selected-route arity can protect
 inherited values omitted from leaf help without adding undocumented menu entries.
 
 Command aliases, bare leading environment assignments, and arbitrary shell

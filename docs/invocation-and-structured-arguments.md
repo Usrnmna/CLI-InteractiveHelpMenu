@@ -104,7 +104,9 @@ filter selectors. A selection inserts the selector followed by a space; it never
 inserts `CODEC` or another placeholder. Generic placeholders such as
 `-c[:stream_specifier]` and incomplete `-c:` are not valid profile replacements.
 See [FFmpeg stream specifiers](https://ffmpeg.org/ffmpeg.html#Stream-specifiers).
-GCC comma pass-through forms and 7-Zip brace-attached forms remain unsupported.
+GCC comma pass-through forms remain unsupported. Generic parsing still excludes
+7-Zip brace declarations; static extraction profiles provide a bounded attached-only
+subset as described in [explicit argument syntax](argument-syntax.md).
 
 An option marked `attached: true` consumes an attached value, such as SSH
 `-p22`, when locating subsequent options. A cursor inside that value cannot
@@ -134,6 +136,12 @@ stop before an expression can expose its internal flags as parent options.
 Go test and .NET test retain parent options after package/project paths. Go
 `-args` and the general `--` marker delimit child arguments. Unknown preceding
 option arity is rejected at strict positional boundaries.
+
+Explicit `argument_style` metadata adds separate-only, equals-only, joined, and
+attached-only contracts. `bundle: true` permits only declared single-character
+members with known arity; the selected OpenSSH subset uses this opt-in.
+Exact names take precedence, and existing payloads cannot be replaced from inside
+their token. Parent-driver options and other profiles retain their existing grammar.
 
 ## Names, versions, and offline use
 

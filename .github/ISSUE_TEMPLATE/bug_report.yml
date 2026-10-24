@@ -20,7 +20,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Include Linux distribution or WSL, Bash and Python versions, terminal emulator, TERM, and tmux version when relevant. Omit private paths.
+      description: Include Linux distribution or WSL, Bash and Python versions, terminal emulator, TERM, tmux version, Readline editing mode/keymap, and any CLI_HELP_ESCAPE_DELAY override when relevant. Omit private paths.
     validations:
       required: true
   - type: textarea
@@ -48,7 +48,7 @@ body:
     id: diagnostics
     attributes:
       label: Redacted diagnostic summary
-      description: Optional summary of --doctor or --explain status/reason codes. Remove local paths and sensitive values; raw reports and logs are unnecessary.
+      description: Optional summary of --doctor, --explain, or --check-collection status/reason codes. For recovery, describe the explicit choice, layout or changed-file warning, uncertain lock state, and retained-backup availability. Omit paths, backup identifiers, snapshots, hashes, configuration contents, raw reports, and backups.
     validations:
       required: false
   - type: checkboxes

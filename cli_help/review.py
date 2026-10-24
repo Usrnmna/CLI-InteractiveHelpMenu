@@ -224,7 +224,7 @@ class ReviewSession:
             if fingerprint(path) != expected:
                 raise HelpError("Files changed outside this review. Reopen the session before saving.")
         backup = self.local_path(self.root / ".review-backups") / uuid.uuid4().hex
-        backup.mkdir(parents=True)
+        backup.mkdir(mode=0o700, parents=True)
         manifest = []
         for number, path in enumerate([*draft.fingerprints, self.path]):
             manifest.append({"path": str(path.relative_to(self.root)), "backup": f"{number}.json" if path.exists() else None})

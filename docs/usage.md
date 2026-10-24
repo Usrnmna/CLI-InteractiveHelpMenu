@@ -97,6 +97,24 @@ Both list panes scroll to keep the selected item visible. The `rsync` profile
 contains nine categories, and the `ls` Display category contains twelve options,
 so scrolling can be exercised in an ordinary 24-row terminal.
 
+Selection is shown with a `>` marker, focus with a `*` marker, and highlighting;
+color alone is not required. Labels and descriptions are clipped/wrapped in
+terminal cells for ordinary wide and combining text. Ambiguous-width characters,
+emoji sequences, terminal fonts, and screen-reader behavior remain environment
+dependent. Keyboard/rendered tests establish only their recorded interactions,
+not compatibility with assistive technology.
+
+If fragmented terminal keys are mistaken for Escape, an explicit
+`export CLI_HELP_ESCAPE_DELAY=250` permits more time for curses to receive the
+sequence. Values are integer milliseconds from 20 through 1000; the default
+remains 40. A larger setting also delays standalone Escape cancellation. It does
+not change Readline's Alt-H binding or guarantee arbitrary delayed Alt sequences.
+`--doctor` reports the selected value and `--check` validates it.
+
+Attached-only selections leave the cursor directly against the inserted flag.
+Type the value immediately, for example a quoted directory after 7-Zip `-o`.
+See [supported value spellings and bundles](argument-syntax.md).
+
 ## Passive troubleshooting
 
 Run `python3 cli_help/main.py --doctor` to inspect runtime availability and selected
@@ -105,6 +123,9 @@ helper's buffer/cursor environment inputs to report command recognition, profile
 provenance, cache state, and rejection codes while omitting pending operand values.
 See [passive diagnostics and troubleshooting](diagnostics.md) for invocation
 examples, statuses, privacy boundaries, and explicit active lookup instructions.
+For imported collections, `--check-collection DIRECTORY` provides a separate
+read-only consistency report. [Collection inspection and recovery](collection-recovery.md)
+describes warning severity and explicit guarded backup restoration.
 
 ## Terminal resizing and display recovery
 

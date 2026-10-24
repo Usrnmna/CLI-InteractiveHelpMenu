@@ -32,7 +32,8 @@ minimal additional profile has this structure:
 
 `argument`, `detail`, and the category description are optional. An option with
 a trailing equals sign, such as `--exclude=`, leaves the cursor directly after
-that sign. Other options insert or reuse one following whitespace character.
+that sign. Other options insert or reuse one following whitespace character,
+except explicit attached-only values, which leave the cursor against the flag.
 Argument placeholders are displayed as help and are never inserted literally.
 An option may also set `"argument_optional": true`. Optional arguments are
 displayed but do not force entry of a value before another option is selected.
@@ -65,6 +66,8 @@ the helper process can read them.
 | --- | --- |
 | `options[].kind` | `flag` by default; `keyword` permits a literal bare keyword such as `dev` |
 | `options[].attached` | Boolean; recognizes an attached argument for a value-taking flag such as `-p22`; default false |
+| `options[].argument_style` | Explicit `separate`, `equals`, `attached`, or `attached_only` spelling for one value; omitted metadata retains legacy behavior |
+| `options[].bundle` | Boolean opt-in for a single-character short option; every member must have unambiguous declared arity; default false |
 | `options[].optional_value_kind` | `nonnegative_integer` recognizes one separate ASCII decimal count after a single optional argument, such as `fzf -m 2`; other values are rejected |
 | `stop_at_positional` | Profile-level boolean boundary, retained even without a loaded driver |
 | `stop_at_options` | Literal option-name array that ends the parent argument region, such as Go test's `-args` |
@@ -75,7 +78,7 @@ Concrete selectors such as `-c:v:0` are valid flags; `-c:`, placeholder selector
 whitespace, and shell operators are rejected. Keywords cannot contain shell
 syntax. All argument labels remain display-only. Repeated groups are entered
 manually; the browser never supplies placeholder values. Guided edits preserve
-these JSON fields; clearing a value argument also clears its `attached` and
+these JSON fields; clearing a value argument also clears its `attached`, `argument_style`, and
 `optional_value_kind` metadata. Changing an optional argument to required clears
 `optional_value_kind`. This field requires a nonempty argument, optional-value
 metadata, and an argument count of one. It never consumes arbitrary text,
@@ -84,6 +87,9 @@ Structured fields can be maintained through JSON/editor review and survive
 installation and update workflows.
 
 See [supported forms and exact insertion behavior](invocation-and-structured-arguments.md).
+The [explicit argument-syntax reference](argument-syntax.md) specifies new-field
+validation, optional components, exact-name precedence, conservative bundle
+recognition, cursor protection, and the bounded OpenSSH/7-Zip subsets.
 
 ## Loadable compatibility drivers
 

@@ -75,6 +75,10 @@ def main():
     mode.add_argument("--import-man", metavar="COMMAND", nargs="+", help="Import manual documentation as a profile and manual-only driver")
     mode.add_argument("--scan-installed", action="store_true", help="Bulk import installed commands' manuals without executing the commands")
     mode.add_argument("--review-report", type=Path, metavar="REPORT", help="Interactively correct and preview a scan collection")
+    mode.add_argument("--check-collection", type=Path, metavar="DIRECTORY", help="Passively inspect collection consistency as safe JSON")
+    mode.add_argument("--recover-collection", type=Path, metavar="DIRECTORY", help="Restore a selected existing review backup after snapshot confirmation")
+    parser.add_argument("--restore-backup", help="Review-backup identifier for --recover-collection")
+    parser.add_argument("--expect-snapshot", help="Exact snapshot identifier from --check-collection")
     mode.add_argument("--discover", metavar="COMMAND", nargs="+", help="Print discovered help for a command and optional subcommand path as JSON")
     parser.add_argument("--refresh", action="store_true", help="Bypass the cache with --discover")
     parser.add_argument("--man-page", help="Manual page name for --import-man; defaults to the hyphenated command path")
@@ -90,6 +94,10 @@ def main():
     parser.add_argument("--scan-subcommands", action="store_true", help="Also scan manual paths declared by loaded drivers")
     parser.add_argument("--strict-scan", action="store_true", help="Return failure if the scan reports entries needing adjustment")
     args = parser.parse_args()
+    if args.recover_collection and not (args.restore_backup and args.expect_snapshot):
+        parser.error("Recovery requires a selected backup and inspection snapshot")
+    if not args.recover_collection and (args.restore_backup or args.expect_snapshot):
+        parser.error("Recovery choices require --recover-collection")
     if args.refresh and not args.discover:
         parser.error("--refresh requires --discover COMMAND")
     if args.import_man and not args.output_dir:
@@ -103,6 +111,23 @@ def main():
     if not args.scan_installed and (any((args.scan_path, args.include, args.exclude, args.scan_subcommands, args.strict_scan)) or args.limit is not None):
         parser.error("Scan options require --scan-installed")
     try:
+        if args.check_collection or args.recover_collection:
+            from collection import inspect_collection, restore_review_backup
+            try:
+                report = (inspect_collection(args.check_collection) if args.check_collection else
+                          restore_review_backup(args.recover_collection, args.restore_backup, args.expect_snapshot))
+            except (OSError, ValueError, RuntimeError, RecursionError) as error:
+                report = {"schema_version": 1, "mode": "check_collection" if args.check_collection else "recover_collection",
+                          "status": "rejected", "code": getattr(error, "code", "collection_unreadable"),
+                          "detail": "Collection inspection or recovery was rejected; inspect paths, locks, schema validity, and snapshot freshness."}
+                if getattr(error, "backup", None) is not None:
+                    report["backup"] = str(error.backup)
+            except KeyboardInterrupt:
+                report = {"schema_version": 1, "mode": "check_collection" if args.check_collection else "recover_collection", "status": "rejected",
+                          "code": "inspection_cancelled" if args.check_collection else "recovery_cancelled",
+                          "detail": "Inspection was cancelled." if args.check_collection else "Recovery was cancelled; inspect the collection and retained backups before retrying."}
+            print(json.dumps(report, ensure_ascii=True, indent=2))
+            return int(report["status"] in {"invalid", "rejected"})
         if args.doctor or args.explain:
             from diagnostics import doctor, explain
             if args.doctor:
@@ -155,9 +180,10 @@ def main():
         if args.discover:
             print(json.dumps(discover(args.discover[0], settings, args.refresh, tuple(args.discover[1:]), drivers), ensure_ascii=False, indent=2))
             return 0
-        from ui import load_keys
+        from ui import load_keys, escape_delay
         config = os.environ.get("CLI_HELP_CONFIG")
         keys = load_keys(Path(config).expanduser() if config else None)
+        escape_delay()
         if args.check:
             print(f"Validated {len(profiles)} command profiles, {len(drivers)} drivers, browser keybindings, and discovery settings.")
             return 0

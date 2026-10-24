@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import tempfile
+import uuid
 
 from core import HelpError, load_profiles, read_json, validate_profile
 from discovery import MAX_OUTPUT_BYTES, build_profile, run_probe
@@ -46,13 +47,34 @@ def read_manual(command: list[str], manual: str | None = None, text_file: Path |
 
 def atomic_json(path: Path, document: dict, ascii_only=False):
     """Replace a single JSON document atomically, leaving no temporary file behind."""
+    atomic_bytes(path, (json.dumps(document, ensure_ascii=ascii_only, indent=2) + "\n").encode("utf-8"))
+
+
+def atomic_bytes(path: Path, data: bytes, directory_fd=None, before_replace=None):
+    """Share per-file atomic replacement with byte-preserving backup recovery."""
+    if directory_fd is not None:
+        name = ".cli-help-write-" + uuid.uuid4().hex + ".tmp"
+        descriptor = os.open(name, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600, dir_fd=directory_fd)
+        try:
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(data)
+            if before_replace is not None:
+                before_replace()
+            os.replace(name, path.name, src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
+        finally:
+            try:
+                os.unlink(name, dir_fd=directory_fd)
+            except FileNotFoundError:
+                pass
+        return
     temporary = None
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+        with tempfile.NamedTemporaryFile(mode="wb", dir=path.parent, delete=False) as stream:
             temporary = Path(stream.name)
-            json.dump(document, stream, ensure_ascii=ascii_only, indent=2)
-            stream.write("\n")
+            stream.write(data)
+        if before_replace is not None:
+            before_replace()
         os.replace(temporary, path)
     finally:
         if temporary:

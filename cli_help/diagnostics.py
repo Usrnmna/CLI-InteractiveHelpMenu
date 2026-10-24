@@ -151,15 +151,17 @@ def doctor(root):
     check("terminal", os.isatty(0) and os.isatty(1), "No terminal was opened; redirected diagnostic output is supported.", False)
     try:
         profiles, drivers, settings, paths = load_configuration(root)
-        from ui import load_keys
+        from ui import load_keys, escape_delay
         load_keys(Path(paths["keys"]) if paths["keys"] else None)
         configuration = {"status": "valid", "profiles": len(profiles), "drivers": len(drivers),
+                         "escape_delay_ms": escape_delay(),
                          "driver_selection": driver_selection(root, paths),
                          "discovery_mode": settings.mode, "source_timeout_seconds": settings.timeout,
                          "cache_ttl_seconds": settings.cache_ttl,
                          "cache_directory": str(settings.cache_dir) if settings.cache_dir else None}
-    except (HelpError, OSError, ValueError, ImportError, RuntimeError, RecursionError):
-        configuration = {"status": "invalid", "code": "configuration_invalid",
+    except (HelpError, OSError, ValueError, ImportError, RuntimeError, RecursionError) as error:
+        code = "invalid_escape_delay" if getattr(error, "code", None) == "invalid_escape_delay" else "configuration_invalid"
+        configuration = {"status": "invalid", "code": code,
                          "detail": "Inspect the selected profile, driver, key, and discovery settings; no configuration content is included."}
     failed = configuration["status"] != "valid" or any(item["required"] and item["status"] == "unavailable" for item in checks)
     return {"schema_version": 1, "mode": "doctor", "status": "attention_required" if failed else "ok",

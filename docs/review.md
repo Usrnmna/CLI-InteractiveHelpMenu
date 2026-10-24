@@ -136,6 +136,15 @@ as needed, and reopen the reviewer. A report write occurs only after both
 configuration writes succeed. A subsequent bulk scan replaces the report,
 including its review annotations, while preserving corrected files by default.
 
+New backup directories are private (mode 0700). The
+[collection consistency and recovery guide](collection-recovery.md) provides
+read-only inspection and explicit snapshot-bound restoration of existing
+manifests. It rejects changed evidence, uncertain locks, unsafe paths, and
+deletion-dependent backups while preserving original bytes before replacement.
+Recovery remains atomic per file; it does not introduce multi-file transactions.
+Explicit argument styles and bundle metadata survive review/save, and clearing
+an argument also clears its value-style metadata.
+
 ## Exit and cancellation
 
 Quit returns status 0. Ctrl-C at the queue or terminal EOF returns 130 and

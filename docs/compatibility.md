@@ -3,7 +3,7 @@
 [Project overview](../README.md) · [Documentation index](README.md) ·
 [Driver configuration](profiles-and-drivers.md)
 
-The compatibility matrix covers 160 maintained command paths across 73
+The compatibility matrix covers 162 maintained command paths across 73
 executable names. The tiers organize test coverage; they are not measured usage
 rankings. A passing case establishes the selected option declarations, argument
 counts, and literal insertion behavior for the recorded version. It does not
@@ -30,7 +30,7 @@ establish complete option coverage or successful execution of the program's work
 | Next | Rust Cargo | `cargo build`, `cargo test` |
 | Next | CMake, Ninja, GCC, Clang | `cmake`, `ninja`, `gcc`, `clang` |
 | Extended | rclone, restic, BorgBackup | `rclone`, `rclone copy`, `rclone sync`, `restic backup`, `borg create` |
-| Extended | 7-Zip | `7z`, `7zz` |
+| Extended | 7-Zip | `7z`, `7zz`; static `7z x`, `7zz x` extraction subsets |
 | Extended | ImageMagick | `magick` (version 7), `convert` (version 6) |
 | Extended | yt-dlp and VLC | `yt-dlp`, `vlc` |
 | Expansion | Linux services and logs | `systemctl status`, `systemctl list-units`, `systemctl show`, `journalctl` |
@@ -127,6 +127,9 @@ numeric flags, such as gzip's `-1`, remain supported.
 These checks do not establish BSD or BusyBox compatibility. Sed expression
 languages, arbitrary attached-only forms, and general short bundles remain
 outside the grammar; pending expressions and filenames are never probed.
+Explicit profile declarations support the bounded
+[attached-only and bundle subsets](argument-syntax.md); generic parsing does not
+infer these contracts from arbitrary help syntax.
 
 ## Run the checks
 
@@ -222,8 +225,12 @@ with an optional type prefix. It also checks Unicode edits, end-of-options marke
 and runner boundaries for `uv run`, `npm run`, and Docker execution commands.
 
 Concrete FFmpeg stream selectors such as `-c:v` are supported. GCC pass-through
-switches such as `-Wl,<options>` and 7-Zip switches such as `-o{Directory}` and
-`-t{Type}` remain excluded. Placeholder selectors and incomplete literal prefixes
+switches such as `-Wl,<options>` remain excluded. Generic parsing excludes 7-Zip
+brace declarations; curated `7z x`/`7zz x` profiles provide `-o` and `-t` with
+attached-only payloads. These static-only paths retain root `-h` documentation
+probes and do not add automatic leaf discovery. Matrix `profile_only` and
+`documentation_path` fields distinguish that evidence. The OpenSSH profile
+enables only its selected declared bundle members. Placeholder selectors and incomplete literal prefixes
 must not be offered as substitutes. Supported prefix/module forms, ip keywords,
 repeated address/file groups, child boundaries, and executable-name/version
 constraints are detailed in [invocation and structured arguments](invocation-and-structured-arguments.md). Git's numeric shorthand `-<number>`

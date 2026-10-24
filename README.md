@@ -50,7 +50,7 @@ development. Ordinary curated profiles work without installed targets. Guarded
 vendor/version profiles require identity verification; generated help remains
 inferred and may require corrections.
 
-The [third-party compatibility matrix](docs/compatibility.md) covers **160 command
+The [third-party compatibility matrix](docs/compatibility.md) covers **162 command
 paths across 73 executable names**. Included drivers enable nested command routes;
 the guide lists every route, activation instructions, version constraints, and
 verification limits. [Prefix and structured-argument support](docs/invocation-and-structured-arguments.md)

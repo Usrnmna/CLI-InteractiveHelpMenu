@@ -37,8 +37,8 @@ synthetic fixture flag's exact midline edit, required-value handling, global
 options, positional boundaries, and fixed executable/manual probe arguments.
 
 Concrete FFmpeg colon selectors are supported; incomplete/placeholder selectors
-remain excluded. GCC comma-joined switches and 7-Zip brace-attached switches are
-outside the current literal insertion grammar. They must not be
+remain excluded. GCC comma-joined switches and generic 7-Zip brace declarations
+are outside generic inference. They must not be
 truncated into different flags. Root npm intentionally lacks option declarations;
 usage examples must not become insertable flags. `npm-install.txt` separately
 covers bracketed option groups, aliases, and repeated values.
@@ -124,3 +124,15 @@ literal flag presence separate from independently reviewed arity contracts.
 supplemental global-option documentation, with actual versions and independent
 arity expectations. Cloud credentials, login, initialization, and workload
 requests are absent from this evidence.
+
+## Explicit syntax captures
+
+`syntax-7zip-captured.json` records fixed `-h` requests from installed `7z` and
+`7zz` 23.01. `syntax-7z-x.txt` and `syntax-7zz-x.txt` retain selected switch
+declarations. The static extraction profiles provide explicit attached-only
+arity; generic parsing continues to exclude brace syntax. Matrix `profile_only`
+and `documentation_path: []` separate static leaf edits from fixed root help.
+The existing OpenSSH capture supplies selected bundle flags; independent tests
+cover repetition, exact names, values, and the destination boundary. The
+[syntax reference](../../../docs/argument-syntax.md) links upstream definitions
+and documents exclusions. No archive extraction or SSH session is test evidence.

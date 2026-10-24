@@ -50,6 +50,7 @@ their execution checks, and the optional regeneration dependencies.
 | [native/cli_help.c](../native/cli_help.c), [scripts/build_release.py](../scripts/build_release.py) | Native convenience launcher and versioned installer/archive/checksum generation |
 | [bash/interactive-help.bash](../bash/interactive-help.bash) | Readline shortcut and buffer update |
 | [cli_help/core.py](../cli_help/core.py) | Profile validation, literal context parsing, insertion |
+| [cli_help/arguments.py](../cli_help/arguments.py) | Explicit value spellings and opt-in short bundle interpretation |
 | [cli_help/invocation.py](../cli_help/invocation.py) | Bounded prefix grammar and immutable Python module routes with original token offsets |
 | [cli_help/command_paths.py](../cli_help/command_paths.py) | Explicit subcommand paths, global-option arity, fixed help routes |
 | [cli_help/drivers.py](../cli_help/drivers.py) | Validated JSON driver loading and built-in route overlays |
@@ -57,6 +58,7 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/bulk_scan.py](../cli_help/bulk_scan.py) | Executable inventory, bulk manual imports, and checkpointed diagnostic reports |
 | [cli_help/review.py](../cli_help/review.py) | Interactive scan review, draft editing, help preview, and backed-up saves |
 | [cli_help/review_forms.py](../cli_help/review_forms.py) | Guided option, category, and driver forms with validation before draft updates |
+| [cli_help/collection.py](../cli_help/collection.py) | Passive collection consistency, bounded evidence, and explicit guarded review-backup restoration |
 | [cli_help/discovery.py](../cli_help/discovery.py) | Bounded help/man probes, parsing, merging, and cache |
 | [cli_help/diagnostics.py](../cli_help/diagnostics.py), [cli_help/errors.py](../cli_help/errors.py) | Passive configuration/context reports, bounded cache inspection, and safe reason-coded errors |
 | [cli_help/ui.py](../cli_help/ui.py) | Curses drawing, navigation, search, browser bindings |
@@ -76,15 +78,22 @@ bash tests/run.sh
 ```
 
 The [complete expansion validation report](compatibility-expansion-validation.md)
-records the current matrix, full-suite results, live versions, missing dependencies,
+records its dated matrix, full-suite results, live versions, missing dependencies,
 and the distinction between deterministic edits and live documentation evidence.
 
 GitHub Actions runs the deterministic suite on Python 3.10 and 3.12 and retains
 the suite log, fixed-input passive diagnostic reports, and documentation-link
 reports for 14 days, including failed runs.
+The fixed-input reports include passive collection inspection, invalid collection
+metadata, and bundle-value rejection. A private fixture target records unexpected
+execution, and smoke checks retain collection bytes unchanged. Raw collection
+contents and backups are not uploaded.
 The Bash pipeline preserves the suite's exit status when recording its log.
-Only those report files are uploaded; isolated tool homes and downloaded binaries
-are excluded. Dependabot groups minor and patch updates for CI actions and
+Only explicitly named report files are uploaded; isolated tool homes, installer
+scratch directories, and downloaded binaries are excluded. Installer scratch
+directories are also excluded from Git and documentation-link scanning, while
+maintained fixtures and public documentation assets remain eligible for tracking.
+Dependabot groups minor and patch updates for CI actions and
 documentation-media dependencies; major updates remain separate.
 
 The terminal tests launch isolated Bash sessions, feed real key sequences, and
@@ -392,7 +401,7 @@ without an editor, then previews and saves the result. The resulting profile
 passes literal insertion checks while the instrumented target remains uninvoked.
 
 The [third-party compatibility guide](compatibility.md) contains the complete
-160-path matrix, driver activation, environment preparation, report interpretation,
+162-path matrix, driver activation, environment preparation, report interpretation,
 and recorded validation limits. A default live run now covers all three tiers
 and loads the supplied drivers automatically:
 
@@ -420,3 +429,61 @@ is performed by the live harness.
 The shell integration uses the documented
 [Bash `bind -x` interface](https://tiswww.case.edu/php/chet/bash/bashref.html#Bash-Builtins)
 in the maintainer-hosted GNU Bash reference manual.
+
+## Argument syntax, terminal cells, and collection recovery
+
+[test_argument_syntax.py](../tests/test_argument_syntax.py) uses independent
+literal expectations for explicit forms, exact-name precedence, declared bundles,
+payload protection, schema defaults/conflicts, negative values, and fixed 7-Zip
+root help. The parser still excludes unsupported declarations rather than
+truncating them. Generic profiles do not acquire inferred bundle arity.
+
+[test_collection.py](../tests/test_collection.py) checks passive no-process/no-write
+inspection, malformed and incomplete pairs, uncertain locks, stale review hashes,
+backup manifests, symlinks/special files, inspection bounds, and guarded restoration.
+Injected target/source/lock changes and parent symlink swaps exercise the checks
+immediately before replacement. Interruption retains original data; repeated
+successful restoration is a no-op. Real review forms preserve new metadata.
+
+[test_syntax_terminal.py](../tests/test_syntax_terminal.py) runs the actual Bash
+adapter in isolated Linux/tmux PTYs. It checks wide/combining text, right-margin
+clipping, visible focus/selection, literal combining-character search, and 80 ms
+fragmented navigation and unmapped Alt input with an explicit 250 ms curses
+delay, resize/reopen, cancellation, character cursors, alternate
+screens, and numbered scrollback. Attached-only and bundle edits use harmless
+test functions. Buffer assertions supplement rendered cells, not replace them.
+Existing terminal suites retain Vi, custom-binding and long-line coverage.
+These checks do not establish ambiguous-width/emoji rendering, screen-reader
+support, other terminals, or every Bash/Readline release.
+
+Run `bash tests/run.sh` for the complete gate, including the rendered tests when
+tmux is available. A skipped terminal suite is unverified evidence, not a pass.
+For focused investigation:
+
+```bash
+python3 -B -m unittest discover -s tests -p 'test_argument_syntax.py' -v
+python3 -B -m unittest discover -s tests -p 'test_collection.py' -v
+python3 -B -m unittest discover -s tests -p 'test_syntax_terminal.py' -v
+python3 tests/live_compatibility.py --case '7z x' --case '7zz x' --case ssh --timeout 2 --require-all --report tests/reports/syntax-live.json
+```
+
+The live harness uses reviewed root `-h` output for the static-only 7-Zip paths,
+and fixed OpenSSH manual/version requests. It never extracts archives or connects
+to a host. Captured fixtures, installed-version documentation, rendered terminal
+evidence, and hosted CI are separate verification layers.
+
+Keep private captures, recovery backups, caches, and reports under ignored
+locations. Maintained syntax captures remain source fixtures; public assets stay
+trackable. Ignore regressions cover owned `.cli-help-write-*.tmp` staging files.
+CI uploads only the named fixed-input diagnostic JSON files and suite log.
+Git attributes, editor whitespace rules, and Dependabot remain suitable without
+new dependencies. Validate changed workflow YAML/action expressions and execute
+the passive smoke locally where tooling exists; local validation is not hosted CI.
+
+[test_syntax_collection_review.py](../tests/test_syntax_collection_review.py)
+protects collection layout types, schema-first backup pairing, canonical manifest
+paths, typed scan-state evidence, passive enumeration during symlink swaps, and
+reason-coded bundle value errors. Malformed recovery choices retain every original
+byte and reject without writes or tracebacks. The rendered syntax suite checks
+that a bundle error retains the pending line, cursor and scrollback, then permits
+reopening after the incomplete input is corrected.

@@ -25,6 +25,7 @@ snapshot. Dated reviews below retain the results and limitations of their own ru
 | Passive runtime checks, redacted context explanations, and troubleshooting | [Passive diagnostics and troubleshooting](diagnostics.md) |
 | Editable option definitions and loadable command adapters | [Help profiles and compatibility drivers](profiles-and-drivers.md) |
 | Prefix chains, Python modules, keywords, joined selectors, and repeated groups | [Invocation and structured arguments](invocation-and-structured-arguments.md) |
+| Declared value spellings, selected bundles, and protected attached payloads | [Explicit argument syntax](argument-syntax.md) |
 | Third-party programs, driver activation, test tiers, and live results | [Third-party compatibility matrix](compatibility.md) |
 
 ## Help collection workflows
@@ -34,6 +35,7 @@ snapshot. Dated reviews below retain the results and limitations of their own ru
 | One installed manual, rendered text file, or local manual file | [Importing manual pages](manual-import.md) |
 | A set of installed commands and their manuals | [Bulk scanning and report interpretation](bulk-scan.md) |
 | Scan entries requiring corrections or verification | [Interactive review, guided forms, preview, and saving](review.md) |
+| Read-only consistency checks and explicit snapshot-bound backup restoration | [Collection inspection and recovery](collection-recovery.md) |
 
 ```mermaid
 flowchart LR
@@ -45,6 +47,8 @@ flowchart LR
     R --> V[Review drafts and preview help]
     P --> V
     V -->|Explicit save with backups| P
+    P --> Ck[Read-only consistency inspection]
+    Ck -->|Explicit backup and snapshot choice| V
     P -->|Inspect generated content| A[Export profile and driver directories]
     A --> K[Validate with --check then browse in Bash]
 ```

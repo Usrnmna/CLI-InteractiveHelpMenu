@@ -49,8 +49,12 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "cli-help-screen-session/tmux.sock", "cli-help-build-session/cli-help", "cli-help-media-session/raw.cast",
             "cli-help-capture-session/help.txt", "cli-help-functional-review-session/state.json",
             "cli-help-workflow-verification-session/source/cli_help/main.py",
+            "cli-help-installer.Ab12Cd34/runtime/README.md", "cli-help-review-config-session/drivers/private.json",
+            "tests/reports/recommendations-7-9-review/final/rendered-screens.json",
             ".cli-help-rc-session", ".review-state-session", ".cli-help-install.json", "cli-help",
             "collection/.scan.lock", "collection/.import.lock", "collection/.review-backups/backup.json",
+            "collection/profiles/.cli-help-write-interrupted.tmp", ".cli-help-write-interrupted.tmp",
+            "collection/.review-backups/recovery-session/manifest.json",
         ], True)
 
     def test_source_fixtures_templates_and_public_assets_remain_visible(self):
@@ -59,6 +63,11 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "tests/fixtures/help/captured.json", "tests/test_repository_config.py", "docs/diagnostics.md",
             "tests/fixtures/help/workflow-baseline-captured.json", "tests/fixtures/help/workflow-manual-edge-cases.json",
             "tests/test_workflow_review.py", "tests/test_workflow_review_terminal.py",
+            "tests/fixtures/help/syntax-7zip-captured.json", "tests/fixtures/help/syntax-7z-x.txt",
+            "tests/test_collection.py", "docs/collection-recovery.md", "docs/argument-syntax.md",
+            "cli_help/arguments.py", "cli_help/collection.py", "profiles/7z-x.json", "profiles/7zz-x.json",
+            "tests/test_syntax_collection_review.py", "tests/test_syntax_terminal.py", "tests/fixtures/help/syntax-7zz-x.txt",
+            "docs/cli-help-installer.md", "docs/assets/cli-help-installer.png",
             "docs/assets/option-insertion.gif", "releases/v0.1.1-alpha/cli-help-v0.1.1-alpha-linux-x86_64",
             ".github/workflows/ci.yml", ".github/ISSUE_TEMPLATE/bug_report.yml", ".github/pull_request_template.md",
             ".env.example", ".env.development.sample", "config/ssh.example", "examples/project/.env.template",

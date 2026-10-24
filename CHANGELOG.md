@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- Repository policy excludes installer scratch directories and retains source
+  fixtures and public assets. Passive CI checks exercise invalid collections and
+  missing bundle values with target-execution detection and scoped safe reports.
+- Review fixes pin passive collection enumeration against symlink swaps, reject
+  invalid directory/report layouts and noncanonical backup paths, validate driver
+  schemas before recovery pairing, and enforce typed scan-state evidence.
+  Bundle value errors distinguish missing payloads from disallowed spellings
+  without echoing arguments or changing pending input.
+- Explicit profile value styles distinguish separate, equals, joined, and
+  attached-only values. Declared OpenSSH bundles retain exact-name precedence
+  and child boundaries; static 7-Zip extraction subsets protect joined payloads.
+- Browser clipping and wrapping account for wide and combining characters.
+  An explicit escape-delay setting supports fragmented terminal keys while
+  retaining the existing default; rendered tests cover the confirmed failures.
+- Read-only collection consistency reports distinguish corruption, stale
+  evidence, and uncertain locks. Explicit snapshot-bound review-backup recovery
+  preserves original bytes, pins directories, and rechecks staged replacements.
 - Passive diagnostics identify explicit driver activation and exact route-file
   provenance. Manual composition instructions document precedence, conflicts,
   and preservation of custom collections without changing activation defaults.
@@ -27,7 +44,7 @@
   selected interpreter before auto-mode cache reuse. Failed identity checks
   bypass caching; unchanged-version local edits require expiry or refresh.
 - Third-party compatibility coverage includes all essential, next, and extended
-  tiers: 160 command paths across 73 executable names, with loadable drivers,
+  tiers: 162 command paths across 73 executable names, with loadable drivers,
   independent sentinel expectations, and captured help excerpts.
 - Recognized sudo/env/command prefixes, selected-interpreter pip/pytest module
   help, literal ip keywords, concrete FFmpeg selectors, and repeated esptool
