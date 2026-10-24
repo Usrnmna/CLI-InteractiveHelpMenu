@@ -62,7 +62,7 @@ jobs:
           persist-credentials: false
       - name: Restore successful link responses
         id: lychee-cache
-        uses: actions/cache/restore@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .lycheecache
           key: lychee-${{ runner.os }}-v0.24.2-${{ hashFiles('lychee.toml') }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -87,7 +87,7 @@ jobs:
           python3 scripts/retry_documentation_links.py --first-outcome '${{ steps.documentation-links.outcome }}'
       - name: Save successful link responses
         if: ${{ always() && steps.lychee-cache.outputs.cache-primary-key != '' && hashFiles('.lycheecache') != '' }}
-        uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .lycheecache
           key: ${{ steps.lychee-cache.outputs.cache-primary-key }}
