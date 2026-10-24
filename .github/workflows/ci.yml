@@ -30,16 +30,45 @@ jobs:
         with:
           persist-credentials: false
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python }}
       - name: Install rendered-screen test dependency
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends tmux
+      - name: Smoke-test passive diagnostics
+        shell: bash
+        env:
+          CLI_HELP_DRIVERS: ${{ github.workspace }}/config/drivers.example
+          CLI_HELP_PROFILES: ''
+          CLI_HELP_CONFIG: ''
+          CLI_HELP_DISCOVERY: 'off'
+          CLI_HELP_CACHE_DIR: ${{ runner.temp }}/cli-help-passive-cache
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports/ci
+          python3 cli_help/main.py --doctor > tests/reports/ci/diagnostics-doctor.json
+          export CLI_HELP_LINE='docker compose -f example.yml --profile debug up --det'
+          export CLI_HELP_POINT=${#CLI_HELP_LINE}
+          python3 cli_help/main.py --explain > tests/reports/ci/diagnostics-explain.json
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          reports = Path("tests/reports/ci")
+          doctor = json.loads((reports / "diagnostics-doctor.json").read_text())
+          explanation = json.loads((reports / "diagnostics-explain.json").read_text())
+          assert doctor["status"] == "ok"
+          assert explanation["resolved_command"] == ["docker", "compose", "up"]
+          assert explanation["code"] == "discovery_disabled"
+          assert "example.yml" not in json.dumps(explanation)
+          assert not Path(os.environ["CLI_HELP_CACHE_DIR"]).exists()
+          PY
       - name: Run full Linux test suite
         shell: bash
         run: |
+          set -euo pipefail
           mkdir -p tests/reports/ci
           bash tests/run.sh 2>&1 | tee tests/reports/ci/linux-tests.log
       - name: Retain test evidence
@@ -47,7 +76,12 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: linux-tests-python-${{ matrix.python }}
-          path: tests/reports/ci/linux-tests.log
+          # Only fixed-input diagnostic reports and the suite log are retained.
+          # Raw captures, downloaded targets, tool homes, and caches stay local.
+          path: |
+            tests/reports/ci/linux-tests.log
+            tests/reports/ci/diagnostics-doctor.json
+            tests/reports/ci/diagnostics-explain.json
           if-no-files-found: warn
           retention-days: 14
 

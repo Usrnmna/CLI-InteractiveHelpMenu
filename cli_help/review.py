@@ -175,6 +175,8 @@ class ReviewSession:
             route = baseline.paths.get(tuple(command[1:])) if baseline else None
             driver["paths"].append({"command": command[1:], "help": [], "man": manual,
                                     "stop_at_positional": bool(route and route.stop_at_positional),
+                                    **({"option_values": sorted(route.option_values)} if route and route.option_values else {}),
+                                    **({"option_flags": sorted(route.option_flags)} if route and route.option_flags else {}),
                                     **({"stop_at_options": list(route.stop_at_options)} if route and route.stop_at_options else {})})
         text = json.dumps({"profile": profile, "driver": driver}, ensure_ascii=False, indent=2) + "\n"
         return Draft(index, text, text, {path: fingerprint(path) for path in (profile_path, driver_path)})

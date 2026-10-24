@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible browser, command-context, discovery, or update problem.
+title: '[Bug] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports should use synthetic filenames, hosts, and argument values.
+        Credentials, private paths, full command history, and unredacted buffers
+        or probe output must be omitted. Diagnostic reports can contain local
+        configuration paths; review and redact those paths before sharing.
+  - type: input
+    id: revision
+    attributes:
+      label: Project version or checkout revision
+      description: Specify the release version or checkout commit, and whether local modifications are present.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include Linux distribution or WSL, Bash and Python versions, terminal emulator, TERM, and tmux version when relevant. Omit private paths.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Describe the shortcut, cursor position, and steps using synthetic command arguments. No operational workload is required.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+      description: Distinguish command-buffer changes, visible rendering, and separate help-discovery requests.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Redacted diagnostic summary
+      description: Optional summary of --doctor or --explain status/reason codes. Remove local paths and sensitive values; raw reports and logs are unnecessary.
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Report privacy
+      options:
+        - label: Credentials, private paths, and unredacted command buffers or logs are omitted.
+          required: true

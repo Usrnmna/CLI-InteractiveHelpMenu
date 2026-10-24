@@ -94,9 +94,14 @@ from root discovery or a reviewed custom profile.
 
 Compose `exec` stops option insertion at the first positional service name;
 its child command's flags are not Compose flags. Cargo `test` permits a test-name
-filter but stops at `--`, before arguments for the test binary. Compose options
-between `compose` and its subcommand are not resolved; the existing root global
-options, such as `docker --context local compose logs`, remain supported.
+filter but stops at `--`, before arguments for the test binary. The supplied
+Compose parent route declares value and boolean arity for options between
+`compose` and its subcommand. For example,
+`docker compose -f local.yml --profile debug up --` selects `up` help. Repeated
+files/profiles, long equals-attached values, and declared short attached values
+are recognized. Root globals such as `docker --context local compose logs`
+remain supported. Unknown parent options and incomplete values fail before
+discovery; pending values never enter the fixed help request.
 
 ## Run the checks
 

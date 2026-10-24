@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 
 from drivers import Driver, HelpRoute
+from errors import HelpError
 
 
 ASSIGNMENT = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)=.*", re.DOTALL)
@@ -44,7 +45,7 @@ def assignment_name(word):
         return None
     name = match.group(1)
     if name in LOOKUP_VARIABLES or name.startswith(("PYTHON", "LD_", "DYLD_")):
-        raise ValueError(f"Environment assignment {name} changes lookup or loading; this prefix form is unsupported.")
+        raise HelpError("An environment assignment changes lookup or loading; this prefix form is unsupported.", "lookup_environment_unsupported")
     return name
 
 
@@ -93,7 +94,7 @@ def resolve_invocation(words: list[str]) -> Invocation:
             else:
                 short = next((flag for flag in values if len(flag) == 2 and word.startswith(flag) and len(word) > 2), None)
                 if short is None:
-                    raise ValueError(f"Unsupported or lookup-changing {name} option {word!r}.")
+                    raise HelpError(f"Unsupported or lookup-changing {name} option. Check the supported prefix forms.", "unsupported_prefix_option")
                 value = word[2:]
             if name == "env":
                 if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", value):

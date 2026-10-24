@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Context review corrections validate executable tokens before diagnostics,
+  protect attached parent values from replacement, and retain root-global literal
+  operands. Passive diagnostics report invalid home expansion and actual shell
+  locale requirements. Runtime and passive cache readers reject symlinks/special
+  files and enforce actual read limits.
+- Declared parent-option arity preserves leaf context for Compose file, project,
+  and profile options without forwarding pending values to documentation probes.
+- Passive `--doctor` and `--explain` JSON reports inspect configuration, context,
+  provenance, and bounded cache state. Reason-coded errors omit rejected input
+  values and arbitrary subprocess output.
+- Cache version 8 fingerprints fixed pip/pytest version responses under the
+  selected interpreter before auto-mode cache reuse. Failed identity checks
+  bypass caching; unchanged-version local edits require expiry or refresh.
 - Third-party compatibility coverage includes all essential, next, and extended
   tiers: 129 command paths across 62 executable names, with loadable drivers,
   independent sentinel expectations, and captured help excerpts.
@@ -10,7 +23,7 @@
   address/file groups preserve buffer text and cursor offsets. Ambiguous lookup
   forms and incomplete groups fail closed without executing pending commands.
 - Version guards distinguish Mike Farah yq, JavaScript Yarn, and current/legacy
-  esptool syntax. Cache version 7 retains interpreter and executable context
+  esptool syntax. Cache identity retains interpreter and executable context
   and invalidates entries predating Ansible's fixed UTF-8 probe locale.
 - Live dependency checks corrected Go run's build-only output option, Podman's
   optional pull policy, and fzf's optional count aliases. Explicit nonnegative

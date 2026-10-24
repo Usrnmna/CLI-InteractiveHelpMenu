@@ -94,9 +94,14 @@ class ModuleDiscoveryTests(unittest.TestCase):
         self.interpreter.write_text("selected interpreter", encoding="utf-8")
         self.which = patch("discovery.shutil.which", side_effect=lambda name: None if name == "man" else str(self.interpreter))
         self.which.start()
+        # These tests isolate help routing and interpreter identity. Dedicated
+        # module-freshness tests assert the independent fixed version requests.
+        self.freshness = patch("discovery.module_fingerprint", return_value="fixture-module-fingerprint")
+        self.freshness.start()
 
     def tearDown(self):
         self.which.stop()
+        self.freshness.stop()
         self.temp.cleanup()
 
     def test_both_interpreters_all_supported_pip_paths_have_fixed_help_operands(self):

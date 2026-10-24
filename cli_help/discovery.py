@@ -14,6 +14,7 @@ import re
 import selectors
 import shutil
 import signal
+import stat
 import subprocess
 import tempfile
 import time
@@ -26,7 +27,7 @@ from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 7
+CACHE_VERSION = 8
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -76,7 +77,8 @@ class ProbeExitError(ProbeError):
     def __init__(self, returncode: int, output: str):
         self.returncode = returncode
         self.output = output
-        super().__init__(f"Help source exited with status {returncode}: {clean_output(output).strip()[:300]}")
+        super().__init__(f"Help source exited with status {returncode}; check the renderer and documentation availability.",
+                         "probe_exit")
 
 
 def probe_environment() -> dict:
@@ -114,7 +116,7 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
                                        stderr=subprocess.STDOUT, cwd=directory, env=environment,
                                        start_new_session=True)
         except OSError as error:
-            raise ProbeError(f"Cannot start help source: {error}") from error
+            raise ProbeError("Cannot start help source; check executable availability and permissions.", "probe_start") from error
         output = bytearray()
         deadline = time.monotonic() + timeout
         try:
@@ -123,7 +125,7 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
                 while selector.get_map():
                     remaining = deadline - time.monotonic()
                     if remaining <= 0:
-                        raise ProbeError(f"Help source timed out after {timeout:g} seconds.")
+                        raise ProbeError(f"Help source timed out after {timeout:g} seconds.", "probe_timeout")
                     for key, _ in selector.select(remaining):
                         chunk = os.read(key.fd, min(65536, max_bytes - len(output) + 1))
                         if not chunk:
@@ -131,11 +133,11 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
                             break
                         output.extend(chunk)
                         if len(output) > max_bytes:
-                            raise ProbeError(f"Help source exceeded {max_bytes} bytes.")
+                            raise ProbeError(f"Help source exceeded {max_bytes} bytes.", "probe_output_limit")
             try:
                 process.wait(timeout=max(0.001, deadline - time.monotonic()))
             except subprocess.TimeoutExpired as error:
-                raise ProbeError(f"Help source timed out after {timeout:g} seconds.") from error
+                raise ProbeError(f"Help source timed out after {timeout:g} seconds.", "probe_timeout") from error
             # Nonzero status is common for --help; manual import and scanning
             # require renderer success to distinguish missing pages from prose.
             decoded = output.decode("utf-8", errors="replace")
@@ -397,7 +399,7 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> d
                 continue
             by_flag[identity] = entry
     if not by_flag:
-        raise HelpError(f"No recognizable option declarations were found for {command!r}.")
+        raise HelpError("No recognizable option declarations were found for the selected command.", "help_unparsed")
     categories = {}
     for entry in by_flag.values():
         category = entry.pop("category")
@@ -416,12 +418,38 @@ def executable_identity(path: str) -> dict:
             "size": stat.st_size, "inode": stat.st_ino, "device": stat.st_dev}
 
 
+def read_cache_document(path: Path):
+    """Read a bounded regular cache file without following links or blocking on FIFOs.
+
+    Nonblocking open plus descriptor validation closes the check/open race for
+    special files. The actual byte limit also applies if the file grows after
+    its metadata was checked. Cache failures remain misses at the caller.
+    """
+    if path.is_symlink():
+        raise ValueError("Cache entries must be regular files, not symbolic links.")
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
+    descriptor = os.open(path, flags)
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > MAX_CACHE_BYTES:
+            raise ValueError("Cache entry is not a size-bounded regular file.")
+        output = bytearray()
+        while len(output) <= MAX_CACHE_BYTES:
+            chunk = os.read(descriptor, min(65536, MAX_CACHE_BYTES + 1 - len(output)))
+            if not chunk:
+                break
+            output.extend(chunk)
+        if len(output) > MAX_CACHE_BYTES:
+            raise ValueError("Cache entry exceeds its read limit.")
+        return json.loads(output.decode("utf-8"))
+    finally:
+        os.close(descriptor)
+
+
 def read_cache(path: Path, identity: dict, ttl: int) -> dict | None:
     """Accept only fresh, size-bounded, schema-valid cached profiles for this lookup."""
     try:
-        if path.stat().st_size > MAX_CACHE_BYTES:
-            return None
-        document = json.loads(path.read_text(encoding="utf-8"))
+        document = read_cache_document(path)
         if not isinstance(document, dict) or document.get("identity") != identity:
             return None
         age = time.time() - document["created"]
@@ -480,6 +508,41 @@ def module_help_route(module: str, subcommands: tuple[str, ...], interpreter_opt
     return [*interpreter_options, "-m", module, *arguments], manual
 
 
+def module_fingerprint(executable, module, interpreter_options, timeout):
+    """Fingerprint fixed module-version output without evaluating Python code.
+
+    This auto-mode request runs before cache reuse. Version and import-location
+    changes invalidate pip/pytest documentation under an unchanged interpreter.
+    An unverified response disables caching for the request; same-version local
+    edits remain subject to TTL or explicit refresh. Raw output is never saved.
+    """
+    arguments = [executable, *interpreter_options, "-m", module, "--version"]
+    overrides = None
+    if module == "pytest":
+        arguments.append("--noconftest")
+        overrides = {"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}
+    output = clean_output(run_probe(arguments, timeout, check=True,
+                                    environment_overrides=overrides)).strip()
+    if not re.match(r"^" + module + r"\s+[0-9]+\.[0-9]+", output):
+        raise ProbeError("Module version response was not recognized; cache reuse is disabled.", "module_version_unverified")
+    return hashlib.sha256(output.encode("utf-8")).hexdigest()
+
+
+def cache_identity(command_path, executable, help_arguments, manual_name, manual, settings,
+                   module=None, interpreter_options=()):
+    """Build filesystem-derived lookup identity without invoking any program."""
+    identity = {"version": CACHE_VERSION, "command": list(command_path), "executable": executable_identity(executable),
+                "help_arguments": list(help_arguments), "manual_name": manual_name,
+                "mode": settings.mode, "manual": executable_identity(manual) if manual else None,
+                "manpath": os.environ.get("MANPATH", ""), "timeout": settings.timeout}
+    if module is not None:
+        identity.update({"module": module, "interpreter_options": list(interpreter_options),
+                         "home_identity": hashlib.sha256(os.environ.get("HOME", "").encode()).hexdigest()})
+        venv_config = Path(executable).parent.parent / "pyvenv.cfg"
+        identity["venv_config"] = executable_identity(str(venv_config)) if venv_config.is_file() else None
+    return identity
+
+
 def verify_command_variant(name: str, executable: str, settings: Settings, subcommands=()) -> str:
     """Identify tools whose names or command spelling differ across products.
 
@@ -519,7 +582,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     executable, module, interpreter switch, or module help route.
     """
     if settings.mode == "off":
-        raise HelpError("No static profile matches and automatic discovery is disabled.")
+        raise HelpError("No static profile matches and automatic discovery is disabled.", "discovery_disabled")
     name = Path(command).name
     if not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", name) or name in (".", ".."):
         raise HelpError("Discovery requires a literal executable name.")
@@ -542,7 +605,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         help_arguments = ["--help", "--noconftest"]
     executable = shutil.which(command)
     if not executable:
-        raise HelpError(f"Installed executable not found: {command!r}")
+        raise HelpError("Installed executable not found; check the selected executable and PATH.", "executable_missing")
     executable = os.path.abspath(executable)
     variant = (verify_command_variant(name, executable, settings, subcommands)
                if name in ("yq", "yarn", "esptool", "esptool.py") else None)
@@ -552,22 +615,31 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         help_arguments = ["run", "-h=1"]
     manual = shutil.which("man")
     manual = os.path.abspath(manual) if manual else None
-    identity = {"version": CACHE_VERSION, "command": command_path, "executable": executable_identity(executable),
-                "help_arguments": help_arguments, "manual_name": manual_name,
-                "mode": settings.mode, "manual": executable_identity(manual) if manual else None,
-                "manpath": os.environ.get("MANPATH", ""), "timeout": settings.timeout}
-    if module is not None:
-        identity.update({"module": module, "interpreter_options": list(interpreter_options)})
+    identity = cache_identity(command_path, executable, help_arguments, manual_name, manual, settings,
+                              module, interpreter_options)
+    freshness_warning = None
+    cache_verified = True
+    if module is not None and settings.mode == "auto":
+        try:
+            identity["module_fingerprint"] = module_fingerprint(executable, module, interpreter_options, settings.timeout)
+        except ProbeError as error:
+            # A failed freshness check never licenses reuse of old metadata.
+            # Fresh help remains useful when --version is unavailable or slow.
+            cache_verified = False
+            reason = " timed out" if error.code == "probe_timeout" else " could not be verified"
+            freshness_warning = "Module identity" + reason + "; this request bypasses cache reads and writes."
     if variant:
         identity["variant"] = variant
     digest = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
-    cache_path = settings.cache_dir / f"{digest}.json" if settings.cache_dir and settings.cache_ttl else None
+    cache_path = settings.cache_dir / f"{digest}.json" if settings.cache_dir and settings.cache_ttl and cache_verified else None
     if cache_path and not refresh:
         profile = read_cache(cache_path, identity, settings.cache_ttl)
         if profile is not None:
             return profile
     sources = []
     warnings = []
+    if freshness_warning:
+        warnings.append(freshness_warning)
     probe_failed = False
     probes = []
     if settings.mode == "auto" and help_arguments:

@@ -186,6 +186,29 @@ profile; a successful partial profile is cached to avoid repeated probes.
 Parser-schema changes invalidate older entries. The cache TTL accepts integer
 seconds from 0 through 604800; its default is 86400.
 
+In auto mode, supported Python module lookups run a fixed `--version` request
+through the selected interpreter before cache reuse. Pytest adds `--noconftest`
+and disables plugin autoload for both version and help requests. A hash of this
+response, virtual-environment configuration identity, and the probe HOME context
+supplement interpreter identity. Changed
+module versions and reported pip import locations invalidate cached help without
+requiring an interpreter replacement. Raw version output is not saved in the
+cache identity. Failed or unrecognized identity responses bypass cache reads and
+writes while still attempting fresh help. Local edits that leave version output
+unchanged remain subject to TTL or explicit refresh. Man-only mode retains system
+manual semantics and never runs the interpreter; discovery-off performs no lookup.
+
+Module version and help requests each use the normal two-second per-source limit.
+A warm module cache still requires its identity request; an uncached module lookup
+can consume two sequential request limits. Guarded vendor/version tools likewise
+verify identity before cache reuse. Increasing the timeout for an explicit
+diagnostic lookup does not establish responsiveness at the default timeout.
+
+`--doctor` and `--explain` provide [passive diagnostics](diagnostics.md). They
+inspect configuration and bounded existing cache entries without probes or writes,
+report cache age and freshness limits, and omit pending operand values. A passive
+module/vendor cache candidate is not evidence of current executable identity.
+
 ```bash
 export CLI_HELP_DISCOVERY_TIMEOUT=3    # Seconds per source; allowed range: 0.05-30.
 export CLI_HELP_CACHE_TTL=3600         # Seconds; zero disables caching.
@@ -208,6 +231,9 @@ configuration without running discovery.
 
 Cache writes are atomic. Expired, malformed, oversized, or schema-invalid cache
 entries are ignored. Unavailable cache storage does not prevent discovery.
+Cache reads accept regular files only, reject symlinks and special files without
+waiting on FIFO writers, and enforce the byte limit during reads. Passive cache
+inspection uses the same reader and treats rejected entries as misses.
 
 ## Insertion behavior and prototype limits
 

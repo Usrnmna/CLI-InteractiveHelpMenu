@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from errors import HelpError
+
 
 WORD = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.+-]*")
 FLAG = re.compile(r"--?[A-Za-z0-9][A-Za-z0-9_-]*")
@@ -18,6 +20,8 @@ class HelpRoute:
     manual: str | None
     stop_at_positional: bool = False
     stop_at_options: tuple[str, ...] = ()
+    option_values: frozenset[str] = frozenset()
+    option_flags: frozenset[str] = frozenset()
 
 
 @dataclass
@@ -58,7 +62,7 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         raise ValueError("A driver requires at least one help path.")
     paths = {}
     for route in routes:
-        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "stop_at_positional", "stop_at_options"}:
+        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "stop_at_positional", "stop_at_options", "option_values", "option_flags"}:
             raise ValueError("Unknown driver route field.")
         words = route.get("command")
         if not isinstance(words, list) or any(not isinstance(word, str) or not WORD.fullmatch(word) for word in words):
@@ -86,7 +90,18 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         path = tuple(words)
         if path in paths:
             raise ValueError("Duplicate command path in driver.")
-        paths[path] = HelpRoute(tuple(arguments), manual, stop, tuple(boundaries))
+        parent_options = {}
+        for field_name in ("option_values", "option_flags"):
+            flags = route.get(field_name, [])
+            if (not isinstance(flags, list) or any(not isinstance(flag, str) or not FLAG.fullmatch(flag) for flag in flags)
+                    or len(flags) != len(set(flags))):
+                raise ValueError("Parent option lists require unique literal option names.")
+            parent_options[field_name] = frozenset(flags)
+        if parent_options["option_values"] & parent_options["option_flags"]:
+            raise ValueError("A parent option cannot have conflicting argument arity.")
+        if not words and any(parent_options.values()):
+            raise ValueError("Executable root options require global_values/global_flags, not parent option lists.")
+        paths[path] = HelpRoute(tuple(arguments), manual, stop, tuple(boundaries), **parent_options)
     return name, Driver(paths, **globals_by_kind)
 
 
@@ -98,7 +113,7 @@ def load_driver_files(directory: Path, registry: dict[str, Driver]) -> dict[str,
     No file is imported as code, and no discovery subprocess runs during loading.
     """
     if not directory.is_dir():
-        raise ValueError(f"Driver directory does not exist: {directory}")
+        raise HelpError(f"Driver directory does not exist: {directory}", "invalid_driver")
     result = dict(registry)
     seen = set()
     for path in sorted(directory.glob("*.json")):
@@ -116,5 +131,5 @@ def load_driver_files(directory: Path, registry: dict[str, Driver]) -> dict[str,
                 raise ValueError("Driver overlay conflicts with existing global-option arity.")
             result[name] = Driver({**previous.paths, **driver.paths}, values, flags)
         except (OSError, ValueError, RecursionError) as error:
-            raise ValueError(f"Invalid driver {path}: {error}") from error
+            raise HelpError(f"Invalid driver {path}: {error}", "invalid_driver") from error
     return result

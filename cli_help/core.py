@@ -8,10 +8,7 @@ import shlex
 
 from command_paths import load_driver_registry, resolve_path
 from invocation import module_driver, resolve_invocation
-
-
-class HelpError(ValueError):
-    """A configuration or command context cannot be handled safely."""
+from errors import HelpError
 
 
 @dataclass(frozen=True)
@@ -99,7 +96,7 @@ def validate_profile(profile: dict, source: Path):
             kind = option.get("kind", "flag")
             pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*=?"
             if not isinstance(kind, str) or kind not in {"flag", "keyword"} or not isinstance(flag, str) or not re.fullmatch(pattern, flag):
-                raise HelpError(f"{source}: invalid literal option flag: {flag!r}")
+                raise HelpError(f"{source}: invalid literal option flag; inspect the literal flag schema.")
             if flag in flags:
                 raise HelpError(f"{source}: duplicate option flag: {flag}")
             flags.add(flag)
@@ -148,7 +145,7 @@ def tokenize(line: str) -> list[Token]:
     escapes. Compound commands, substitutions, and multiline input fail closed.
     """
     if any(char in line for char in "\n\r\x00"):
-        raise HelpError("Only single-line simple commands are supported.")
+        raise HelpError("Only single-line simple commands are supported.", "unsupported_shell_syntax")
     tokens = []
     index = 0
     while index < len(line):
@@ -162,7 +159,7 @@ def tokenize(line: str) -> list[Token]:
             if quote != "'" and char == "\\":
                 index += 2
                 if index > len(line):
-                    raise HelpError("Complete the trailing escape before opening help.")
+                    raise HelpError("Complete the trailing escape before opening help.", "incomplete_escape")
                 continue
             if char == quote:
                 quote = None
@@ -171,55 +168,67 @@ def tokenize(line: str) -> list[Token]:
             elif quote is None and char in " \t":
                 break
             elif quote != "'" and char in "$`":
-                raise HelpError("Shell expansions are not supported in this prototype.")
+                raise HelpError("Shell expansions are not supported in this prototype.", "unsupported_shell_syntax")
             elif quote is None and char in "|&;<>()":
-                raise HelpError("Pipelines, redirects, and compound commands are not supported.")
+                raise HelpError("Pipelines, redirects, and compound commands are not supported.", "unsupported_shell_syntax")
             index += 1
         if quote:
-            raise HelpError("Close the quoted argument before opening help.")
+            raise HelpError("Close the quoted argument before opening help.", "incomplete_quote")
         raw = line[start:index]
         if raw.startswith("#"):
-            raise HelpError("Help is unavailable inside shell comments.")
+            raise HelpError("Help is unavailable inside shell comments.", "comment_context")
         try:
             value = shlex.split(raw, posix=True)[0]
         except (ValueError, IndexError) as error:
-            raise HelpError("The command contains an unsupported shell word.") from error
+            raise HelpError("The command contains an unsupported shell word.", "unsupported_shell_syntax") from error
         tokens.append(Token(start, index, value))
     return tokens
 
 
-def find_context(line: str, point: int, profiles: list[dict], discover=None, driver_registry=None) -> Context:
+def find_context(line: str, point: int, profiles: list[dict], discover=None, driver_registry=None,
+                 observe=None) -> Context:
     """Resolve the longest literal command profile and the editable option span.
 
     Bash's bind -x interface exposes character offsets in a UTF-8 locale,
     rather than the byte offsets used internally by the Readline library.
+    An optional observer receives resolved path and invocation metadata before
+    lookup, allowing passive reports to reuse parsing without receiving operands.
     """
     if not 0 <= point <= len(line):
-        raise HelpError("The cursor offset is outside the command line.")
+        raise HelpError("The cursor offset is outside the command line.", "invalid_cursor")
     try:
         line.encode("utf-8")
     except UnicodeError as error:
-        raise HelpError("The command line must contain valid UTF-8 text.") from error
+        raise HelpError("The command line must contain valid UTF-8 text.", "invalid_encoding") from error
     tokens = tokenize(line)
     if not tokens:
-        raise HelpError("Type a supported command followed by a space first.")
+        raise HelpError("Type a supported command followed by a space first.", "command_required")
     # Validate the editable position before permitting any discovery subprocess.
     if point <= tokens[0].end:
-        raise HelpError("Move the cursor after the command or subcommand and a space.")
+        raise HelpError("Move the cursor after the command or subcommand and a space.", "cursor_before_arguments")
     active = next((token for token in tokens if token.start <= point <= token.end), None)
     start, end = (active.start, active.end) if active else (point, point)
     query = active.value if active else ""
     if active and "=" in query:
-        raise HelpError("Move the cursor outside the attached option value.")
+        raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
     words = [token.value for token in tokens if token.end <= start]
     driver_registry = load_driver_registry() if driver_registry is None else driver_registry
     try:
         invocation = resolve_invocation(words)
+        executable_name = Path(tokens[invocation.executable_index].value).name
+        if (not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", executable_name) or executable_name in {".", ".."}):
+            # Explicit static definitions retain their literal command names.
+            # Unrecognized option-looking words must not become diagnostic
+            # command names, because they can contain attached secret values.
+            if not any(profile["command"][0] == executable_name for profile in profiles):
+                raise HelpError("Use a literal executable name before opening help.", "invalid_executable")
         target_words = [invocation.name, *words[invocation.argument_start:]]
         target_registry = ({invocation.module: module_driver(invocation.module)}
                            if invocation.module else driver_registry)
         path = resolve_path(target_words, [] if invocation.module else
                             [tuple(profile["command"]) for profile in profiles], target_registry)
+    except HelpError:
+        raise
     except ValueError as error:
         raise HelpError(str(error)) from error
     argument_start = invocation.argument_start + path.argument_start - 1
@@ -228,12 +237,27 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         # Explicit interpreter/module profiles are separate from ordinary pip
         # profiles; a different pip executable must never supply this context.
         profile_path = (Path(tokens[invocation.executable_index].value).name, "-m", *path.words)
+    resolved_driver = target_registry.get(path.words[0])
+    resolved_route = resolved_driver.paths.get(path.words[1:]) if resolved_driver else None
+    scoped_values = (resolved_driver.global_values if resolved_driver and len(path.words) == 1
+                     else resolved_route.option_values if resolved_route else ())
+    scoped_flags = (resolved_driver.global_flags if resolved_driver and len(path.words) == 1
+                    else resolved_route.option_flags if resolved_route else ())
+    if (active and query not in scoped_values and query not in scoped_flags
+            and any(len(flag) == 2 and query.startswith(flag) and len(query) > len(flag) for flag in scoped_values)):
+        # Driver arity remains authoritative even when help parsing has not
+        # marked a short parent/global option's attached argument explicitly.
+        raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
+    if observe is not None:
+        # Passive diagnostics share the exact resolver; only the resolved path
+        # and invocation identity leave this boundary, never pending operands.
+        observe(path.words, profile_path, invocation)
     matches = [profile for profile in profiles if tuple(profile["command"]) == profile_path]
     if active and not query.startswith("-") and not (query and any(
         option.get("kind") == "keyword" and option["flag"].startswith(query)
         for profile in matches for category in profile["categories"] for option in category["options"]
     )):
-        raise HelpError("Move the cursor to an empty argument or an option name, or a documented keyword.")
+        raise HelpError("Move the cursor to an empty argument or an option name, or a documented keyword.", "cursor_in_operand")
     if matches and matches[0].get("identity"):
         if discover is None:
             raise HelpError("This profile requires executable identity verification through discovery.")
@@ -249,21 +273,21 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
             matches = [discover(executable, subcommands=path.words[1:]) if len(path.words) > 1
                        else discover(executable)]
     if not matches:
-        raise HelpError(f"No help profile for {words[0]!r}. Use --list-commands to list profiles.")
+        raise HelpError("No matching help profile. Use --list-commands to list profiles.", "profile_missing")
     profile = max(matches, key=lambda item: len(item["command"]))
     command_end = tokens[argument_start - 1].end
     if point <= command_end:
-        raise HelpError("Move the cursor after the command or subcommand and a space.")
+        raise HelpError("Move the cursor after the command or subcommand and a space.", "cursor_before_arguments")
     previous = [token.value for token in tokens[argument_start:] if token.end <= start]
     options = {option["flag"].rstrip("="): option for category in profile["categories"] for option in category["options"]}
     if active:
         keyword_match = bool(query) and any(option.get("kind") == "keyword" and option["flag"].startswith(query) for option in options.values())
         if "=" in query or not (query.startswith("-") or keyword_match):
-            raise HelpError("Move the cursor to an empty argument, an option name, or a documented keyword.")
+            raise HelpError("Move the cursor to an empty argument, an option name, or a documented keyword.", "cursor_in_operand")
         # A joined payload is a real value, never an editable flag prefix.
-        if any(option.get("attached") and query.startswith(key) and len(query) > len(key)
+        if query not in options and any(option.get("attached") and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
-            raise HelpError("Move the cursor outside the attached option value.")
+            raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
     values_remaining = 0
     optional_integer_pending = False
     driver = driver_registry.get(path.words[0])
@@ -283,16 +307,16 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
             # An option-looking file cannot complete an esptool-style positional
             # pair: quoting does not hide its leading dash from the target CLI.
             if word.startswith("-"):
-                raise HelpError("Complete the repeated positional argument group before an option or -- marker.")
+                raise HelpError("Complete the repeated positional argument group before an option or -- marker.", "positional_group_incomplete")
             group_values = (group_values + 1) % group["argument_count"]
             continue
         if values_remaining:
             values_remaining -= 1
             continue
         if word == "--":
-            raise HelpError("Options cannot be inserted after the -- end-of-options marker.")
+            raise HelpError("Options cannot be inserted after the -- end-of-options marker.", "end_of_options")
         if word.partition("=")[0] in boundary_options:
-            raise HelpError("Options cannot be inserted after this command's child-argument boundary.")
+            raise HelpError("Options cannot be inserted after this command's child-argument boundary.", "child_argument_boundary")
         key, equal, _ = word.partition("=")
         if invocation.module == "pip" and key == "--python":
             raise HelpError("pip --python changes the interpreter; this module form is unsupported.")
@@ -307,21 +331,21 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
             group_values = 1
             continue
         if group and not option:
-            raise HelpError("An unrecognized option makes the structured argument position ambiguous.")
+            raise HelpError("An unrecognized option makes the structured argument position ambiguous.", "unsupported_option")
         if stop_at_positional:
             if not word.startswith("-") and option.get("kind") != "keyword":
-                raise HelpError("Move the cursor before the first positional argument to insert this command's options.")
+                raise HelpError("Move the cursor before the first positional argument to insert this command's options.", "child_argument_boundary")
             if not option:
-                raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.")
+                raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.", "unsupported_option")
         if option.get("argument") and not option.get("argument_optional", False):
             values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal) or attached))
         optional_integer_pending = option.get("optional_value_kind") == "nonnegative_integer" and not (equal or attached)
     if values_remaining:
-        raise HelpError("Enter the preceding option's argument before choosing another option.")
+        raise HelpError("Enter the preceding option's argument before choosing another option.", "option_value_required")
     if optional_integer_pending and active and re.fullmatch(r"[0-9]+", query):
-        raise HelpError("Move the cursor outside the optional integer argument.")
+        raise HelpError("Move the cursor outside the optional integer argument.", "cursor_in_value")
     if group_values:
-        raise HelpError("Complete the repeated positional argument group before choosing an option.")
+        raise HelpError("Complete the repeated positional argument group before choosing an option.", "positional_group_incomplete")
     return Context(line, point, start, end, query, profile)
 
 

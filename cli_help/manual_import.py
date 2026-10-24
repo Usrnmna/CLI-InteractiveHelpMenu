@@ -148,6 +148,10 @@ class ManualCollection:
                 previous = {"stop_at_positional": True}
             if route and route.stop_at_options:
                 previous["stop_at_options"] = list(route.stop_at_options)
+            if route and route.option_values:
+                previous["option_values"] = sorted(route.option_values)
+            if route and route.option_flags:
+                previous["option_flags"] = sorted(route.option_flags)
         routes = [route for route in document["paths"] if route["command"] != command[1:]]
         routes.append({**previous, "command": command[1:], "help": [], "man": manual})
         document = {**document, "paths": routes}
