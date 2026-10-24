@@ -6,6 +6,11 @@ max_retries = 2
 retry_wait_time = 2
 exclude_all_private = true
 
+# Reuse successful responses for one day; failures must be checked again.
+cache = true
+max_cache_age = "1d"
+cache_exclude_status = "100..=199,300..=999"
+
 # Generated reports and dependency environments are not maintained documentation.
 exclude_path = [
   '(^|/)(\.git|\.cache|\.venv|venv|__pycache__|dist|generated-help)(/|$)',
@@ -18,4 +23,6 @@ exclude_path = [
 # Serialize GNU requests and space them apart to reduce HTTP 429 responses.
 [hosts."www.gnu.org"]
 concurrency = 1
-request_interval = "3s"
+request_interval = "10s"
+# Identify the project; GNU rejects the default Lychee User-Agent on these pages.
+headers = { "User-Agent" = "CLI-InteractiveHelpMenu-link-check (+https://github.com/Usrnmna/CLI-InteractiveHelpMenu)" }
