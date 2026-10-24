@@ -7,6 +7,11 @@ complete operating instructions, configuration references, and implementation
 evidence. Shell command examples assume the repository root as the working
 directory.
 
+The operating guides describe the current working tree, including unreleased
+changes listed in the [changelog](../CHANGELOG.md#unreleased). The version marker
+remains `0.1.1-alpha`; the [published alpha artifacts](releases.md) are an older
+snapshot. Dated reviews below retain the results and limitations of their own runs.
+
 ## Browser use
 
 | Topic | Guide |
@@ -38,7 +43,8 @@ flowchart LR
     R --> V[Review drafts and preview help]
     P --> V
     V -->|Explicit save with backups| P
-    P --> A[Activate collection for the Bash browser]
+    P -->|Inspect generated content| A[Export profile and driver directories]
+    A --> K[Validate with --check then browse in Bash]
 ```
 
 Profiles contain the menu content; drivers define documentation routes and
@@ -49,10 +55,16 @@ defines both formats.
 
 ## Development and evidence
 
+- [Review fixes and added command paths](review-fixes-2026-10-23.md) records
+  metadata and resize corrections, ten driver additions, and fresh validation.
 - [Source architecture and validation](development.md) covers module ownership,
   the Bash helper boundary, test procedures, and recorded compatibility results.
 - [Help-format corpus provenance](../tests/fixtures/help/README.md) distinguishes
   representative fixtures from live command documentation.
+- [Terminal media capture and regeneration](assets/README.md) describes the
+  real-terminal demonstrations, annotations, optional tools, and capture checks.
+- [Functional review dated 2026-10-23](functional-review-2026-10-23.md) records
+  combined command workflows, terminal evidence, live results, and remaining gaps.
 
 Local scan reports, caches, and review backups contain generated data or captured
 command documentation. They are not maintained explanations of project behavior;

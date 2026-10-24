@@ -3,7 +3,7 @@
 [Project overview](../README.md) · [Documentation index](README.md) ·
 [Driver configuration](profiles-and-drivers.md)
 
-The compatibility matrix covers 49 representative command paths across 34
+The compatibility matrix covers 59 representative command paths across 34
 executable names. The tiers organize test coverage; they are not measured usage
 rankings. A passing case establishes the selected option declarations, argument
 counts, and literal insertion behavior for the recorded version. It does not
@@ -15,19 +15,19 @@ establish complete option coverage or successful execution of the program's work
 | --- | --- | --- |
 | Essential | Git | `git commit`, `git log`, `git diff` |
 | Essential | curl, Wget, rsync | `curl`, `wget`, `rsync` |
-| Essential | Docker and Compose plugin | `docker run`, `docker image ls`, `docker compose up` |
+| Essential | Docker and Compose plugin | `docker run`, `docker image ls`, `docker compose up`, `docker compose logs`, `docker compose exec` |
 | Essential | pip | `pip`, `pip install`, `pip download`, `pip3 install` |
 | Essential | uv | `uv pip install`, `uv run` |
 | Essential | npm and pnpm | `npm`, `npm install`, `npm run`, `pnpm install` |
 | Essential | jq and ripgrep | `jq`, `rg` |
 | Essential | FFmpeg | `ffmpeg`, `ffprobe` |
-| Next | GitHub CLI | `gh pr list`, `gh repo clone` |
-| Next | Kubernetes and Helm | `kubectl get`, `kubectl config view`, `helm install` |
-| Next | AWS CLI | `aws s3 cp`, `aws ec2 describe-instances` |
+| Next | GitHub CLI | `gh pr list`, `gh pr view`, `gh pr create`, `gh repo clone` |
+| Next | Kubernetes and Helm | `kubectl get`, `kubectl describe`, `kubectl logs`, `kubectl config view`, `helm install`, `helm upgrade` |
+| Next | AWS CLI | `aws s3 cp`, `aws s3 sync`, `aws ec2 describe-instances` |
 | Next | Terraform and OpenTofu | `terraform plan`, `terraform apply`, `tofu plan`, `tofu apply` |
-| Next | Rust Cargo | `cargo build` |
+| Next | Rust Cargo | `cargo build`, `cargo test` |
 | Next | CMake, Ninja, GCC, Clang | `cmake`, `ninja`, `gcc`, `clang` |
-| Extended | rclone, restic, BorgBackup | `rclone`, `rclone copy`, `restic backup`, `borg create` |
+| Extended | rclone, restic, BorgBackup | `rclone`, `rclone copy`, `rclone sync`, `restic backup`, `borg create` |
 | Extended | 7-Zip | `7z`, `7zz` |
 | Extended | ImageMagick | `magick` (version 7), `convert` (version 6) |
 | Extended | yt-dlp and VLC | `yt-dlp`, `vlc` |
@@ -66,7 +66,15 @@ Only the listed command paths are adapted. Unknown nested paths fail with a
 diagnostic. Tools with conventional root help use generic discovery and need no
 additional driver. Curl uses `--help all`, 7-Zip uses `-h`, and ImageMagick uses
 `-help`. Rclone root discovery uses `help flags`; `rclone copy --help` exposes
-the copy-specific options separately.
+the copy-specific options separately. `rclone sync --help` likewise exposes only
+its sync-specific options on the tested version; global flags remain available
+from root discovery or a reviewed custom profile.
+
+Compose `exec` stops option insertion at the first positional service name;
+its child command's flags are not Compose flags. Cargo `test` permits a test-name
+filter but stops at `--`, before arguments for the test binary. Compose options
+between `compose` and its subcommand are not resolved; the existing root global
+options, such as `docker --context local compose logs`, remain supported.
 
 ## Run the checks
 
@@ -114,6 +122,13 @@ whose help lists commands without option declarations; `npm install` and `npm ru
 are tested separately. Consequently, a complete run can contain that documented
 unsupported result while its ordinary exit status is zero.
 
+The live harness defaults to four seconds per help/manual source. Slow executable
+startup can be investigated with `--timeout 15`; the accepted range is 0.05–30
+seconds, and the selected limit is recorded as `source_timeout_seconds`. A pass
+with a longer limit does not establish responsiveness at the default limit or at
+the browser's default two-second discovery limit. Version requests retain their
+separate ten-second limit.
+
 ## Preparing a Linux test environment
 
 Package and executable names can differ: `ripgrep` supplies `rg`, `ninja-build`
@@ -154,6 +169,10 @@ the process limits are not a sandbox. See
 [discovery and execution boundaries](discovery-and-safety.md).
 
 ## Recorded validation
+
+The [review fixes and compatibility validation](review-fixes-2026-10-23.md)
+record regression and live results dated 2026-10-23 for the 59-path matrix. The original
+[functional review](functional-review-2026-10-23.md) is retained as a pre-fix record.
 
 On 2026-10-17, the expanded matrix on Ubuntu 24.04 under WSL with an isolated test
 home reported **48 passed, 0 failed, 0 skipped, and 1 expected unsupported case**

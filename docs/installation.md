@@ -6,6 +6,11 @@ The installer provides a per-user runtime copy and optional Bash startup
 registration. Linux, Bash 4.4+, Python 3.10+ with `curses`, and a UTF-8 terminal
 are required. Run the scripts as the account that will use the browser, without
 `sudo`. No packages are downloaded or installed by these scripts.
+Automatic resize recovery also uses the standard Linux `stty` utility.
+
+These procedures describe the current checkout. The
+[published alpha packages](releases.md#version-011---alpha) contain an older
+snapshot; their version marker does not identify the later development fixes.
 
 ## Installation
 
@@ -164,14 +169,15 @@ continues to be reported. Unmanaged collisions are never adopted automatically;
 move the conflicting file elsewhere before retrying if the new distribution path
 is needed. Metadata should not be edited merely to suppress a warning.
 
-```text
-New source -> validate incoming files -> merge unchanged owned files
-                                              |
-Installed runtime -> copy local edits ---------+
-                                              v
-                         recheck installed files for concurrent edits
-                                              |
-                     retain previous runtime -> switch staged runtime
+```mermaid
+flowchart TD
+    N[Separate incoming source] --> V[Validate distribution]
+    V --> S[Stage owned updates and preserve local changes]
+    I[Installed runtime and manifest] --> S
+    S --> R[Recheck installed files for concurrent edits]
+    R --> B[Retain previous runtime in backup]
+    B --> W[Switch to staged runtime]
+    W --> C[Inspect conflicts and open a new Bash session]
 ```
 
 ## Update recovery

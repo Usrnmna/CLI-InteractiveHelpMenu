@@ -8,12 +8,9 @@ exclude_all_private = true
 
 # Generated reports and dependency environments are not maintained documentation.
 exclude_path = [
-  '(^|/)(\.git|\.venv|__pycache__)(/|$)',
+  '(^|/)(\.git|\.cache|\.venv|venv|__pycache__|dist|generated-help)(/|$)',
   '(^|/)tests/reports(/|$)',
+  '(^|/)\.review-backups(/|$)',
 ]
 
-# The workflow endpoint may not exist until the first push/run. Exclude only
-# this workflow's page and badge; other GitHub documentation remains checked.
-exclude = [
-  '^https://github\.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci\.yml(/badge\.svg)?(\?.*)?$',
-]
+# Workflow and badge endpoints are checked with the other external links.

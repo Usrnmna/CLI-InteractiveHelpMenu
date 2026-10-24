@@ -4,6 +4,12 @@
 
 ## Version 0.1.1 - Alpha
 
+The files in `releases/v0.1.1-alpha/` are preserved release snapshots. The working
+tree still uses `VERSION=0.1.1-alpha` while containing later unreleased changes.
+Equal version strings therefore do not establish equal source contents; use
+`BUILD-INFO.json` source hashes when comparing a local build with these artifacts.
+The [Unreleased changelog](../CHANGELOG.md#unreleased) describes subsequent work.
+
 The source tree additionally provides a [GitHub release updater](github-updates.md)
 for automatic package selection, verification, and guided conflict review. This
 feature was added after the `v0.1.1-alpha` artifacts; those published files remain
@@ -100,8 +106,12 @@ sha256sum -c SHA256SUMS.checksum
 The version comes from [VERSION](../VERSION). `CC` may name an alternative C
 compiler executable; compiler command strings are not interpreted. The builder
 refuses an existing output directory and excludes local reports, Python caches,
-previous releases, and build outputs. Source archives include the maintained
-documentation, test fixtures, and CI configuration.
+previous releases, and build outputs. New source archives include the maintained
+documentation, test fixtures, CI configuration, and `tools/` media generator
+with its optional requirements. Those tools are absent from the preserved alpha
+archives. Media dependencies are not copied into installed runtimes. Builds from
+the current tree must use a separate output directory, leaving the preserved
+release directory unchanged.
 
 Archives normalize ordering, modes, owner identifiers, and timestamps. Native
 compilation enables warnings as errors and omits linker build identifiers.
