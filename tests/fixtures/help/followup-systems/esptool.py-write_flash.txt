@@ -1,0 +1,48 @@
+usage: esptool write_flash [-h] [--erase-all]
+                           [--flash_freq {keep,80m,60m,48m,40m,30m,26m,24m,20m,16m,15m,12m}]
+                           [--flash_mode {keep,qio,qout,dio,dout}]
+                           [--flash_size {detect,keep,256KB,512KB,1MB,2MB,2MB-c1,4MB,4MB-c1,8MB,16MB,32MB,64MB,128MB}]
+                           [--spi-connection SPI_CONNECTION] [--no-progress]
+                           [--verify] [--encrypt]
+                           [--encrypt-files <address> <filename> [<address> <filename> ...]]
+                           [--ignore-flash-encryption-efuse-setting] [--force]
+                           [--compress | --no-compress]
+                           <address> <filename> [<address> <filename> ...]
+
+positional arguments:
+  <address> <filename>  Address followed by binary filename, separated by
+                        space
+
+options:
+  -h, --help            show this help message and exit
+  --erase-all, -e       Erase all regions of flash (not just write areas)
+                        before programming
+  --flash_freq {keep,80m,60m,48m,40m,30m,26m,24m,20m,16m,15m,12m}, -ff {keep,80m,60m,48m,40m,30m,26m,24m,20m,16m,15m,12m}
+                        SPI Flash frequency
+  --flash_mode {keep,qio,qout,dio,dout}, -fm {keep,qio,qout,dio,dout}
+                        SPI Flash mode
+  --flash_size {detect,keep,256KB,512KB,1MB,2MB,2MB-c1,4MB,4MB-c1,8MB,16MB,32MB,64MB,128MB}, -fs {detect,keep,256KB,512KB,1MB,2MB,2MB-c1,4MB,4MB-c1,8MB,16MB,32MB,64MB,128MB}
+                        SPI Flash size in MegaBytes (1MB, 2MB, 4MB, 8MB, 16MB,
+                        32MB, 64MB, 128MB) plus ESP8266-only (256KB, 512KB,
+                        2MB-c1, 4MB-c1), detect, or keep
+  --spi-connection SPI_CONNECTION, -sc SPI_CONNECTION
+                        Override default SPI Flash connection. Value can be
+                        SPI, HSPI or a comma-separated list of 5 I/O numbers
+                        to use for SPI flash (CLK,Q,D,HD,CS). Not supported
+                        with ESP8266.
+  --no-progress, -p     Suppress progress output
+  --verify              Verify just-written data on flash (mostly superfluous,
+                        data is read back during flashing)
+  --encrypt             Apply flash encryption when writing data (required
+                        correct efuse settings)
+  --encrypt-files <address> <filename> [<address> <filename> ...]
+                        Files to be encrypted on the flash. Address followed
+                        by binary filename, separated by space.
+  --ignore-flash-encryption-efuse-setting
+                        Ignore flash encryption efuse settings
+  --force               Force write, skip security and compatibility checks.
+                        Use with caution!
+  --compress, -z        Compress data in transfer (default unless --no-stub is
+                        specified)
+  --no-compress, -u     Disable data compression during transfer (default if
+                        --no-stub is specified)

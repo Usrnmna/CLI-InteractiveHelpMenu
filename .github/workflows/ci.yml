@@ -38,7 +38,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends tmux
       - name: Run full Linux test suite
-        run: bash tests/run.sh
+        shell: bash
+        run: |
+          mkdir -p tests/reports/ci
+          bash tests/run.sh 2>&1 | tee tests/reports/ci/linux-tests.log
+      - name: Retain test evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: linux-tests-python-${{ matrix.python }}
+          path: tests/reports/ci/linux-tests.log
+          if-no-files-found: warn
+          retention-days: 14
 
   documentation:
     name: Documentation links
@@ -58,3 +69,11 @@ jobs:
           failIfEmpty: true
           output: tests/reports/documentation-links.md
           jobSummary: true
+      - name: Retain documentation evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: documentation-links
+          path: tests/reports/documentation-links.md
+          if-no-files-found: warn
+          retention-days: 14

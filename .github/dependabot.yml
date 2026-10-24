@@ -1,5 +1,7 @@
 # Maintain CI action pins and the optional documentation-media dependencies.
 # The application runtime uses only the Python standard library.
+# Third-party compatibility tools are isolated local test installations, not
+# runtime dependencies; their observed versions belong in validation evidence.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -7,8 +9,16 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      ci-actions:
+        patterns: ['*']
+        update-types: [minor, patch]
   - package-ecosystem: pip
     directory: /tools
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      documentation-media:
+        patterns: ['*']
+        update-types: [minor, patch]

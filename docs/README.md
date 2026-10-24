@@ -23,6 +23,7 @@ snapshot. Dated reviews below retain the results and limitations of their own ru
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |
 | Discovery modes, subcommands, cache settings, and insertion limits | [Discovery and execution boundaries](discovery-and-safety.md) |
 | Editable option definitions and loadable command adapters | [Help profiles and compatibility drivers](profiles-and-drivers.md) |
+| Prefix chains, Python modules, keywords, joined selectors, and repeated groups | [Invocation and structured arguments](invocation-and-structured-arguments.md) |
 | Third-party programs, driver activation, test tiers, and live results | [Third-party compatibility matrix](compatibility.md) |
 
 ## Help collection workflows

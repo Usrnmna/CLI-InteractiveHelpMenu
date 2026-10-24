@@ -126,7 +126,7 @@ def main():
         if locale.getpreferredencoding(False).lower().replace("-", "") != "utf8":
             raise HelpError("A UTF-8 shell locale is required.")
         context = find_context(os.environ.get("CLI_HELP_LINE", ""), int(os.environ.get("CLI_HELP_POINT", "0")), profiles,
-                               discover=lambda command, subcommands=(): discover(command, settings, subcommands=subcommands, driver_registry=drivers),
+                               discover=lambda command, subcommands=(), **invocation: discover(command, settings, subcommands=subcommands, driver_registry=drivers, **invocation),
                                driver_registry=drivers)
         selected = choose_option(context, keys)
         if selected is None:

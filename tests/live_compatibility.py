@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import platform
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -14,20 +15,32 @@ from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cli_help"))
 
-from command_paths import load_driver_registry
-from core import HelpError, find_context, insert_option
-from discovery import ProbeError, Settings, clean_output, discover, run_probe
+from command_paths import help_route, load_driver_registry
+from core import HelpError, find_context, insert_option, read_json, validate_profile
+from discovery import ProbeError, Settings, clean_output, discover, run_probe, verify_command_variant
 
 
-def check_case(words, registry, expected_flags=(), allow_empty=False, excluded=(), expected_counts=None, timeout=4):
+def check_case(words, registry, expected_flags=(), allow_empty=False, excluded=(), expected_counts=None, timeout=4, case_metadata=None):
     """Check discovery and an in-memory edit; missing executables remain explicit."""
     record = {"command": words, "executable": shutil.which(words[0])}
     if not record["executable"]:
         return {**record, "status": "skipped", "reason": "Executable is not installed."}
+    if case_metadata and (case_metadata.get("curator") or case_metadata.get("curated_profile")):
+        return check_curated_case(words, registry, record, case_metadata, timeout)
     try:
         profile = discover(words[0], Settings(cache_ttl=0, timeout=timeout), subcommands=tuple(words[1:]), driver_registry=registry)
         options = [option for category in profile["categories"] for option in category["options"]]
         flags = {option["flag"] for option in options}
+        expected_flags = list(expected_flags)
+        expected_counts = dict(expected_counts or {})
+        if case_metadata and case_metadata.get("version_sentinels"):
+            variant = profile["discovery"].get("variant", "")
+            major = variant.lstrip("v").split(".")[0]
+            sentinels = case_metadata["version_sentinels"].get(major)
+            if sentinels is None:
+                return {**record, "status": "unsupported", "reason": "No maintained sentinel set for this installed major version."}
+            expected_flags.extend(sentinels.get("flags", []))
+            expected_counts.update(sentinels.get("argument_counts", {}))
         missing = sorted(set(expected_flags) - flags)
         if missing:
             raise HelpError(f"Expected flags missing: {missing}")
@@ -51,8 +64,74 @@ def check_case(words, registry, expected_flags=(), allow_empty=False, excluded=(
     except (HelpError, ValueError, OSError) as error:
         # npm root output commonly documents commands rather than option lines.
         expected_empty = allow_empty and not isinstance(error, ProbeError) and "No recognizable option declarations" in str(error)
-        status = "unsupported" if expected_empty else "failed"
+        status = "unsupported" if expected_empty or unsupported_variant(error) else "failed"
         return {**record, "status": status, "reason": str(error)}
+
+
+def unsupported_variant(error):
+    """Keep known product/version mismatches distinct from probe failures."""
+    return not isinstance(error, ProbeError) and any(term in str(error) for term in (
+        "different or unverified", "write-flash requires", "version could not be identified"))
+
+
+def check_curated_case(words, registry, record, case, timeout):
+    """Verify fixed route help separately from curated syntax and literal edits.
+
+    Some leaf manuals document a family, and ip help consists of keyword grammar.
+    Raw sentinel checks establish documentation presence, not generic-parser arity
+    or exhaustive support. Profile metadata remains independently fixture-tested.
+    """
+    try:
+        path = ROOT / "profiles" / case.get("profile", "-".join(words) + ".json")
+        profile = read_json(path)
+        validate_profile(profile, path)
+        if profile["command"] != words:
+            raise HelpError("Curated profile command differs from the maintained route.")
+        settings = Settings(cache_ttl=0, timeout=timeout)
+        variant = None
+        if profile.get("identity"):
+            variant = verify_command_variant(words[0], record["executable"], settings, words[1:])
+        route = help_route(words[0], tuple(words[1:]), registry)
+        probes = []
+        if route.arguments:
+            arguments = ("--help", "--noconftest") if words == ["pytest"] else route.arguments
+            probes.append((" ".join([words[0], *arguments]), [record["executable"], *arguments]))
+        manual = shutil.which("man")
+        if manual and route.manual:
+            probes.append(("man " + route.manual, [manual, "-P", "/bin/cat", "--no-hyphenation",
+                           "--no-justification", "-s", "1:8", "--", route.manual]))
+        sources, warnings = [], []
+        for label, argv in probes:
+            output = clean_output(run_probe(argv, timeout, **(
+                {"environment_overrides": {"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}}
+                if words == ["pytest"] and argv[0] == record["executable"] else {})))
+            if output.strip():
+                sources.append((label, output))
+            else:
+                warnings.append("Empty documentation source: " + label)
+        text = "\n".join(output for _, output in sources)
+        sentinels = list(case.get("live_flags", [])) + list(case.get("keyword_sentinels", []))
+        if not sentinels:
+            raise HelpError("Curated live verification requires independent route documentation sentinels.")
+        missing = [flag for flag in sentinels if not re.search(
+            r"(?<![\w-])" + re.escape(flag.rstrip("=")) + r"(?![\w-])", text)]
+        if missing:
+            raise HelpError(f"Fixed route documentation is missing curated sentinels: {missing}")
+        options = [option for category in profile["categories"] for option in category["options"]]
+        line = " ".join(words) + " --"
+        context = find_context(line, len(line), [profile], driver_registry=registry,
+                               discover=lambda *args, **kwargs: profile)
+        for option in options:
+            suffix = "" if option["flag"].endswith("=") else " "
+            expected = " ".join(words) + " " + option["flag"] + suffix
+            if insert_option(context, option) != (expected, len(expected)):
+                raise HelpError("Curated literal insertion invariant failed.")
+        return {**record, "status": "passed", "evidence": "fixed-route documentation sentinels and curated literal edits",
+                "option_count": len(options), "sources": [label for label, _ in sources], "warnings": warnings,
+                "variant": variant, "verified_documentation_tokens": sentinels,
+                "arity_evidence": "Independent deterministic fixtures; raw live help presence does not verify arity."}
+    except (HelpError, ValueError, OSError) as error:
+        return {**record, "status": "unsupported" if unsupported_variant(error) else "failed", "reason": str(error)}
 
 
 def program_version(words, arguments):
@@ -62,6 +141,12 @@ def program_version(words, arguments):
         return None
     try:
         output = clean_output(run_probe([executable, *arguments], 10, max_bytes=65536, check=True))
+        if Path(words[0]).name in {"esptool", "esptool.py"}:
+            # Current esptool.py prints an alias deprecation notice before its
+            # version. Preserve the actual identity instead of that warning.
+            version = re.search(r"^esptool(?:\.py)?\s+v?[0-9]+\.[0-9]+(?:\.[0-9]+)?\b.*$", output, re.MULTILINE)
+            if version:
+                return version.group(0).strip()
         return next((line.strip() for line in output.splitlines() if line.strip()), None)
     except (HelpError, OSError) as error:
         return {"unavailable": str(error)}
@@ -96,7 +181,8 @@ def main():
         for case in cases:
             words = shlex.split(case["command"])
             record = check_case(words, registry, case.get("live_flags", ()), case.get("allow_empty", False),
-                                case.get("excluded", ()), case.get("live_argument_counts", {}), timeout=args.timeout)
+                                case.get("excluded", ()), case.get("live_argument_counts", {}), timeout=args.timeout,
+                                case_metadata=case)
             if words[0] not in versions:
                 versions[words[0]] = program_version(words, case.get("version_args"))
             record.update(tier=case.get("tier", "custom"), package=case.get("package"), version=versions[words[0]])

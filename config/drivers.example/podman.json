@@ -1,0 +1,66 @@
+{
+  "command": "podman",
+  "global_values": [
+    "--connection",
+    "-c",
+    "--url",
+    "--identity",
+    "--log-level",
+    "--root",
+    "--runroot",
+    "--storage-driver",
+    "--namespace"
+  ],
+  "global_flags": [
+    "--remote",
+    "-r",
+    "--transient-store",
+    "--syslog"
+  ],
+  "paths": [
+    {
+      "command": [
+        "run"
+      ],
+      "help": [
+        "run",
+        "--help"
+      ],
+      "man": "podman-run",
+      "stop_at_positional": true
+    },
+    {
+      "command": [
+        "build"
+      ],
+      "help": [
+        "build",
+        "--help"
+      ],
+      "man": "podman-build",
+      "stop_at_positional": true
+    },
+    {
+      "command": [
+        "exec"
+      ],
+      "help": [
+        "exec",
+        "--help"
+      ],
+      "man": "podman-exec",
+      "stop_at_positional": true
+    },
+    {
+      "command": [
+        "logs"
+      ],
+      "help": [
+        "logs",
+        "--help"
+      ],
+      "man": "podman-logs",
+      "stop_at_positional": false
+    }
+  ]
+}

@@ -27,8 +27,9 @@ and cache behavior are described in the sections below.
 
 ## Automatic help discovery
 
-Discovery runs only when no custom or bundled profile matches the resolved
-command path. It resolves the executable using the shell environment's `PATH`
+Discovery normally runs when no custom or bundled profile matches the resolved
+command path. Vendor/version-guarded profiles also verify executable identity;
+see [guarded forms](invocation-and-structured-arguments.md#names-versions-and-offline-use). It resolves the executable using the shell environment's `PATH`
 or the literal executable path. Generic top-level discovery collects two sources;
 a loaded driver can override these routes:
 
@@ -45,6 +46,8 @@ Each source has a default two-second timeout and a 512 KiB combined output limit
 Sources run without a shell, with stdin closed, in a temporary working directory.
 The environment retains `PATH`, `HOME`, and `MANPATH`, with fixed plain-text
 locale and pager settings; pending input and shell startup hooks are excluded.
+Ansible playbook help/version probes use fixed `C.UTF-8` locale values because
+current Ansible refuses a non-UTF-8 locale. Other probes retain the `C` locale.
 Ordinary child processes in the probe's process group are terminated on timeout,
 overflow, cancellation, and completion. One failed source does not prevent use
 of the other source. The initial uncached lookup may take up to approximately
@@ -77,9 +80,9 @@ Unusual formatting, non-GNU flag syntax, and undocumented options may be missed.
 Bracketed option groups in npm subcommand help are recognized within an explicit
 options section. Usage and example sections are excluded. Multiword and
 structured FFmpeg argument placeholders are retained when a separate description
-column identifies the declaration. Unsupported joined syntax, such as GCC
-`-Wl,<options>` and FFmpeg `-c:v`, is omitted rather than truncated into a different
-flag. CR, CRLF, and LF help output is normalized.
+column identifies the declaration. Concrete colon selectors such as `-c:v`
+are supported. Unsupported joined syntax, such as GCC `-Wl,<options>`, and
+selector placeholders are omitted rather than truncated into a different flag. CR, CRLF, and LF help output is normalized.
 
 Additional supported formats include Wget's aligned aliases, pnpm's explicit
 `--[no-]` shorthand, kubectl defaults, AWS parenthesized value types, jq name/value
@@ -102,6 +105,14 @@ or function.
 
 If no usable options are found, a diagnostic is displayed and the pending input
 is preserved. A custom JSON profile can supply the missing documentation.
+
+Prefix and Python module resolution is described in
+[invocation and structured arguments](invocation-and-structured-arguments.md).
+The module adapter uses fixed internal routes, never executable substitution in
+driver JSON. Version guards run before cache reuse. Normal pytest help suppresses
+plugin autoload and conftest loading. Guarded vendor lookup adds its own bounded
+version/root-help probe, so the ordinary two-source timing estimate does not apply
+to those routes.
 
 ## Context-aware subcommand help
 
@@ -214,8 +225,10 @@ option that requires a separate value must receive that value before another
 option can be inserted. Unknown options and combined short flags are not fully
 parsed for argument arity.
 
-Command aliases, wrappers such as `sudo` and `env`, leading environment
-assignments, and arbitrary shell grammar are not resolved. Absolute executable
+Command aliases, bare leading environment assignments, and arbitrary shell
+grammar are not resolved. Bounded `sudo`, `env`, and `command` prefixes and
+selected Python modules are supported as described in the
+[invocation guide](invocation-and-structured-arguments.md). Absolute executable
 paths are matched by basename. Git and Docker paths support the recognized
 global options above. Other static command/subcommand definitions use the
 longest contiguous literal path.

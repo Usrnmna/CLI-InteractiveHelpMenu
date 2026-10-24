@@ -1,0 +1,69 @@
+{
+  "command": [
+    "podman",
+    "build"
+  ],
+  "description": "podman build shell argument reference.",
+  "categories": [
+    {
+      "name": "Arguments",
+      "description": "Literal command arguments; values are entered separately.",
+      "options": [
+        {
+          "flag": "--tag",
+          "argument": "NAME",
+          "summary": "Tag the resulting image"
+        },
+        {
+          "flag": "-t",
+          "argument": "NAME",
+          "summary": "Tag the resulting image",
+          "attached": true
+        },
+        {
+          "flag": "--file",
+          "argument": "FILE",
+          "summary": "Select a Containerfile"
+        },
+        {
+          "flag": "-f",
+          "argument": "FILE",
+          "summary": "Select a Containerfile",
+          "attached": true
+        },
+        {
+          "flag": "--build-arg",
+          "argument": "KEY=VALUE",
+          "summary": "Set a build argument"
+        },
+        {
+          "flag": "--no-cache",
+          "argument": "",
+          "summary": "Disable build cache"
+        },
+        {
+          "flag": "--pull",
+          "argument": "POLICY",
+          "argument_optional": true,
+          "summary": "Select the image pull policy"
+        },
+        {
+          "flag": "--target",
+          "argument": "STAGE",
+          "summary": "Select the final build stage"
+        },
+        {
+          "flag": "--platform",
+          "argument": "PLATFORM",
+          "summary": "Select the target platform"
+        },
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "summary": "Reduce build output"
+        }
+      ]
+    }
+  ],
+  "stop_at_positional": true
+}

@@ -65,6 +65,7 @@ class DriverValidationTests(unittest.TestCase):
                    ("help", ["help", "{pending}"]), ("help", ["help", "two words"]),
                    ("help", ["help", "bad\nword"]), ("command", ["--option"]),
                    ("man", "../manual"), ("stop_at_positional", "true"), ("unknown", True)]
+        changes.extend(("stop_at_options", value) for value in ("-args", ["-args=value"], [";touch"], [None]))
         for field, value in changes:
             document = driver_document()
             document["paths"][0][field] = value

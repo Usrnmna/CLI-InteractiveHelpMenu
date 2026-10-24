@@ -15,7 +15,10 @@ from command_paths import help_route, load_driver_registry, resolve_path
 
 
 FIXTURES = ROOT / "tests/fixtures/help"
-MATRIX = json.loads((FIXTURES / "matrix.json").read_text())
+# Expansion families have their own independently maintained metadata, identity
+# guards and keyword fixtures; the original capture corpus remains unchanged.
+ALL_MATRIX = json.loads((FIXTURES / "matrix.json").read_text())
+MATRIX = [case for case in ALL_MATRIX if not case.get("expansion")]
 REGISTRY = load_driver_registry(ROOT / "config/drivers.example")
 CAPTURED = json.loads((FIXTURES / "captured.json").read_text())
 
@@ -54,7 +57,7 @@ class ProgramCorpusTests(unittest.TestCase):
         self.assertEqual(options["-n"]["argument"], "<number>")
         self.assertIn("--max-count=", options)
         self.assertNotIn("-", options)
-        for declaration in ("--[maybe-]flag", "--[no-]flag;touch", "-<number>;touch, --flag", "-o{Directory}", "-c:v codec"):
+        for declaration in ("--[maybe-]flag", "--[no-]flag;touch", "-<number>;touch, --flag", "-o{Directory}", "-c:<stream> codec"):
             self.assertEqual(parse_help(declaration, "fixture"), [], declaration)
 
     def test_aligned_aliases_typed_columns_and_partially_optional_values(self):

@@ -52,11 +52,38 @@ python3 cli_help/main.py --check
 
 A custom profile replaces a bundled profile with the same `command` path.
 Two profiles defining the same command within one directory are rejected.
-Profiles contain data only; option flags are restricted to literal flag syntax.
+Profiles contain data only. Ordinary option names use literal flag syntax;
+structured keyword and concrete colon-selector forms are described below.
 
 `CLI_HELP_PYTHON` optionally selects a Python executable, such as
 `/usr/bin/python3`. `CLI_HELP_CONFIG` and `CLI_HELP_PROFILES` must be exported so
 the helper process can read them.
+
+## Structured profile metadata
+
+| Field | Behavior |
+| --- | --- |
+| `options[].kind` | `flag` by default; `keyword` permits a literal bare keyword such as `dev` |
+| `options[].attached` | Boolean; recognizes an attached argument for a value-taking flag such as `-p22`; default false |
+| `options[].optional_value_kind` | `nonnegative_integer` recognizes one separate ASCII decimal count after a single optional argument, such as `fzf -m 2`; other values are rejected |
+| `stop_at_positional` | Profile-level boolean boundary, retained even without a loaded driver |
+| `stop_at_options` | Literal option-name array that ends the parent argument region, such as Go test's `-args` |
+| `positional_group` | Object with `argument`, `argument_count` (2–16), and `repeatable: true`; complete repeated groups delimit safe insertion positions |
+| `identity` | Built-in guard: `mikefarah-yq-v4`, `javascript-yarn`, `esptool-v4`, or `esptool-v5`; cannot contain code or an executable path |
+
+Concrete selectors such as `-c:v:0` are valid flags; `-c:`, placeholder selectors,
+whitespace, and shell operators are rejected. Keywords cannot contain shell
+syntax. All argument labels remain display-only. Repeated groups are entered
+manually; the browser never supplies placeholder values. Guided edits preserve
+these JSON fields; clearing a value argument also clears its `attached` and
+`optional_value_kind` metadata. Changing an optional argument to required clears
+`optional_value_kind`. This field requires a nonempty argument, optional-value
+metadata, and an argument count of one. It never consumes arbitrary text,
+signed numbers, another option, or an end-of-options marker.
+Structured fields can be maintained through JSON/editor review and survive
+installation and update workflows.
+
+See [supported forms and exact insertion behavior](invocation-and-structured-arguments.md).
 
 ## Loadable compatibility drivers
 
@@ -112,6 +139,7 @@ A minimal driver for another program is:
 | `paths[].help` | Fixed argument array beginning with `help`, `--help`, `-h`, or `-help`, or exactly the declared command path followed by one of those selectors; `[]` disables executable probing for that path |
 | `paths[].man` | Literal manual name in sections 1 or 8; `null` disables the manual source |
 | `paths[].stop_at_positional` | Reject insertion after the first positional argument; unknown preceding option arity is also rejected |
+| `paths[].stop_at_options` | Reject insertion after named child-argument delimiters; defaults to an empty array |
 
 Every route requires at least one help or manual source. Omitted global lists
 are empty; the positional boundary defaults to false. Matching built-in routes

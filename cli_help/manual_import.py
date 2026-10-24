@@ -146,6 +146,8 @@ class ManualCollection:
             route = driver_defaults.paths.get(tuple(command[1:]))
             if route and route.stop_at_positional:
                 previous = {"stop_at_positional": True}
+            if route and route.stop_at_options:
+                previous["stop_at_options"] = list(route.stop_at_options)
         routes = [route for route in document["paths"] if route["command"] != command[1:]]
         routes.append({**previous, "command": command[1:], "help": [], "man": manual})
         document = {**document, "paths": routes}

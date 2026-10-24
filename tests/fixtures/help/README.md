@@ -3,7 +3,7 @@
 [Compatibility matrix and live checks](../../../docs/compatibility.md) ·
 [Development and validation](../../../docs/development.md#extended-tests-and-live-compatibility-reports)
 
-`matrix.json` is the maintained list of 59 command paths, tiers, package names,
+`matrix.json` is the maintained list of 129 command paths, tiers, package names,
 fixture filenames, expected flags and arguments, excluded forms, live sentinels,
 and fixed version requests. Expected values are test assertions; they must not
 be regenerated from parser output when a test fails.
@@ -36,8 +36,9 @@ Cargo values, and yt-dlp's partially optional templates. Tests also verify every
 synthetic fixture flag's exact midline edit, required-value handling, global
 options, positional boundaries, and fixed executable/manual probe arguments.
 
-GCC comma-joined switches, FFmpeg stream selectors, and 7-Zip attached-value
-switches are outside the current literal insertion grammar. They must not be
+Concrete FFmpeg colon selectors are supported; incomplete/placeholder selectors
+remain excluded. GCC comma-joined switches and 7-Zip brace-attached switches are
+outside the current literal insertion grammar. They must not be
 truncated into different flags. Root npm intentionally lacks option declarations;
 usage examples must not become insertable flags. `npm-install.txt` separately
 covers bracketed option groups, aliases, and repeated values.
@@ -65,3 +66,36 @@ extend the relevant JSON driver when a special help route or subcommand path is
 required. Keep unavailable live validation explicit. The harness installs no
 packages; local downloads and environments belong in ignored `.cache/` storage,
 and live reports belong in ignored `tests/reports/` storage.
+
+## Complete compatibility expansion
+
+`expansion-systems.json` and `expansion-development.json` maintain independent
+route-specific syntax expectations. Their entries are included in `matrix.json`
+with an `expansion` marker. The original 59-case capture corpus retains its own
+regressions; the two expansion test modules validate all new routes, profiles,
+fixed requests, argument boundaries, and exact edits separately.
+
+`expansion-systems-captured.json`, `expansion-development-captured.json`, and
+their referenced capture files distinguish installed captures from hand-authored
+documentation specimens. Provenance includes source URLs, request operands,
+versions where observed, and normalization. Fixture-derived support is not live
+execution evidence. `python-module-captured.json` contains six actual module help
+captures, interpreter/module versions, and upstream links; both interpreter names
+are covered by independent arity and Unicode insertion regressions.
+
+Yarn Classic and modern captures retain distinct option surfaces. Missing tools
+remain documented-fixture evidence until a live fixed help check is possible.
+The FFmpeg curated selector profile follows the upstream
+[stream-specifier reference](https://ffmpeg.org/ffmpeg.html#Stream-specifiers).
+
+`followup-systems/` contains thirteen actual leaf-help captures from isolated
+distribution packages and Python environments, with versions, fixed requests,
+and upstream URLs in its manifest. These supplement the earlier format specimens.
+`runtime-followup-captured.json` records eleven Go, .NET, Bun, and Arduino routes,
+supplemental Go documentation, verified archive hashes, and exact installed-version
+source excerpts for inherited options and hidden .NET aliases. Regressions keep
+literal flag presence separate from independently reviewed arity contracts.
+`followup-cloud-captured.json` supplies the six Azure/Google leaf routes and
+supplemental global-option documentation, with actual versions and independent
+arity expectations. Cloud credentials, login, initialization, and workload
+requests are absent from this evidence.
