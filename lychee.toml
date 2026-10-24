@@ -14,3 +14,8 @@ exclude_path = [
 ]
 
 # Workflow and badge endpoints are checked with the other external links.
+
+# Serialize GNU requests and space them apart to reduce HTTP 429 responses.
+[hosts."www.gnu.org"]
+concurrency = 1
+request_interval = "3s"
