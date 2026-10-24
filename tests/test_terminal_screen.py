@@ -38,8 +38,9 @@ class ScreenState:
 class TmuxShell:
     """Own a private tmux socket and shell; never attach to an existing server."""
 
-    def __init__(self, folder):
+    def __init__(self, folder, runtime=None):
         self.folder = Path(folder)
+        runtime = Path(runtime) if runtime is not None else ROOT
         # Ubuntu's system bashrc otherwise prints a first-login sudo hint into
         # this fresh test home, shifting the expected initial prompt row.
         (self.folder / ".hushlogin").touch()
@@ -53,7 +54,7 @@ class TmuxShell:
         rcfile = self.folder / "bashrc"
         rcfile.write_text(
             f"PS1={shlex.quote(PROMPT)}; PS2='> '; set +o history\n"
-            + "source " + shlex.quote(str(ROOT / "bash/interactive-help.bash")) + "\n"
+            + "source " + shlex.quote(str(runtime / "bash/interactive-help.bash")) + "\n"
             + "rsync() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
             + "_screen_snapshot() { printf '%s\\0%s\\0' \"$READLINE_POINT\" \"$READLINE_LINE\" > "
             + shlex.quote(str(self.buffer_file)) + "; }\n"

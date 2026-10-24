@@ -86,7 +86,8 @@ class ReleaseTests(unittest.TestCase):
     def test_native_version_check_and_literal_install_path(self):
         runtime = self.extract()
         self.assertTrue((runtime / "cli-help").read_bytes().startswith(b"\x7fELF"))
-        self.assertIn("0.1.1-alpha", self.run_command([runtime / "cli-help", "--version"]).stdout)
+        self.assertEqual(self.run_command([runtime / "cli-help", "--version"]).stdout.strip(),
+                         "CLI Interactive Help Menu " + (ROOT / "VERSION").read_text().strip())
         self.run_command([runtime / "cli-help", "--check"])
         self.assertIn("--prerelease", self.run_command([runtime / "cli-help", "update-from-github", "--help"]).stdout)
         prefix = self.home / "app's $(touch SHOULD_NOT_EXIST); path"

@@ -229,12 +229,13 @@ significant whitespace in Markdown and help-parser fixtures.
 
 [.gitignore](../.gitignore) excludes local Python environments, caches, test
 reports, review backups, collection locks, and local environment files. The
-rules also exclude checkout-local credential homes, shell histories, application
-temporary sessions, installation receipts, and standalone launcher builds.
-Capture, functional-review, and workflow-verification sessions are excluded when
-their temporary directory is placed at the checkout root. Matching exclusions
-keep their generated content out of documentation link scans.
-Published release assets remain eligible for tracking.
+rules also exclude credential homes, shell histories, application sessions,
+installation receipts, and default runtime copies in root or nested isolated
+homes. Known capture, build, installer, and review session names are excluded at
+any depth. Matching link-scan exclusions protect private runtime and recovery
+directories while keeping maintained fixtures and public documentation visible.
+Local release candidates and reproducibility outputs remain under ignored `dist/`
+or `.cache/`; curated historical release assets remain eligible for tracking. The
 documented `generated-help/` output directory is also excluded. Generated
 collections in other locations require an appropriate ignore rule or an output
 path outside the checkout. Source, bundled profiles, example drivers, fixtures,
@@ -243,10 +244,16 @@ Ignore rules do not remove files already tracked by Git.
 [Ignore-policy regressions](../tests/test_repository_config.py) use an isolated
 Git repository to check private artifacts and maintained-file exceptions without
 changing the checkout index or consulting personal Git configuration.
+They also check actual Git attributes: extensionless native artifacts remain
+binary in every artifact location, and maintained source/help text retains LF.
+Editor defaults exclude those extensionless binaries from text transformations.
 Environment-file templates ending in `.example`, `.sample`, or `.template`
 remain eligible for tracking, including names such as `.env.development.example`.
 Ignored caches and reports can contain local machine paths and downloaded tools;
-they are also excluded from documentation link scans and source packages.
+known generated directories are excluded from documentation link scans. Release
+selection has its own explicit roots and reserved-name rules; Git ignore rules
+do not control packaging. Inspect the manifest for custom output/home locations
+as described in [release candidate validation](release-candidate.md).
 
 [Dependabot configuration](../.github/dependabot.yml) checks GitHub Actions and
 the optional [media requirements](../tools/requirements-media.txt) weekly.
@@ -258,6 +265,8 @@ The [bug-report form](../.github/ISSUE_TEMPLATE/bug_report.yml) requests a minim
 synthetic reproduction and environment details. The
 optional driver/profile setup field records activation, discovery mode, and
 route provenance without requesting private configuration contents. The
+optional package field records artifact format, checksum/manifest agreement, and
+lifecycle status without requesting private receipts or backup contents. The
 [pull-request template](../.github/pull_request_template.md) separates observed
 verification from remaining limitations. Both describe privacy precautions;
 diagnostic reports require local-path review and redaction before sharing.
@@ -272,6 +281,12 @@ Python 3.10 and 3.12. The tests use the Python standard library, tmux for render
 terminal state, Git for ignore-policy checks, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
 
+A focused artifact-policy step first checks nested private-output exclusions,
+maintained-file visibility, binary attributes, and text line-ending rules. Its
+named log is retained even if a later step fails. Bytecode generation is disabled
+for the Linux job. Candidate builds use a fresh runner-temporary parent directory
+so repeated local smoke execution does not overwrite an existing candidate.
+
 Before the suite, a separate passive smoke check invokes `--doctor` and
 `--explain` with fixed synthetic input and discovery disabled. It checks supplied
 activation, Compose route provenance, private configured-operand/manual-alias
@@ -279,8 +294,12 @@ redaction, static-only profiles, pending-operand omission, and absence of an
 application cache directory. Synthetic configurations are isolated in the
 runner's temporary directory. Private-fixture reports are checked for sentinel
 disclosure before retention.
-Only its four named JSON reports and the suite log are uploaded by the test job;
-raw captures, arbitrary local reports, and tool homes are excluded.
+After the suite, each job builds a new temporary candidate and runs the
+[package and installed-terminal regressions](release-candidate.md#final-source-and-package-checks)
+against those exact artifacts. Only seven named synthetic diagnostic reports,
+the policy/suite/package logs, aggregate checksum results, and source manifest are
+uploaded. Package binaries, raw captures, arbitrary local reports, tool homes,
+and recovery backups are excluded. The workflow does not publish or tag releases.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
 Markdown links throughout the repository, including local files, images, heading

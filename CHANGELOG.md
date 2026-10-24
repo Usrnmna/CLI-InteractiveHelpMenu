@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+The current `VERSION` is `0.1.2-alpha`. This snapshot is a local candidate;
+publication and tagging are separate actions. Preserved `0.1.1-alpha` artifacts
+remain unchanged. See the [candidate validation procedure](docs/release-candidate.md).
+
+- Release selection excludes nested credential homes, caches, recovery state,
+  and generated evidence while retaining source fixtures and public media.
+  Maintained symlinks and special files are rejected. Native compilation uses
+  the captured source bytes recorded in the package manifest; output beneath
+  maintained source directories is refused.
+- Release review pins source reads against symlink/replacement races, bounds
+  special-file rejection, and refuses names inconsistent with updater extraction.
+  Candidate verification checks actual archives and the embedded installer payload
+  before execution. Native/Bash missing-interpreter errors omit configured values.
+- Repository configuration protects nested tool homes, runtime copies, and build
+  sessions while retaining public fixtures. Extensionless launchers receive binary
+  handling. CI retains artifact-policy evidence and uses fresh candidate directories.
+- Package regressions exercise actual candidate artifacts, historical upgrades,
+  source-only transitions, retained conflict-review source, custom-file
+  preservation, passive privacy checks, collection recovery, and rendered Bash
+  insertion. CI retains scoped package evidence without publishing binaries.
 - Repository policy excludes installer scratch directories and retains source
   fixtures and public assets. Passive CI checks exercise invalid collections and
   missing bundle values with target-execution detection and scoped safe reports.

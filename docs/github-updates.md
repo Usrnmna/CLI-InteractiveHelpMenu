@@ -41,6 +41,12 @@ remain unchanged. If no newer eligible release is published, the check reports
 no update. A release check does not obtain unreleased checkout changes, even
 when their `VERSION` matches the installed alpha.
 
+The `0.1.2-alpha` checkout is an unpublished local candidate. Install or update
+from its [verified local artifacts](release-candidate.md) to use that snapshot.
+A different source hash with the same version never makes a package eligible
+for a GitHub upgrade; equal versions remain excluded. Local validation does not
+establish that any corresponding release or asset is available on GitHub.
+
 Inside a custom installation, the installed wrapper targets its own directory.
 From a source checkout, the default is
 `${XDG_DATA_HOME:-$HOME/.local/share}/cli-interactive-help`. An explicit `--prefix`

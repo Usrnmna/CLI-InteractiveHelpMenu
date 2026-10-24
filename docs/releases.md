@@ -2,20 +2,23 @@
 
 [Project overview](../README.md) · [Installation](installation.md) · [Documentation index](README.md)
 
-## Version 0.1.1 - Alpha
+## Current local candidate
 
-The files in `releases/v0.1.1-alpha/` are preserved release snapshots. The working
-tree still uses `VERSION=0.1.1-alpha` while containing later unreleased changes.
-Equal version strings therefore do not establish equal source contents; use
-`BUILD-INFO.json` source hashes when comparing a local build with these artifacts.
-The [Unreleased changelog](../CHANGELOG.md#unreleased) describes subsequent work.
+The current [VERSION](../VERSION) is `0.1.2-alpha`. This is an unpublished local
+candidate, rebuilt with the maintained repository configuration in the ignored
+directory `dist/candidate-v0.1.2-alpha-config/`. Earlier candidates remain preserved.
+Building it does not create a tag, commit, GitHub release, or remote upgrade.
+The [Unreleased changelog](../CHANGELOG.md#unreleased) describes the included work.
+The [candidate validation guide](release-candidate.md) covers exact-source
+checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.
 
-The source tree additionally provides a [GitHub release updater](github-updates.md)
-for automatic package selection, verification, and guided conflict review. This
-feature was added after the `v0.1.1-alpha` artifacts; those published files remain
-unchanged. The guide describes adding the updater to an existing installation.
+Equal version strings do not establish equal source contents. Compare the
+`BUILD-INFO.json` source hashes with the exact checkout, then verify artifact
+checksums. Source hashes identify inputs; checksums do not authenticate a publisher.
+The [GitHub updater](github-updates.md) uses version ordering and never treats
+different contents at an equal version as an upgrade.
 
-The release identifier is `v0.1.1-alpha`. This alpha targets Linux and Bash;
+The candidate targets Linux and Bash;
 Python 3.10+ with `curses`, Bash 4.4+, and a UTF-8 terminal remain required.
 The native launcher is compiled for Linux x86_64 on Ubuntu 24.04 and requires
 glibc 2.34 or newer. Systems with an older glibc or a different C library can use
@@ -24,21 +27,29 @@ literal arguments to the adjacent Python or Bash runtime; it does not embed
 Python and is not a Windows executable. Other Linux architectures can use the
 source archive with a compatible Python/Bash installation.
 
-Published files are available under `releases/v0.1.1-alpha/` in the repository and on its
-[GitHub Releases page](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-
 | Artifact | Purpose |
 | --- | --- |
-| `cli-interactive-help-v0.1.1-alpha-source.tar.gz` | Complete maintained source, tests, documentation, and shell installers |
-| `cli-interactive-help-v0.1.1-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
-| `cli-interactive-help-v0.1.1-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
-| `cli-help-v0.1.1-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
+| `cli-interactive-help-v0.1.2-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
+| `cli-interactive-help-v0.1.2-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
+| `cli-interactive-help-v0.1.2-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
+| `cli-help-v0.1.2-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
 | `BUILD-INFO.json` | Version, compiler/platform details, and hashes of all packaged source inputs |
 | `*.checksum` | SHA-256 checksums for each artifact, plus the aggregate `SHA256SUMS.checksum` |
 
+## Version 0.1.1 - Alpha
+
+The files under `releases/v0.1.1-alpha/` are preserved historical packages, also
+associated with the [GitHub Releases page](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
+Their artifact names use `v0.1.1-alpha` in place of `v0.1.2-alpha` above.
+Those packages predate the current command-context and argument-syntax modules,
+passive diagnostics, module-cache freshness guards, terminal-width fixes,
+collection recovery, and GitHub updater. Their source archive is complete for
+its historical inputs rather than the current checkout. The archives and their
+checksums must remain unchanged. They are used as isolated upgrade fixtures.
+
 ## Verify and install
 
-Download all artifacts and checksum files into the same directory, then verify:
+From the local candidate directory, verify before installation:
 
 ```bash
 sha256sum -c SHA256SUMS.checksum
@@ -48,15 +59,15 @@ For an individual downloaded artifact, use its matching `.checksum` file instead
 For the self-extracting installer:
 
 ```bash
-bash cli-interactive-help-v0.1.1-alpha-linux-x86_64.run --verify
-bash cli-interactive-help-v0.1.1-alpha-linux-x86_64.run install
+bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run --verify
+bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
 ```
 
 Installer arguments such as `--prefix "$HOME/apps/cli-help"` and `--no-rc` are
 forwarded literally. Existing installations can be upgraded without removal:
 
 ```bash
-bash cli-interactive-help-v0.1.1-alpha-linux-x86_64.run update
+bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
 ```
 
 The installer requires `tar`, `tail`, `mktemp`, and `sha256sum`, in addition to the
@@ -75,8 +86,8 @@ continues through the Python runtime. Custom launcher changes are preserved.
 ## Extracted runtime and native launcher
 
 ```bash
-tar -xzf cli-interactive-help-v0.1.1-alpha-linux-x86_64.tar.gz
-cd cli-interactive-help-v0.1.1-alpha
+tar -xzf cli-interactive-help-v0.1.2-alpha-linux-x86_64.tar.gz
+cd cli-interactive-help-v0.1.2-alpha
 ./cli-help --version
 ./cli-help --check
 ./cli-help install
@@ -85,7 +96,7 @@ cd cli-interactive-help-v0.1.1-alpha
 ```
 
 Browser and collection arguments are forwarded to `cli_help/main.py`.
-`install`, `update`, `uninstall`, and `review-update` select the corresponding
+`install`, `update`, `uninstall`, `review-update`, and `update-from-github` select the corresponding
 shell wrappers. The launcher resolves its own executable location, so moving a
 complete extracted bundle is supported. To use the separate launcher download,
 copy it into the root of the extracted source bundle as `cli-help` and mark it
@@ -98,20 +109,34 @@ GCC is required in addition to the runtime dependencies. From Linux x86_64:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/v0.1.1-alpha
-cd dist/v0.1.1-alpha
+python3 scripts/build_release.py --output dist/candidate-v0.1.2-alpha-config
+cd dist/candidate-v0.1.2-alpha-config
 sha256sum -c SHA256SUMS.checksum
 ```
 
 The version comes from [VERSION](../VERSION). `CC` may name an alternative C
 compiler executable; compiler command strings are not interpreted. The builder
-refuses an existing output directory and excludes local reports, Python caches,
-previous releases, and build outputs. New source archives include the maintained
+refuses an existing output directory or output beneath a maintained source
+directory. It excludes reserved private/generated names, credential/tool homes,
+recovery state, reports, Python caches, previous releases, and build outputs.
+Unexcluded maintained symlinks and special files are rejected. New source archives include the maintained
 documentation, test fixtures, CI configuration, and `tools/` media generator
 with its optional requirements. Those tools are absent from the preserved alpha
 archives. Media dependencies are not copied into installed runtimes. Builds from
 the current tree must use a separate output directory, leaving the preserved
 release directory unchanged.
+
+Capture opens each input through pinned directories with no symlink following,
+refuses special files before reading, and rechecks file and directory identity.
+Concurrent replacements or edits during a read abort the build. Input names with
+backslashes or control characters are rejected to match updater extraction rules.
+
+Selection uses the explicit root files and source directories in the builder,
+without requiring Git. New maintained modules are included automatically.
+Untracked files under those directories can also become inputs; inspect the
+manifest before building and keep private notes outside them. Reserved-name
+exclusion is not secret-content detection. Installed runtimes contain only the
+installation payload, excluding documentation, tests, CI, and optional media tools.
 
 Archives normalize ordering, modes, owner identifiers, and timestamps. Native
 compilation enables warnings as errors and omits linker build identifiers.
@@ -119,9 +144,15 @@ Identical source and toolchain inputs produce identical archives and launcher
 bytes; compiler or platform differences can change native output and build
 metadata. `BUILD-INFO.json` maps artifacts to exact source contents without
 claiming that an uncommitted build belongs to a particular Git commit.
+The compiler consumes a temporary copy of the captured C input used by the
+archives and manifest. Capture is not an atomic multi-file snapshot; edits between
+different file captures still require
+a final manifest-to-checkout comparison; rebuild after any included source or
+documentation edit. Keep validation reports outside package inputs to avoid
+self-referential hashes.
 
 The release tests compile the launcher, verify checksums, extract the archives,
 exercise installer/update/removal paths, reject corrupted embedded payloads, and
 confirm literal argument forwarding. Building artifacts does not itself publish
-a GitHub release. The alpha prerelease is published only after its source commit
-passes the Linux and documentation workflow.
+a GitHub release. Publication requires a separate explicit decision after source,
+package, and documentation verification; no automatic publication is configured.

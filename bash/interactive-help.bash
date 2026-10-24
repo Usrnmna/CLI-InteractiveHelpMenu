@@ -17,7 +17,7 @@ _cli_help_widget() {
     before_size=$(stty size </dev/tty 2>/dev/null) || before_size=
     bind -m "$_CLI_HELP_BOUND_MAP" '"\e[989~":""'
     if ! command -v -- "$python_command" >/dev/null 2>&1; then
-        printf '\ninteractive-help: Python 3 is unavailable: %s\n' "$python_command" >&2
+        printf '\ninteractive-help: interpreter_unavailable: Python 3 is unavailable; check CLI_HELP_PYTHON and PATH.\n' >&2
         return 0
     fi
     mapfile -d '' -t response < <(

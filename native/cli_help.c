@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
     }
     const char *relative = "cli_help/main.py";
     const char *program = getenv("CLI_HELP_PYTHON");
+    const char *program_role = "Python interpreter";
     if (!program || !*program) program = "python3";
     int first_argument = 1;
     if (argc > 1) {
@@ -39,6 +40,7 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[1], "update-from-github") == 0) relative = "update-from-github.sh";
         if (strcmp(relative, "cli_help/main.py") != 0) {
             program = "bash";
+            program_role = "Bash";
             first_argument = 2;
         }
     }
@@ -62,6 +64,6 @@ int main(int argc, char **argv) {
     execvp(program, arguments);
     int saved_errno = errno;
     free(arguments);
-    fprintf(stderr, "cli-help: cannot start %s: %s\n", program, strerror(saved_errno));
+    fprintf(stderr, "cli-help: cannot start %s: %s\n", program_role, strerror(saved_errno));
     return 127;
 }

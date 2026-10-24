@@ -24,6 +24,7 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       TERM: xterm-256color
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -37,6 +38,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends tmux
+      - name: Check repository artifact policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports/ci
+          python3 -B -m unittest discover -s tests -p test_repository_config.py -v 2>&1 | tee tests/reports/ci/repository-policy.log
       - name: Smoke-test passive diagnostics
         shell: bash
         env:
@@ -170,15 +177,29 @@ jobs:
           set -euo pipefail
           mkdir -p tests/reports/ci
           bash tests/run.sh 2>&1 | tee tests/reports/ci/linux-tests.log
+      - name: Build and verify local candidate artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports/ci
+          candidate_parent=$(mktemp -d "$RUNNER_TEMP/cli-help-build-ci.XXXXXXXX")
+          export CLI_HELP_TEST_RELEASE_DIR="$candidate_parent/candidate"
+          export CLI_HELP_TEST_HISTORICAL_DIR="$GITHUB_WORKSPACE/releases/v0.1.1-alpha"
+          python3 scripts/build_release.py --output "$CLI_HELP_TEST_RELEASE_DIR" 2>&1 | tee tests/reports/ci/release-candidate.log
+          (cd "$CLI_HELP_TEST_RELEASE_DIR" && sha256sum -c SHA256SUMS.checksum) | tee tests/reports/ci/release-checksums.txt
+          cp -- "$CLI_HELP_TEST_RELEASE_DIR/BUILD-INFO.json" tests/reports/ci/release-build-info.json
+          python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v 2>&1 | tee -a tests/reports/ci/release-candidate.log
+          python3 -B -m unittest discover -s tests -p test_release_terminal.py -v 2>&1 | tee -a tests/reports/ci/release-candidate.log
       - name: Retain test evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: linux-tests-python-${{ matrix.python }}
-          # Only fixed-input diagnostic reports and the suite log are retained.
+          # Only named synthetic diagnostics, logs, and package identity are retained.
           # Raw captures, downloaded targets, tool homes, and caches stay local.
           path: |
             tests/reports/ci/linux-tests.log
+            tests/reports/ci/repository-policy.log
             tests/reports/ci/diagnostics-doctor.json
             tests/reports/ci/diagnostics-explain.json
             tests/reports/ci/diagnostics-private-driver.json
@@ -186,6 +207,9 @@ jobs:
             tests/reports/ci/diagnostics-collection.json
             tests/reports/ci/diagnostics-collection-invalid.json
             tests/reports/ci/diagnostics-bundle-rejection.json
+            tests/reports/ci/release-candidate.log
+            tests/reports/ci/release-checksums.txt
+            tests/reports/ci/release-build-info.json
           if-no-files-found: warn
           retention-days: 14
 

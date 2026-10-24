@@ -15,55 +15,58 @@ htmlcov/
 # Maintained help excerpts under tests/fixtures/help/ remain tracked.
 # Raw media recordings, scene/cursor assertions, and replay reports belong in
 # tests/reports/; public documentation GIFs and PNGs under docs/assets/ stay tracked.
-/tests/reports/
-/generated-help/
-/.cache/
-# Tool homes are normally isolated below .cache/live-followup/. Protect accidental
-# checkout-local homes without hiding maintained drivers, profiles, or captures.
-/.azure/
-/.aws/
-/.ssh/
-/.gnupg/
-/.kube/
-/.docker/
-/.dotnet/
-/.nuget/
-/.bun/
-/.ansible/
-/.arduino15/
-/.config/gcloud/
-/.config/gh/
-/.config/cli-help/
-/.config/containers/
-/.local/share/containers/
-/.npm/
+**/tests/reports/
+generated-help/
+.cache/
+# Protect known private homes in both root and nested isolated environments.
+# Maintained profiles, drivers, help excerpts, and environment templates stay visible.
+.azure/
+.aws/
+.ssh/
+.gnupg/
+.kube/
+.docker/
+.dotnet/
+.nuget/
+.bun/
+.ansible/
+.arduino15/
+**/.config/gcloud/
+**/.config/gh/
+**/.config/cli-help/
+**/.config/containers/
+**/.local/share/containers/
+**/.local/share/cli-interactive-help/
+.npm/
 node_modules/
-/.lycheecache
-/dist/
+.lycheecache
+# Local candidates, reproducibility builds, and manifests remain private outputs.
+# Curated historical artifacts under releases/ remain eligible for tracking.
+dist/
 /lychee/
-# Private credential/history files when a tool HOME points at the checkout.
-/.git-credentials
-/.netrc
-/.pypirc
-/.bash_history
-/.python_history
-/.lesshst
-/.wget-hsts
+# Private credential/history files in checkout-local homes.
+.git-credentials
+.netrc
+.pypirc
+.bash_history
+.python_history
+.lesshst
+.wget-hsts
 
-# Application/test temporary sessions when TMPDIR points at the checkout root.
-/cli-help-media-*/
-/cli-help-probe-*/
-/cli-help-review-*/
-/cli-help-screen-*/
-/cli-help-build-*/
-/cli-help-installer.*/
-/cli-help-ignore-*/
-/cli-help-capture-*/
-/cli-help-functional-review-*/
-/cli-help-workflow-verification-*/
-/.cli-help-rc-*
-/.review-state-*
-/.cli-help-install.json
+# Application/test sessions when TMPDIR points anywhere inside the checkout.
+cli-help-media-*/
+cli-help-probe-*/
+cli-help-review-*/
+cli-help-screen-*/
+cli-help-build-*/
+cli-help-installer.*/
+cli-help-ignore-*/
+cli-help-capture-*/
+cli-help-functional-review-*/
+cli-help-workflow-verification-*/
+.cli-help-rc-*
+.review-state-*
+.cli-help-install.json
 # Standalone local launcher builds; published release assets remain eligible.
 /cli-help
 .review-backups/

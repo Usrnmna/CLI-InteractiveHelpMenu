@@ -19,6 +19,13 @@ uncertain locks, unsafe paths, interruptions, and preservation of original bytes
 For repository configuration, record ignore-policy checks, workflow lint, local
 CI smoke results, and explicit upload paths. Retain strict failure handling;
 private captures, staging files, and recovery backups must remain excluded.
+Check nested tool homes and temporary sessions as well as checkout-root outputs;
+maintained fixtures, environment templates, and curated releases must remain visible.
+For extensionless native artifacts, verify binary Git attributes and editor exclusions.
+For release preparation, identify the candidate version, exact source manifest,
+checksums, isolated actual-artifact lifecycle results, and installed rendered
+adapter evidence. Rebuild after included edits. Distinguish unpublished candidates
+from preserved packages, hosted CI, and any separately authorized publication.
 
 ## Limits and compatibility
 

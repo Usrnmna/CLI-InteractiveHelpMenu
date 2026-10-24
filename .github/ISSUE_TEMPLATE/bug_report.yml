@@ -13,9 +13,16 @@ body:
     id: revision
     attributes:
       label: Project version or checkout revision
-      description: Specify the release version or checkout commit, and whether local modifications are present.
+      description: Specify the version or checkout commit, local modifications, and whether this is a preserved release or an unpublished local candidate.
     validations:
       required: true
+  - type: textarea
+    id: package
+    attributes:
+      label: Package or local candidate
+      description: For packaging or update problems, identify source/native/installer format, artifact name, checksum result, source-manifest agreement, and install/update/review exit status. Omit private paths, raw manifests, receipts, and backup contents.
+    validations:
+      required: false
   - type: textarea
     id: environment
     attributes:
@@ -48,7 +55,7 @@ body:
     id: diagnostics
     attributes:
       label: Redacted diagnostic summary
-      description: Optional summary of --doctor, --explain, or --check-collection status/reason codes. For recovery, describe the explicit choice, layout or changed-file warning, uncertain lock state, and retained-backup availability. Omit paths, backup identifiers, snapshots, hashes, configuration contents, raw reports, and backups.
+      description: Optional summary of --doctor, --explain, or --check-collection status/reason codes. For interpreter startup failures, give the runtime role/reason without the configured value. For recovery, summarize explicit choices, changed-file warnings, uncertain locks, and retained backups. Omit private paths, snapshots, configuration contents, raw reports, and backup contents.
     validations:
       required: false
   - type: checkboxes

@@ -9,7 +9,8 @@ directory.
 
 The operating guides describe the current working tree, including unreleased
 changes listed in the [changelog](../CHANGELOG.md#unreleased). The version marker
-remains `0.1.1-alpha`; the [published alpha artifacts](releases.md) are an older
+is `0.1.2-alpha`, an unpublished local candidate. The
+[preserved alpha artifacts](releases.md#version-011---alpha) contain an older
 snapshot. Dated reviews below retain the results and limitations of their own runs.
 
 ## Browser use
@@ -19,6 +20,7 @@ snapshot. Dated reviews below retain the results and limitations of their own ru
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
 | Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Download, verify, install, or build versioned packages | [Release artifacts and build procedure](releases.md) |
+| Verify current source provenance, package lifecycles, and installed terminal behavior | [Local release candidate validation](release-candidate.md) |
 | Check GitHub releases, verify downloads, and upgrade with guided conflict review | [Updating from GitHub releases](github-updates.md) |
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |
 | Discovery modes, subcommands, cache settings, and insertion limits | [Discovery and execution boundaries](discovery-and-safety.md) |

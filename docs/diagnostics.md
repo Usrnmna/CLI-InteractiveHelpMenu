@@ -21,6 +21,12 @@ by this passive check. Terminal availability is informational, so redirected
 diagnostic output remains supported. The selected profile, driver, key, and cache
 locations are reported with configuration validity and discovery settings.
 Other environment values and configuration file contents are omitted.
+If the configured interpreter cannot start, the native launcher reports the
+runtime role and operating-system error without echoing `CLI_HELP_PYTHON`.
+The Bash adapter reports `interpreter_unavailable`, preserves pending input, and
+directs inspection of `CLI_HELP_PYTHON` and `PATH` without reproducing their values.
+These startup failures precede JSON report generation; passive Python reports
+require a usable interpreter.
 `configuration.escape_delay_ms` reports the validated curses key-sequence delay;
 invalid values produce `invalid_escape_delay` without reproducing the value.
 The UTF-8 check examines the shell locale rather than Python UTF-8 mode. An ASCII
