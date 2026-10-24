@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "cli_help"))
 
 import ui as ui_module
 from command_paths import help_route, load_driver_registry, resolve_path
-from core import HelpError, find_context, insert_option, load_profiles
+from core import HelpError, find_context, insert_option, load_profiles, validate_profile
 from discovery import ProbeError, Settings, build_profile, discover, parse_help, run_probe
 from live_compatibility import check_case
 from ui import Browser, DEFAULT_KEYS, display_text, draw, load_keys, run_browser
@@ -166,10 +166,11 @@ class BrowserLoop:
 
 class PrioritizedInventoryTests(unittest.TestCase):
     def test_matrix_and_profile_surface_counts(self):
-        self.assertEqual(len(MATRIX), 59)
-        self.assertEqual(len({case["command"].split()[0] for case in MATRIX}), 34)
+        original = [case for case in MATRIX if not case.get("expansion")]
+        self.assertEqual(len(original), 59)
+        self.assertEqual(len({case["command"].split()[0] for case in original}), 34)
         self.assertEqual({case["tier"] for case in MATRIX}, {"essential", "next", "extended"})
-        self.assertEqual(len(BUNDLED), 6)
+        self.assertTrue(set(PROFILE_SURFACES) <= {" ".join(profile["command"]) for profile in BUNDLED})
         for case in MATRIX:
             with self.subTest(command=case["command"]):
                 self.assertTrue((FIXTURES / case["fixture"]).is_file())
@@ -194,16 +195,16 @@ class PrioritizedInventoryTests(unittest.TestCase):
 
     def test_profiles_are_complete_and_unique(self):
         for profile in BUNDLED:
+            validate_profile(profile, ROOT / "profiles")
             flags = []
             for category in profile["categories"]:
                 self.assertGreaterEqual(len(category["options"]), 1, category["name"])
                 for option in category["options"]:
-                    self.assertRegex(option["flag"], r"--?[A-Za-z0-9][A-Za-z0-9_-]*=?")
                     self.assertTrue(option["summary"])
                     flags.append(option["flag"])
             with self.subTest(command=profile["command"]):
                 self.assertEqual(len(flags), len(set(flags)))
-                self.assertTrue(any(flag.startswith("--") for flag in flags))
+                self.assertTrue(flags)
 
     def test_bundled_surfaces_are_pinned(self):
         for command, expected in PROFILE_SURFACES.items():
@@ -277,7 +278,7 @@ class HelpResolutionTests(unittest.TestCase):
 
     def test_unknown_subcommand_paths_fail_closed(self):
         anchor = profile_for("rsync")
-        for line in ["git stash --", "git stash push --", "docker unknown --",
+        for line in ["git unknown-family --", "git stash unknown --", "docker unknown --",
                      "aws s3 unknown --", "kubectl unknown --", "uv unknown --"]:
             with self.subTest(line=line):
                 with self.assertRaises(HelpError):
@@ -304,6 +305,10 @@ class HelpResolutionTests(unittest.TestCase):
 class InsertionContractTests(unittest.TestCase):
     def test_every_bundled_option_inserts_exactly_midline(self):
         for profile in BUNDLED:
+            # Identity guards have independent subprocess tests. This contract
+            # examines literal insertion of already-reviewed profile metadata.
+            profile = dict(profile)
+            profile.pop("identity", None)
             command = " ".join(profile["command"])
             for option in [item for category in profile["categories"] for item in category["options"]]:
                 prefix = command + " "

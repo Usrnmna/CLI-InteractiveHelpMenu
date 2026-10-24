@@ -68,12 +68,14 @@ class ManualImportTests(unittest.TestCase):
         driver = json.loads(path.read_text())
         driver["global_values"] = ["--config"]
         driver["paths"][0]["stop_at_positional"] = True
+        driver["paths"][0]["stop_at_options"] = ["-args"]
         driver["paths"].append({"command": ["inspect"], "help": ["help", "inspect"]})
         path.write_text(json.dumps(driver))
         import_manual(["newtool", "convert"], self.destination, text_file=self.source, replace=True)
         result = json.loads(path.read_text())
         self.assertEqual(result["global_values"], ["--config"])
         self.assertTrue(next(route for route in result["paths"] if route["command"] == ["convert"])["stop_at_positional"])
+        self.assertEqual(next(route for route in result["paths"] if route["command"] == ["convert"])["stop_at_options"], ["-args"])
         self.assertEqual(next(route for route in result["paths"] if route["command"] == ["inspect"])["help"], ["help", "inspect"])
 
     def test_custom_filenames_are_reused_without_duplicate_profiles(self):

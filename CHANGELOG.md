@@ -3,8 +3,21 @@
 ## Unreleased
 
 - Third-party compatibility coverage includes all essential, next, and extended
-  tiers: 59 command paths across 34 executable names, with loadable drivers,
+  tiers: 129 command paths across 62 executable names, with loadable drivers,
   independent sentinel expectations, and captured help excerpts.
+- Recognized sudo/env/command prefixes, selected-interpreter pip/pytest module
+  help, literal ip keywords, concrete FFmpeg selectors, and repeated esptool
+  address/file groups preserve buffer text and cursor offsets. Ambiguous lookup
+  forms and incomplete groups fail closed without executing pending commands.
+- Version guards distinguish Mike Farah yq, JavaScript Yarn, and current/legacy
+  esptool syntax. Cache version 7 retains interpreter and executable context
+  and invalidates entries predating Ansible's fixed UTF-8 probe locale.
+- Live dependency checks corrected Go run's build-only output option, Podman's
+  optional pull policy, and fzf's optional count aliases. Explicit nonnegative
+  integer metadata supports separate fzf counts without consuming arbitrary text.
+- Curated profiles and independent route fixtures cover Linux services, SSH,
+  Python/Go/.NET tooling, networking, OpenSSL, JavaScript, Podman, PostgreSQL,
+  terminal tools, Ansible, cloud CLIs, Git stash/worktree, and embedded tooling.
 - Discovery recognizes aligned aliases, boolean negation shorthand, kubectl
   defaults, AWS typed values, jq two-value options, and partially optional
   placeholders. Fixed suffix-help routes support additional CLI conventions.

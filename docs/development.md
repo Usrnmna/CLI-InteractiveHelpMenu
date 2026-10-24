@@ -50,6 +50,7 @@ their execution checks, and the optional regeneration dependencies.
 | [native/cli_help.c](../native/cli_help.c), [scripts/build_release.py](../scripts/build_release.py) | Native convenience launcher and versioned installer/archive/checksum generation |
 | [bash/interactive-help.bash](../bash/interactive-help.bash) | Readline shortcut and buffer update |
 | [cli_help/core.py](../cli_help/core.py) | Profile validation, literal context parsing, insertion |
+| [cli_help/invocation.py](../cli_help/invocation.py) | Bounded prefix grammar and immutable Python module routes with original token offsets |
 | [cli_help/command_paths.py](../cli_help/command_paths.py) | Explicit subcommand paths, global-option arity, fixed help routes |
 | [cli_help/drivers.py](../cli_help/drivers.py) | Validated JSON driver loading and built-in route overlays |
 | [cli_help/manual_import.py](../cli_help/manual_import.py) | Manual rendering, profile generation, and manual-only driver import |
@@ -72,6 +73,17 @@ packages require neither:
 ```bash
 bash tests/run.sh
 ```
+
+The [complete expansion validation report](compatibility-expansion-validation.md)
+records the current matrix, full-suite results, live versions, missing dependencies,
+and the distinction between deterministic edits and live documentation evidence.
+
+GitHub Actions runs the deterministic suite on Python 3.10 and 3.12 and retains
+the suite log and documentation-link report for 14 days, including failed runs.
+The Bash pipeline preserves the suite's exit status when recording its log.
+Only those report files are uploaded; isolated tool homes and downloaded binaries
+are excluded. Dependabot groups minor and patch updates for CI actions and
+documentation-media dependencies; major updates remain separate.
 
 The terminal tests launch isolated Bash sessions, feed real key sequences, and
 inspect Readline buffers. A harmless shell function records whether the pending
@@ -285,7 +297,7 @@ without an editor, then previews and saves the result. The resulting profile
 passes literal insertion checks while the instrumented target remains uninvoked.
 
 The [third-party compatibility guide](compatibility.md) contains the complete
-59-path matrix, driver activation, environment preparation, report interpretation,
+129-path matrix, driver activation, environment preparation, report interpretation,
 and recorded validation limits. A default live run now covers all three tiers
 and loads the supplied drivers automatically:
 

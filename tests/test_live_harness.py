@@ -4,6 +4,7 @@ import unittest
 import contextlib
 import io
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 from core import HelpError
@@ -13,6 +14,35 @@ from live_compatibility import check_case, main, program_version
 
 
 class LiveHarnessTests(unittest.TestCase):
+    def test_esptool_alias_deprecation_warning_does_not_hide_version(self):
+        output = "WARNING: DEPRECATED: esptool.py alias\nesptool v5.6.0\n5.6.0\n"
+        with patch("live_compatibility.shutil.which", return_value="/fake/esptool.py"), patch(
+            "live_compatibility.run_probe", return_value=output
+        ) as probe:
+            self.assertEqual(program_version(["esptool.py", "write-flash"], ["version"]), "esptool v5.6.0")
+            self.assertEqual(probe.call_args.args[0], ["/fake/esptool.py", "version"])
+
+    def test_curated_profile_cannot_turn_missing_live_documentation_into_a_pass(self):
+        case = {"curator": True, "profile": "ip-address.json", "keyword_sentinels": ["dev", "scope"]}
+        registry = load_driver_registry(Path(__file__).resolve().parents[1] / "config/drivers.example")
+        with patch("live_compatibility.shutil.which", side_effect=lambda name: "/fake/ip" if name == "ip" else None), patch(
+            "live_compatibility.run_probe", return_value="usage: unrelated command"
+        ):
+            result = check_case(["ip", "address"], registry, case_metadata=case)
+        self.assertEqual(result["status"], "failed")
+        self.assertIn("sentinels", result["reason"])
+
+    def test_curated_raw_help_and_arity_evidence_are_reported_separately(self):
+        case = {"curator": True, "profile": "ip-address.json", "keyword_sentinels": ["dev", "scope"]}
+        registry = load_driver_registry(Path(__file__).resolve().parents[1] / "config/drivers.example")
+        with patch("live_compatibility.shutil.which", side_effect=lambda name: "/fake/ip" if name == "ip" else None), patch(
+            "live_compatibility.run_probe", return_value="Usage: ip address show [dev IFNAME] [scope SCOPE]"
+        ) as probe:
+            result = check_case(["ip", "address"], registry, case_metadata=case)
+        self.assertEqual(result["status"], "passed")
+        self.assertIn("does not verify arity", result["arity_evidence"])
+        self.assertEqual(probe.call_args.args[0], ["/fake/ip", "address", "help"])
+
     def test_configured_timeout_reaches_discovery_and_is_recorded(self):
         profile = build_profile("tool", [("fixture", "--flag   Description")])
         profile["discovery"] = {"sources": ["tool --help"], "warnings": []}

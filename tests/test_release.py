@@ -68,6 +68,13 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn(self.base + "/tests/test_release.py", names)
             self.assertIn(self.base + "/tests/fixtures/help/matrix.json", names)
             self.assertIn(self.base + "/tests/fixtures/help/captured.json", names)
+            for included in ("cli_help/invocation.py", "profiles/ip-address.json", "profiles/ffmpeg.json",
+                             "profiles/esptool.py-write-flash.json", "config/drivers.example/go.json",
+                             "tests/fixtures/help/expansion-development.json",
+                             "tests/fixtures/help/expansion-systems-captured.json",
+                             "tests/fixtures/help/python-module-captured.json",
+                             "docs/invocation-and-structured-arguments.md"):
+                self.assertIn(self.base + "/" + included, names)
             self.assertFalse(any("/.cache/" in name for name in names))
 
     def test_normalized_archives_and_native_build_are_repeatable(self):

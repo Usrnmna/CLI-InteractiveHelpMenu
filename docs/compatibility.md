@@ -3,7 +3,7 @@
 [Project overview](../README.md) · [Documentation index](README.md) ·
 [Driver configuration](profiles-and-drivers.md)
 
-The compatibility matrix covers 59 representative command paths across 34
+The compatibility matrix covers 129 maintained command paths across 62
 executable names. The tiers organize test coverage; they are not measured usage
 rankings. A passing case establishes the selected option declarations, argument
 counts, and literal insertion behavior for the recorded version. It does not
@@ -31,6 +31,28 @@ establish complete option coverage or successful execution of the program's work
 | Extended | 7-Zip | `7z`, `7zz` |
 | Extended | ImageMagick | `magick` (version 7), `convert` (version 6) |
 | Extended | yt-dlp and VLC | `yt-dlp`, `vlc` |
+| Expansion | Linux services and logs | `systemctl status`, `systemctl list-units`, `systemctl show`, `journalctl` |
+| Expansion | OpenSSH | `ssh`, `scp`, `sftp` |
+| Expansion | Python quality | `pytest`, `ruff check`, `ruff format` |
+| Expansion | Additional uv | `uv sync`, `uv add`, `uv lock`, `uv venv`, `uv tool install` |
+| Expansion | Go | `go build`, `go test`, `go run`, `go mod tidy` |
+| Expansion | .NET | `dotnet build`, `dotnet test`, `dotnet run`, `dotnet publish`, `dotnet restore` |
+| Expansion | Linux networking | `ip address`, `ip link`, `ip route`, `ss` |
+| Expansion | OpenSSL | `openssl s_client`, `openssl x509`, `openssl dgst` |
+| Expansion | JavaScript | `yarn install`, `yarn add`, `yarn run`, `bun run` |
+| Expansion | Podman | `podman run`, `podman build`, `podman exec`, `podman logs` |
+| Expansion | PostgreSQL shell | `psql` invocation options; SQL and backslash commands excluded |
+| Expansion | Terminal and data utilities | Mike Farah `yq eval`, `fd`, `fdfind`, `fzf` |
+| Expansion | Automation | `ansible-playbook` |
+| Expansion | Cloud | `az account show`, `az vm list`, `az storage blob list`, `gcloud config list`, `gcloud compute instances list`, `gcloud storage ls` |
+| Expansion | Git stash | `git stash`, `git stash push`, `git stash pop`, `git stash apply`, `git stash list`, `git stash show` |
+| Expansion | Git worktree | `git worktree`, `git worktree add`, `git worktree list`, `git worktree remove`, `git worktree prune` |
+| Expansion | Embedded development | `pio run`, `pio device monitor`, equivalent `platformio` routes, `esptool write-flash`, `esptool.py write-flash`, legacy `esptool.py write_flash`, `arduino-cli compile` |
+
+Expansion rows group the new families; each entry retains its filtering tier in
+the machine-readable matrix. Priority affects implementation order, not inclusion.
+The two Python interpreter/module forms are additional invocation coverage of
+these command paths and are not counted as separate executable routes.
 
 The maintained expectations, executable/package names, version requests, and
 tiers are in [matrix.json](../tests/fixtures/help/matrix.json). Root help and
@@ -110,10 +132,10 @@ are never run. Fixed version requests supplement the fixed help/manual requests.
 
 | Status | Meaning |
 | --- | --- |
-| `passed` | Expected declarations and argument counts were found, and insertion checks passed |
+| `passed` | Parsed declarations and selected arity assertions passed, or fixed-route sentinels and curated insertion passed; the report labels the evidence type |
 | `failed` | Discovery, required flags, argument counts, excluded syntax, or insertion checks failed |
 | `skipped` | The executable was absent from `PATH` |
-| `unsupported` | A designated empty-help case produced no recognizable options |
+| `unsupported` | A designated empty-help case or an explicitly incompatible/unverified executable variant |
 
 Probe timeouts, output-limit failures, and process-start failures remain failures,
 even for a designated empty-help case. Any failure returns a nonzero status. `--require-all` also rejects skipped and
@@ -121,6 +143,13 @@ unsupported cases. Root npm is intentionally an unsupported case for versions
 whose help lists commands without option declarations; `npm install` and `npm run`
 are tested separately. Consequently, a complete run can contain that documented
 unsupported result while its ordinary exit status is zero.
+
+Curated cases check independent sentinel tokens in fixed help/manual output and
+every curated literal insertion. Their `arity_evidence` field explicitly labels
+arity as deterministic fixture evidence rather than inferred live confirmation.
+For systemctl, upstream common help is paired with route-specific curated metadata;
+root help alone does not establish leaf compatibility. Git family manuals likewise
+do not imply that every documented family flag applies to every leaf.
 
 The live harness defaults to four seconds per help/manual source. Slow executable
 startup can be investigated with `--timeout 15`; the accepted range is 0.05–30
@@ -140,6 +169,10 @@ the selected Docker CLI; a working `docker` executable alone is insufficient.
 Install distribution packages or official upstream binaries as appropriate for
 the test machine. Place optional local binaries on `PATH` before starting the
 harness. Use a temporary test home when account configuration should be isolated.
+Local dependency installations and provenance for the completed follow-up are
+described in the [expansion validation report](compatibility-expansion-validation.md).
+Keep current and legacy esptool installations on separate PATHs for their respective
+spellings; a single installed major version cannot validate both route contracts.
 The help and version checks do not require cloud credentials, a Kubernetes
 cluster, a Docker daemon, backup repositories, or media input files. Git's
 subcommand cases require local Git manual pages and `man-db`; AWS CLI help can
@@ -158,10 +191,12 @@ jq's two-value options, optional Cargo arguments, and yt-dlp's required template
 with an optional type prefix. It also checks Unicode edits, end-of-options markers,
 and runner boundaries for `uv run`, `npm run`, and Docker execution commands.
 
-Specialized joined syntax remains outside the insertion grammar: FFmpeg stream
-selectors such as `-c:v`, GCC pass-through switches such as `-Wl,<options>`, and
-7-Zip switches such as `-o{Directory}` and `-t{Type}` are excluded. Their literal
-prefixes must not be offered as substitutes. Git's numeric shorthand `-<number>`
+Concrete FFmpeg stream selectors such as `-c:v` are supported. GCC pass-through
+switches such as `-Wl,<options>` and 7-Zip switches such as `-o{Directory}` and
+`-t{Type}` remain excluded. Placeholder selectors and incomplete literal prefixes
+must not be offered as substitutes. Supported prefix/module forms, ip keywords,
+repeated address/file groups, child boundaries, and executable-name/version
+constraints are detailed in [invocation and structured arguments](invocation-and-structured-arguments.md). Git's numeric shorthand `-<number>`
 is skipped while its explicit `-n` and `--max-count` aliases remain available.
 
 Discovery can start arbitrary installed programs through their fixed help routes;
@@ -169,6 +204,10 @@ the process limits are not a sandbox. See
 [discovery and execution boundaries](discovery-and-safety.md).
 
 ## Recorded validation
+
+The [complete expansion validation](compatibility-expansion-validation.md) records
+the current 129-route inventory, deterministic evidence, live versions, skips, and
+limits. The following reports describe older snapshots.
 
 The [review fixes and compatibility validation](review-fixes-2026-10-23.md)
 record regression and live results dated 2026-10-23 for the 59-path matrix. The original

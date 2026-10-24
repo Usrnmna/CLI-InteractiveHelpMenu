@@ -18,6 +18,19 @@ htmlcov/
 /tests/reports/
 /generated-help/
 /.cache/
+# Tool homes are normally isolated below .cache/live-followup/. Protect accidental
+# checkout-local homes without hiding maintained drivers, profiles, or captures.
+/.azure/
+/.dotnet/
+/.nuget/
+/.bun/
+/.ansible/
+/.arduino15/
+/.config/gcloud/
+/.config/containers/
+/.local/share/containers/
+/.npm/
+node_modules/
 /.lycheecache
 /dist/
 /lychee/

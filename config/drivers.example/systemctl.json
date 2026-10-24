@@ -1,0 +1,62 @@
+{
+  "command": "systemctl",
+  "global_values": [
+    "--type",
+    "-t",
+    "--state",
+    "--property",
+    "-p",
+    "--lines",
+    "-n",
+    "--output",
+    "-o",
+    "--host",
+    "-H",
+    "--machine",
+    "-M"
+  ],
+  "global_flags": [
+    "--user",
+    "--system",
+    "--all",
+    "-a",
+    "--full",
+    "-l",
+    "--no-pager",
+    "--no-legend",
+    "--plain",
+    "--value"
+  ],
+  "paths": [
+    {
+      "command": [
+        "status"
+      ],
+      "help": [
+        "--help"
+      ],
+      "man": "systemctl",
+      "stop_at_positional": false
+    },
+    {
+      "command": [
+        "list-units"
+      ],
+      "help": [
+        "--help"
+      ],
+      "man": "systemctl",
+      "stop_at_positional": false
+    },
+    {
+      "command": [
+        "show"
+      ],
+      "help": [
+        "--help"
+      ],
+      "man": "systemctl",
+      "stop_at_positional": false
+    }
+  ]
+}

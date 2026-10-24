@@ -32,6 +32,20 @@ DOCUMENT = {
 
 
 class GuidedEditingTests(unittest.TestCase):
+    def test_typed_optional_value_survives_review_until_argument_contract_changes(self):
+        document = self.draft.document()
+        option = document["profile"]["categories"][0]["options"][0]
+        option.update(argument="MAX", argument_optional=True, optional_value_kind="nonnegative_integer")
+        self.draft.text = json.dumps(document)
+        edited = self.apply(edit_options, ["e", "1", "", "", "", "", "y"])
+        self.assertEqual(edited["profile"]["categories"][0]["options"][0]["optional_value_kind"], "nonnegative_integer")
+        edited = self.apply(edit_options, ["e", "1", "", "", "", "", "n"])
+        self.assertNotIn("optional_value_kind", edited["profile"]["categories"][0]["options"][0])
+        option["argument_optional"] = True
+        self.draft.text = json.dumps(document)
+        edited = self.apply(edit_options, ["e", "1", "", "", "", "/clear"])
+        self.assertNotIn("optional_value_kind", edited["profile"]["categories"][0]["options"][0])
+
     def setUp(self):
         text = json.dumps(DOCUMENT)
         self.draft = Draft(0, text, text, {})

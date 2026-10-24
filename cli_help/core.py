@@ -7,6 +7,7 @@ import re
 import shlex
 
 from command_paths import load_driver_registry, resolve_path
+from invocation import module_driver, resolve_invocation
 
 
 class HelpError(ValueError):
@@ -57,6 +58,24 @@ def validate_profile(profile: dict, source: Path):
     ):
         raise HelpError(f"{source}: command must contain literal command words.")
     require_text(profile.get("description"), f"{source}: description")
+    if not isinstance(profile.get("stop_at_positional", False), bool):
+        raise HelpError("stop_at_positional must be a boolean.")
+    boundaries = profile.get("stop_at_options", [])
+    if not isinstance(boundaries, list) or any(not isinstance(flag, str) or not re.fullmatch(r"--?[A-Za-z0-9][A-Za-z0-9_-]*", flag) for flag in boundaries):
+        raise HelpError("stop_at_options must contain literal option names.")
+    if profile.get("identity") not in (None, "mikefarah-yq-v4", "javascript-yarn", "esptool-v4", "esptool-v5"):
+        raise HelpError("Unknown executable identity requirement.")
+    identity_names = {"mikefarah-yq-v4": {"yq"}, "javascript-yarn": {"yarn"},
+                      "esptool-v4": {"esptool", "esptool.py"}, "esptool-v5": {"esptool", "esptool.py"}}
+    if profile.get("identity") and command[0] not in identity_names[profile["identity"]]:
+        raise HelpError("Executable identity requirement does not match the profile command.")
+    group = profile.get("positional_group")
+    if group is not None:
+        if not isinstance(group, dict) or set(group) != {"argument", "argument_count", "repeatable"}:
+            raise HelpError("positional_group requires argument, argument_count and repeatable.")
+        require_text(group["argument"], "Positional group argument")
+        if type(group["argument_count"]) is not int or not 2 <= group["argument_count"] <= 16 or group["repeatable"] is not True:
+            raise HelpError("A repeated positional group requires 2-16 values and repeatable: true.")
     categories = profile.get("categories")
     if not isinstance(categories, list) or not categories:
         raise HelpError(f"{source}: categories must be a nonempty list.")
@@ -77,7 +96,9 @@ def validate_profile(profile: dict, source: Path):
             if not isinstance(option, dict):
                 raise HelpError(f"{source}: each option must be an object.")
             flag = option.get("flag")
-            if not isinstance(flag, str) or not re.fullmatch(r"--?[A-Za-z0-9][A-Za-z0-9_-]*=?", flag):
+            kind = option.get("kind", "flag")
+            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*=?"
+            if not isinstance(kind, str) or kind not in {"flag", "keyword"} or not isinstance(flag, str) or not re.fullmatch(pattern, flag):
                 raise HelpError(f"{source}: invalid literal option flag: {flag!r}")
             if flag in flags:
                 raise HelpError(f"{source}: duplicate option flag: {flag}")
@@ -87,9 +108,17 @@ def validate_profile(profile: dict, source: Path):
             require_text(option.get("argument", ""), "Option argument", True)
             if not isinstance(option.get("argument_optional", False), bool):
                 raise HelpError("argument_optional must be a boolean.")
+            if not isinstance(option.get("attached", False), bool):
+                raise HelpError("attached must be a boolean.")
+            if option.get("attached") and (kind != "flag" or not option.get("argument")):
+                raise HelpError("Attached values require a flag with an argument.")
             count = option.get("argument_count", 1)
             if type(count) is not int or not 1 <= count <= 16 or (count > 1 and not option.get("argument")):
                 raise HelpError("argument_count must be an integer from 1 to 16; multiple values require an argument.")
+            if "optional_value_kind" in option:
+                if (option["optional_value_kind"] != "nonnegative_integer" or not option.get("argument")
+                        or not option.get("argument_optional") or count != 1):
+                    raise HelpError("optional_value_kind requires nonnegative_integer and one optional argument.")
 
 
 def load_profiles(bundled: Path, custom: Path | None = None) -> list[dict]:
@@ -180,50 +209,119 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
     active = next((token for token in tokens if token.start <= point <= token.end), None)
     start, end = (active.start, active.end) if active else (point, point)
     query = active.value if active else ""
-    if active and (not query.startswith("-") or "=" in query):
-        raise HelpError("Move the cursor to an empty argument or an option name.")
+    if active and "=" in query:
+        raise HelpError("Move the cursor outside the attached option value.")
     words = [token.value for token in tokens if token.end <= start]
-    words[0] = Path(words[0]).name
     driver_registry = load_driver_registry() if driver_registry is None else driver_registry
     try:
-        path = resolve_path(words, [tuple(profile["command"]) for profile in profiles], driver_registry)
+        invocation = resolve_invocation(words)
+        target_words = [invocation.name, *words[invocation.argument_start:]]
+        target_registry = ({invocation.module: module_driver(invocation.module)}
+                           if invocation.module else driver_registry)
+        path = resolve_path(target_words, [] if invocation.module else
+                            [tuple(profile["command"]) for profile in profiles], target_registry)
     except ValueError as error:
         raise HelpError(str(error)) from error
-    matches = [profile for profile in profiles if tuple(profile["command"]) == path.words]
+    argument_start = invocation.argument_start + path.argument_start - 1
+    profile_path = path.words
+    if invocation.module:
+        # Explicit interpreter/module profiles are separate from ordinary pip
+        # profiles; a different pip executable must never supply this context.
+        profile_path = (Path(tokens[invocation.executable_index].value).name, "-m", *path.words)
+    matches = [profile for profile in profiles if tuple(profile["command"]) == profile_path]
+    if active and not query.startswith("-") and not (query and any(
+        option.get("kind") == "keyword" and option["flag"].startswith(query)
+        for profile in matches for category in profile["categories"] for option in category["options"]
+    )):
+        raise HelpError("Move the cursor to an empty argument or an option name, or a documented keyword.")
+    if matches and matches[0].get("identity"):
+        if discover is None:
+            raise HelpError("This profile requires executable identity verification through discovery.")
+        discover(tokens[invocation.executable_index].value, subcommands=path.words[1:])
     if not matches and discover is not None:
         # Only the executable and a recognized documentation path cross this
         # boundary. Pending global options, values, and action arguments do not.
-        matches = [discover(tokens[0].value, subcommands=path.words[1:]) if len(path.words) > 1
-                   else discover(tokens[0].value)]
+        executable = tokens[invocation.executable_index].value
+        if invocation.module:
+            matches = [discover(executable, subcommands=path.words[1:], module=invocation.module,
+                                interpreter_options=invocation.interpreter_options)]
+        else:
+            matches = [discover(executable, subcommands=path.words[1:]) if len(path.words) > 1
+                       else discover(executable)]
     if not matches:
         raise HelpError(f"No help profile for {words[0]!r}. Use --list-commands to list profiles.")
     profile = max(matches, key=lambda item: len(item["command"]))
-    command_end = tokens[path.argument_start - 1].end
+    command_end = tokens[argument_start - 1].end
     if point <= command_end:
         raise HelpError("Move the cursor after the command or subcommand and a space.")
-    previous = [token.value for token in tokens[path.argument_start:] if token.end <= start]
+    previous = [token.value for token in tokens[argument_start:] if token.end <= start]
     options = {option["flag"].rstrip("="): option for category in profile["categories"] for option in category["options"]}
+    if active:
+        keyword_match = bool(query) and any(option.get("kind") == "keyword" and option["flag"].startswith(query) for option in options.values())
+        if "=" in query or not (query.startswith("-") or keyword_match):
+            raise HelpError("Move the cursor to an empty argument, an option name, or a documented keyword.")
+        # A joined payload is a real value, never an editable flag prefix.
+        if any(option.get("attached") and query.startswith(key) and len(query) > len(key)
+               for key, option in options.items()):
+            raise HelpError("Move the cursor outside the attached option value.")
     values_remaining = 0
+    optional_integer_pending = False
     driver = driver_registry.get(path.words[0])
     route = driver.paths.get(path.words[1:]) if driver else None
-    stop_at_positional = route is not None and route.stop_at_positional
+    stop_at_positional = profile.get("stop_at_positional", False) or route is not None and route.stop_at_positional
+    boundary_options = set(profile.get("stop_at_options", [])) | set(route.stop_at_options if route else ())
+    group = profile.get("positional_group")
+    group_values = 0
     for word in previous:
+        if optional_integer_pending:
+            optional_integer_pending = False
+            # Only an explicitly typed optional integer can consume a separate
+            # token. Other optional values retain the conservative boundary.
+            if re.fullmatch(r"[0-9]+", word):
+                continue
+        if group_values:
+            # An option-looking file cannot complete an esptool-style positional
+            # pair: quoting does not hide its leading dash from the target CLI.
+            if word.startswith("-"):
+                raise HelpError("Complete the repeated positional argument group before an option or -- marker.")
+            group_values = (group_values + 1) % group["argument_count"]
+            continue
         if values_remaining:
             values_remaining -= 1
             continue
         if word == "--":
             raise HelpError("Options cannot be inserted after the -- end-of-options marker.")
+        if word.partition("=")[0] in boundary_options:
+            raise HelpError("Options cannot be inserted after this command's child-argument boundary.")
         key, equal, _ = word.partition("=")
+        if invocation.module == "pip" and key == "--python":
+            raise HelpError("pip --python changes the interpreter; this module form is unsupported.")
         option = options.get(key, {})
+        attached = False
+        if not option:
+            for candidate, metadata in options.items():
+                if metadata.get("attached") and word.startswith(candidate) and len(word) > len(candidate):
+                    option, attached = metadata, True
+                    break
+        if group and not option and not word.startswith("-"):
+            group_values = 1
+            continue
+        if group and not option:
+            raise HelpError("An unrecognized option makes the structured argument position ambiguous.")
         if stop_at_positional:
-            if not word.startswith("-"):
+            if not word.startswith("-") and option.get("kind") != "keyword":
                 raise HelpError("Move the cursor before the first positional argument to insert this command's options.")
             if not option:
                 raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.")
         if option.get("argument") and not option.get("argument_optional", False):
-            values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal)))
+            values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal) or attached))
+        optional_integer_pending = option.get("optional_value_kind") == "nonnegative_integer" and not (equal or attached)
     if values_remaining:
         raise HelpError("Enter the preceding option's argument before choosing another option.")
+    if optional_integer_pending and active and re.fullmatch(r"[0-9]+", query):
+        raise HelpError("Move the cursor outside the optional integer argument.")
+    if group_values:
+        raise HelpError("Complete the repeated positional argument group before choosing an option.")
     return Context(line, point, start, end, query, profile)
 
 

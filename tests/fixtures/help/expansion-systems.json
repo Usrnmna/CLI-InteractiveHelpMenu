@@ -1,0 +1,1254 @@
+[
+  {
+    "command": "systemctl status",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-status.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "systemctl list-units",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-list-units.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "systemctl show",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-show.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "journalctl",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "journalctl.txt",
+    "flags": {
+      "--follow": "",
+      "--no-pager": "",
+      "--unit=": "UNIT",
+      "--since=": "DATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--follow",
+      "--no-pager",
+      "--unit=",
+      "--since="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--unit=": 1,
+      "--since=": 1
+    },
+    "profile_sentinels": {
+      "--unit=": {
+        "argument": "UNIT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--follow": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--since=": {
+        "argument": "TIME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "ssh",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "ssh.txt",
+    "flags": {
+      "-p": "port",
+      "-i": "identity_file",
+      "-o": "option",
+      "-N": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-p",
+      "-i",
+      "-o",
+      "-N"
+    ],
+    "version_args": [
+      "-V"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-p": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-p": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-N": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "scp",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "scp.txt",
+    "flags": {
+      "-P": "port",
+      "-r": "",
+      "-i": "identity_file",
+      "-o": "ssh_option"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-P",
+      "-r",
+      "-i",
+      "-o"
+    ],
+    "version_args": [],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-P": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-P": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-r": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "sftp",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "sftp.txt",
+    "flags": {
+      "-P": "port",
+      "-b": "batchfile",
+      "-i": "identity_file",
+      "-o": "ssh_option"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-P",
+      "-b",
+      "-i",
+      "-o"
+    ],
+    "version_args": [],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-P": 1,
+      "-b": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-P": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-b": {
+        "argument": "BATCHFILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "ip address",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-address.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "scope"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "scope": {
+        "argument": "SCOPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    }
+  },
+  {
+    "command": "ip link",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-link.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "up"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "up": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    }
+  },
+  {
+    "command": "ip route",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-route.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "table"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "table": {
+        "argument": "TABLE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    }
+  },
+  {
+    "command": "ss",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ss.txt",
+    "flags": {
+      "--tcp": "",
+      "--udp": "",
+      "--listening": "",
+      "--numeric": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--tcp",
+      "--udp",
+      "--listening",
+      "--numeric"
+    ],
+    "version_args": [
+      "-V"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "--listening": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--numeric": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tcp": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--udp": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "openssl s_client",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-s_client.txt",
+    "flags": {
+      "-connect": "val",
+      "-servername": "val",
+      "-showcerts": "",
+      "-CAfile": "infile"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-connect",
+      "-servername",
+      "-showcerts",
+      "-CAfile"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-connect": 1,
+      "-servername": 1,
+      "-CAfile": 1
+    },
+    "profile_sentinels": {
+      "-connect": {
+        "argument": "HOST:PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-servername": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-CAfile": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-showcerts": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "openssl x509",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-x509.txt",
+    "flags": {
+      "-in": "infile",
+      "-out": "outfile",
+      "-text": "",
+      "-noout": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-in",
+      "-out",
+      "-text",
+      "-noout"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-in": 1,
+      "-out": 1
+    },
+    "profile_sentinels": {
+      "-in": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-out": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-text": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-noout": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "openssl dgst",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-dgst.txt",
+    "flags": {
+      "-hex": "",
+      "-out": "outfile",
+      "-verify": "val",
+      "-signature": "infile"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-hex",
+      "-out",
+      "-verify",
+      "-signature"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-out": 1,
+      "-verify": 1,
+      "-signature": 1
+    },
+    "profile_sentinels": {
+      "-hex": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-out": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-verify": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-signature": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "podman run",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-run.txt",
+    "flags": {
+      "--detach": "",
+      "--env": "KEY_VALUE",
+      "--name": "NAME",
+      "--publish": "PORT"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--detach",
+      "--env",
+      "--name",
+      "--publish"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--env": 1,
+      "--name": 1,
+      "--publish": 1
+    },
+    "profile_sentinels": {
+      "--detach": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--name": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--env": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--publish": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "podman build",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-build.txt",
+    "flags": {
+      "--tag": "NAME",
+      "--file": "FILE",
+      "--no-cache": "",
+      "--build-arg": "KEY_VALUE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--tag",
+      "--file",
+      "--no-cache",
+      "--build-arg"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--tag": 1,
+      "--file": 1,
+      "--build-arg": 1
+    },
+    "profile_sentinels": {
+      "--tag": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--file": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--build-arg": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-cache": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--pull": {
+        "argument": "POLICY",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "podman exec",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-exec.txt",
+    "flags": {
+      "--interactive": "",
+      "--tty": "",
+      "--env": "KEY_VALUE",
+      "--workdir": "DIR"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--interactive",
+      "--tty",
+      "--env",
+      "--workdir"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--env": 1,
+      "--workdir": 1
+    },
+    "profile_sentinels": {
+      "--interactive": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tty": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--env": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--workdir": {
+        "argument": "DIR",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "podman logs",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-logs.txt",
+    "flags": {
+      "--follow": "",
+      "--timestamps": "",
+      "--tail": "LINES",
+      "--since": "TIME"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--follow",
+      "--timestamps",
+      "--tail",
+      "--since"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--tail": 1,
+      "--since": 1
+    },
+    "profile_sentinels": {
+      "--follow": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--timestamps": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tail": {
+        "argument": "LINES",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--since": {
+        "argument": "TIME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "psql",
+    "tier": "extended",
+    "package": "psql",
+    "fixture": "psql.txt",
+    "flags": {
+      "--host": "HOST",
+      "--dbname": "DBNAME",
+      "--no-psqlrc": "",
+      "--command": "COMMAND"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--host",
+      "--dbname",
+      "--no-psqlrc",
+      "--command"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--host": 1,
+      "--dbname": 1,
+      "--command": 1
+    },
+    "profile_sentinels": {
+      "--host": {
+        "argument": "HOST",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--dbname": {
+        "argument": "DBNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--command": {
+        "argument": "COMMAND",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-psqlrc": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "yq eval",
+    "tier": "extended",
+    "package": "yq",
+    "fixture": "yq-eval.txt",
+    "flags": {
+      "--inplace": "",
+      "--null-input": "",
+      "--output-format": "FORMAT",
+      "--expression": "EXPRESSION"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--inplace",
+      "--null-input",
+      "--output-format",
+      "--expression"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--output-format": 1,
+      "--expression": 1
+    },
+    "profile_sentinels": {
+      "--inplace": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--null-input": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--output-format": {
+        "argument": "FORMAT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--expression": {
+        "argument": "EXPRESSION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "fd",
+    "tier": "extended",
+    "package": "fd-find",
+    "fixture": "fd.txt",
+    "flags": {
+      "--hidden": "",
+      "--type": "TYPE",
+      "--extension": "EXT",
+      "--max-depth": "DEPTH"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--hidden",
+      "--type",
+      "--extension",
+      "--max-depth"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type": 1,
+      "--extension": 1,
+      "--max-depth": 1
+    },
+    "profile_sentinels": {
+      "--hidden": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extension": {
+        "argument": "EXT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--max-depth": {
+        "argument": "DEPTH",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "fdfind",
+    "tier": "extended",
+    "package": "fd-find",
+    "fixture": "fdfind.txt",
+    "flags": {
+      "--hidden": "",
+      "--type": "TYPE",
+      "--extension": "EXT",
+      "--max-depth": "DEPTH"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--hidden",
+      "--type",
+      "--extension",
+      "--max-depth"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type": 1,
+      "--extension": 1,
+      "--max-depth": 1
+    },
+    "profile_sentinels": {
+      "--hidden": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extension": {
+        "argument": "EXT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--max-depth": {
+        "argument": "DEPTH",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "fzf",
+    "tier": "extended",
+    "package": "fzf",
+    "fixture": "fzf.txt",
+    "flags": {
+      "--multi": "[=MAX]",
+      "--query": "STR",
+      "--height": "HEIGHT",
+      "--preview": "COMMAND"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--multi",
+      "--query",
+      "--height",
+      "--preview"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--multi": 1,
+      "--query": 1,
+      "--height": 1,
+      "--preview": 1
+    },
+    "profile_sentinels": {
+      "--multi": {
+        "argument": "[=MAX]",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      },
+      "--query": {
+        "argument": "STR",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--height": {
+        "argument": "HEIGHT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--preview": {
+        "argument": "COMMAND",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-m": {
+        "argument": "MAX",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      }
+    }
+  },
+  {
+    "command": "ansible-playbook",
+    "tier": "extended",
+    "package": "ansible-playbook",
+    "fixture": "ansible-playbook.txt",
+    "flags": {
+      "--inventory": "INVENTORY",
+      "--check": "",
+      "--extra-vars": "EXTRA_VARS",
+      "--limit": "PATTERN"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--inventory",
+      "--check",
+      "--extra-vars",
+      "--limit"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--inventory": 1,
+      "--extra-vars": 1,
+      "--limit": 1
+    },
+    "profile_sentinels": {
+      "--inventory": {
+        "argument": "INVENTORY",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--limit": {
+        "argument": "PATTERN",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extra-vars": {
+        "argument": "EXTRA_VARS",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--check": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    }
+  }
+]

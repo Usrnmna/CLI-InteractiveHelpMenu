@@ -20,17 +20,21 @@ import time
 
 from core import HelpError, validate_profile
 from command_paths import help_route
+from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 
 
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 5
-FLAG_PATTERN = re.compile(r"(?<![\w=-])(--?[A-Za-z0-9][A-Za-z0-9_-]*)(?=$|[\s,=\[<])")
+CACHE_VERSION = 7
+FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
+# These are interpreter switches with no separate values or code operands.
+# Module routes are deliberately independent of user-editable driver files.
+MODULE_INTERPRETER_OPTIONS = INTERPRETER_FLAGS
 PARENTHESIZED_TYPE = r"\((?:string|list|integer|long|double|float|map|blob|timestamp)\)"
 ARGUMENT_PATTERN = re.compile(
-    r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_-]*|\[[^\[\]]+\]|\{[^{}]+\}|"
-    + PARENTHESIZED_TYPE + r"|[A-Z][A-Z0-9_-]*)(?=$|[\s,])"
+    r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_-]*|\[[^\[\]]+\]|\{[^{}]+\}|#[0-9]+|"
+    + PARENTHESIZED_TYPE + r"|[A-Z][A-Z0-9_-]*(?:=[A-Z][A-Z0-9_-]*)?)(?=$|[\s,])"
 )
 ANSI_PATTERN = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]")
 
@@ -89,7 +93,8 @@ def probe_environment() -> dict:
     return environment
 
 
-def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check=False) -> str:
+def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check=False,
+              environment_overrides: dict | None = None) -> str:
     """Collect a bounded help response without a shell, stdin, pager, or working files.
 
     A separate process group permits cleanup of ordinary descendants on timeout,
@@ -97,9 +102,16 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
     that group or ignores --help is outside this containment guarantee.
     """
     with tempfile.TemporaryDirectory(prefix="cli-help-probe-") as directory:
+        environment = probe_environment()
+        if Path(argv[0]).name == "ansible-playbook":
+            # Current Ansible requires UTF-8 even for --help and --version.
+            # Keep English output and exclude caller-controlled locale values.
+            environment.update({"LC_ALL": "C.UTF-8", "LANG": "C.UTF-8"})
+        if environment_overrides:
+            environment.update(environment_overrides)
         try:
             process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT, cwd=directory, env=probe_environment(),
+                                       stderr=subprocess.STDOUT, cwd=directory, env=environment,
                                        start_new_session=True)
         except OSError as error:
             raise ProbeError(f"Cannot start help source: {error}") from error
@@ -177,6 +189,14 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     stripped = re.sub(r"([,|])\s+(?=--?[A-Za-z0-9])", r"\1 ", stripped)
     columns = re.split(r"\s{2,}|\t+", stripped, maxsplit=1)
     signature = columns[0]
+    # systemd presents short/long aliases separated by one space. Restrict
+    # normalization to a leading short flag directly followed by a long flag;
+    # embedded examples, values, and arbitrary adjacent flags remain prose.
+    signature = re.sub(r"^(-[A-Za-z0-9])\s+(?=--[A-Za-z0-9])", r"\1, ", signature)
+    # A selector placeholder is not a literal option. In particular, rejecting
+    # the whole declaration prevents -c[:stream_specifier] becoming bare -c.
+    if re.search(r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:\[:|:<)", signature):
+        return None
     summary = columns[1].strip() if len(columns) == 2 else ""
     typed_value = re.match("^(" + PARENTHESIZED_TYPE + r")(?=$|\s)", summary)
     if typed_value:
@@ -231,6 +251,10 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
                 argument = value.group(1)
                 optional = argument.startswith("[") and argument.endswith("]")
                 tail = tail[value.end():].strip()
+            elif ":" in flag and re.fullmatch(r"[a-z][a-z0-9_-]*", tail):
+                # FFmpeg's concrete stream-selector declarations use lowercase
+                # codec metavariables even without a separate description.
+                argument, tail = tail, ""
             elif summary and re.fullmatch(r"[a-z][A-Za-z0-9_\[\],:=./ -]*", tail):
                 # A separate declaration column can contain lowercase types,
                 # multiword FFmpeg placeholders, or structured metadata syntax.
@@ -271,7 +295,17 @@ def parse_help(text: str, source: str) -> list[dict]:
             entries.append({**option, "summary": summary, "detail": paragraphs + f"\nSource: {source}",
                             "category": active_heading})
 
-    for raw in clean_output(text).splitlines():
+    lines = clean_output(text).splitlines()
+    # Manual declarations often place a lowercase metavariable on its own
+    # line. A more deeply indented following paragraph distinguishes those
+    # declarations from single-column descriptions such as '-h help'.
+    next_indents = [0] * len(lines)
+    next_indent = 0
+    for index in range(len(lines) - 1, -1, -1):
+        next_indents[index] = next_indent
+        if lines[index].strip():
+            next_indent = len(lines[index]) - len(lines[index].lstrip())
+    for line_index, raw in enumerate(lines):
         line = raw.strip()
         indentation = len(raw) - len(raw.lstrip())
         is_heading = bool(line) and indentation <= 3 and len(line) <= 72 and not line.startswith("-") and (
@@ -292,6 +326,12 @@ def parse_help(text: str, source: str) -> list[dict]:
         if parsed:
             finish()
             active_options, summary = parsed
+            if (indentation >= 4 and next_indents[line_index] > indentation
+                    and re.fullmatch(r"[a-z][a-z0-9_-]*", summary)
+                    and not any(option["argument"] for option in active_options)):
+                for option in active_options:
+                    option["argument"] = summary
+                summary = ""
             active_heading = heading
             description = [summary] if summary else []
         elif active_options:
@@ -418,29 +458,108 @@ def write_cache(path: Path, identity: dict, profile: dict):
                 pass
 
 
-def discover(command: str, settings: Settings, refresh=False, subcommands=(), driver_registry=None) -> dict:
-    """Discover a recognized command path using fixed routes without pending args."""
+def module_help_route(module: str, subcommands: tuple[str, ...], interpreter_options: tuple[str, ...]):
+    """Return reviewed module help operands without consulting executable drivers.
+
+    Interpreter flags retain the selected installation's documentation context.
+    Only fixed pip help routes and pytest help are allowed; pending operands,
+    Python code, module paths, plugin names, and interpreter option values never
+    enter a discovery request.
+    """
+    if any(option not in MODULE_INTERPRETER_OPTIONS for option in interpreter_options):
+        raise HelpError("Unsupported Python interpreter option for module help.")
+    if module == "pip" and (not subcommands or
+                            len(subcommands) == 1 and subcommands[0] in PIP_MODULE_COMMANDS):
+        arguments = ("help", *subcommands) if subcommands else ("--help",)
+        manual = "-".join((module, *subcommands))
+    elif module == "pytest" and not subcommands:
+        arguments = ("--help", "--noconftest")
+        manual = "pytest"
+    else:
+        raise HelpError("Unsupported Python module or module command path for help.")
+    return [*interpreter_options, "-m", module, *arguments], manual
+
+
+def verify_command_variant(name: str, executable: str, settings: Settings, subcommands=()) -> str:
+    """Identify tools whose names or command spelling differ across products.
+
+    Only fixed version or root help requests are issued. Manual-only mode cannot
+    establish executable identity and therefore leaves these routes explicit.
+    """
+    if settings.mode != "auto":
+        raise HelpError(f"The {name} executable variant cannot be identified in manual-only mode; use an explicit reviewed profile.")
+    arguments = ["--help"] if name in ("esptool", "esptool.py") else ["--version"]
+    output = clean_output(run_probe([executable, *arguments], settings.timeout)).strip()
+    if name == "yq":
+        if not re.search(r"github\.com/mikefarah/yq", output, re.IGNORECASE) or not re.search(r"version\s+v?4\.", output):
+            raise HelpError("The yq eval route requires Mike Farah yq v4; this executable has a different or unverified implementation.")
+    elif name == "yarn":
+        match = re.fullmatch(r"v?([0-9]+)\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?", output)
+        if not match or int(match.group(1)) < 1:
+            raise HelpError("JavaScript Yarn is required; this executable has a different or unverified implementation (including cmdtest yarn).")
+    else:
+        match = re.search(r"\besptool(?:\.py)?\s+v?([0-9]+)\.[0-9]+", output, re.IGNORECASE)
+        if not match:
+            raise HelpError("The esptool version could not be identified from fixed root help.")
+        major = int(match.group(1))
+        if subcommands and ((subcommands[0] == "write-flash" and major < 5) or
+                            (subcommands[0] == "write_flash" and major >= 5)):
+            raise HelpError("esptool write-flash requires v5 or newer; write_flash is the explicitly separate legacy route.")
+        # Keep identity compact rather than caching the complete root help text.
+        output = match.group(0)
+    return clean_output(output).strip()
+
+
+def discover(command: str, settings: Settings, refresh=False, subcommands=(), driver_registry=None,
+             module: str | None = None, interpreter_options=()) -> dict:
+    """Discover fixed executable or selected-interpreter module documentation.
+
+    Module profiles use their logical module command for insertion and record
+    the selected interpreter separately. Editable drivers cannot substitute an
+    executable, module, interpreter switch, or module help route.
+    """
     if settings.mode == "off":
         raise HelpError("No static profile matches and automatic discovery is disabled.")
     name = Path(command).name
     if not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", name) or name in (".", ".."):
         raise HelpError("Discovery requires a literal executable name.")
-    try:
-        route = help_route(name, tuple(subcommands), driver_registry)
-        help_arguments, manual_name = list(route.arguments), route.manual
-    except ValueError as error:
-        raise HelpError(str(error)) from error
-    command_path = [name, *subcommands]
+    if module is not None:
+        if name not in ("python", "python3"):
+            raise HelpError("Module help requires a selected python or python3 executable.")
+        help_arguments, manual_name = module_help_route(module, tuple(subcommands), tuple(interpreter_options))
+    else:
+        if interpreter_options:
+            raise HelpError("Interpreter options require a supported module invocation.")
+        try:
+            route = help_route(name, tuple(subcommands), driver_registry)
+            help_arguments, manual_name = list(route.arguments), route.manual
+        except ValueError as error:
+            raise HelpError(str(error)) from error
+    command_path = [module or name, *subcommands]
+    if name == "pytest" and not subcommands and module is None:
+        # Fixed help must not load project conftest modules or installed
+        # third-party plugins, even when a driver supplies a root route.
+        help_arguments = ["--help", "--noconftest"]
     executable = shutil.which(command)
     if not executable:
         raise HelpError(f"Installed executable not found: {command!r}")
     executable = os.path.abspath(executable)
+    variant = (verify_command_variant(name, executable, settings, subcommands)
+               if name in ("yq", "yarn", "esptool", "esptool.py") else None)
+    if name == "yarn" and tuple(subcommands) == ("run",) and int(variant.lstrip("v").split(".")[0]) >= 2:
+        # Modern Yarn has overload-specific help. Classic Yarn treats this
+        # spelling as a script operand, so it is selected only after identity.
+        help_arguments = ["run", "-h=1"]
     manual = shutil.which("man")
     manual = os.path.abspath(manual) if manual else None
     identity = {"version": CACHE_VERSION, "command": command_path, "executable": executable_identity(executable),
                 "help_arguments": help_arguments, "manual_name": manual_name,
                 "mode": settings.mode, "manual": executable_identity(manual) if manual else None,
                 "manpath": os.environ.get("MANPATH", ""), "timeout": settings.timeout}
+    if module is not None:
+        identity.update({"module": module, "interpreter_options": list(interpreter_options)})
+    if variant:
+        identity["variant"] = variant
     digest = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     cache_path = settings.cache_dir / f"{digest}.json" if settings.cache_dir and settings.cache_ttl else None
     if cache_path and not refresh:
@@ -453,13 +572,21 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     probes = []
     if settings.mode == "auto" and help_arguments:
         probes.append((" ".join([name, *help_arguments]), [executable, *help_arguments]))
-    if manual and manual_name:
+    if manual and manual_name and (module is None or settings.mode == "man"):
         probes.append((f"man {manual_name}", [manual, "-P", "/bin/cat", "--no-hyphenation", "--no-justification", "-s", "1:8", "--", manual_name]))
-    elif manual_name:
+        if module is not None:
+            warnings.append("System module manuals do not establish the selected interpreter's installed module version.")
+    elif manual_name and module is None:
+        warnings.append("The man executable is unavailable.")
+    elif module is not None and settings.mode == "man":
         warnings.append("The man executable is unavailable.")
     for label, argv in probes:
         try:
-            output = run_probe(argv, settings.timeout)
+            if (module == "pytest" or name == "pytest") and argv[0] == executable:
+                output = run_probe(argv, settings.timeout,
+                                   environment_overrides={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"})
+            else:
+                output = run_probe(argv, settings.timeout)
             if parse_help(output, label):
                 sources.append((label, output))
             else:
@@ -475,6 +602,11 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         raise error_type(f"{error} {explanation} Add a custom profile for this command.") from error
     profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": warnings,
                             "executable": executable, "scope": "subcommand" if subcommands else "top-level"}
+    if module is not None:
+        profile["discovery"].update({"module": module, "interpreter_options": list(interpreter_options),
+                                    "scope": "python-module"})
+    if variant:
+        profile["discovery"]["variant"] = variant
     if warnings:
         profile["description"] += " Some help sources were unavailable."
     if cache_path:

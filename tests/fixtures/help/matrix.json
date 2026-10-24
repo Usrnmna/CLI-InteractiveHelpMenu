@@ -9,10 +9,11 @@
       "-t": "duration",
       "-max_error_rate": "maximum error rate",
       "-map_metadata": "outfile[,metadata]:infile[,metadata]",
-      "-metadata": "string=string"
+      "-metadata": "string=string",
+      "-c:v": "codec"
     },
     "excluded": [
-      "-c:v"
+      "-c:"
     ],
     "live_flags": [
       "-y",
@@ -1521,5 +1522,3307 @@
       "version"
     ],
     "live_argument_counts": {}
+  },
+  {
+    "command": "systemctl status",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-status.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "systemctl list-units",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-list-units.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "systemctl show",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "systemctl-show.txt",
+    "flags": {
+      "--no-pager": "",
+      "--user": "",
+      "--type=": "TYPE",
+      "--state=": "STATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-pager",
+      "--user",
+      "--type=",
+      "--state="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type=": 1,
+      "--state=": 1
+    },
+    "profile_sentinels": {
+      "--user": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type=": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--state=": {
+        "argument": "STATE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "journalctl",
+    "tier": "extended",
+    "package": "systemd",
+    "fixture": "journalctl.txt",
+    "flags": {
+      "--follow": "",
+      "--no-pager": "",
+      "--unit=": "UNIT",
+      "--since=": "DATE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--follow",
+      "--no-pager",
+      "--unit=",
+      "--since="
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--unit=": 1,
+      "--since=": 1
+    },
+    "profile_sentinels": {
+      "--unit=": {
+        "argument": "UNIT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--follow": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--since=": {
+        "argument": "TIME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-pager": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ssh",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "ssh.txt",
+    "flags": {
+      "-p": "port",
+      "-i": "identity_file",
+      "-o": "option",
+      "-N": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-p",
+      "-i",
+      "-o",
+      "-N"
+    ],
+    "version_args": [
+      "-V"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-p": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-p": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-N": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "scp",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "scp.txt",
+    "flags": {
+      "-P": "port",
+      "-r": "",
+      "-i": "identity_file",
+      "-o": "ssh_option"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-P",
+      "-r",
+      "-i",
+      "-o"
+    ],
+    "version_args": [],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-P": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-P": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-r": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "sftp",
+    "tier": "extended",
+    "package": "openssh-client",
+    "fixture": "sftp.txt",
+    "flags": {
+      "-P": "port",
+      "-b": "batchfile",
+      "-i": "identity_file",
+      "-o": "ssh_option"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-P",
+      "-b",
+      "-i",
+      "-o"
+    ],
+    "version_args": [],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-P": 1,
+      "-b": 1,
+      "-i": 1,
+      "-o": 1
+    },
+    "profile_sentinels": {
+      "-i": {
+        "argument": "IDENTITY_FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-o": {
+        "argument": "OPTION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-P": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-b": {
+        "argument": "BATCHFILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ip address",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-address.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "scope"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "scope": {
+        "argument": "SCOPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ip link",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-link.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "up"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "up": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ip route",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ip-route.txt",
+    "flags": {},
+    "excluded": [],
+    "live_flags": [],
+    "version_args": [
+      "-Version"
+    ],
+    "curated_profile": true,
+    "keyword_sentinels": [
+      "show",
+      "dev",
+      "table"
+    ],
+    "allow_empty": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "show": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "dev": {
+        "argument": "IFNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      },
+      "table": {
+        "argument": "TABLE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "keyword"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ss",
+    "tier": "extended",
+    "package": "iproute2",
+    "fixture": "ss.txt",
+    "flags": {
+      "--tcp": "",
+      "--udp": "",
+      "--listening": "",
+      "--numeric": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--tcp",
+      "--udp",
+      "--listening",
+      "--numeric"
+    ],
+    "version_args": [
+      "-V"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {},
+    "profile_sentinels": {
+      "--listening": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--numeric": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tcp": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--udp": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "openssl s_client",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-s_client.txt",
+    "flags": {
+      "-connect": "val",
+      "-servername": "val",
+      "-showcerts": "",
+      "-CAfile": "infile"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-connect",
+      "-servername",
+      "-showcerts",
+      "-CAfile"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-connect": 1,
+      "-servername": 1,
+      "-CAfile": 1
+    },
+    "profile_sentinels": {
+      "-connect": {
+        "argument": "HOST:PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-servername": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-CAfile": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-showcerts": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "openssl x509",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-x509.txt",
+    "flags": {
+      "-in": "infile",
+      "-out": "outfile",
+      "-text": "",
+      "-noout": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "-in",
+      "-out",
+      "-text",
+      "-noout"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-in": 1,
+      "-out": 1
+    },
+    "profile_sentinels": {
+      "-in": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-out": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-text": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-noout": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "openssl dgst",
+    "tier": "extended",
+    "package": "openssl",
+    "fixture": "openssl-dgst.txt",
+    "flags": {
+      "-hex": "",
+      "-out": "outfile",
+      "-verify": "val",
+      "-signature": "infile"
+    },
+    "excluded": [],
+    "live_flags": [
+      "-hex",
+      "-out",
+      "-verify",
+      "-signature"
+    ],
+    "version_args": [
+      "version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "-out": 1,
+      "-verify": 1,
+      "-signature": 1
+    },
+    "profile_sentinels": {
+      "-hex": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-out": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-verify": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-signature": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "podman run",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-run.txt",
+    "flags": {
+      "--detach": "",
+      "--env": "KEY_VALUE",
+      "--name": "NAME",
+      "--publish": "PORT"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--detach",
+      "--env",
+      "--name",
+      "--publish"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--env": 1,
+      "--name": 1,
+      "--publish": 1
+    },
+    "profile_sentinels": {
+      "--detach": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--name": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--env": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--publish": {
+        "argument": "PORT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "podman build",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-build.txt",
+    "flags": {
+      "--tag": "NAME",
+      "--file": "FILE",
+      "--no-cache": "",
+      "--build-arg": "KEY_VALUE"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--tag",
+      "--file",
+      "--no-cache",
+      "--build-arg"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--tag": 1,
+      "--file": 1,
+      "--build-arg": 1
+    },
+    "profile_sentinels": {
+      "--tag": {
+        "argument": "NAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--file": {
+        "argument": "FILE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--build-arg": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-cache": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--pull": {
+        "argument": "POLICY",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "podman exec",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-exec.txt",
+    "flags": {
+      "--interactive": "",
+      "--tty": "",
+      "--env": "KEY_VALUE",
+      "--workdir": "DIR"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--interactive",
+      "--tty",
+      "--env",
+      "--workdir"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--env": 1,
+      "--workdir": 1
+    },
+    "profile_sentinels": {
+      "--interactive": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tty": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--env": {
+        "argument": "KEY=VALUE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--workdir": {
+        "argument": "DIR",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "podman logs",
+    "tier": "extended",
+    "package": "podman",
+    "fixture": "podman-logs.txt",
+    "flags": {
+      "--follow": "",
+      "--timestamps": "",
+      "--tail": "LINES",
+      "--since": "TIME"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--follow",
+      "--timestamps",
+      "--tail",
+      "--since"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--tail": 1,
+      "--since": 1
+    },
+    "profile_sentinels": {
+      "--follow": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--timestamps": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--tail": {
+        "argument": "LINES",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--since": {
+        "argument": "TIME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "psql",
+    "tier": "extended",
+    "package": "psql",
+    "fixture": "psql.txt",
+    "flags": {
+      "--host": "HOST",
+      "--dbname": "DBNAME",
+      "--no-psqlrc": "",
+      "--command": "COMMAND"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--host",
+      "--dbname",
+      "--no-psqlrc",
+      "--command"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--host": 1,
+      "--dbname": 1,
+      "--command": 1
+    },
+    "profile_sentinels": {
+      "--host": {
+        "argument": "HOST",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--dbname": {
+        "argument": "DBNAME",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--command": {
+        "argument": "COMMAND",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--no-psqlrc": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "yq eval",
+    "tier": "extended",
+    "package": "yq",
+    "fixture": "yq-eval.txt",
+    "flags": {
+      "--inplace": "",
+      "--null-input": "",
+      "--output-format": "FORMAT",
+      "--expression": "EXPRESSION"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--inplace",
+      "--null-input",
+      "--output-format",
+      "--expression"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--output-format": 1,
+      "--expression": 1
+    },
+    "profile_sentinels": {
+      "--inplace": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--null-input": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--output-format": {
+        "argument": "FORMAT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--expression": {
+        "argument": "EXPRESSION",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "fd",
+    "tier": "extended",
+    "package": "fd-find",
+    "fixture": "fd.txt",
+    "flags": {
+      "--hidden": "",
+      "--type": "TYPE",
+      "--extension": "EXT",
+      "--max-depth": "DEPTH"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--hidden",
+      "--type",
+      "--extension",
+      "--max-depth"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type": 1,
+      "--extension": 1,
+      "--max-depth": 1
+    },
+    "profile_sentinels": {
+      "--hidden": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extension": {
+        "argument": "EXT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--max-depth": {
+        "argument": "DEPTH",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "fdfind",
+    "tier": "extended",
+    "package": "fd-find",
+    "fixture": "fdfind.txt",
+    "flags": {
+      "--hidden": "",
+      "--type": "TYPE",
+      "--extension": "EXT",
+      "--max-depth": "DEPTH"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--hidden",
+      "--type",
+      "--extension",
+      "--max-depth"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--type": 1,
+      "--extension": 1,
+      "--max-depth": 1
+    },
+    "profile_sentinels": {
+      "--hidden": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--type": {
+        "argument": "TYPE",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extension": {
+        "argument": "EXT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--max-depth": {
+        "argument": "DEPTH",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "fzf",
+    "tier": "extended",
+    "package": "fzf",
+    "fixture": "fzf.txt",
+    "flags": {
+      "--multi": "[=MAX]",
+      "--query": "STR",
+      "--height": "HEIGHT",
+      "--preview": "COMMAND"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--multi",
+      "--query",
+      "--height",
+      "--preview"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--multi": 1,
+      "--query": 1,
+      "--height": 1,
+      "--preview": 1
+    },
+    "profile_sentinels": {
+      "--multi": {
+        "argument": "[=MAX]",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      },
+      "--query": {
+        "argument": "STR",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--height": {
+        "argument": "HEIGHT",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--preview": {
+        "argument": "COMMAND",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "-m": {
+        "argument": "MAX",
+        "argument_count": 1,
+        "argument_optional": true,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "ansible-playbook",
+    "tier": "extended",
+    "package": "ansible-playbook",
+    "fixture": "ansible-playbook.txt",
+    "flags": {
+      "--inventory": "INVENTORY",
+      "--check": "",
+      "--extra-vars": "EXTRA_VARS",
+      "--limit": "PATTERN"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--inventory",
+      "--check",
+      "--extra-vars",
+      "--limit"
+    ],
+    "version_args": [
+      "--version"
+    ],
+    "curated_profile": true,
+    "live_argument_counts": {
+      "--inventory": 1,
+      "--extra-vars": 1,
+      "--limit": 1
+    },
+    "profile_sentinels": {
+      "--inventory": {
+        "argument": "INVENTORY",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--limit": {
+        "argument": "PATTERN",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--extra-vars": {
+        "argument": "EXTRA_VARS",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      },
+      "--check": {
+        "argument": "",
+        "argument_count": 1,
+        "argument_optional": false,
+        "kind": "flag"
+      }
+    },
+    "expansion": "systems"
+  },
+  {
+    "command": "pytest",
+    "flags": {
+      "-k": "EXPRESSION",
+      "-m": "MARKEXPR",
+      "-x": "",
+      "--exitfirst": "",
+      "--maxfail": "NUM",
+      "-q": "",
+      "--quiet": "",
+      "-v": "",
+      "--verbose": "",
+      "--collect-only": "",
+      "--tb": "STYLE",
+      "--capture": "METHOD",
+      "--rootdir": "DIR",
+      "-c": "FILE",
+      "-p": "NAME",
+      "--basetemp": "DIR",
+      "--durations": "N",
+      "--junit-xml": "PATH"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--exitfirst",
+      "--maxfail=",
+      "--quiet"
+    ],
+    "tier": "next",
+    "package": "pytest",
+    "fixture": "expansion-pytest.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--maxfail=": 1
+    },
+    "curator": true,
+    "profile": "pytest.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags",
+      "reviewed": "2026-10-23",
+      "version_scope": "Core pytest options; installed plugins may add options."
+    },
+    "curated_profile": "pytest.json",
+    "expansion": "development"
+  },
+  {
+    "command": "ruff check",
+    "flags": {
+      "--fix": "",
+      "--unsafe-fixes": "",
+      "--diff": "",
+      "--select": "RULES",
+      "--ignore": "RULES",
+      "--output-format": "FORMAT",
+      "--target-version": "VERSION",
+      "--exclude": "PATTERNS",
+      "--no-cache": "",
+      "--exit-zero": "",
+      "--config": "CONFIG",
+      "--isolated": "",
+      "-q": "",
+      "--quiet": "",
+      "-v": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--fix",
+      "--unsafe-fixes",
+      "--diff"
+    ],
+    "tier": "next",
+    "package": "ruff",
+    "fixture": "expansion-ruff-check.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "ruff-check.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "ruff-check.json",
+    "expansion": "development"
+  },
+  {
+    "command": "ruff format",
+    "flags": {
+      "--check": "",
+      "--diff": "",
+      "--line-length": "LENGTH",
+      "--target-version": "VERSION",
+      "--extension": "EXTENSION",
+      "--exclude": "PATTERNS",
+      "--stdin-filename": "PATH",
+      "--no-cache": "",
+      "--config": "CONFIG",
+      "--isolated": "",
+      "-q": "",
+      "--quiet": "",
+      "-v": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--check",
+      "--diff",
+      "--line-length"
+    ],
+    "tier": "next",
+    "package": "ruff",
+    "fixture": "expansion-ruff-format.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--line-length": 1
+    },
+    "curator": true,
+    "profile": "ruff-format.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "ruff-format.json",
+    "expansion": "development"
+  },
+  {
+    "command": "uv sync",
+    "flags": {
+      "--extra": "EXTRA",
+      "--all-extras": "",
+      "--no-dev": "",
+      "--locked": "",
+      "--frozen": "",
+      "--no-install-project": "",
+      "--dry-run": "",
+      "--python": "PYTHON",
+      "--offline": "",
+      "--no-cache": "",
+      "--directory": "DIRECTORY",
+      "--project": "PROJECT"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--extra",
+      "--all-extras",
+      "--no-dev"
+    ],
+    "tier": "next",
+    "package": "uv",
+    "fixture": "expansion-uv-sync.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--extra": 1
+    },
+    "curator": true,
+    "profile": "uv-sync.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/uv/reference/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "uv-sync.json",
+    "expansion": "development"
+  },
+  {
+    "command": "uv add",
+    "flags": {
+      "--dev": "",
+      "--optional": "EXTRA",
+      "--group": "GROUP",
+      "--editable": "",
+      "--no-sync": "",
+      "--locked": "",
+      "--rev": "REV",
+      "--python": "PYTHON",
+      "--offline": "",
+      "--no-cache": "",
+      "--directory": "DIRECTORY",
+      "--project": "PROJECT"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--dev",
+      "--optional",
+      "--group"
+    ],
+    "tier": "next",
+    "package": "uv",
+    "fixture": "expansion-uv-add.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--optional": 1,
+      "--group": 1
+    },
+    "curator": true,
+    "profile": "uv-add.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/uv/reference/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "uv-add.json",
+    "expansion": "development"
+  },
+  {
+    "command": "uv lock",
+    "flags": {
+      "--upgrade": "",
+      "--upgrade-package": "PACKAGE",
+      "--check": "",
+      "--check-exists": "",
+      "--resolution": "STRATEGY",
+      "--prerelease": "STRATEGY",
+      "--python": "PYTHON",
+      "--offline": "",
+      "--no-cache": "",
+      "--directory": "DIRECTORY",
+      "--project": "PROJECT"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--upgrade",
+      "--upgrade-package",
+      "--check"
+    ],
+    "tier": "next",
+    "package": "uv",
+    "fixture": "expansion-uv-lock.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--upgrade-package": 1
+    },
+    "curator": true,
+    "profile": "uv-lock.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/uv/reference/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "uv-lock.json",
+    "expansion": "development"
+  },
+  {
+    "command": "uv venv",
+    "flags": {
+      "--seed": "",
+      "--clear": "",
+      "--system-site-packages": "",
+      "--prompt": "PROMPT",
+      "--relocatable": "",
+      "--allow-existing": "",
+      "--python": "PYTHON",
+      "--offline": "",
+      "--no-cache": "",
+      "--directory": "DIRECTORY",
+      "--project": "PROJECT"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--seed",
+      "--clear",
+      "--system-site-packages"
+    ],
+    "tier": "next",
+    "package": "uv",
+    "fixture": "expansion-uv-venv.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "uv-venv.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/uv/reference/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "uv-venv.json",
+    "expansion": "development"
+  },
+  {
+    "command": "uv tool install",
+    "flags": {
+      "--with": "PACKAGE",
+      "--with-editable": "PACKAGE",
+      "--force": "",
+      "--reinstall": "",
+      "--upgrade": "",
+      "--python": "PYTHON",
+      "--offline": "",
+      "--no-cache": "",
+      "--directory": "DIRECTORY",
+      "--project": "PROJECT"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--with",
+      "--with-editable",
+      "--force"
+    ],
+    "tier": "next",
+    "package": "uv",
+    "fixture": "expansion-uv-tool-install.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--with": 1,
+      "--with-editable": 1
+    },
+    "curator": true,
+    "profile": "uv-tool-install.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.astral.sh/uv/reference/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "uv-tool-install.json",
+    "expansion": "development"
+  },
+  {
+    "command": "go build",
+    "flags": {
+      "-o": "FILE",
+      "-v": "",
+      "-n": "",
+      "-x": "",
+      "-race": "",
+      "-tags": "LIST",
+      "-ldflags": "FLAGS",
+      "-gcflags": "FLAGS",
+      "-mod": "MODE",
+      "-trimpath": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "-race",
+      "-tags",
+      "-ldflags"
+    ],
+    "tier": "next",
+    "package": "go",
+    "fixture": "expansion-go-build.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-tags": 1,
+      "-ldflags": 1
+    },
+    "curator": true,
+    "profile": "go-build.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://pkg.go.dev/cmd/go",
+      "reviewed": "2026-10-23",
+      "version_scope": "Go build flags from the cmd/go reference."
+    },
+    "curated_profile": "go-build.json",
+    "expansion": "development"
+  },
+  {
+    "command": "go test",
+    "flags": {
+      "-run": "REGEXP",
+      "-bench": "REGEXP",
+      "-count": "N",
+      "-timeout": "DURATION",
+      "-cover": "",
+      "-coverprofile": "FILE",
+      "-json": "",
+      "-failfast": "",
+      "-o": "FILE",
+      "-v": "",
+      "-n": "",
+      "-x": "",
+      "-race": "",
+      "-tags": "LIST",
+      "-ldflags": "FLAGS",
+      "-gcflags": "FLAGS",
+      "-mod": "MODE",
+      "-trimpath": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "-run",
+      "-bench",
+      "-count"
+    ],
+    "tier": "next",
+    "package": "go",
+    "fixture": "expansion-go-test.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-run": 1,
+      "-bench": 1,
+      "-count": 1
+    },
+    "curator": true,
+    "profile": "go-test.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://pkg.go.dev/cmd/go",
+      "reviewed": "2026-10-23",
+      "version_scope": "Parent options are supported before and after package paths. Arguments after -args or -- are outside parent option editing."
+    },
+    "curated_profile": "go-test.json",
+    "expansion": "development"
+  },
+  {
+    "command": "go run",
+    "flags": {
+      "-exec": "COMMAND",
+      "-v": "",
+      "-n": "",
+      "-x": "",
+      "-race": "",
+      "-tags": "LIST",
+      "-ldflags": "FLAGS",
+      "-gcflags": "FLAGS",
+      "-mod": "MODE",
+      "-trimpath": ""
+    },
+    "excluded": [
+      "--invented-expansion-option",
+      "-o"
+    ],
+    "live_flags": [
+      "-exec"
+    ],
+    "tier": "next",
+    "package": "go",
+    "fixture": "expansion-go-run.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-exec": 1
+    },
+    "curator": true,
+    "profile": "go-run.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://pkg.go.dev/cmd/go",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "go-run.json",
+    "expansion": "development"
+  },
+  {
+    "command": "go mod tidy",
+    "flags": {
+      "-e": "",
+      "-v": "",
+      "-x": "",
+      "-diff": "",
+      "-go": "VERSION",
+      "-compat": "VERSION"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "-diff",
+      "-go",
+      "-compat"
+    ],
+    "tier": "next",
+    "package": "go",
+    "fixture": "expansion-go-mod-tidy.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "-go": 1,
+      "-compat": 1
+    },
+    "curator": true,
+    "profile": "go-mod-tidy.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://pkg.go.dev/cmd/go",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "go-mod-tidy.json",
+    "expansion": "development"
+  },
+  {
+    "command": "dotnet build",
+    "flags": {
+      "-c": "CONFIGURATION",
+      "--configuration": "CONFIGURATION",
+      "-f": "FRAMEWORK",
+      "--framework": "FRAMEWORK",
+      "-r": "RUNTIME",
+      "--runtime": "RUNTIME",
+      "-o": "OUTPUT",
+      "--output": "OUTPUT",
+      "--no-restore": "",
+      "-v": "LEVEL",
+      "--verbosity": "LEVEL",
+      "--nologo": "",
+      "--no-incremental": "",
+      "--no-dependencies": "",
+      "--force": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--configuration",
+      "--framework",
+      "--runtime"
+    ],
+    "tier": "next",
+    "package": "dotnet",
+    "fixture": "expansion-dotnet-build.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--configuration": 1,
+      "--framework": 1,
+      "--runtime": 1
+    },
+    "curator": true,
+    "profile": "dotnet-build.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "dotnet-build.json",
+    "expansion": "development"
+  },
+  {
+    "command": "dotnet test",
+    "flags": {
+      "-c": "CONFIGURATION",
+      "--configuration": "CONFIGURATION",
+      "-f": "FRAMEWORK",
+      "--framework": "FRAMEWORK",
+      "-r": "RUNTIME",
+      "--runtime": "RUNTIME",
+      "-o": "OUTPUT",
+      "--output": "OUTPUT",
+      "--no-restore": "",
+      "-v": "LEVEL",
+      "--verbosity": "LEVEL",
+      "--nologo": "",
+      "--no-build": "",
+      "--filter": "EXPRESSION",
+      "--logger": "LOGGER",
+      "--results-directory": "DIRECTORY",
+      "--collect": "COLLECTOR",
+      "--list-tests": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--configuration",
+      "--framework",
+      "--runtime"
+    ],
+    "tier": "next",
+    "package": "dotnet",
+    "fixture": "expansion-dotnet-test.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--configuration": 1,
+      "--framework": 1,
+      "--runtime": 1
+    },
+    "curator": true,
+    "profile": "dotnet-test.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+      "reviewed": "2026-10-23",
+      "version_scope": "VSTest command syntax. Microsoft.Testing.Platform mode has different options and requires installed help review."
+    },
+    "curated_profile": "dotnet-test.json",
+    "expansion": "development"
+  },
+  {
+    "command": "dotnet run",
+    "flags": {
+      "-c": "CONFIGURATION",
+      "--configuration": "CONFIGURATION",
+      "-f": "FRAMEWORK",
+      "--framework": "FRAMEWORK",
+      "-r": "RUNTIME",
+      "--runtime": "RUNTIME",
+      "--project": "PROJECT",
+      "--launch-profile": "NAME",
+      "--no-launch-profile": "",
+      "--no-build": "",
+      "--no-restore": "",
+      "-v": "LEVEL",
+      "--verbosity": "LEVEL"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--configuration",
+      "--framework",
+      "--runtime"
+    ],
+    "tier": "next",
+    "package": "dotnet",
+    "fixture": "expansion-dotnet-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--configuration": 1,
+      "--framework": 1,
+      "--runtime": 1
+    },
+    "curator": true,
+    "profile": "dotnet-run.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "dotnet-run.json",
+    "expansion": "development"
+  },
+  {
+    "command": "dotnet publish",
+    "flags": {
+      "-c": "CONFIGURATION",
+      "--configuration": "CONFIGURATION",
+      "-f": "FRAMEWORK",
+      "--framework": "FRAMEWORK",
+      "-r": "RUNTIME",
+      "--runtime": "RUNTIME",
+      "-o": "OUTPUT",
+      "--output": "OUTPUT",
+      "--no-restore": "",
+      "-v": "LEVEL",
+      "--verbosity": "LEVEL",
+      "--nologo": "",
+      "--no-build": "",
+      "--self-contained": "[BOOL]",
+      "--no-self-contained": "",
+      "--use-current-runtime": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--configuration",
+      "--framework",
+      "--runtime"
+    ],
+    "tier": "next",
+    "package": "dotnet",
+    "fixture": "expansion-dotnet-publish.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--configuration": 1,
+      "--framework": 1,
+      "--runtime": 1
+    },
+    "curator": true,
+    "profile": "dotnet-publish.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "dotnet-publish.json",
+    "expansion": "development"
+  },
+  {
+    "command": "dotnet restore",
+    "flags": {
+      "-s": "SOURCE",
+      "--source": "SOURCE",
+      "--packages": "DIRECTORY",
+      "--configfile": "FILE",
+      "--disable-parallel": "",
+      "--ignore-failed-sources": "",
+      "--no-cache": "",
+      "--force": "",
+      "--locked-mode": "",
+      "--use-lock-file": "",
+      "-r": "RUNTIME",
+      "--runtime": "RUNTIME",
+      "-v": "LEVEL",
+      "--verbosity": "LEVEL"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--source",
+      "--packages",
+      "--configfile"
+    ],
+    "tier": "next",
+    "package": "dotnet",
+    "fixture": "expansion-dotnet-restore.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--source": 1,
+      "--packages": 1,
+      "--configfile": 1
+    },
+    "curator": true,
+    "profile": "dotnet-restore.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "dotnet-restore.json",
+    "expansion": "development"
+  },
+  {
+    "command": "yarn install",
+    "flags": {
+      "--json": "",
+      "--immutable": "",
+      "--immutable-cache": "",
+      "--check-cache": "",
+      "--inline-builds": "",
+      "--mode": "MODE"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--json"
+    ],
+    "tier": "next",
+    "package": "yarn",
+    "fixture": "expansion-yarn-install.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": false,
+    "profile": null,
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://yarnpkg.com/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Yarn 4 specimen; Classic and modern help are captured and checked separately. No version-independent static profile."
+    },
+    "version_sentinels": {
+      "1": {
+        "flags": [
+          "--frozen-lockfile",
+          "--production"
+        ],
+        "argument_counts": {
+          "--production": 1
+        }
+      },
+      "4": {
+        "flags": [
+          "--immutable",
+          "--mode"
+        ],
+        "argument_counts": {
+          "--mode": 1
+        }
+      }
+    },
+    "expansion": "development"
+  },
+  {
+    "command": "yarn add",
+    "flags": {
+      "-D": "",
+      "--dev": "",
+      "-P": "",
+      "--peer": "",
+      "-E": "",
+      "--exact": "",
+      "-T": "",
+      "--tilde": "",
+      "--help": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--dev",
+      "--peer",
+      "--exact"
+    ],
+    "tier": "next",
+    "package": "yarn",
+    "fixture": "expansion-yarn-add.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": false,
+    "profile": null,
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://yarnpkg.com/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Shared Classic/modern Yarn add options."
+    },
+    "expansion": "development"
+  },
+  {
+    "command": "yarn run",
+    "flags": {
+      "--inspect": "",
+      "--inspect-brk": "",
+      "-T": "",
+      "--top-level": "",
+      "-B": "",
+      "--binaries-only": "",
+      "--require": "MODULE"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [],
+    "tier": "next",
+    "package": "yarn",
+    "fixture": "expansion-yarn-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": false,
+    "profile": null,
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://yarnpkg.com/cli/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Yarn 4 specimen. Classic has different flags. Script boundary is the first positional."
+    },
+    "keyword_sentinels": [
+      "run"
+    ],
+    "version_sentinels": {
+      "1": {
+        "flags": [
+          "--silent",
+          "--cwd"
+        ],
+        "argument_counts": {
+          "--cwd": 1
+        }
+      },
+      "4": {
+        "flags": [
+          "--inspect",
+          "--top-level",
+          "--require"
+        ],
+        "argument_counts": {
+          "--require": 1
+        }
+      }
+    },
+    "expansion": "development"
+  },
+  {
+    "command": "bun run",
+    "flags": {
+      "--watch": "",
+      "--hot": "",
+      "--bun": "",
+      "--silent": "",
+      "--if-present": "",
+      "--cwd": "DIRECTORY",
+      "--env-file": "FILE",
+      "--preload": "MODULE"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--watch",
+      "--hot",
+      "--bun"
+    ],
+    "tier": "next",
+    "package": "bun",
+    "fixture": "expansion-bun-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "bun-run.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://bun.sh/docs/runtime",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "bun-run.json",
+    "expansion": "development"
+  },
+  {
+    "command": "az account show",
+    "flags": {
+      "-s": "SUBSCRIPTION",
+      "--subscription": "SUBSCRIPTION",
+      "-o": "FORMAT",
+      "--output": "FORMAT",
+      "--query": "QUERY",
+      "--only-show-errors": "",
+      "--debug": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--subscription",
+      "--output",
+      "--query"
+    ],
+    "tier": "extended",
+    "package": "az",
+    "fixture": "expansion-az-account-show.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--subscription": 1,
+      "--output": 1,
+      "--query": 1
+    },
+    "curator": true,
+    "profile": "az-account-show.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/cli/azure/account#az-account-show",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "az-account-show.json",
+    "expansion": "development"
+  },
+  {
+    "command": "az vm list",
+    "flags": {
+      "-g": "GROUP",
+      "--resource-group": "GROUP",
+      "-d": "",
+      "--show-details": "",
+      "-o": "FORMAT",
+      "--output": "FORMAT",
+      "--query": "QUERY",
+      "--subscription": "SUBSCRIPTION",
+      "--only-show-errors": "",
+      "--debug": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--resource-group",
+      "--show-details",
+      "--output"
+    ],
+    "tier": "extended",
+    "package": "az",
+    "fixture": "expansion-az-vm-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--resource-group": 1,
+      "--output": 1
+    },
+    "curator": true,
+    "profile": "az-vm-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/cli/azure/vm#az-vm-list",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "az-vm-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "az storage blob list",
+    "flags": {
+      "-c": "CONTAINER",
+      "--container-name": "CONTAINER",
+      "--account-name": "ACCOUNT",
+      "--auth-mode": "MODE",
+      "--prefix": "PREFIX",
+      "--num-results": "NUM",
+      "--marker": "MARKER",
+      "--include": "VALUES",
+      "--delimiter": "DELIMITER",
+      "-o": "FORMAT",
+      "--output": "FORMAT",
+      "--query": "QUERY",
+      "--subscription": "SUBSCRIPTION",
+      "--only-show-errors": "",
+      "--debug": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--container-name",
+      "--account-name",
+      "--auth-mode"
+    ],
+    "tier": "extended",
+    "package": "az",
+    "fixture": "expansion-az-storage-blob-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--container-name": 1,
+      "--account-name": 1,
+      "--auth-mode": 1
+    },
+    "curator": true,
+    "profile": "az-storage-blob-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "az-storage-blob-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "gcloud config list",
+    "flags": {
+      "--all": "",
+      "--format": "FORMAT",
+      "--project": "PROJECT",
+      "--configuration": "NAME",
+      "--account": "ACCOUNT",
+      "--quiet": "",
+      "--verbosity": "LEVEL"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--all",
+      "--format",
+      "--project"
+    ],
+    "tier": "extended",
+    "package": "gcloud",
+    "fixture": "expansion-gcloud-config-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--format": 1,
+      "--project": 1
+    },
+    "curator": true,
+    "profile": "gcloud-config-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://cloud.google.com/sdk/gcloud/reference/config/list",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "gcloud-config-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "gcloud compute instances list",
+    "flags": {
+      "--filter": "EXPRESSION",
+      "--limit": "LIMIT",
+      "--sort-by": "FIELD",
+      "--zones": "ZONES",
+      "--uri": "",
+      "--page-size": "SIZE",
+      "--format": "FORMAT",
+      "--project": "PROJECT",
+      "--configuration": "NAME",
+      "--account": "ACCOUNT",
+      "--quiet": "",
+      "--verbosity": "LEVEL"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--filter",
+      "--limit",
+      "--sort-by"
+    ],
+    "tier": "extended",
+    "package": "gcloud",
+    "fixture": "expansion-gcloud-compute-instances-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--filter": 1,
+      "--limit": 1,
+      "--sort-by": 1
+    },
+    "curator": true,
+    "profile": "gcloud-compute-instances-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "gcloud-compute-instances-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "gcloud storage ls",
+    "flags": {
+      "-r": "",
+      "--recursive": "",
+      "-l": "",
+      "--long": "",
+      "-a": "",
+      "--all-versions": "",
+      "--full": "",
+      "--readable-sizes": "",
+      "--buckets": "",
+      "--format": "FORMAT",
+      "--project": "PROJECT",
+      "--configuration": "NAME",
+      "--account": "ACCOUNT",
+      "--quiet": "",
+      "--verbosity": "LEVEL"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--recursive",
+      "--long",
+      "--all-versions"
+    ],
+    "tier": "extended",
+    "package": "gcloud",
+    "fixture": "expansion-gcloud-storage-ls.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "gcloud-storage-ls.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://cloud.google.com/sdk/gcloud/reference/storage/ls",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "gcloud-storage-ls.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash",
+    "flags": {
+      "-p": "",
+      "--patch": "",
+      "-S": "",
+      "--staged": "",
+      "-k": "",
+      "--keep-index": "",
+      "--no-keep-index": "",
+      "-u": "",
+      "--include-untracked": "",
+      "-a": "",
+      "--all": "",
+      "-m": "MESSAGE",
+      "--message": "MESSAGE",
+      "-q": "",
+      "--quiet": "",
+      "--pathspec-from-file": "FILE",
+      "--pathspec-file-nul": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--patch",
+      "--staged",
+      "--keep-index"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash push",
+    "flags": {
+      "-p": "",
+      "--patch": "",
+      "-S": "",
+      "--staged": "",
+      "-k": "",
+      "--keep-index": "",
+      "--no-keep-index": "",
+      "-u": "",
+      "--include-untracked": "",
+      "-a": "",
+      "--all": "",
+      "-m": "MESSAGE",
+      "--message": "MESSAGE",
+      "-q": "",
+      "--quiet": "",
+      "--pathspec-from-file": "FILE",
+      "--pathspec-file-nul": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--patch",
+      "--staged",
+      "--keep-index"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash-push.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash-push.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash-push.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash pop",
+    "flags": {
+      "--index": "",
+      "-q": "",
+      "--quiet": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--index",
+      "--quiet"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash-pop.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash-pop.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash-pop.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash apply",
+    "flags": {
+      "--index": "",
+      "-q": "",
+      "--quiet": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--index",
+      "--quiet"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash-apply.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash-apply.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash-apply.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash list",
+    "flags": {
+      "--oneline": "",
+      "--stat": "",
+      "-p": "",
+      "--patch": "",
+      "-n": "COUNT",
+      "--max-count=": "COUNT",
+      "--format=": "FORMAT",
+      "--date=": "FORMAT",
+      "--grep=": "PATTERN"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--oneline",
+      "--stat",
+      "--patch"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git stash show",
+    "flags": {
+      "-p": "",
+      "--patch": "",
+      "--stat": "",
+      "--name-only": "",
+      "--name-status": "",
+      "-u": "",
+      "--include-untracked": "",
+      "--only-untracked": "",
+      "--binary": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--patch",
+      "--stat",
+      "--name-only"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-stash-show.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-stash-show.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-stash",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-stash-show.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git worktree",
+    "flags": {
+      "-h": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-worktree.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-worktree.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-worktree",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-worktree.json",
+    "keyword_sentinels": [
+      "add",
+      "list",
+      "remove",
+      "prune"
+    ],
+    "expansion": "development"
+  },
+  {
+    "command": "git worktree add",
+    "flags": {
+      "-f": "",
+      "--force": "",
+      "--detach": "",
+      "-b": "BRANCH",
+      "-B": "BRANCH",
+      "--checkout": "",
+      "--no-checkout": "",
+      "--lock": "",
+      "--reason": "REASON",
+      "-q": "",
+      "--quiet": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--force",
+      "--detach",
+      "--checkout"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-worktree-add.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-worktree-add.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-worktree",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-worktree-add.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git worktree list",
+    "flags": {
+      "--porcelain": "",
+      "-z": "",
+      "-v": "",
+      "--verbose": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--porcelain",
+      "--verbose"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-worktree-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-worktree-list.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-worktree",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-worktree-list.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git worktree remove",
+    "flags": {
+      "-f": "",
+      "--force": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--force"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-worktree-remove.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {},
+    "curator": true,
+    "profile": "git-worktree-remove.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-worktree",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-worktree-remove.json",
+    "expansion": "development"
+  },
+  {
+    "command": "git worktree prune",
+    "flags": {
+      "-n": "",
+      "--dry-run": "",
+      "-v": "",
+      "--verbose": "",
+      "--expire": "TIME"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--dry-run",
+      "--verbose",
+      "--expire"
+    ],
+    "tier": "next",
+    "package": "git",
+    "fixture": "expansion-git-worktree-prune.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--expire": 1
+    },
+    "curator": true,
+    "profile": "git-worktree-prune.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://git-scm.com/docs/git-worktree",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "git-worktree-prune.json",
+    "expansion": "development"
+  },
+  {
+    "command": "pio run",
+    "flags": {
+      "-e": "ENVIRONMENT",
+      "--environment": "ENVIRONMENT",
+      "-t": "TARGET",
+      "--target": "TARGET",
+      "-d": "DIRECTORY",
+      "--project-dir": "DIRECTORY",
+      "-c": "FILE",
+      "--project-conf": "FILE",
+      "-j": "JOBS",
+      "--jobs": "JOBS",
+      "--upload-port": "PORT",
+      "-v": "",
+      "--verbose": "",
+      "-s": "",
+      "--silent": "",
+      "--list-targets": "",
+      "--disable-auto-clean": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--environment",
+      "--target",
+      "--project-dir"
+    ],
+    "tier": "extended",
+    "package": "platformio",
+    "fixture": "expansion-pio-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--environment": 1,
+      "--target": 1,
+      "--project-dir": 1
+    },
+    "curator": true,
+    "profile": "pio-run.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "pio-run.json",
+    "expansion": "development"
+  },
+  {
+    "command": "pio device monitor",
+    "flags": {
+      "-p": "PORT",
+      "--port": "PORT",
+      "-b": "BAUD",
+      "--baud": "BAUD",
+      "--parity": "PARITY",
+      "--rtscts": "",
+      "--xonxoff": "",
+      "--rts": "LEVEL",
+      "--dtr": "LEVEL",
+      "--echo": "",
+      "-f": "FILTER",
+      "--filter": "FILTER",
+      "--encoding": "ENCODING",
+      "-e": "ENVIRONMENT",
+      "--environment": "ENVIRONMENT",
+      "-d": "DIRECTORY",
+      "--project-dir": "DIRECTORY"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--port",
+      "--baud",
+      "--parity"
+    ],
+    "tier": "extended",
+    "package": "platformio",
+    "fixture": "expansion-pio-device-monitor.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--port": 1,
+      "--baud": 1,
+      "--parity": 1
+    },
+    "curator": true,
+    "profile": "pio-device-monitor.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "pio-device-monitor.json",
+    "expansion": "development"
+  },
+  {
+    "command": "platformio run",
+    "flags": {
+      "-e": "ENVIRONMENT",
+      "--environment": "ENVIRONMENT",
+      "-t": "TARGET",
+      "--target": "TARGET",
+      "-d": "DIRECTORY",
+      "--project-dir": "DIRECTORY",
+      "-c": "FILE",
+      "--project-conf": "FILE",
+      "-j": "JOBS",
+      "--jobs": "JOBS",
+      "--upload-port": "PORT",
+      "-v": "",
+      "--verbose": "",
+      "-s": "",
+      "--silent": "",
+      "--list-targets": "",
+      "--disable-auto-clean": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--environment",
+      "--target",
+      "--project-dir"
+    ],
+    "tier": "extended",
+    "package": "platformio",
+    "fixture": "expansion-platformio-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--environment": 1,
+      "--target": 1,
+      "--project-dir": 1
+    },
+    "curator": true,
+    "profile": "platformio-run.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "platformio-run.json",
+    "expansion": "development"
+  },
+  {
+    "command": "platformio device monitor",
+    "flags": {
+      "-p": "PORT",
+      "--port": "PORT",
+      "-b": "BAUD",
+      "--baud": "BAUD",
+      "--parity": "PARITY",
+      "--rtscts": "",
+      "--xonxoff": "",
+      "--rts": "LEVEL",
+      "--dtr": "LEVEL",
+      "--echo": "",
+      "-f": "FILTER",
+      "--filter": "FILTER",
+      "--encoding": "ENCODING",
+      "-e": "ENVIRONMENT",
+      "--environment": "ENVIRONMENT",
+      "-d": "DIRECTORY",
+      "--project-dir": "DIRECTORY"
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--port",
+      "--baud",
+      "--parity"
+    ],
+    "tier": "extended",
+    "package": "platformio",
+    "fixture": "expansion-platformio-device-monitor.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--port": 1,
+      "--baud": 1,
+      "--parity": 1
+    },
+    "curator": true,
+    "profile": "platformio-device-monitor.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "platformio-device-monitor.json",
+    "expansion": "development"
+  },
+  {
+    "command": "esptool write-flash",
+    "flags": {
+      "--flash-mode": "MODE",
+      "--flash-size": "SIZE",
+      "--flash-freq": "FREQ",
+      "--erase-all": "",
+      "--encrypt": "",
+      "--force": "",
+      "-z": "",
+      "--compress": "",
+      "-u": "",
+      "--no-compress": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--flash-mode",
+      "--flash-size",
+      "--flash-freq"
+    ],
+    "tier": "extended",
+    "package": "esptool",
+    "fixture": "expansion-esptool-write-flash.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--flash-mode": 1,
+      "--flash-size": 1,
+      "--flash-freq": 1
+    },
+    "curator": true,
+    "profile": "esptool-write-flash.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.espressif.com/projects/esptool/en/latest/esp32/esptool/basic-commands.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "esptool v5 or newer, hyphenated CLI; no automatic rewrite to legacy spellings."
+    },
+    "curated_profile": "esptool-write-flash.json",
+    "expansion": "development"
+  },
+  {
+    "command": "esptool.py write_flash",
+    "flags": {
+      "--flash_mode": "MODE",
+      "--flash_size": "SIZE",
+      "--flash_freq": "FREQ",
+      "--erase-all": "",
+      "--encrypt": "",
+      "--force": "",
+      "-z": "",
+      "--compress": "",
+      "-u": "",
+      "--no-compress": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--flash_mode",
+      "--flash_size",
+      "--flash_freq"
+    ],
+    "tier": "extended",
+    "package": "esptool<5",
+    "fixture": "expansion-esptool.py-write_flash.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--flash_mode": 1,
+      "--flash_size": 1,
+      "--flash_freq": 1
+    },
+    "curator": true,
+    "profile": "esptool.py-write_flash.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.espressif.com/projects/esptool/en/release-v4/esp32/esptool/basic-commands.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Explicit esptool.py v4 legacy command and option spellings; not an alias for the v5 route."
+    },
+    "curated_profile": "esptool.py-write_flash.json",
+    "expansion": "development"
+  },
+  {
+    "command": "arduino-cli compile",
+    "flags": {
+      "-b": "FQBN",
+      "--fqbn": "FQBN",
+      "--board-options": "OPTIONS",
+      "--build-path": "DIRECTORY",
+      "--output-dir": "DIRECTORY",
+      "--build-property": "PROPERTY",
+      "--libraries": "DIRECTORY",
+      "--warnings": "LEVEL",
+      "--clean": "",
+      "--export-binaries": "",
+      "-j": "JOBS",
+      "--jobs": "JOBS",
+      "-v": "",
+      "--verbose": "",
+      "--only-compilation-database": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--fqbn",
+      "--board-options",
+      "--build-path"
+    ],
+    "tier": "extended",
+    "package": "arduino-cli",
+    "fixture": "expansion-arduino-cli-compile.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--fqbn": 1,
+      "--board-options": 1,
+      "--build-path": 1
+    },
+    "curator": true,
+    "profile": "arduino-cli-compile.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://arduino.github.io/arduino-cli/1.5/commands/arduino-cli_compile/",
+      "reviewed": "2026-10-23",
+      "version_scope": "Selected upstream documented options; installed help may differ."
+    },
+    "curated_profile": "arduino-cli-compile.json",
+    "expansion": "development"
+  },
+  {
+    "command": "esptool.py write-flash",
+    "flags": {
+      "--flash-mode": "MODE",
+      "--flash-size": "SIZE",
+      "--flash-freq": "FREQ",
+      "--erase-all": "",
+      "--encrypt": "",
+      "--force": "",
+      "-z": "",
+      "--compress": "",
+      "-u": "",
+      "--no-compress": ""
+    },
+    "excluded": [
+      "--invented-expansion-option"
+    ],
+    "live_flags": [
+      "--flash-mode",
+      "--flash-size",
+      "--flash-freq"
+    ],
+    "tier": "extended",
+    "package": "esptool>=5",
+    "fixture": "expansion-esptool-write-flash.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {
+      "--flash-mode": 1,
+      "--flash-size": 1,
+      "--flash-freq": 1
+    },
+    "curator": true,
+    "profile": "esptool.py-write-flash.json",
+    "provenance": {
+      "kind": "hand-authored format specimen; descriptions paraphrased",
+      "source": "https://docs.espressif.com/projects/esptool/en/latest/esp32/esptool/basic-commands.html",
+      "reviewed": "2026-10-23",
+      "version_scope": "Explicit esptool.py alias with v5 or newer hyphenated syntax; not a rewrite of legacy write_flash."
+    },
+    "curated_profile": "esptool.py-write-flash.json",
+    "expansion": "development"
   }
 ]

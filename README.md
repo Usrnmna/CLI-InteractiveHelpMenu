@@ -26,6 +26,7 @@ list, including pane focus, scrolling, required arguments, and cancellation.
 | Capability | End-user result |
 | --- | --- |
 | **Help alongside command entry** | Search options, scroll categories, and read descriptions before selecting a flag |
+| **Prefixes and structured syntax** | Browse documented commands behind supported prefixes, Python modules, keyword arguments, and concrete stream selectors |
 | **Insertion without execution** | Continue editing arguments after selection; cancel to retain the original command and cursor |
 | **Help for installed tools** | Discover options from help output and local manuals, with Git/Docker subcommand support and loadable drivers |
 | **Reusable help collections** | Import a manual or scan installed commands in bulk, with a report of successes, failures, and review needs |
@@ -42,15 +43,19 @@ flowchart LR
     B -->|Cancel| D[Original command and cursor retained]
 ```
 
-The browser includes curated help for `rsync`, GNU `grep`, GNU `ls`, GNU `tar`,
-`git commit`, and `git log`. These profiles can be browsed even when the command
-is not installed. Other commands use discovery or an added help collection.
-Generated help is inferred and may require corrections.
+The browser includes curated help for everyday Linux tools, service and network
+inspection, language tooling, containers, cloud CLIs, Git families, and embedded
+development. Ordinary curated profiles work without installed targets. Guarded
+vendor/version profiles require identity verification; generated help remains
+inferred and may require corrections.
 
-The [third-party compatibility matrix](docs/compatibility.md) covers 59 command
-paths across 34 executable names, including Docker Compose, uv, npm, jq, kubectl, AWS CLI, Terraform,
-ImageMagick, and backup tools. Included drivers enable the listed nested command
-paths; the guide describes activation, live checks, and remaining syntax limits.
+The [third-party compatibility matrix](docs/compatibility.md) covers **129 command
+paths across 62 executable names**. Included drivers enable nested command routes;
+the guide lists every route, activation instructions, version constraints, and
+verification limits. [Prefix and structured-argument support](docs/invocation-and-structured-arguments.md)
+adds `sudo`/`env`/`command` chains, selected-interpreter `python -m pip` and
+`python -m pytest`, `ip` keywords, FFmpeg stream selectors, and esptool address/file
+pairs. Help selection continues to edit the buffer without executing it.
 
 ## Get started
 
@@ -156,8 +161,9 @@ Bulk scanning and manual import do not invoke target programs; review preview
 performs no help discovery.
 
 The prototype supports simple commands with balanced quoting. Pipelines,
-redirection, shell substitutions, wrappers such as `sudo`, and shell aliases or
-functions are not resolved. Generated help can omit unusual option syntax;
+redirection, shell substitutions, unsupported prefix forms, and shell aliases or
+functions are not resolved. Bounded sudo/env/command chains and Python module
+forms are supported. Generated help can omit unusual option syntax;
 subcommand support depends on available profiles and drivers.
 
 [Discovery and execution boundaries](docs/discovery-and-safety.md) describes

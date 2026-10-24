@@ -17,6 +17,7 @@ class HelpRoute:
     arguments: tuple[str, ...]
     manual: str | None
     stop_at_positional: bool = False
+    stop_at_options: tuple[str, ...] = ()
 
 
 @dataclass
@@ -57,7 +58,7 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         raise ValueError("A driver requires at least one help path.")
     paths = {}
     for route in routes:
-        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "stop_at_positional"}:
+        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "stop_at_positional", "stop_at_options"}:
             raise ValueError("Unknown driver route field.")
         words = route.get("command")
         if not isinstance(words, list) or any(not isinstance(word, str) or not WORD.fullmatch(word) for word in words):
@@ -79,10 +80,13 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         stop = route.get("stop_at_positional", False)
         if not isinstance(stop, bool):
             raise ValueError("stop_at_positional must be a boolean.")
+        boundaries = route.get("stop_at_options", [])
+        if not isinstance(boundaries, list) or any(not isinstance(flag, str) or not FLAG.fullmatch(flag) for flag in boundaries):
+            raise ValueError("stop_at_options must be a list of literal option names.")
         path = tuple(words)
         if path in paths:
             raise ValueError("Duplicate command path in driver.")
-        paths[path] = HelpRoute(tuple(arguments), manual, stop)
+        paths[path] = HelpRoute(tuple(arguments), manual, stop, tuple(boundaries))
     return name, Driver(paths, **globals_by_kind)
 
 

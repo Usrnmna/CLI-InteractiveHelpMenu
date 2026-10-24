@@ -1,0 +1,87 @@
+{
+  "command": [
+    "esptool.py",
+    "write_flash"
+  ],
+  "description": "Options for esptool.py write_flash. Explicit esptool.py v4 legacy command and option spellings; not an alias for the v5 route.",
+  "categories": [
+    {
+      "name": "Options",
+      "description": "Selected documented options for this command path.",
+      "options": [
+        {
+          "flag": "--flash_mode",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Set flash mode"
+        },
+        {
+          "flag": "--flash_size",
+          "argument": "SIZE",
+          "argument_optional": false,
+          "summary": "Set flash size"
+        },
+        {
+          "flag": "--flash_freq",
+          "argument": "FREQ",
+          "argument_optional": false,
+          "summary": "Set flash frequency"
+        },
+        {
+          "flag": "--erase-all",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Erase the full flash before writing"
+        },
+        {
+          "flag": "--encrypt",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write encrypted flash data"
+        },
+        {
+          "flag": "--force",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Override compatibility checks"
+        },
+        {
+          "flag": "-z",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Compress data during transfer"
+        },
+        {
+          "flag": "--compress",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Compress data during transfer"
+        },
+        {
+          "flag": "-u",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable transfer compression"
+        },
+        {
+          "flag": "--no-compress",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable transfer compression"
+        }
+      ]
+    }
+  ],
+  "stop_at_positional": false,
+  "documentation": {
+    "source": "https://docs.espressif.com/projects/esptool/en/release-v4/esp32/esptool/basic-commands.html",
+    "reviewed": "2026-10-23",
+    "kind": "curated subset; not an installed-version guarantee"
+  },
+  "positional_group": {
+    "argument": "ADDRESS FILE",
+    "argument_count": 2,
+    "repeatable": true
+  },
+  "identity": "esptool-v4"
+}

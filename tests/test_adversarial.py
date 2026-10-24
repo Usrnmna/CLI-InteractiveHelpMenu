@@ -32,7 +32,7 @@ class ParserEdgeTests(unittest.TestCase):
                 self.assertTrue(all(entry["argument"] == "FILE" for entry in entries))
 
     def test_unsupported_joined_flags_are_not_truncated(self):
-        for declaration in ["-Wl,<options>", "-Wa,<options>", "-c:v", "--name;bad", "--name/other", "--name$(bad)"]:
+        for declaration in ["-Wl,<options>", "-Wa,<options>", "-c:", "-c:<stream>", "--name;bad", "--name/other", "--name$(bad)"]:
             with self.subTest(declaration=declaration):
                 self.assertEqual(parse_help(declaration + "   Description", "fixture"), [])
 
@@ -107,7 +107,7 @@ class ParserEdgeTests(unittest.TestCase):
                 for category in profile["categories"]:
                     for option in category["options"]:
                         edited, point = insert_option(context, option)
-                        self.assertRegex(edited, r"^tool --?[A-Za-z0-9][A-Za-z0-9_-]*=? ?$")
+                        self.assertRegex(edited, r"^tool --?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*=? ?$")
                         self.assertEqual(point, len(edited))
 
 

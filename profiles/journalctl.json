@@ -1,0 +1,92 @@
+{
+  "command": [
+    "journalctl"
+  ],
+  "description": "journalctl shell argument reference.",
+  "categories": [
+    {
+      "name": "Arguments",
+      "description": "Literal command arguments; values are entered separately.",
+      "options": [
+        {
+          "flag": "--unit=",
+          "argument": "UNIT",
+          "summary": "Match a systemd unit"
+        },
+        {
+          "flag": "-u",
+          "argument": "UNIT",
+          "summary": "Match a systemd unit",
+          "attached": true
+        },
+        {
+          "flag": "--follow",
+          "argument": "",
+          "summary": "Follow newly appended messages"
+        },
+        {
+          "flag": "-f",
+          "argument": "",
+          "summary": "Follow newly appended messages"
+        },
+        {
+          "flag": "--since=",
+          "argument": "TIME",
+          "summary": "Select messages since a time"
+        },
+        {
+          "flag": "--until=",
+          "argument": "TIME",
+          "summary": "Select messages until a time"
+        },
+        {
+          "flag": "--priority=",
+          "argument": "RANGE",
+          "summary": "Filter priority levels"
+        },
+        {
+          "flag": "--output=",
+          "argument": "FORMAT",
+          "summary": "Choose output format"
+        },
+        {
+          "flag": "--no-pager",
+          "argument": "",
+          "summary": "Write output without a pager"
+        },
+        {
+          "flag": "--system",
+          "argument": "",
+          "summary": "Read system journals"
+        },
+        {
+          "flag": "--user",
+          "argument": "",
+          "summary": "Read user journals"
+        },
+        {
+          "flag": "--reverse",
+          "argument": "",
+          "summary": "Show newest messages first"
+        },
+        {
+          "flag": "--directory=",
+          "argument": "PATH",
+          "summary": "Read journal files from a directory"
+        },
+        {
+          "flag": "--boot=",
+          "argument": "ID",
+          "summary": "Select a boot; omitted ID selects the current boot",
+          "argument_optional": true
+        },
+        {
+          "flag": "--lines=",
+          "argument": "LINES",
+          "summary": "Limit messages; the optional value is attached",
+          "argument_optional": true
+        }
+      ]
+    }
+  ]
+}

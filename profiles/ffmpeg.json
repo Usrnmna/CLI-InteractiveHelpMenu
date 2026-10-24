@@ -1,0 +1,33 @@
+{
+  "command": ["ffmpeg"],
+  "description": "FFmpeg input, output, stream selection and codec options. Concrete stream selectors are literal option names; values are entered separately.",
+  "categories": [
+    {
+      "name": "Files and selection",
+      "options": [
+        {"flag": "-i", "argument": "URL", "summary": "Read an input file or URL"},
+        {"flag": "-map", "argument": "INPUT:STREAM", "summary": "Select an input stream for the output"},
+        {"flag": "-y", "summary": "Overwrite output files without prompting"},
+        {"flag": "-n", "summary": "Refuse to overwrite output files"},
+        {"flag": "-ss", "argument": "TIME", "summary": "Seek to a position"},
+        {"flag": "-t", "argument": "DURATION", "summary": "Limit the input or output duration"}
+      ]
+    },
+    {
+      "name": "Stream codecs",
+      "description": "The colon selector is part of the option name. These entries specify all video or audio streams, or stream index zero. Other concrete selectors can be added to custom profiles.",
+      "options": [
+        {"flag": "-c:v", "argument": "CODEC", "summary": "Choose the video codec or copy"},
+        {"flag": "-c:a", "argument": "CODEC", "summary": "Choose the audio codec or copy"},
+        {"flag": "-c:v:0", "argument": "CODEC", "summary": "Choose the codec for video stream zero"},
+        {"flag": "-c:a:0", "argument": "CODEC", "summary": "Choose the codec for audio stream zero"},
+        {"flag": "-b:v", "argument": "BITRATE", "summary": "Set the video bitrate"},
+        {"flag": "-b:a", "argument": "BITRATE", "summary": "Set the audio bitrate"},
+        {"flag": "-filter:v", "argument": "FILTERGRAPH", "summary": "Apply a video filtergraph"},
+        {"flag": "-filter:a", "argument": "FILTERGRAPH", "summary": "Apply an audio filtergraph"},
+        {"flag": "-vn", "summary": "Disable video output"},
+        {"flag": "-an", "summary": "Disable audio output"}
+      ]
+    }
+  ]
+}

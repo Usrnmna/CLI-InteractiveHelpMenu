@@ -139,6 +139,8 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     for row, index in enumerate(range(first_option, min(len(options), first_option + rows)), 4):
         option = options[index]
         label = option["flag"] + (" " + option["argument"] if option.get("argument") else "")
+        if option.get("kind") == "keyword":
+            label += " [keyword]"
         text = ("> " if index == browser.selected else "  ") + label + "  " + option["summary"]
         write(screen, row, category_width, text, width - category_width - 1, curses.A_REVERSE if index == browser.selected else 0)
     if not options:
@@ -148,6 +150,9 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     write(screen, detail_row, 0, count, width - 1, curses.A_BOLD)
     category = categories[browser.category]
     detail = category.get("description", "")
+    if browser.profile.get("positional_group"):
+        group = browser.profile["positional_group"]
+        detail += "\nRepeated value group: " + group["argument"] + ". Enter each complete group manually; placeholders are never inserted."
     if options:
         option = options[browser.selected]
         detail += "\n\n" + option["summary"] + "\n" + option.get("detail", "")

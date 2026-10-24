@@ -35,14 +35,21 @@ ls
 tar --
 git commit --m
 git log --
+sudo -n env LABEL='café' rsync --ar
+python3 -m pip install --
+ip address show de
+ffmpeg -i 'movie.mp4' -c:v
 git -C "project directory" branch --
 docker run --
 docker --context local container run --
 ```
 
-The repository contains curated subsets for `rsync`, GNU `grep`, GNU `ls`, GNU
-`tar`, `git commit`, and `git log`. Commands do not need to be installed to browse
-these static profiles. Custom and bundled profiles take precedence. For other
+The repository contains curated subsets for common Linux, development, cloud,
+and embedded command families. Ordinary static profiles do not require installed
+commands. Vendor/version-guarded profiles require identity verification. Custom
+profiles replace bundled definitions for matching paths. See
+[prefix/module forms and structured entry](invocation-and-structured-arguments.md)
+for the supported grammar and mode-specific exceptions. For other
 installed commands, the browser automatically extracts options from `--help`
 output and locally installed man pages. For example, type `cp --` or `sed --`
 and press Alt-H. Automatically generated profiles are cached.
