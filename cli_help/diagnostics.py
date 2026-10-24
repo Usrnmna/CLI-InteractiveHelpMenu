@@ -43,6 +43,61 @@ def load_configuration(root):
     return profiles, drivers, Settings.from_environment(), paths
 
 
+def driver_selection(root, paths):
+    """Describe explicit activation without inferring provenance from copied content."""
+    selected = paths["drivers"]
+    supplied = root / "config/drivers.example"
+    return {"source": "CLI_HELP_DRIVERS" if selected else "built_in",
+            "directory": selected, "composition": "built_in_then_one_directory",
+            "supplied_directory": str(supplied), "supplied_available": supplied.is_dir(),
+            "supplied_selected": bool(selected and Path(selected).resolve() == supplied.resolve()),
+            "detail": "One explicit directory overlays built-in routes. Copied collections are custom selections; no automatic layering occurs."}
+
+
+def route_provenance(command, invocation, registry, static_profile=False):
+    """Report route ownership without disclosing arbitrary configured operands.
+
+    Drivers may contain private constant arguments or custom manual aliases.
+    Only known documentation selectors and resolved command words are displayed;
+    the original route remains unchanged for explicitly configured discovery.
+    static_profile indicates an exact profile match for the selected path.
+    """
+    if invocation.module:
+        arguments, manual = module_help_route(invocation.module, tuple(command[1:]), invocation.interpreter_options)
+        return {"kind": "module_adapter", "help_arguments": list(arguments), "manual": manual}
+    name, *words = command
+    driver = registry.get(name)
+    try:
+        route = help_route(name, tuple(words), registry)
+    except ValueError:
+        return {"kind": "profile_only" if static_profile else "unconfigured", "help_arguments": [], "manual": None,
+                "detail": ("An explicit static profile supplies this path; automatic discovery is unconfigured."
+                           if static_profile else "An explicit static profile or driver route is required for this path.")}
+    arguments = list(route.arguments)
+    if name == "pytest" and not words:
+        # Match discovery's mandatory project/plugin isolation override.
+        arguments = ["--help", "--noconftest"]
+    public_words = {"help", "--help", "-h", "-help", "all", "flags", "--noconftest", *words}
+    displayed_arguments = [word if word in public_words else "<redacted>" for word in arguments]
+    public_manual = route.manual is None or route.manual in {name, "-".join(command)}
+    built_in = name in load_driver_registry()
+    result = {"kind": "configured" if route.source else "built_in" if built_in else "generic",
+              "help_arguments": displayed_arguments, "help_arguments_redacted": displayed_arguments != arguments,
+              "manual": route.manual if public_manual else "<redacted>", "manual_redacted": not public_manual,
+              "stop_at_positional": route.stop_at_positional,
+              "stop_at_options": list(route.stop_at_options)}
+    if name == "pytest" and not words:
+        result["help_override"] = "pytest_no_conftest"
+    if name == "yarn" and words == ["run"]:
+        result["help_arguments_pending_identity"] = True
+    if route.source:
+        result["file"] = route.source
+    if driver:
+        result["global_options"] = {"composition": "built_in_union_overlay" if built_in else "configured",
+                                    "overlay_file": driver.source}
+    return result
+
+
 def source_warning_codes(warnings):
     """Classify stored warnings into fixed labels without returning cached prose."""
     rules = (("timed out", "source_timeout"), ("exceeded", "source_output_limit"),
@@ -99,6 +154,7 @@ def doctor(root):
         from ui import load_keys
         load_keys(Path(paths["keys"]) if paths["keys"] else None)
         configuration = {"status": "valid", "profiles": len(profiles), "drivers": len(drivers),
+                         "driver_selection": driver_selection(root, paths),
                          "discovery_mode": settings.mode, "source_timeout_seconds": settings.timeout,
                          "cache_ttl_seconds": settings.cache_ttl,
                          "cache_directory": str(settings.cache_dir) if settings.cache_dir else None}
@@ -124,20 +180,26 @@ def inspect_cache(command, executable_word, invocation, settings, registry):
         summary["freshness"] = "fixed_module_version_before_each_cache_read; unchanged-version edits require TTL or refresh"
     if settings.mode == "off" or not settings.cache_ttl or settings.cache_dir is None:
         return summary, None
-    executable = shutil.which(executable_word)
-    if not executable:
-        summary["status"] = "executable_missing"
-        return summary, None
     name = Path(executable_word).name
     guarded = name in {"yq", "yarn", "esptool", "esptool.py"}
     needs_identity = guarded or bool(invocation.module and settings.mode == "auto")
     if invocation.module:
         arguments, manual_name = module_help_route(invocation.module, tuple(command[1:]), invocation.interpreter_options)
     else:
-        route = help_route(name, tuple(command[1:]), registry)
+        try:
+            route = help_route(name, tuple(command[1:]), registry)
+        except ValueError:
+            summary["status"] = "not_applicable"
+            summary["detail"] = "No automatic discovery route is configured for this command path."
+            summary["refresh_guidance"] = "Supply or edit an explicit static profile, or configure a reviewed driver route."
+            return summary, None
         arguments, manual_name = list(route.arguments), route.manual
         if name == "pytest" and len(command) == 1:
             arguments = ["--help", "--noconftest"]
+    executable = shutil.which(executable_word)
+    if not executable:
+        summary["status"] = "executable_missing"
+        return summary, None
     manual = shutil.which("man")
     expected = cache_identity(command, os.path.abspath(executable), arguments, manual_name,
                               os.path.abspath(manual) if manual else None, settings,
@@ -206,6 +268,7 @@ def explain(root, line, point):
               "code": "configuration_invalid", "execution": "passive; pending input omitted"}
     try:
         profiles, registry, settings, paths = load_configuration(root)
+        report["driver_selection"] = driver_selection(root, paths)
         tokens = tokenize(line)
         observed = {}
 
@@ -213,7 +276,9 @@ def explain(root, line, point):
             cache, cached_profile = inspect_cache(command, tokens[invocation.executable_index].value,
                                                  invocation, settings, registry)
             observed.update({"cache_profile": cached_profile, "invocation": invocation})
-            report.update({"resolved_command": list(command), "profile": profile_origin(profile_path, paths),
+            origin = profile_origin(profile_path, paths)
+            report.update({"resolved_command": list(command), "profile": origin,
+                           "route": route_provenance(command, invocation, registry, origin["kind"] in {"bundled", "custom"}),
                            "cache": cache, "discovery_mode": settings.mode})
 
         def passive_lookup(executable, subcommands=(), **module):

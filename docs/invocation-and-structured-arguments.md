@@ -77,7 +77,7 @@ system manual into the selected interpreter's result. Manual-only mode uses a
 fixed module manual without running Python and labels its installed-version
 context as unverified. Discovery-off mode requires an explicit reviewed profile
 whose command is, for example, `["python3", "-m", "pip", "install"]`; an ordinary
-`["pip", "install"]` profile cannot substitute. Cache version 8 includes the
+`["pip", "install"]` profile cannot substitute. Cache version 10 includes the
 interpreter invocation path, file identity, module, interpreter switches, route,
 mode, virtual-environment configuration identity, a hash of the probe HOME
 context, and executable variant evidence. Auto

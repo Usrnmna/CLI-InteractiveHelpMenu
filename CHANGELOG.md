@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Passive diagnostics identify explicit driver activation and exact route-file
+  provenance. Manual composition instructions document precedence, conflicts,
+  and preservation of custom collections without changing activation defaults.
+- Workflow and GNU baseline captures add 31 matrix routes. Compose run retains
+  its service boundary; Kubernetes inherited arity protects omitted values.
+  Parser corrections preserve required optional-prefix placeholders, exclude
+  truncated numeric ranges, and invalidate old metadata with cache schema 10.
+- Driver-report review redacts private configured help operands and manual
+  aliases, retains valid static-only context explanations, and describes
+  effective pytest and version-dependent Yarn help safely. Compression ranges
+  remain excluded across alignment whitespace changes.
 - Context review corrections validate executable tokens before diagnostics,
   protect attached parent values from replacement, and retain root-global literal
   operands. Passive diagnostics report invalid home expansion and actual shell
@@ -12,11 +23,11 @@
 - Passive `--doctor` and `--explain` JSON reports inspect configuration, context,
   provenance, and bounded cache state. Reason-coded errors omit rejected input
   values and arbitrary subprocess output.
-- Cache version 8 fingerprints fixed pip/pytest version responses under the
+- Module cache identity fingerprints fixed pip/pytest version responses under the
   selected interpreter before auto-mode cache reuse. Failed identity checks
   bypass caching; unchanged-version local edits require expiry or refresh.
 - Third-party compatibility coverage includes all essential, next, and extended
-  tiers: 129 command paths across 62 executable names, with loadable drivers,
+  tiers: 160 command paths across 73 executable names, with loadable drivers,
   independent sentinel expectations, and captured help excerpts.
 - Recognized sudo/env/command prefixes, selected-interpreter pip/pytest module
   help, literal ip keywords, concrete FFmpeg selectors, and repeated esptool

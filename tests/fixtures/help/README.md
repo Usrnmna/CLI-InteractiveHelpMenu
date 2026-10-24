@@ -3,7 +3,7 @@
 [Compatibility matrix and live checks](../../../docs/compatibility.md) ·
 [Development and validation](../../../docs/development.md#extended-tests-and-live-compatibility-reports)
 
-`matrix.json` is the maintained list of 129 command paths, tiers, package names,
+`matrix.json` is the maintained list of 160 command paths, tiers, package names,
 fixture filenames, expected flags and arguments, excluded forms, live sentinels,
 and fixed version requests. Expected values are test assertions; they must not
 be regenerated from parser output when a test fails.
@@ -66,6 +66,31 @@ extend the relevant JSON driver when a special help route or subcommand path is
 required. Keep unavailable live validation explicit. The harness installs no
 packages; local downloads and environments belong in ignored `.cache/` storage,
 and live reports belong in ignored `tests/reports/` storage.
+
+## Workflow and Unix baseline corpus
+
+`workflow-baseline.json` adds independent flags, exact argument placeholders,
+optional-value expectations, exclusions, and live sentinels for 31 routes.
+`workflow-baseline-captured.json` records observed installed versions, fixed
+source requests, official references, and normalization for the associated
+`workflow-*.txt` files. These are captured help, not generated option specimens;
+Git manuals retain selected declaration lines and two following lines.
+`workflow-manual-edge-cases.json` retains quoted Git examples and XZ numeric
+preset-table rows from installed manuals. Those rows must not override real
+option declarations or become partial insertable flags.
+
+The corpus covers Git status/show/fetch/switch, six additional Compose leaves,
+four Kubernetes leaves, GitHub issue/run/workflow list/view, and eleven Unix
+utilities. GNU evidence does not establish BSD or BusyBox behavior. The XZ
+numeric preset range is deliberately excluded. All expected flags and arity
+remain independently specified; parser output must not regenerate expectations.
+
+`test_workflow_baseline.py` checks route requests, schemas, required and optional
+values, inherited arity, privacy, activation, and literal edits. The rendered
+`test_workflow_terminal.py` checks actual Bash interaction, service/child
+boundaries, repeated filters, sed expressions, cursor position, resize, and
+scrollback. Its instrumented kubectl fixture records fixed help operands and
+warm-cache behavior; it is separate from live installed-kubectl validation.
 
 ## Complete compatibility expansion
 

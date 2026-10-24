@@ -4,7 +4,10 @@
 [Supported invocation grammar](invocation-and-structured-arguments.md)
 
 Recorded on 2026-10-23 in America/Los_Angeles (2026-10-24 UTC). This report
-describes the working tree. No commit, push, hosted release, or publication occurred.
+describes that dated snapshot. No commit, push, hosted release, or publication occurred.
+The [current compatibility guide](compatibility.md) includes later workflow and
+Unix corpus additions; the counts and test results below retain their original
+scope and are not evidence of a new run against those additions.
 
 ## Completed dependency follow-up
 

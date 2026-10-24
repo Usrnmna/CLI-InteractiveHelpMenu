@@ -1,6 +1,6 @@
 """Validate declarative help drivers without importing or evaluating driver code."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import json
 from pathlib import Path
 import re
@@ -22,6 +22,7 @@ class HelpRoute:
     stop_at_options: tuple[str, ...] = ()
     option_values: frozenset[str] = frozenset()
     option_flags: frozenset[str] = frozenset()
+    source: str | None = None
 
 
 @dataclass
@@ -31,6 +32,7 @@ class Driver:
     paths: dict[tuple[str, ...], HelpRoute] = field(default_factory=dict)
     global_values: frozenset[str] = frozenset()
     global_flags: frozenset[str] = frozenset()
+    source: str | None = None
 
 
 def parse_driver(document: dict) -> tuple[str, Driver]:
@@ -129,7 +131,8 @@ def load_driver_files(directory: Path, registry: dict[str, Driver]) -> dict[str,
             flags = previous.global_flags | driver.global_flags
             if values & flags:
                 raise ValueError("Driver overlay conflicts with existing global-option arity.")
-            result[name] = Driver({**previous.paths, **driver.paths}, values, flags)
+            routes = {words: replace(route, source=str(path)) for words, route in driver.paths.items()}
+            result[name] = Driver({**previous.paths, **routes}, values, flags, str(path))
         except (OSError, ValueError, RecursionError) as error:
             raise HelpError(f"Invalid driver {path}: {error}", "invalid_driver") from error
     return result

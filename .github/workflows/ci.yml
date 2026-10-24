@@ -55,14 +55,55 @@ jobs:
           python3 - <<'PY'
           import json
           import os
+          import subprocess
+          import sys
+          import tempfile
           from pathlib import Path
           reports = Path("tests/reports/ci")
           doctor = json.loads((reports / "diagnostics-doctor.json").read_text())
           explanation = json.loads((reports / "diagnostics-explain.json").read_text())
           assert doctor["status"] == "ok"
+          assert doctor["configuration"]["driver_selection"]["supplied_selected"]
           assert explanation["resolved_command"] == ["docker", "compose", "up"]
           assert explanation["code"] == "discovery_disabled"
+          assert explanation["route"]["kind"] == "configured"
+          assert explanation["route"]["help_arguments"] == ["compose", "up", "--help"]
           assert "example.yml" not in json.dumps(explanation)
+          private_constant = "CI_PRIVATE_DRIVER_SENTINEL"
+          pending_operand = "CI_PRIVATE_BUFFER_SENTINEL"
+          with tempfile.TemporaryDirectory(prefix="cli-help-review-config-", dir=os.environ["RUNNER_TEMP"]) as directory:
+              folder = Path(directory)
+              drivers = folder / "drivers"
+              profiles = folder / "profiles"
+              drivers.mkdir()
+              profiles.mkdir()
+              driver = {"command": "fixture", "paths": [{"command": [],
+                  "help": ["--help", "--token=" + private_constant, "--password", private_constant],
+                  "man": "private-" + private_constant}]}
+              (drivers / "fixture.json").write_text(json.dumps(driver))
+              for filename, command in (("root.json", ["fixture"]), ("leaf.json", ["fixture", "review-leaf"])):
+                  profile = {"command": command, "description": "CI fixture",
+                      "categories": [{"name": "Options", "options": [{"flag": "--flag", "summary": "Fixture flag"}]}]}
+                  (profiles / filename).write_text(json.dumps(profile))
+              environment = dict(os.environ, CLI_HELP_DRIVERS=str(drivers), CLI_HELP_PROFILES=str(profiles))
+              for filename, command, kind in (("diagnostics-private-driver.json", "fixture", "configured"),
+                                               ("diagnostics-static-profile.json", "fixture review-leaf", "profile_only")):
+                  prefix = command + " --fl"
+                  environment.update(CLI_HELP_LINE=prefix + " '" + pending_operand + "'", CLI_HELP_POINT=str(len(prefix)))
+                  result = subprocess.run([sys.executable, "-B", "cli_help/main.py", "--explain"],
+                      env=environment, check=True, capture_output=True, text=True, timeout=10)
+                  assert private_constant not in result.stdout + result.stderr
+                  assert pending_operand not in result.stdout + result.stderr
+                  report = json.loads(result.stdout)
+                  assert report["status"] == "ready"
+                  assert report["route"]["kind"] == kind
+                  if kind == "configured":
+                      assert report["route"]["help_arguments_redacted"]
+                      assert report["route"]["manual_redacted"]
+                  else:
+                      assert report["route"]["help_arguments"] == []
+                      assert report["profile"]["kind"] == "custom"
+                  (reports / filename).write_text(result.stdout)
           assert not Path(os.environ["CLI_HELP_CACHE_DIR"]).exists()
           PY
       - name: Run full Linux test suite
@@ -82,6 +123,8 @@ jobs:
             tests/reports/ci/linux-tests.log
             tests/reports/ci/diagnostics-doctor.json
             tests/reports/ci/diagnostics-explain.json
+            tests/reports/ci/diagnostics-private-driver.json
+            tests/reports/ci/diagnostics-static-profile.json
           if-no-files-found: warn
           retention-days: 14
 

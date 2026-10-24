@@ -27,14 +27,14 @@ from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 8
+CACHE_VERSION = 10
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
 MODULE_INTERPRETER_OPTIONS = INTERPRETER_FLAGS
 PARENTHESIZED_TYPE = r"\((?:string|list|integer|long|double|float|map|blob|timestamp)\)"
 ARGUMENT_PATTERN = re.compile(
-    r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_-]*|\[[^\[\]]+\]|\{[^{}]+\}|#[0-9]+|"
+    r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_/-]*|\[[^\[\]]+\]|\{[^{}]+\}|#[0-9]+|"
     + PARENTHESIZED_TYPE + r"|[A-Z][A-Z0-9_-]*(?:=[A-Z][A-Z0-9_-]*)?)(?=$|[\s,])"
 )
 ANSI_PATTERN = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]")
@@ -189,6 +189,11 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     # Wget aligns aliases with multiple spaces after the comma; those spaces
     # belong to the declaration rather than the description column.
     stripped = re.sub(r"([,|])\s+(?=--?[A-Za-z0-9])", r"\1 ", stripped)
+    # A compression-level range is not an alias declaration. Preserve literal
+    # numeric flags elsewhere. Check before splitting alignment columns so tabs
+    # or multiple spaces cannot turn the first endpoint into a partial flag.
+    if re.match(r"^-[0-9]\s+(?:\.\.\.|…)\s+-[0-9](?:\s|$)", stripped):
+        return None
     columns = re.split(r"\s{2,}|\t+", stripped, maxsplit=1)
     signature = columns[0]
     # systemd presents short/long aliases separated by one space. Restrict
@@ -200,6 +205,11 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     if re.search(r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:\[:|:<)", signature):
         return None
     summary = columns[1].strip() if len(columns) == 2 else ""
+    # Preset/memory tables contain bare numeric switches followed exclusively
+    # by numeric cells. They are data rows, not option declarations.
+    if re.fullmatch(r"-[0-9]", signature) and re.fullmatch(
+            r"(?:[0-9.]+|[KMGT]?i?B|N/A)(?:\s+(?:[0-9.]+|[KMGT]?i?B|N/A))*", summary):
+        return None
     typed_value = re.match("^(" + PARENTHESIZED_TYPE + r")(?=$|\s)", summary)
     if typed_value:
         signature += " " + typed_value.group(1)
@@ -215,7 +225,7 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     options = []
     for index, match in enumerate(matches):
         # Subsequent matches must be part of an alias declaration, not prose.
-        if index and not signature[matches[index - 1].end():match.start()].rstrip().endswith((",", "|", "or")):
+        if index and not re.search(r"(?:[,|]|\bor)\s*$", signature[matches[index - 1].end():match.start()]):
             break
         stop = matches[index + 1].start() if index + 1 < len(matches) else len(signature)
         raw_tail = signature[match.end():stop]
@@ -236,8 +246,13 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
         elif tail.startswith("="):
             value = re.match(r"=([^\s,]+)", tail)
             if value:
+                payload = value.group(1)
+                # A quoted example wrapping into prose must not replace a real
+                # optional declaration with an inferred required fragment.
+                if payload.startswith(("'", '"')) and (len(payload) < 2 or payload[-1] != payload[0]):
+                    return None
                 flag += "="
-                argument = value.group(1)
+                argument = payload
                 tail = tail[value.end():].strip()
         else:
             # jq consumes both a variable name and a value/file. Treat only

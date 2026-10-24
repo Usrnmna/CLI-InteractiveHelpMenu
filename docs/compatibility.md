@@ -3,7 +3,7 @@
 [Project overview](../README.md) · [Documentation index](README.md) ·
 [Driver configuration](profiles-and-drivers.md)
 
-The compatibility matrix covers 129 maintained command paths across 62
+The compatibility matrix covers 160 maintained command paths across 73
 executable names. The tiers organize test coverage; they are not measured usage
 rankings. A passing case establishes the selected option declarations, argument
 counts, and literal insertion behavior for the recorded version. It does not
@@ -13,16 +13,18 @@ establish complete option coverage or successful execution of the program's work
 
 | Tier | Program or package | Tested command paths |
 | --- | --- | --- |
-| Essential | Git | `git commit`, `git log`, `git diff` |
+| Essential | Git | `git commit`, `git log`, `git diff`, `git status`, `git show`, `git fetch`, `git switch` |
 | Essential | curl, Wget, rsync | `curl`, `wget`, `rsync` |
-| Essential | Docker and Compose plugin | `docker run`, `docker image ls`, `docker compose up`, `docker compose logs`, `docker compose exec` |
+| Essential | Docker and Compose plugin | `docker run`, `docker image ls`, `docker compose up`, `logs`, `exec`, `ps`, `config`, `build`, `pull`, `down`, `run` |
+| Essential | GNU file and text utilities | `cp`, `mv`, `rm`, `sort`, `head`, `tail`, `du`, `df`, `sed` |
+| Essential | Compression utilities | GNU `gzip`, XZ Utils `xz` |
 | Essential | pip | `pip`, `pip install`, `pip download`, `pip3 install` |
 | Essential | uv | `uv pip install`, `uv run` |
 | Essential | npm and pnpm | `npm`, `npm install`, `npm run`, `pnpm install` |
 | Essential | jq and ripgrep | `jq`, `rg` |
 | Essential | FFmpeg | `ffmpeg`, `ffprobe` |
-| Next | GitHub CLI | `gh pr list`, `gh pr view`, `gh pr create`, `gh repo clone` |
-| Next | Kubernetes and Helm | `kubectl get`, `kubectl describe`, `kubectl logs`, `kubectl config view`, `helm install`, `helm upgrade` |
+| Next | GitHub CLI | `gh pr list/view/create`, `gh repo clone`, `gh issue list/view`, `gh run list/view`, `gh workflow list/view` |
+| Next | Kubernetes and Helm | `kubectl get`, `describe`, `logs`, `config view`, `apply`, `delete`, `exec`, `port-forward`; `helm install`, `helm upgrade` |
 | Next | AWS CLI | `aws s3 cp`, `aws s3 sync`, `aws ec2 describe-instances` |
 | Next | Terraform and OpenTofu | `terraform plan`, `terraform apply`, `tofu plan`, `tofu apply` |
 | Next | Rust Cargo | `cargo build`, `cargo test` |
@@ -82,6 +84,10 @@ directory. A single `CLI_HELP_DRIVERS` directory is loaded; combine any existing
 custom drivers with the desired supplied drivers before changing that setting.
 The installer includes the supplied JSON files, and the updater preserves local
 edits through its normal conflict workflow.
+The [activation and manual composition instructions](profiles-and-drivers.md#activation-and-manual-composition)
+describe same-executable merges and conflict rules. `--doctor` identifies the
+selected directory and whether it is the supplied collection; `--explain`
+identifies each selected route's provenance separately from the static profile.
 
 Drivers specify fixed documentation requests and known global option arity.
 Only the listed command paths are adapted. Unknown nested paths fail with a
@@ -92,7 +98,7 @@ the copy-specific options separately. `rclone sync --help` likewise exposes only
 its sync-specific options on the tested version; global flags remain available
 from root discovery or a reviewed custom profile.
 
-Compose `exec` stops option insertion at the first positional service name;
+Compose `exec` and `run` stop option insertion at the first positional service name;
 its child command's flags are not Compose flags. Cargo `test` permits a test-name
 filter but stops at `--`, before arguments for the test binary. The supplied
 Compose parent route declares value and boolean arity for options between
@@ -102,6 +108,25 @@ files/profiles, long equals-attached values, and declared short attached values
 are recognized. Root globals such as `docker --context local compose logs`
 remain supported. Unknown parent options and incomplete values fail before
 discovery; pending values never enter the fixed help request.
+
+The additional Git routes already existed in the built-in registry; their new
+matrix entries establish independent captured-manual and insertion contracts.
+Compose leaf routes use fixed `compose LEAF --help` requests. Kubernetes leaves
+use `help LEAF`; inherited namespace/context arity is explicitly recorded where
+leaf help omits it. `kubectl exec` permits pod operands before `--` and rejects
+editing the child-command region after it. GitHub issue/run/workflow parents
+accept declared `-R`/`--repo` values before their list/view leaf. Filter repetition
+and JSON field lists remain ordinary literal operands.
+
+The baseline Unix corpus uses generic discovery, without additional profiles or
+drivers. It records GNU Coreutils 9.4, GNU sed 4.9, GNU gzip 1.12, and XZ Utils
+5.4.5 help. Required placeholders with optional prefixes such as
+`[HOST/]OWNER/REPO` retain their required suffix. Numeric ranges such as XZ's
+`-0 ... -9` are excluded instead of becoming a partial option. Individual literal
+numeric flags, such as gzip's `-1`, remain supported.
+These checks do not establish BSD or BusyBox compatibility. Sed expression
+languages, arbitrary attached-only forms, and general short bundles remain
+outside the grammar; pending expressions and filenames are never probed.
 
 ## Run the checks
 
@@ -211,7 +236,7 @@ the process limits are not a sandbox. See
 ## Recorded validation
 
 The [complete expansion validation](compatibility-expansion-validation.md) records
-the current 129-route inventory, deterministic evidence, live versions, skips, and
+the earlier 129-route inventory, deterministic evidence, live versions, skips, and
 limits. The following reports describe older snapshots.
 
 The [review fixes and compatibility validation](review-fixes-2026-10-23.md)

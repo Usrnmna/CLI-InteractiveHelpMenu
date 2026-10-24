@@ -140,8 +140,8 @@ A minimal driver for another program is:
 | `paths[].man` | Literal manual name in sections 1 or 8; `null` disables the manual source |
 | `paths[].stop_at_positional` | Reject insertion after the first positional argument; unknown preceding option arity is also rejected |
 | `paths[].stop_at_options` | Reject insertion after named child-argument delimiters; defaults to an empty array |
-| `paths[].option_values` | Unique literal options consuming one value before a child command; separate, long `=value`, and short attached values are supported |
-| `paths[].option_flags` | Unique literal parent boolean options; explicit `=true`/`=false` forms are supported |
+| `paths[].option_values` | Unique literal options consuming one value before a child command; also supplies missing argument-context arity at the selected route |
+| `paths[].option_flags` | Unique literal parent boolean options; also supplies missing argument-context arity at the selected route |
 
 Every route requires at least one help or manual source. Omitted global lists
 are empty; the positional boundary defaults to false. Matching built-in routes
@@ -169,6 +169,14 @@ tokens, even when parsed help omits attached-value metadata.
 Existing routes without parent lists retain their
 previous parent-option behavior. The lists default to empty, cannot overlap,
 and are preserved by manual import and review saves.
+At a selected route, these lists also validate options omitted from its help,
+such as inherited `kubectl --namespace`/`-n`. Existing profile metadata takes
+precedence; fallback declarations do not create browser selections. Separate,
+long `=value`, and declared short attached values are recognized. These lists
+do not enable general short-option bundles or infer inheritance from root
+globals or unrelated paths. The supplied Kubernetes leaves explicitly declare
+their supported inherited values. Supplied GitHub issue/run/workflow parents
+declare `-R`/`--repo` so a repository selector can precede the leaf command.
 
 Drivers contain no executable Python, shell snippets, interpolation, or references
 to the pending buffer. Only their fixed help arrays and manual names become probe
@@ -192,3 +200,48 @@ Profiles and drivers can also be generated through [manual import](manual-import
 or [bulk scanning](bulk-scan.md). The [interactive reviewer](review.md) provides
 guided corrections for collections with scan reports. See
 [discovery and safety](discovery-and-safety.md) for source limits and cache behavior.
+
+## Activation and manual composition
+
+Only built-in Git/Docker drivers are active without `CLI_HELP_DRIVERS`. Supplying
+that variable selects one directory; no search path, automatic supplied-driver
+activation, or directory layering is performed. `--doctor` reports the selection,
+and `--explain` reports the selected route's file separately from profile
+provenance. `--list-drivers` retains its plain route-list interface.
+Diagnostic route arguments and custom manual aliases use
+[privacy-preserving redaction](diagnostics.md#explain-a-command-context);
+the selected configuration file remains available for local inspection.
+
+To combine selected supplied drivers with independent custom drivers, use a
+separate configuration directory outside the managed installation. For example,
+from the source checkout:
+
+```bash
+mkdir -p "$HOME/.config/cli-help/combined-drivers"
+cp -i config/drivers.example/docker.json config/drivers.example/gh.json \
+  config/drivers.example/kubectl.json "$HOME/.config/cli-help/combined-drivers/"
+export CLI_HELP_DRIVERS="$HOME/.config/cli-help/combined-drivers"
+python3 cli_help/main.py --check
+python3 cli_help/main.py --doctor
+python3 cli_help/main.py --list-drivers
+```
+
+Copy custom files for other executable names into that same directory and repeat
+validation. `cp -i` requests a choice before replacing existing files. Custom
+changes to the same executable require manual editing of its single JSON file:
+retain each desired `paths[].command` once, choose one definition for matching
+paths, and reconcile global arity lists without overlap. Two files declaring
+the same executable are an error; filenames do not establish precedence.
+
+Within the selected file, matching built-in paths are replaced in full, so an
+override must retain required boundary/parent-option metadata. Other built-in
+paths remain available. Global sets are combined; changing a built-in global
+option's arity is rejected. Duplicate paths and invalid schemas fail the whole
+load before discovery. Diagnostics report configuration failure without probing.
+
+Managed updates preserve edited supplied files through the existing conflict
+workflow and retain the incoming copy for review. External combined collections
+are not rewritten or automatically refreshed. Compare desired upstream changes,
+merge them manually into that collection, and rerun `--check`. Backups remain
+appropriate before editing; copying a newer collection over custom files is not
+an update merge.

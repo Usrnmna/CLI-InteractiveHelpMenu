@@ -127,6 +127,44 @@ use isolated POSIX fixtures; growing-file checks enforce the actual read limit.
 Rendered review cases retain midline cursor positions on rejected attached
 values and exercise Git leaf edits after empty or dash-leading global operands.
 
+## Driver composition and workflow baseline regressions
+
+[test_workflow_baseline.py](../tests/test_workflow_baseline.py) checks explicit
+driver selection, per-route provenance, manual combined collections, duplicate
+definitions, conflicting global arity, passive privacy, and no-process/no-write
+boundaries. Its 31-route captured-help corpus has independent flags, arity,
+optional-value, fixed-request, and literal-edit expectations. Git routes extend
+evidence for existing built-ins; Compose, Kubernetes, and GitHub leaves extend
+the supplied collection. The Unix utilities retain generic discovery.
+
+[test_workflow_terminal.py](../tests/test_workflow_terminal.py) checks rendered
+Bash/tmux cells, character cursors, cancellation, resize/reopen, alternate-screen
+restoration, and numbered scrollback. Instrumented kubectl help verifies exact
+operands, a warm cache, and separation from the child command after `--`.
+The update suite separately preserves an edited supplied driver and an external
+combined collection when incoming distribution metadata changes the same file.
+
+```bash
+python3 -m unittest discover -s tests -p 'test_workflow_baseline.py' -v
+python3 -m unittest discover -s tests -p 'test_workflow_terminal.py' -v
+```
+
+The full `bash tests/run.sh` suite includes both modules. Captured versions and
+normalization are recorded in the [workflow corpus](../tests/fixtures/help/README.md#workflow-and-unix-baseline-corpus).
+Fixture checks do not establish live installed-version compatibility. Safe live
+checks use the existing harness with explicit `--case` selections and
+`--timeout 2`; no operational program workloads are required.
+
+[test_workflow_review.py](../tests/test_workflow_review.py) protects static-only
+nested explanations in all discovery modes, configured-operand and manual-alias
+redaction, the effective pytest request, version-dependent Yarn reporting, and
+aligned numeric ranges. It also checks the actual CLI and no-process/no-write
+boundaries. [test_workflow_review_terminal.py](../tests/test_workflow_review_terminal.py)
+invokes `--explain` from an isolated Bash callback using its actual pending
+buffer/cursor. Rendered assertions precede buffer snapshots and cover private
+report contents, unchanged cells and cursor, cancellation, resize/reopen,
+literal insertion, alternate-screen restoration, and numbered scrollback.
+
 ## Rendered-screen regressions
 
 [test_terminal_screen.py](../tests/test_terminal_screen.py) launches isolated
@@ -184,6 +222,9 @@ significant whitespace in Markdown and help-parser fixtures.
 reports, review backups, collection locks, and local environment files. The
 rules also exclude checkout-local credential homes, shell histories, application
 temporary sessions, installation receipts, and standalone launcher builds.
+Capture, functional-review, and workflow-verification sessions are excluded when
+their temporary directory is placed at the checkout root. Matching exclusions
+keep their generated content out of documentation link scans.
 Published release assets remain eligible for tracking.
 documented `generated-help/` output directory is also excluded. Generated
 collections in other locations require an appropriate ignore rule or an output
@@ -206,6 +247,8 @@ configuration follows GitHub's
 
 The [bug-report form](../.github/ISSUE_TEMPLATE/bug_report.yml) requests a minimal
 synthetic reproduction and environment details. The
+optional driver/profile setup field records activation, discovery mode, and
+route provenance without requesting private configuration contents. The
 [pull-request template](../.github/pull_request_template.md) separates observed
 verification from remaining limitations. Both describe privacy precautions;
 diagnostic reports require local-path review and redaction before sharing.
@@ -221,9 +264,13 @@ terminal state, Git for ignore-policy checks, and GCC for native release-package
 live-program compatibility probes are not required.
 
 Before the suite, a separate passive smoke check invokes `--doctor` and
-`--explain` with fixed synthetic Compose input and discovery disabled. It checks
-route resolution, operand omission, and absence of an application cache directory.
-Only its two JSON reports and the suite log are uploaded by the test job;
+`--explain` with fixed synthetic input and discovery disabled. It checks supplied
+activation, Compose route provenance, private configured-operand/manual-alias
+redaction, static-only profiles, pending-operand omission, and absence of an
+application cache directory. Synthetic configurations are isolated in the
+runner's temporary directory. Private-fixture reports are checked for sentinel
+disclosure before retention.
+Only its four named JSON reports and the suite log are uploaded by the test job;
 raw captures, arbitrary local reports, and tool homes are excluded.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
@@ -345,7 +392,7 @@ without an editor, then previews and saves the result. The resulting profile
 passes literal insertion checks while the instrumented target remains uninvoked.
 
 The [third-party compatibility guide](compatibility.md) contains the complete
-129-path matrix, driver activation, environment preparation, report interpretation,
+160-path matrix, driver activation, environment preparation, report interpretation,
 and recorded validation limits. A default live run now covers all three tiers
 and loads the supplied drivers automatically:
 

@@ -109,6 +109,31 @@ class UpdateTests(unittest.TestCase):
         self.assertTrue(edited.exists())
         self.assertTrue(extra.exists())
 
+    def test_custom_supplied_driver_and_external_combined_collection_survive_update(self):
+        """Keep local route edits when the distribution changes the same driver."""
+        relative = "config/drivers.example/docker.json"
+        installed = self.prefix / relative
+        custom = json.loads(installed.read_text())
+        custom["paths"].append({"command": ["local-route"], "help": ["help", "local-route"], "man": None})
+        original = json.dumps(custom, indent=2).encode() + b"\n"
+        installed.write_bytes(original)
+        incoming = self.source / relative
+        updated = json.loads(incoming.read_text())
+        updated["paths"].append({"command": ["distribution-route"], "help": ["help", "distribution-route"], "man": None})
+        incoming.write_text(json.dumps(updated))
+        collection = self.home / "combined-drivers"
+        collection.mkdir()
+        external = collection / "docker.json"
+        external.write_bytes(original)
+        self.environment["CLI_HELP_DRIVERS"] = str(collection)
+        result = self.upgrade(status=2)
+        self.assertIn("Manual merge required: " + relative, result.stdout)
+        self.assertEqual(installed.read_bytes(), original)
+        self.assertEqual(external.read_bytes(), original)
+        backup = self.backups()[0]
+        self.assertEqual((backup / "incoming" / relative).read_bytes(), incoming.read_bytes())
+        self.assertEqual(self.manifest()["files"][relative], self.original_manifest["files"][relative])
+
     def test_edited_installed_code_is_never_executed_by_validation(self):
         marker = self.home / "executed"
         (self.prefix / "cli_help/main.py").write_text(f"open({str(marker)!r}, 'w').write('bad')\n")

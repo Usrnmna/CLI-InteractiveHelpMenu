@@ -34,6 +34,14 @@ python3 cli_help/main.py --doctor
 ```
 
 No driver collection is automatically enabled or combined by diagnostic modes.
+`configuration.driver_selection` reports `source` (`built_in` or
+`CLI_HELP_DRIVERS`), the selected `directory`, the supplied directory's
+availability, and `supplied_selected`. The latter is true only when that exact
+directory is selected, including a symbolic-link spelling of it. Copies in a
+combined custom collection remain custom selections; content is not used to
+infer activation. Composition remains `built_in_then_one_directory`.
+See [manual driver composition](profiles-and-drivers.md#activation-and-manual-composition)
+for precedence, conflict rules, and preserving local changes.
 
 ## Explain a command context
 
@@ -51,6 +59,33 @@ unset CLI_HELP_LINE CLI_HELP_POINT
 
 The report includes the resolved documentation path, static-profile provenance
 when available, discovery policy, relevant cache status, and a stable reason code.
+`driver_selection` uses the same activation fields as `--doctor`. The `route`
+object identifies `configured`, `built_in`, `generic`, `module_adapter`,
+`profile_only`, or `unconfigured` provenance, its documentation selectors and driver positional
+boundaries. `profile_only` permits an explicit static profile without inventing
+an automatic discovery request. Its help array is empty and its manual is null;
+when caching is enabled, cache status is `not_applicable` for that path.
+An intermediate driver path with neither a profile nor its own help route is
+`unconfigured`; recognizing the path does not establish usable documentation.
+Configured routes include their JSON `file`; retained built-in
+routes remain labelled built-in even when another route in that program is
+overlaid. `global_options` identifies the overlay file and whether its global
+arity is combined with built-in declarations. Static-profile provenance remains
+separate: the selected profile can avoid discovery while the route still defines
+context boundaries. Reports describe metadata, not live executable behavior.
+Only recognized documentation selectors and resolved route words are retained
+in `help_arguments`. Other fixed configured operands are shown as `<redacted>`;
+`help_arguments_redacted` indicates substitution. Custom manual aliases are
+also redacted unless they match the canonical executable or command-path manual,
+with `manual_redacted` reporting that substitution. Redaction affects reports
+only. Discovery retains its configured fixed requests and execution policy.
+Configuration locations remain visible and require review before sharing.
+
+Root pytest reports its mandatory `--help --noconftest` request and
+`help_override: pytest_no_conftest`, including when a driver supplies another
+declaration. Yarn run reports `help_arguments_pending_identity: true` because
+its effective request depends on the existing active version check. Passive
+inspection never performs that check.
 The actual resolver and argument-position validator perform the inspection.
 No alias, shell function, substitution, or pending option value is evaluated.
 

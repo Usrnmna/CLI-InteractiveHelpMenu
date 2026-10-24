@@ -4824,5 +4824,863 @@
     },
     "curated_profile": "esptool.py-write-flash.json",
     "expansion": "development"
+  },
+  {
+    "command": "git status",
+    "flags": {
+      "--short": "",
+      "--branch": "",
+      "--porcelain": "[=<version>]",
+      "--untracked-files": "[=<mode>]"
+    },
+    "optional": [
+      "--porcelain",
+      "--untracked-files"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--short",
+      "--branch",
+      "--porcelain",
+      "--untracked-files"
+    ],
+    "live_argument_counts": {},
+    "tier": "essential",
+    "package": "git and git-man",
+    "fixture": "workflow-git-status.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "git show",
+    "flags": {
+      "--name-only": "",
+      "--format=": "<format>",
+      "--pretty": "[=<format>]"
+    },
+    "optional": [
+      "--pretty"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--name-only",
+      "--format=",
+      "--pretty"
+    ],
+    "live_argument_counts": {
+      "--format=": 1
+    },
+    "tier": "essential",
+    "package": "git and git-man",
+    "fixture": "workflow-git-show.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "git fetch",
+    "flags": {
+      "--prune": "",
+      "--depth=": "<depth>",
+      "--jobs=": "<n>"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--prune",
+      "--depth=",
+      "--jobs="
+    ],
+    "live_argument_counts": {
+      "--depth=": 1,
+      "--jobs=": 1
+    },
+    "tier": "essential",
+    "package": "git and git-man",
+    "fixture": "workflow-git-fetch.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "git switch",
+    "flags": {
+      "--create": "<new-branch>",
+      "-c": "<new-branch>",
+      "--track": "[direct|inherit]",
+      "--detach": ""
+    },
+    "optional": [
+      "--track"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--create",
+      "-c",
+      "--track",
+      "--detach"
+    ],
+    "live_argument_counts": {
+      "--create": 1,
+      "-c": 1
+    },
+    "tier": "essential",
+    "package": "git and git-man",
+    "fixture": "workflow-git-switch.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose ps",
+    "flags": {
+      "--all": "",
+      "--format": "string",
+      "--status": "stringArray"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--all",
+      "--format",
+      "--status"
+    ],
+    "live_argument_counts": {
+      "--format": 1,
+      "--status": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-ps.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose config",
+    "flags": {
+      "--format": "string",
+      "--output": "string",
+      "--services": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--format",
+      "--output",
+      "--services"
+    ],
+    "live_argument_counts": {
+      "--format": 1,
+      "--output": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-config.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose build",
+    "flags": {
+      "--build-arg": "stringArray",
+      "--no-cache": "",
+      "--ssh": "string"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--build-arg",
+      "--no-cache",
+      "--ssh"
+    ],
+    "live_argument_counts": {
+      "--build-arg": 1,
+      "--ssh": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-build.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose pull",
+    "flags": {
+      "--policy": "string",
+      "--include-deps": "",
+      "--quiet": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--policy",
+      "--include-deps",
+      "--quiet"
+    ],
+    "live_argument_counts": {
+      "--policy": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-pull.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose down",
+    "flags": {
+      "--timeout": "int",
+      "--volumes": "",
+      "--remove-orphans": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--timeout",
+      "--volumes",
+      "--remove-orphans"
+    ],
+    "live_argument_counts": {
+      "--timeout": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-down.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "docker compose run",
+    "flags": {
+      "--env": "stringArray",
+      "--publish": "stringArray",
+      "--rm": "",
+      "--no-deps": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--env",
+      "--publish",
+      "--rm",
+      "--no-deps"
+    ],
+    "live_argument_counts": {
+      "--env": 1,
+      "--publish": 1
+    },
+    "tier": "essential",
+    "package": "docker.io and docker-compose-v2",
+    "fixture": "workflow-docker-compose-run.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "kubectl apply",
+    "flags": {
+      "--filename=": "[]",
+      "--dry-run=": "'none'",
+      "--server-side": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--filename=",
+      "--dry-run=",
+      "--server-side"
+    ],
+    "live_argument_counts": {
+      "--filename=": 1,
+      "--dry-run=": 1
+    },
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "workflow-kubectl-apply.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "kubectl delete",
+    "flags": {
+      "--filename=": "[]",
+      "--grace-period=": "-1",
+      "--wait": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--filename=",
+      "--grace-period=",
+      "--wait"
+    ],
+    "live_argument_counts": {
+      "--filename=": 1,
+      "--grace-period=": 1
+    },
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "workflow-kubectl-delete.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "kubectl exec",
+    "flags": {
+      "--container=": "''",
+      "--stdin": "",
+      "--tty": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--container=",
+      "--stdin",
+      "--tty"
+    ],
+    "live_argument_counts": {
+      "--container=": 1
+    },
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "workflow-kubectl-exec.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "kubectl port-forward",
+    "flags": {
+      "--address=": "[localhost]",
+      "--pod-running-timeout=": "1m0s"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--address=",
+      "--pod-running-timeout="
+    ],
+    "live_argument_counts": {
+      "--address=": 1,
+      "--pod-running-timeout=": 1
+    },
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "workflow-kubectl-port-forward.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh issue list",
+    "flags": {
+      "--label": "strings",
+      "--json": "fields",
+      "--limit": "int",
+      "--repo": "[HOST/]OWNER/REPO"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--label",
+      "--json",
+      "--limit",
+      "--repo"
+    ],
+    "live_argument_counts": {
+      "--label": 1,
+      "--json": 1,
+      "--limit": 1,
+      "--repo": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-issue-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh issue view",
+    "flags": {
+      "--json": "fields",
+      "--comments": "",
+      "--repo": "[HOST/]OWNER/REPO"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--json",
+      "--comments",
+      "--repo"
+    ],
+    "live_argument_counts": {
+      "--json": 1,
+      "--repo": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-issue-view.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh run list",
+    "flags": {
+      "--branch": "string",
+      "--status": "string",
+      "--json": "fields"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--branch",
+      "--status",
+      "--json"
+    ],
+    "live_argument_counts": {
+      "--branch": 1,
+      "--status": 1,
+      "--json": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-run-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh run view",
+    "flags": {
+      "--attempt": "uint",
+      "--job": "string",
+      "--json": "fields",
+      "--log-failed": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--attempt",
+      "--job",
+      "--json",
+      "--log-failed"
+    ],
+    "live_argument_counts": {
+      "--attempt": 1,
+      "--job": 1,
+      "--json": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-run-view.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh workflow list",
+    "flags": {
+      "--all": "",
+      "--limit": "int",
+      "--repo": "[HOST/]OWNER/REPO"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--all",
+      "--limit",
+      "--repo"
+    ],
+    "live_argument_counts": {
+      "--limit": 1,
+      "--repo": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-workflow-list.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gh workflow view",
+    "flags": {
+      "--ref": "string",
+      "--yaml": "",
+      "--repo": "[HOST/]OWNER/REPO"
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--ref",
+      "--yaml",
+      "--repo"
+    ],
+    "live_argument_counts": {
+      "--ref": 1,
+      "--repo": 1
+    },
+    "tier": "next",
+    "package": "gh",
+    "fixture": "workflow-gh-workflow-view.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "cp",
+    "flags": {
+      "--archive": "",
+      "--target-directory=": "DIRECTORY",
+      "-t": "DIRECTORY",
+      "--backup": "[=CONTROL]"
+    },
+    "optional": [
+      "--backup"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--archive",
+      "--target-directory=",
+      "-t",
+      "--backup"
+    ],
+    "live_argument_counts": {
+      "--target-directory=": 1,
+      "-t": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-cp.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "mv",
+    "flags": {
+      "--target-directory=": "DIRECTORY",
+      "--backup": "[=CONTROL]",
+      "--no-target-directory": ""
+    },
+    "optional": [
+      "--backup"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--target-directory=",
+      "--backup",
+      "--no-target-directory"
+    ],
+    "live_argument_counts": {
+      "--target-directory=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-mv.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "rm",
+    "flags": {
+      "--recursive": "",
+      "--interactive": "[=WHEN]",
+      "--one-file-system": ""
+    },
+    "optional": [
+      "--interactive"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--recursive",
+      "--interactive",
+      "--one-file-system"
+    ],
+    "live_argument_counts": {},
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-rm.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "sort",
+    "flags": {
+      "--key=": "KEYDEF",
+      "--field-separator=": "SEP",
+      "--output=": "FILE",
+      "--numeric-sort": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--key=",
+      "--field-separator=",
+      "--output=",
+      "--numeric-sort"
+    ],
+    "live_argument_counts": {
+      "--key=": 1,
+      "--field-separator=": 1,
+      "--output=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-sort.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "head",
+    "flags": {
+      "--lines=": "[-]NUM",
+      "-n": "[-]NUM",
+      "--bytes=": "[-]NUM",
+      "--quiet": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--lines=",
+      "-n",
+      "--bytes=",
+      "--quiet"
+    ],
+    "live_argument_counts": {
+      "--lines=": 1,
+      "-n": 1,
+      "--bytes=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-head.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "tail",
+    "flags": {
+      "--lines=": "[+]NUM",
+      "--pid=": "PID",
+      "--sleep-interval=": "N",
+      "--follow": "[={name|descriptor}]"
+    },
+    "optional": [
+      "--follow"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--lines=",
+      "--pid=",
+      "--sleep-interval=",
+      "--follow"
+    ],
+    "live_argument_counts": {
+      "--lines=": 1,
+      "--pid=": 1,
+      "--sleep-interval=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-tail.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "du",
+    "flags": {
+      "--max-depth=": "N",
+      "--block-size=": "SIZE",
+      "--files0-from=": "F",
+      "--human-readable": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--max-depth=",
+      "--block-size=",
+      "--files0-from=",
+      "--human-readable"
+    ],
+    "live_argument_counts": {
+      "--max-depth=": 1,
+      "--block-size=": 1,
+      "--files0-from=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-du.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "df",
+    "flags": {
+      "--type=": "TYPE",
+      "--block-size=": "SIZE",
+      "--output": "[=FIELD_LIST]"
+    },
+    "optional": [
+      "--output"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--type=",
+      "--block-size=",
+      "--output"
+    ],
+    "live_argument_counts": {
+      "--type=": 1,
+      "--block-size=": 1
+    },
+    "tier": "essential",
+    "package": "coreutils",
+    "fixture": "workflow-df.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "sed",
+    "flags": {
+      "--expression=": "script",
+      "-e": "script",
+      "--file=": "script-file",
+      "--in-place": "[=SUFFIX]",
+      "-i": "[SUFFIX]",
+      "--quiet": ""
+    },
+    "optional": [
+      "--in-place",
+      "-i"
+    ],
+    "excluded": [],
+    "live_flags": [
+      "--expression=",
+      "-e",
+      "--file=",
+      "--in-place",
+      "-i",
+      "--quiet"
+    ],
+    "live_argument_counts": {
+      "--expression=": 1,
+      "-e": 1,
+      "--file=": 1
+    },
+    "tier": "essential",
+    "package": "sed",
+    "fixture": "workflow-sed.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "gzip",
+    "flags": {
+      "--suffix=": "SUF",
+      "--keep": "",
+      "--decompress": "",
+      "-1": ""
+    },
+    "optional": [],
+    "excluded": [],
+    "live_flags": [
+      "--suffix=",
+      "--keep",
+      "--decompress",
+      "-1"
+    ],
+    "live_argument_counts": {
+      "--suffix=": 1
+    },
+    "tier": "essential",
+    "package": "gzip",
+    "fixture": "workflow-gzip.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
+  },
+  {
+    "command": "xz",
+    "flags": {
+      "--threads=": "NUM",
+      "-T": "NUM",
+      "--keep": "",
+      "--decompress": ""
+    },
+    "optional": [],
+    "excluded": [
+      "-0",
+      "-9"
+    ],
+    "live_flags": [
+      "--threads=",
+      "-T",
+      "--keep",
+      "--decompress"
+    ],
+    "live_argument_counts": {
+      "--threads=": 1,
+      "-T": 1
+    },
+    "tier": "essential",
+    "package": "xz-utils",
+    "fixture": "workflow-xz.txt",
+    "version_args": [
+      "--version"
+    ],
+    "expansion": "workflow-baseline"
   }
 ]

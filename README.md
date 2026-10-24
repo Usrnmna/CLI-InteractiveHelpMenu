@@ -50,8 +50,8 @@ development. Ordinary curated profiles work without installed targets. Guarded
 vendor/version profiles require identity verification; generated help remains
 inferred and may require corrections.
 
-The [third-party compatibility matrix](docs/compatibility.md) covers **129 command
-paths across 62 executable names**. Included drivers enable nested command routes;
+The [third-party compatibility matrix](docs/compatibility.md) covers **160 command
+paths across 73 executable names**. Included drivers enable nested command routes;
 the guide lists every route, activation instructions, version constraints, and
 verification limits. [Prefix and structured-argument support](docs/invocation-and-structured-arguments.md)
 adds `sudo`/`env`/`command` chains, selected-interpreter `python -m pip` and

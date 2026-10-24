@@ -47,6 +47,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "tests/reports/review/diagnostics.json", ".cache/tool/archive.tar.gz", ".lycheecache",
             "generated-help/profiles/generated.json", "cli-help-probe-session/output", "cli-help-review-session/draft.json",
             "cli-help-screen-session/tmux.sock", "cli-help-build-session/cli-help", "cli-help-media-session/raw.cast",
+            "cli-help-capture-session/help.txt", "cli-help-functional-review-session/state.json",
+            "cli-help-workflow-verification-session/source/cli_help/main.py",
             ".cli-help-rc-session", ".review-state-session", ".cli-help-install.json", "cli-help",
             "collection/.scan.lock", "collection/.import.lock", "collection/.review-backups/backup.json",
         ], True)
@@ -55,6 +57,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
         self.assert_policy([
             "cli_help/diagnostics.py", "profiles/ssh.json", "config/drivers.example/docker.json",
             "tests/fixtures/help/captured.json", "tests/test_repository_config.py", "docs/diagnostics.md",
+            "tests/fixtures/help/workflow-baseline-captured.json", "tests/fixtures/help/workflow-manual-edge-cases.json",
+            "tests/test_workflow_review.py", "tests/test_workflow_review_terminal.py",
             "docs/assets/option-insertion.gif", "releases/v0.1.1-alpha/cli-help-v0.1.1-alpha-linux-x86_64",
             ".github/workflows/ci.yml", ".github/ISSUE_TEMPLATE/bug_report.yml", ".github/pull_request_template.md",
             ".env.example", ".env.development.sample", "config/ssh.example", "examples/project/.env.template",

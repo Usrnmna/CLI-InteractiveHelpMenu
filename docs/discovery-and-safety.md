@@ -231,6 +231,13 @@ configuration without running discovery.
 
 Cache writes are atomic. Expired, malformed, oversized, or schema-invalid cache
 entries are ignored. Unavailable cache storage does not prevent discovery.
+Cache schema 10 also invalidates earlier parsed metadata after corrections for
+required placeholders with optional prefixes and unsupported numeric ranges.
+Quoted example fragments and numeric preset-table rows are excluded from
+declarations so they cannot override real optional-value metadata.
+Numeric-range rejection occurs before alignment columns are split, including
+double-space and tab-separated ranges.
+Module freshness checks and the two-second source timeout remain unchanged.
 Cache reads accept regular files only, reject symlinks and special files without
 waiting on FIFO writers, and enforce the byte limit during reads. Passive cache
 inspection uses the same reader and treats rejected entries as misses.
@@ -250,6 +257,11 @@ arguments or `--option=value` tokens, and option insertion after `--`. A known
 option that requires a separate value must receive that value before another
 option can be inserted. Unknown options and combined short flags are not fully
 parsed for argument arity.
+An apparent payload attached to a known short value option is not an editable
+option prefix, even when the captured help does not explicitly mark attachment.
+This rejection protects values such as `sed -i.bak`; it does not add general
+attached-value or short-bundle parsing. Explicit selected-route arity can protect
+inherited values omitted from leaf help without adding undocumented menu entries.
 
 Command aliases, bare leading environment assignments, and arbitrary shell
 grammar are not resolved. Bounded `sudo`, `env`, and `command` prefixes and

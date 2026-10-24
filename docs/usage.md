@@ -53,6 +53,11 @@ for the supported grammar and mode-specific exceptions. For other
 installed commands, the browser automatically extracts options from `--help`
 output and locally installed man pages. For example, type `cp --` or `sed --`
 and press Alt-H. Automatically generated profiles are cached.
+The [supplied-driver activation and composition guide](profiles-and-drivers.md#activation-and-manual-composition)
+describes explicit setup for Compose, Kubernetes, and GitHub CLI routes.
+`--doctor` reports the selected collection; `--explain` identifies route and
+profile provenance without running discovery. See the
+[passive diagnostic interfaces](diagnostics.md) for buffer/cursor inputs.
 
 Automatic discovery may invoke the installed program's fixed help route.
 The [discovery and safety guide](discovery-and-safety.md) explains manual-only

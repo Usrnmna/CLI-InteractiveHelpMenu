@@ -280,12 +280,21 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         raise HelpError("Move the cursor after the command or subcommand and a space.", "cursor_before_arguments")
     previous = [token.value for token in tokens[argument_start:] if token.end <= start]
     options = {option["flag"].rstrip("="): option for category in profile["categories"] for option in category["options"]}
+    # Explicit route arity also protects operands omitted from leaf help, such
+    # as kubectl's inherited namespace. These entries validate context only;
+    # they do not create undocumented browser selections or override profiles.
+    if resolved_route:
+        for flag in resolved_route.option_values:
+            options.setdefault(flag, {"argument": "VALUE", "attached": len(flag) == 2})
+        for flag in resolved_route.option_flags:
+            options.setdefault(flag, {"argument": ""})
     if active:
         keyword_match = bool(query) and any(option.get("kind") == "keyword" and option["flag"].startswith(query) for option in options.values())
         if "=" in query or not (query.startswith("-") or keyword_match):
             raise HelpError("Move the cursor to an empty argument, an option name, or a documented keyword.", "cursor_in_operand")
         # A joined payload is a real value, never an editable flag prefix.
-        if query not in options and any(option.get("attached") and query.startswith(key) and len(query) > len(key)
+        if query not in options and any((option.get("attached") or len(key) == 2 and option.get("argument"))
+               and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
             raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
     values_remaining = 0
