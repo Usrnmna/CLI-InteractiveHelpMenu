@@ -1254,5 +1254,272 @@
     "live_argument_counts": {
       "--transfers": 1
     }
+  },
+  {
+    "command": "gh pr view",
+    "flags": {
+      "--comments": "",
+      "--json": "fields",
+      "--jq": "expression",
+      "--web": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--comments",
+      "--json",
+      "--jq",
+      "--web"
+    ],
+    "tier": "next",
+    "package": "gh",
+    "fixture": "gh-pr-view.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--json": 1,
+      "--jq": 1
+    }
+  },
+  {
+    "command": "gh pr create",
+    "flags": {
+      "--title": "string",
+      "--body": "string",
+      "--draft": "",
+      "--base": "branch",
+      "--reviewer": "handle"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--title",
+      "--body",
+      "--draft",
+      "--base",
+      "--reviewer"
+    ],
+    "tier": "next",
+    "package": "gh",
+    "fixture": "gh-pr-create.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--title": 1,
+      "--body": 1,
+      "--base": 1,
+      "--reviewer": 1
+    }
+  },
+  {
+    "command": "cargo test",
+    "flags": {
+      "--no-run": "",
+      "--release": "",
+      "--features": "<FEATURES>",
+      "--package": "[<SPEC>]",
+      "--manifest-path": "<PATH>"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--no-run",
+      "--release",
+      "--features",
+      "--package",
+      "--manifest-path"
+    ],
+    "tier": "next",
+    "package": "cargo",
+    "fixture": "cargo-test.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--features": 1,
+      "--package": 1,
+      "--manifest-path": 1
+    }
+  },
+  {
+    "command": "docker compose logs",
+    "flags": {
+      "--follow": "",
+      "--tail": "string",
+      "--since": "string",
+      "--no-color": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--follow",
+      "--tail",
+      "--since",
+      "--no-color"
+    ],
+    "tier": "essential",
+    "package": "docker",
+    "fixture": "docker-compose-logs.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--tail": 1,
+      "--since": 1
+    }
+  },
+  {
+    "command": "docker compose exec",
+    "flags": {
+      "--env": "stringArray",
+      "--user": "string",
+      "--workdir": "string",
+      "--no-tty": "",
+      "--detach": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--env",
+      "--user",
+      "--workdir",
+      "--no-tty",
+      "--detach"
+    ],
+    "tier": "essential",
+    "package": "docker",
+    "fixture": "docker-compose-exec.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--env": 1,
+      "--user": 1,
+      "--workdir": 1
+    }
+  },
+  {
+    "command": "kubectl describe",
+    "flags": {
+      "--selector=": "''",
+      "--filename=": "[]",
+      "--show-events": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--selector=",
+      "--filename=",
+      "--show-events"
+    ],
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "kubectl-describe.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "live_argument_counts": {
+      "--selector=": 1,
+      "--filename=": 1
+    }
+  },
+  {
+    "command": "kubectl logs",
+    "flags": {
+      "--container=": "''",
+      "--follow": "",
+      "--tail=": "-1",
+      "--previous": "",
+      "--timestamps": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--container=",
+      "--follow",
+      "--tail=",
+      "--previous",
+      "--timestamps"
+    ],
+    "tier": "next",
+    "package": "kubectl",
+    "fixture": "kubectl-logs.txt",
+    "version_args": [
+      "version",
+      "--client=true"
+    ],
+    "live_argument_counts": {
+      "--container=": 1,
+      "--tail=": 1
+    }
+  },
+  {
+    "command": "helm upgrade",
+    "flags": {
+      "--install": "",
+      "--values": "strings",
+      "--set-string": "stringArray",
+      "--timeout": "duration"
+    },
+    "excluded": [],
+    "live_flags": [
+      "--install",
+      "--values",
+      "--set-string",
+      "--timeout"
+    ],
+    "tier": "next",
+    "package": "helm",
+    "fixture": "helm-upgrade.txt",
+    "version_args": [
+      "version",
+      "--short"
+    ],
+    "live_argument_counts": {
+      "--values": 1,
+      "--set-string": 1,
+      "--timeout": 1
+    }
+  },
+  {
+    "command": "aws s3 sync",
+    "flags": {
+      "--dryrun": "",
+      "--exclude": "(string)",
+      "--include": "(string)",
+      "--delete": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--dryrun",
+      "--exclude",
+      "--include",
+      "--delete"
+    ],
+    "tier": "next",
+    "package": "awscli",
+    "fixture": "aws-s3-sync.txt",
+    "version_args": [
+      "--version"
+    ],
+    "live_argument_counts": {
+      "--exclude": 1,
+      "--include": 1
+    }
+  },
+  {
+    "command": "rclone sync",
+    "flags": {
+      "--create-empty-src-dirs": "",
+      "--help": ""
+    },
+    "excluded": [],
+    "live_flags": [
+      "--create-empty-src-dirs",
+      "--help"
+    ],
+    "tier": "extended",
+    "package": "rclone",
+    "fixture": "rclone-sync.txt",
+    "version_args": [
+      "version"
+    ],
+    "live_argument_counts": {}
   }
 ]

@@ -19,13 +19,13 @@ from core import HelpError, find_context, insert_option
 from discovery import ProbeError, Settings, clean_output, discover, run_probe
 
 
-def check_case(words, registry, expected_flags=(), allow_empty=False, excluded=(), expected_counts=None):
+def check_case(words, registry, expected_flags=(), allow_empty=False, excluded=(), expected_counts=None, timeout=4):
     """Check discovery and an in-memory edit; missing executables remain explicit."""
     record = {"command": words, "executable": shutil.which(words[0])}
     if not record["executable"]:
         return {**record, "status": "skipped", "reason": "Executable is not installed."}
     try:
-        profile = discover(words[0], Settings(cache_ttl=0, timeout=4), subcommands=tuple(words[1:]), driver_registry=registry)
+        profile = discover(words[0], Settings(cache_ttl=0, timeout=timeout), subcommands=tuple(words[1:]), driver_registry=registry)
         options = [option for category in profile["categories"] for option in category["options"]]
         flags = {option["flag"] for option in options}
         missing = sorted(set(expected_flags) - flags)
@@ -74,7 +74,10 @@ def main():
     parser.add_argument("--tier", action="append", choices=("essential", "next", "extended"), help="Select matrix tiers; default: all")
     parser.add_argument("--report", type=Path, help="Save the JSON report to this path")
     parser.add_argument("--require-all", action="store_true", help="Treat skipped and unsupported cases as failures")
+    parser.add_argument("--timeout", type=float, default=4, help="Seconds per help/manual source, 0.05-30 (default: 4)")
     args = parser.parse_args()
+    if not 0.05 <= args.timeout <= 30:
+        parser.error("--timeout must be between 0.05 and 30 seconds")
     if args.case and args.tier:
         parser.error("Choose --case or --tier, not both.")
     try:
@@ -93,7 +96,7 @@ def main():
         for case in cases:
             words = shlex.split(case["command"])
             record = check_case(words, registry, case.get("live_flags", ()), case.get("allow_empty", False),
-                                case.get("excluded", ()), case.get("live_argument_counts", {}))
+                                case.get("excluded", ()), case.get("live_argument_counts", {}), timeout=args.timeout)
             if words[0] not in versions:
                 versions[words[0]] = program_version(words, case.get("version_args"))
             record.update(tier=case.get("tier", "custom"), package=case.get("package"), version=versions[words[0]])
@@ -101,6 +104,7 @@ def main():
         summary = {status: sum(record["status"] == status for record in records)
                    for status in ("passed", "failed", "skipped", "unsupported")}
         report = {"checked_at": datetime.now(timezone.utc).isoformat(), "cases": records,
+                  "source_timeout_seconds": args.timeout,
                   "platform": platform.platform(), "python": platform.python_version(), "drivers": str(configured), "summary": summary,
                   "boundary": "Only fixed help/manual/version routes ran; every discovered flag was checked for literal insertion in memory. No actions, installs, builds, or media processing ran."}
         text = json.dumps(report, ensure_ascii=False, indent=2)

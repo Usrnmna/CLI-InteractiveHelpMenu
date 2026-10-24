@@ -40,6 +40,9 @@ class TmuxShell:
 
     def __init__(self, folder):
         self.folder = Path(folder)
+        # Ubuntu's system bashrc otherwise prints a first-login sudo hint into
+        # this fresh test home, shifting the expected initial prompt row.
+        (self.folder / ".hushlogin").touch()
         self.socket = self.folder / "tmux.sock"
         self.buffer_file = self.folder / "buffer"
         self.executed = self.folder / "executed"
@@ -117,8 +120,8 @@ class TmuxShell:
         self.text(line)
         return self.wait_for(lambda state: "--ar" in "".join(state.cells))
 
-    def open_menu(self):
-        self.keys("Escape", "h")
+    def open_menu(self, keys=("Escape", "h")):
+        self.keys(*keys)
         return self.wait_for(lambda state: state.alternate == 1 and "Interactive help" in state.cells[0])
 
     def cancel(self, key="Escape"):
@@ -204,7 +207,7 @@ class ScreenTests(TerminalTestCase):
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class WrappedResizeTests(TerminalTestCase):
-    """Reproduce the known defect before any expected-failure assertion executes."""
+    """Verify stable redisplay and exact input after shrinking wrapped commands."""
 
     def setUp(self):
         self.shell = self.start()
@@ -215,15 +218,14 @@ class WrappedResizeTests(TerminalTestCase):
         self.first_exit = self.shell.cancel()
         self.shell.open_menu()
         self.second_exit = self.shell.cancel()
-        # Fixture failures remain real failures, not hidden by expectedFailure.
+        # Buffer and execution checks are independent of rendered comparisons.
         self.assertEqual(self.first_exit.history_markers(), HISTORY)
         self.assertEqual(self.second_exit.history_markers(), HISTORY)
         self.assertEqual(self.shell.read_buffer(), (WRAPPED_LINE, len(WRAPPED_LINE)))
         self.assertFalse(self.shell.executed.exists())
 
-    @unittest.expectedFailure
     def test_wrapped_shrink_reopen_preserves_rendered_screen(self):
-        """Known Bash 5.2.21/tmux 3.4 defect; remove marker when a fix passes."""
+        """Readline redraw after a size change remains stable on reopening."""
         self.assertEqual(self.second_exit, self.first_exit)
 
     def test_ctrl_l_recovers_one_prompt_and_retains_scrollback(self):
@@ -237,3 +239,37 @@ class WrappedResizeTests(TerminalTestCase):
         self.assertEqual(recovered.history_markers(), HISTORY)
         self.assertEqual(self.shell.read_buffer(), (WRAPPED_LINE, len(WRAPPED_LINE)))
         self.assertFalse(self.shell.executed.exists())
+
+
+@unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
+class ResizeBindingTests(TerminalTestCase):
+    def test_resize_with_custom_binding_unicode_midline_and_rebound_control_l(self):
+        for accept in (False, True):
+            with self.subTest(accept=accept):
+                shell = self.start()
+                shell.text("CLI_HELP_KEY='\\C-x\\C-h'; cli_help_bind; bind '\"\\C-l\":forward-char'")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                prefix = 'rsync "日本 café ' + 'wrapped-' * 25 + '" --ar'
+                suffix = ' "target dir"'
+                shell.pending(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.open_menu(("C-x", "C-h"))
+                shell.resize(60, 16)
+                after = shell.cancel("Enter" if accept else "C-c")
+                expected_prefix = prefix[:-4] + '--archive ' if accept else prefix
+                expected = expected_prefix + (suffix[1:] if accept else suffix)
+                # Recovery invokes the function directly, independent of the
+                # user's Ctrl-L binding, and retains all earlier output.
+                self.assertTrue(after.cells[0].startswith(PROMPT))
+                self.assertEqual(sum(PROMPT in row for row in after.cells), 1)
+                self.assertEqual(after.history_markers(), HISTORY)
+                if accept:
+                    # Insertion leaves point at the quoted positional token;
+                    # reopen from the preceding option, an editable location.
+                    shell.keys("Left")
+                    after = shell.wait_for(lambda state: state.alternate == 0)
+                shell.open_menu(("C-x", "C-h"))
+                self.assertEqual(shell.cancel(), after)
+                self.assertEqual(shell.read_buffer(), (expected, len(expected_prefix) - int(accept)))
+                self.assertFalse(shell.executed.exists())

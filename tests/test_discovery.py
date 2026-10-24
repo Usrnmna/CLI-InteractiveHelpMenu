@@ -211,6 +211,14 @@ class DiscoveryTests(unittest.TestCase):
         discover("discover-tool", self.settings)
         self.assertEqual(len(self.invocations.read_text().splitlines()), 3)
 
+    def test_parser_version_change_invalidates_cached_metadata(self):
+        with patch("discovery.CACHE_VERSION", 4):
+            discover("discover-tool", self.settings)
+        discover("discover-tool", self.settings)
+        self.assertEqual(len(self.invocations.read_text().splitlines()), 2)
+        discover("discover-tool", self.settings)
+        self.assertEqual(len(self.invocations.read_text().splitlines()), 2)
+
     def test_unwritable_cache_does_not_block_discovery(self):
         cache = self.folder / "cache-file"
         cache.write_text("A file cannot serve as a cache directory.")

@@ -12,7 +12,7 @@ The pending command runs only after a separate, ordinary Enter at the Bash promp
 [Get started](#get-started) · [Browser controls](docs/usage.md#browser-controls) ·
 [Scan and review](#build-and-refine-a-help-collection) · [Documentation](docs/README.md)
 
-![Terminal demonstration: Alt-H opens help, / searches for archive, and Enter inserts --archive while the command remains unexecuted.](docs/assets/option-insertion.gif)
+![Terminal demonstration: Alt-H opens help for rsync --ar; / and Ctrl-U replace the filter with archive; Enter applies the filter and a second Enter inserts --archive without execution.](docs/assets/option-insertion.gif)
 
 **Alt-H → search → insert → continue editing.**
 [Static browser view](docs/assets/help-browser.png) ·
@@ -33,7 +33,9 @@ The pending command runs only after a separate, ordinary Enter at the Bash promp
 ```mermaid
 flowchart LR
     A[Type a command] -->|Alt-H| B[Browse categories and search options]
-    B -->|Select a flag| C[Continue editing the command]
+    B -->|Search with / then Enter| F[Filtered options]
+    F -->|Enter selects a flag| C[Continue editing the command]
+    B -->|Enter selects a flag| C
     B -->|Cancel| D[Original command and cursor retained]
 ```
 
@@ -42,8 +44,8 @@ The browser includes curated help for `rsync`, GNU `grep`, GNU `ls`, GNU `tar`,
 is not installed. Other commands use discovery or an added help collection.
 Generated help is inferred and may require corrections.
 
-The [third-party compatibility matrix](docs/compatibility.md) covers 34 executable
-names, including Docker Compose, uv, npm, jq, kubectl, AWS CLI, Terraform,
+The [third-party compatibility matrix](docs/compatibility.md) covers 59 command
+paths across 34 executable names, including Docker Compose, uv, npm, jq, kubectl, AWS CLI, Terraform,
 ImageMagick, and backup tools. Included drivers enable the listed nested command
 paths; the guide describes activation, live checks, and remaining syntax limits.
 
@@ -53,6 +55,7 @@ Requirements:
 
 - Linux, Bash **4.4+**, and Python **3.10+** with the standard-library `curses` module.
 - A UTF-8 locale and a terminal at least **60 columns × 16 rows**.
+- The standard Linux `stty` utility for terminal-size detection and resize recovery.
 - Linux `man-db` and local manual pages for manual-based discovery, importing
   installed pages, and bulk scanning. Text-file imports do not require `man`.
 
@@ -87,6 +90,9 @@ stable channel, or add `--prerelease` to include alpha releases. Run without
 
 [Version 0.1.1 - Alpha packages](docs/releases.md) provide a verified installer,
 a compiled Linux launcher, source/runtime archives, and SHA-256 checksums.
+Those packages are a historical snapshot. The current checkout includes
+unreleased discovery, compatibility, resize, and release-updater changes;
+`VERSION` remains `0.1.1-alpha`. Use the checkout for the behavior described here.
 
 See [installation, updates, and removal](docs/installation.md) for custom paths
 and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,

@@ -25,8 +25,8 @@ from command_paths import help_route
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 4
-FLAG_PATTERN = re.compile(r"(?<![\w-])(--?[A-Za-z0-9][A-Za-z0-9_-]*)(?=$|[\s,=\[<])")
+CACHE_VERSION = 5
+FLAG_PATTERN = re.compile(r"(?<![\w=-])(--?[A-Za-z0-9][A-Za-z0-9_-]*)(?=$|[\s,=\[<])")
 PARENTHESIZED_TYPE = r"\((?:string|list|integer|long|double|float|map|blob|timestamp)\)"
 ARGUMENT_PATTERN = re.compile(
     r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_-]*|\[[^\[\]]+\]|\{[^{}]+\}|"
@@ -339,10 +339,21 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> d
             if identity in by_flag:
                 previous = by_flag[identity]
                 previous["detail"] += "\n\n" + entry["detail"]
-                if not previous["argument"] and entry["argument"]:
+                old_count = previous.get("argument_count", 1) if previous["argument"] else 0
+                new_count = entry.get("argument_count", 1) if entry["argument"] else 0
+                # Prefer the larger explicit arity. At equal arity, a required
+                # declaration takes precedence over an optional one so another
+                # flag cannot silently occupy a documented required value.
+                old_optional = previous.get("argument_optional", False)
+                new_optional = entry.get("argument_optional", False)
+                if old_count and new_count and (old_count, old_optional) != (new_count, new_optional):
+                    previous["detail"] += ("\n\nArgument declarations disagree across sources; "
+                                           "the larger value count, then required values, take precedence.")
+                if new_count > old_count or (new_count == old_count and old_optional and not new_optional):
                     previous.update({key: entry[key] for key in ("flag", "argument", "argument_optional")})
-                    if "argument_count" in entry:
-                        previous["argument_count"] = entry["argument_count"]
+                    previous.pop("argument_count", None)
+                    if new_count > 1:
+                        previous["argument_count"] = new_count
                 continue
             by_flag[identity] = entry
     if not by_flag:

@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Third-party compatibility coverage includes all essential, next, and extended
-  tiers: 49 command paths across 34 executable names, with loadable drivers,
+  tiers: 59 command paths across 34 executable names, with loadable drivers,
   independent sentinel expectations, and captured help excerpts.
 - Discovery recognizes aligned aliases, boolean negation shorthand, kubectl
   defaults, AWS typed values, jq two-value options, and partially optional
@@ -19,6 +19,15 @@
   and resumable commands for deferred or interrupted work.
 - Release selection, download failures, archive validation, concurrent updates,
   backups, and real-terminal review have dedicated offline tests.
+- Additional routes cover GitHub PR viewing/creation, Cargo tests, Compose
+  logs/exec, kubectl describe/logs, Helm upgrade, AWS S3 sync, and rclone sync.
+- Discovery retains required values with optional suffixes and negative defaults;
+  changed parser metadata invalidates older discovery caches.
+- Terminal-size changes trigger a Readline redraw after browsing. Vi insertion
+  maps to Bash's `vi-insert` map; reserved dispatch-key conflicts are rejected.
+- Documentation and terminal demonstrations reflect the development tree.
+  Source packages include the media generator and its optional requirements.
+  Dependency updates cover pinned GitHub Actions and optional media tools.
 
 ## Version 0.1.1 - Alpha
 

@@ -19,8 +19,9 @@ flowchart TD
     Q -->|Validated profile| U[Curses help browser]
     H -->|Static profile matched| U
     U -->|Selected literal option| E[Calculate buffer edit]
-    E -->|NUL-delimited response| B
-    U -->|Cancel| X[Return without a buffer edit]
+    E -->|NUL-delimited response| R[Return to Readline; redraw if resized]
+    U -->|Cancel without an edit| R
+    R --> B
 ```
 
 The adapter supplies `CLI_HELP_LINE` and `CLI_HELP_POINT` to the helper.
@@ -62,6 +63,7 @@ their execution checks, and the optional regeneration dependencies.
 | [config/keys.example.json](../config/keys.example.json) | Complete browser key configuration example |
 | [config/drivers.example/](../config/drivers.example/) | Loadable third-party compatibility drivers |
 | [tests/](../tests/) | Core contracts and actual Bash pseudoterminal interactions |
+| [tools/capture_readme_media.py](../tools/capture_readme_media.py) | Actual PTY captures, public terminal media, and local capture provenance |
 
 Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, GCC,
 and tmux installed. GCC and tmux are test dependencies; installed runtime
@@ -102,23 +104,31 @@ resizing below the minimum size and back, and Ctrl-L recovery after shrinking
 a wrapped command. The tests skip explicitly when Linux or tmux is unavailable;
 CI installs tmux so this coverage runs in the Linux matrix.
 
-The wrapped-command shrink/reopen regression is marked `expectedFailure` while
-the defect remains unresolved. On Bash 5.2.21 with tmux 3.4, shrinking from
-100x24 to 60x16 and reopening the browser leaves duplicate prompt/command rows.
-The expected-failure assertion compares the rendered state before and after
-reopening. Setup separately requires successful menu interaction, preserved
-history, correct pending input, and no command execution, so failures in those
-prerequisites remain ordinary failures. Ctrl-L recovery is a separate passing
-test, not an expected failure. An unexpected success requires reviewing the
-environment or verified fix and removing the marker; it must not be ignored.
+The wrapped-command shrink/reopen regression is an ordinary passing test after
+the adapter's resize recovery. The callback compares `stty size` before and after
+the browser. A Readline macro dispatches the callback and a conditional redraw;
+`clear-screen` runs after the shell callback returns, when Readline owns the
+display. It is bound directly, so a custom Ctrl-L assignment does not alter
+recovery. The internal sequences `\e[988~` and `\e[989~` are checked for conflicts
+before binding and removed during unbinding. The configured public shortcut is
+still replaced explicitly. No terminal-input injection, signal handler, or
+native Readline extension is used.
+
+Setup separately requires successful menu interaction, preserved history,
+correct pending input, and no execution. Additional cases exercise Unicode,
+midline selection, Ctrl-C, custom bindings, and reopening after a shrink.
+An unchanged terminal retains its previous viewport; a resize redraw places
+the command at the top. Ctrl-L remains a separately tested manual recovery.
 
 An ordinary Bash resize control also reproduces duplicated rows. Terminal
 traces are consistent with stale Readline display geometry, but the exact
 upstream cause and behavior on other Bash/tmux versions remain unverified.
 Sending SIGWINCH to Bash after the widget or invoking an external no-op command
-did not resolve the issue in isolated diagnostic configurations. No runtime
-workaround is applied. The [display recovery instructions](usage.md#terminal-resizing-and-display-recovery)
-describe the verified manual recovery.
+did not resolve the issue in isolated diagnostic configurations. The adapter
+now applies the Readline recovery described above. The
+[display recovery instructions](usage.md#terminal-resizing-and-display-recovery)
+describe automatic and manual recovery; other terminal environments remain
+subject to their own validation.
 
 ## Repository configuration
 
@@ -135,6 +145,16 @@ collections in other locations require an appropriate ignore rule or an output
 path outside the checkout. Source, bundled profiles, example drivers, fixtures,
 workflow configuration, and published README media remain eligible for tracking.
 Ignore rules do not remove files already tracked by Git.
+Environment-file templates ending in `.example`, `.sample`, or `.template`
+remain eligible for tracking, including names such as `.env.development.example`.
+Ignored caches and reports can contain local machine paths and downloaded tools;
+they are also excluded from documentation link scans and source packages.
+
+[Dependabot configuration](../.github/dependabot.yml) checks GitHub Actions and
+the optional [media requirements](../tools/requirements-media.txt) weekly.
+It does not add application runtime dependencies or publish updates. The
+configuration follows GitHub's
+[Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference).
 
 ## Continuous integration
 
@@ -149,10 +169,12 @@ live-program compatibility probes are not required.
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
 Markdown links throughout the repository, including local files, images, heading
 anchors, and external HTTP(S) URLs. [lychee.toml](../lychee.toml) excludes generated
-reports, dependency directories, and this workflow's own page/badge endpoints,
-which can be unavailable before the first published run. Other broken links fail
+reports and dependency directories. Workflow and badge endpoints are checked
+alongside other external links. Broken links fail
 the job after bounded retries; network outages can also cause failures. Results
-appear in the Actions job summary.
+appear in the Actions job summary. Cache, build, and generated-collection
+directories are excluded alongside local reports; maintained Markdown and public
+media references remain checked.
 
 With Lychee 0.24.2 installed, the same check can run locally:
 
@@ -163,8 +185,9 @@ lychee --config lychee.toml --no-progress '**/*.md'
 Add `--offline` to check local links and anchors without contacting external sites.
 The workflow uses read-only repository permissions and pins actions to commit
 IDs. The README badge reports this entire workflow; it is not a claim that a
-GitHub-hosted run has already completed. Forks should update the badge URLs and
-the exact workflow exclusion in `lychee.toml` to their own repository name.
+GitHub-hosted run has already completed for the working tree. Forks should update
+the badge URLs to their own repository name and publish the workflow before
+expecting its linked page and badge to resolve.
 
 Installation, updates, and removal are included in the same full suite. Their isolated-home
 and real-terminal checks are described in the
@@ -183,7 +206,7 @@ Deterministic mutation and merge cases are included. Bash syntax, static profile
 keybindings, and the supplied third-party driver collection are also validated.
 
 The [expanded compatibility matrix](compatibility.md#recorded-validation) records
-the current live results and remaining limits. Docker CLI and Compose help were
+the dated live results and remaining limits. Docker CLI and Compose help were
 checked using extracted Ubuntu packages; the tests required no running Docker
 daemon. A real Bash test also verifies AWS suffix-help routing, cancellation,
 and insertion with instrumented executables that record any action dispatch.
@@ -191,6 +214,23 @@ The CI matrix additionally runs Python 3.10; local Python 3.12 results do not
 establish a GitHub CI result or compatibility with every supported version.
 
 ## Extended tests and live compatibility reports
+
+The configuration and documentation refresh on 2026-10-23 ran the complete
+Linux suite through `tests/functional_review.py --suite documentation-refresh`:
+438 tests, with 437 passed and one Windows-only probe test skipped. All eight
+preflights passed, and release-input fingerprints remained stable throughout
+the run. The environment used Python 3.12.3, Bash 5.2.21, tmux 3.4, and GCC 13.3.0.
+Runtime and fixtures match this suite; separate media, link, and package checks
+cover the final documentation and capture-tool inputs.
+
+The same refresh checked 55 Bash examples for syntax, parsed three JSON examples,
+exercised manual import and configuration in a temporary home, and verified
+24 ignore-rule cases. All 19 maintained Markdown documents and six Mermaid
+diagrams rendered locally. All four terminal assets were regenerated; unchanged
+views retain identical bytes. This local verification does not establish a
+GitHub-hosted run or a fresh live third-party compatibility result. Local reports
+are retained under `tests/reports/documentation-refresh-2026-10-23/` and media
+provenance under `tests/reports/readme-media/`; neither is a source-package input.
 
 The default suite is offline and requires no third-party compatibility target
 installation. It validates the full supplied driver collection and all three
@@ -245,7 +285,7 @@ without an editor, then previews and saves the result. The resulting profile
 passes literal insertion checks while the instrumented target remains uninvoked.
 
 The [third-party compatibility guide](compatibility.md) contains the complete
-49-path matrix, driver activation, environment preparation, report interpretation,
+59-path matrix, driver activation, environment preparation, report interpretation,
 and recorded validation limits. A default live run now covers all three tiers
 and loads the supplied drivers automatically:
 

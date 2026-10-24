@@ -167,16 +167,14 @@ suppress conflict reports from future upgrades. Each new distribution may need
 another comparison. External settings and Bash startup files are untouched.
 Open a new Bash session after applying runtime changes.
 
-```text
-Update report + incoming files + current runtime
-                       |
-                compare / edit
-                       |
-                 queue choices
-                       |
-             confirm save + recheck inputs
-                       |
-         retain backup -> switch runtime -> save review state
+```mermaid
+flowchart TD
+    R[Report, incoming files, and installed runtime] --> C[Compare or edit]
+    C --> Q[Queue keep, replace, or merge choices]
+    Q --> S[Confirm save and recheck inputs]
+    S --> B[Back up the complete runtime and review state]
+    B --> W[Switch staged runtime]
+    W --> V[Record saved decisions and fingerprints]
 ```
 
 ## Stale inputs and recovery

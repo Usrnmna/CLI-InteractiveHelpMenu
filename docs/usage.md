@@ -9,6 +9,7 @@ Commands in this guide are run from the repository root unless stated otherwise.
 - Linux with Bash 4.4 or newer.
 - Python 3.10 or newer with its standard-library `curses` module.
 - A UTF-8 locale and a terminal of at least 60 columns by 16 rows.
+- The standard Linux `stty` utility enables automatic recovery after resizing.
 - Optional: the Linux `man-db` tools and locally installed manual pages for
   manual-page discovery. Help-output discovery also works without `man`.
 
@@ -91,11 +92,12 @@ row preserves earlier output and scrollback at unchanged terminal dimensions.
 Resizing below 60 columns or 16 rows displays a minimum-size notice; Escape or
 Ctrl-C can still close the browser.
 
-With Bash 5.2.21 and tmux 3.4, shrinking a wrapped pending command from 100x24
-to 60x16 while the browser is open can leave duplicate prompt or command rows
-after closing and reopening the browser. The command buffer remains intact.
-Similar duplication occurs when resizing an ordinary Bash prompt in this
-environment; the behavior is not specific to menu placement on the bottom row.
+When terminal dimensions change while the browser is open, the Bash adapter
+uses Readline's `clear-screen` function after the widget returns. This redraws
+the pending command at the top of the viewport and prevents duplicate wrapped
+prompt rows in the tested Bash 5.2.21/tmux 3.4 environment. It retains the pending
+buffer, cursor, and terminal scrollback. Unchanged dimensions retain the previous
+viewport. Dimension detection uses the standard Linux `stty` utility.
 
 If stale rows remain, close the browser and press **Ctrl-L at the Bash prompt**.
 This redraws the pending command at the top of the viewport without executing
@@ -104,7 +106,7 @@ scrollback. Ctrl-L changes the visible viewport rather than restoring its
 previous arrangement. Custom Readline bindings can assign Ctrl-L differently.
 
 The [rendered-screen validation notes](development.md#rendered-screen-regressions)
-describe the reproduction, test dependencies, and remaining limitation.
+describe the reproduction, test dependencies, and validation limits.
 
 ## Configurable keybindings
 
@@ -125,7 +127,13 @@ cli_help_bind
 ```
 
 Supported maps are `emacs-standard`, `emacs-meta`, `vi-insertion`, and
-`vi-command`. The default is `emacs-standard`. Rebinding removes the previously
+`vi-command`. The `vi-insertion` setting maps to Bash's `vi-insert` keymap.
+The default is `emacs-standard`. `emacs-meta` is normalized to that root map
+with an Escape prefix so Readline can replay the dispatch macro. The internal
+sequences `\e[988~` and `\e[989~` are reserved. An existing binding overlapping
+either sequence prevents binding before changes are made; select a compatible
+Readline configuration rather than overwriting the conflicting internal key.
+Rebinding removes the previously
 installed plugin binding. Any existing binding on the new sequence is replaced;
 previous third-party bindings are not saved or restored. `cli_help_unbind`
 removes the plugin's current binding from the session.
@@ -135,6 +143,8 @@ Browser shortcuts are configured in JSON. Copy
 export its path:
 
 ```bash
+mkdir -p "$HOME/.config/cli-help"
+cp -i config/keys.example.json "$HOME/.config/cli-help/keys.json"
 export CLI_HELP_CONFIG="$HOME/.config/cli-help/keys.json"
 ```
 

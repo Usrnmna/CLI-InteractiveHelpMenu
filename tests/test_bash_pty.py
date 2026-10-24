@@ -41,7 +41,8 @@ class BashSession:
         )
         self.pid, self.fd = pty.fork()
         if self.pid == 0:
-            environment = {**os.environ, "TERM": "xterm-256color", "LC_ALL": locale_name}
+            environment = {**os.environ, "TERM": "xterm-256color", "LC_ALL": locale_name,
+                           "HOME": str(self.folder), "INPUTRC": "/dev/null"}
             for key in list(environment):
                 if key.startswith("CLI_HELP_") or key == "PROMPT_COMMAND":
                     environment.pop(key, None)
@@ -147,6 +148,51 @@ class BashIntegrationTests(unittest.TestCase):
         session.finish("a")
         self.assertEqual(session.read_buffer(), ("rsync --dry-run ", 16))
         self.assertFalse(session.executed.exists())
+
+    def test_rebinding_between_keymaps_and_unbinding_removes_internal_keys(self):
+        session = self.start()
+        session.send("set -o vi; CLI_HELP_KEYMAP=vi-insertion; CLI_HELP_KEY='\\C-x\\C-h'; cli_help_bind; bind -m vi-insert -x '\"\\C-x\\C-g\":_snapshot'\n")
+        session.expect(b"__HELP_TEST_PROMPT__")
+        session.trigger = b"\x18\x08"
+        session.open("rsync --ar")
+        session.finish("\n")
+        self.assertEqual(session.read_buffer(), ("rsync --archive ", 16))
+        self.assertFalse(session.executed.exists())
+        session.send(b"\x03")
+        session.expect(b"__HELP_TEST_PROMPT__")
+        bindings = Path(self.temp.name, "bindings")
+        session.send("cli_help_unbind; { bind -m emacs-standard -s; bind -m vi-insert -s; bind -m vi-insert -X; } > " + shlex.quote(str(bindings)) + "; echo __UNBOUND__\n")
+        session.expect(b"\r__UNBOUND__\r\n")
+        self.assertNotIn('\\e[988~', bindings.read_text())
+        self.assertNotIn('\\e[989~', bindings.read_text())
+
+    def test_meta_map_binding_dispatches_from_the_root_map(self):
+        session = self.start()
+        session.send("CLI_HELP_KEYMAP=emacs-meta; CLI_HELP_KEY=h; cli_help_bind\n")
+        session.expect(b"__HELP_TEST_PROMPT__")
+        session.open("rsync --ar")
+        session.finish("\n")
+        self.assertEqual(session.read_buffer(), ("rsync --archive ", 16))
+        self.assertFalse(session.executed.exists())
+
+    def test_vi_command_map_cancellation_preserves_input_and_point(self):
+        session = self.start()
+        session.send("set -o vi; CLI_HELP_KEYMAP=vi-command; CLI_HELP_KEY='\\C-x\\C-h'; cli_help_bind; bind -m vi-command -x '\"\\C-x\\C-g\":_snapshot'\n")
+        session.expect(b"__HELP_TEST_PROMPT__")
+        session.send("rsync --ar")
+        session.send(b"\x1b\x18\x08")
+        session.expect(b"Interactive help")
+        session.finish(b"\x03")
+        self.assertEqual(session.read_buffer(), ("rsync --ar", 9))
+        self.assertFalse(session.executed.exists())
+
+    def test_internal_binding_conflicts_are_preserved(self):
+        session = self.start()
+        bindings = Path(self.temp.name, "bindings")
+        session.send("cli_help_unbind; bind '\"\\e[988~\":forward-char'; cli_help_bind; bind -p > " + shlex.quote(str(bindings)) + "; echo __CHECKED__\n")
+        session.expect(b"already bound")
+        session.expect(b"\r\n__CHECKED__")
+        self.assertIn('"\\e[988~": forward-char', bindings.read_text())
 
     def test_unicode_prefix_preserves_bash_character_offset(self):
         session = self.start()

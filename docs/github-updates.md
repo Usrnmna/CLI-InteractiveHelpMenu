@@ -37,8 +37,9 @@ An installation made from the original `v0.1.1-alpha` package does not contain
 this updater. Run `bash update.sh --prefix /path/to/installation` from a checkout
 containing the updater once to add it, or run that checkout's
 `update-from-github.sh --prefix /path/to/installation`. Published alpha archives
-remain unchanged. Until a newer release is published, the check reports no newer
-eligible version.
+remain unchanged. If no newer eligible release is published, the check reports
+no update. A release check does not obtain unreleased checkout changes, even
+when their `VERSION` matches the installed alpha.
 
 Inside a custom installation, the installed wrapper targets its own directory.
 From a source checkout, the default is

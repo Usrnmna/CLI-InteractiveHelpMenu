@@ -1,0 +1,284 @@
+[
+  {
+    "command": "rsync",
+    "before": "rsync --exclude='*.tmp' --exclude='cache dir' --ar@CURSOR@ 'café source/' backup/",
+    "flag": "--archive",
+    "after": "rsync --exclude='*.tmp' --exclude='cache dir' --archive @CURSOR@'café source/' backup/"
+  },
+  {
+    "command": "grep",
+    "before": "grep --regexp '-danger' --li@CURSOR@ 'log file'",
+    "flag": "--line-number",
+    "after": "grep --regexp '-danger' --line-number @CURSOR@'log file'"
+  },
+  {
+    "command": "tar",
+    "before": "tar --file='archive name.tar' --cr@CURSOR@ 'source dir'",
+    "flag": "--create",
+    "after": "tar --file='archive name.tar' --create @CURSOR@'source dir'"
+  },
+  {
+    "command": "git commit",
+    "before": "git -C 'project dir' -c core.pager=cat commit --message 'café fix' --am@CURSOR@",
+    "flag": "--amend",
+    "after": "git -C 'project dir' -c core.pager=cat commit --message 'café fix' --amend @CURSOR@"
+  },
+  {
+    "command": "git log",
+    "before": "git --no-pager log --author='A Person' --ma@CURSOR@ -- src/",
+    "flag": "--max-count=",
+    "after": "git --no-pager log --author='A Person' --max-count=@CURSOR@ -- src/"
+  },
+  {
+    "command": "git diff",
+    "before": "git -C'repo dir' diff --color --na@CURSOR@ -- 'a file'",
+    "flag": "--name-only",
+    "after": "git -C'repo dir' diff --color --name-only @CURSOR@-- 'a file'"
+  },
+  {
+    "command": "curl",
+    "before": "curl -H 'X-Mode: one' --header 'X-Mode: two' -o 'out file' --re@CURSOR@ https://example.invalid/",
+    "flag": "--retry",
+    "after": "curl -H 'X-Mode: one' --header 'X-Mode: two' -o 'out file' --retry @CURSOR@https://example.invalid/"
+  },
+  {
+    "command": "wget",
+    "before": "wget -O 'out file' --ti@CURSOR@ https://example.invalid/",
+    "flag": "--timeout=",
+    "after": "wget -O 'out file' --timeout=@CURSOR@ https://example.invalid/"
+  },
+  {
+    "command": "rg",
+    "before": "rg -e '-error' -g '*.py' -g '!vendor/**' --co@CURSOR@ src/",
+    "flag": "--color",
+    "after": "rg -e '-error' -g '*.py' -g '!vendor/**' --color @CURSOR@src/"
+  },
+  {
+    "command": "docker run",
+    "before": "docker --context=review run -e 'LABEL=café' -v '/tmp/a b:/data' --r@CURSOR@ image sh",
+    "flag": "--rm",
+    "after": "docker --context=review run -e 'LABEL=café' -v '/tmp/a b:/data' --rm @CURSOR@image sh"
+  },
+  {
+    "command": "docker image ls",
+    "before": "docker -H unix:///tmp/review.sock image ls --format '{{.ID}}' --a@CURSOR@",
+    "flag": "--all",
+    "after": "docker -H unix:///tmp/review.sock image ls --format '{{.ID}}' --all @CURSOR@"
+  },
+  {
+    "command": "docker compose up",
+    "before": "docker --context review compose up --timeout 45 --de@CURSOR@ service",
+    "flag": "--detach",
+    "after": "docker --context review compose up --timeout 45 --detach @CURSOR@service"
+  },
+  {
+    "command": "pip install",
+    "before": "pip --isolated install -r 'requirements file.txt' --target 'target dir' --no-d@CURSOR@ package",
+    "flag": "--no-deps",
+    "after": "pip --isolated install -r 'requirements file.txt' --target 'target dir' --no-deps @CURSOR@package"
+  },
+  {
+    "command": "pip download",
+    "before": "pip download --platform linux_x86_64 -d 'wheel dir' --no-d@CURSOR@ package",
+    "flag": "--no-deps",
+    "after": "pip download --platform linux_x86_64 -d 'wheel dir' --no-deps @CURSOR@package"
+  },
+  {
+    "command": "uv pip install",
+    "before": "uv --directory 'project dir' pip install --python 3.12 -r 'req file' --no-d@CURSOR@ package",
+    "flag": "--no-deps",
+    "after": "uv --directory 'project dir' pip install --python 3.12 -r 'req file' --no-deps @CURSOR@package"
+  },
+  {
+    "command": "uv run",
+    "before": "uv run --python 3.12 --no-s@CURSOR@ script.py --child-flag",
+    "flag": "--no-sync",
+    "after": "uv run --python 3.12 --no-sync @CURSOR@script.py --child-flag"
+  },
+  {
+    "command": "npm install",
+    "before": "npm install --workspace 'first app' -w second --omit dev --ignore-s@CURSOR@ package",
+    "flag": "--ignore-scripts",
+    "after": "npm install --workspace 'first app' -w second --omit dev --ignore-scripts @CURSOR@package"
+  },
+  {
+    "command": "npm run",
+    "before": "npm run --workspace web --if-p@CURSOR@ build -- --watch",
+    "flag": "--if-present",
+    "after": "npm run --workspace web --if-present @CURSOR@build -- --watch"
+  },
+  {
+    "command": "pnpm install",
+    "before": "pnpm install --offline --frozen-lockfile --ignore-s@CURSOR@",
+    "flag": "--ignore-scripts",
+    "after": "pnpm install --offline --frozen-lockfile --ignore-scripts @CURSOR@"
+  },
+  {
+    "command": "jq",
+    "before": "jq --arg label '-café' --slurpfile data 'data file.json' --ra@CURSOR@ '.[]'",
+    "flag": "--raw-output",
+    "after": "jq --arg label '-café' --slurpfile data 'data file.json' --raw-output @CURSOR@'.[]'"
+  },
+  {
+    "command": "gh pr list",
+    "before": "gh pr list -L 20 --state open --js@CURSOR@",
+    "flag": "--json",
+    "after": "gh pr list -L 20 --state open --json @CURSOR@"
+  },
+  {
+    "command": "gh repo clone",
+    "before": "gh repo clone --upstream-remote-name upstream -u@CURSOR@ organization/repository",
+    "flag": "-u",
+    "after": "gh repo clone --upstream-remote-name upstream -u @CURSOR@organization/repository"
+  },
+  {
+    "command": "kubectl get",
+    "before": "kubectl --context review -n 'my-team' get pods -l 'app=web,tier=front' --wa@CURSOR@",
+    "flag": "--watch",
+    "after": "kubectl --context review -n 'my-team' get pods -l 'app=web,tier=front' --watch @CURSOR@"
+  },
+  {
+    "command": "kubectl config view",
+    "before": "kubectl --kubeconfig 'config file' config view --minify --fl@CURSOR@",
+    "flag": "--flatten",
+    "after": "kubectl --kubeconfig 'config file' config view --minify --flatten @CURSOR@"
+  },
+  {
+    "command": "helm install",
+    "before": "helm -nreview install example chart -f 'values file.yaml' --set 'label=café' --wa@CURSOR@",
+    "flag": "--wait",
+    "after": "helm -nreview install example chart -f 'values file.yaml' --set 'label=café' --wait @CURSOR@"
+  },
+  {
+    "command": "aws s3 cp",
+    "before": "aws --profile review --region=us-west-2 s3 cp 'source dir' s3://example/ --exclude '*' --include '*.txt' --rec@CURSOR@",
+    "flag": "--recursive",
+    "after": "aws --profile review --region=us-west-2 s3 cp 'source dir' s3://example/ --exclude '*' --include '*.txt' --recursive @CURSOR@"
+  },
+  {
+    "command": "aws ec2 describe-instances",
+    "before": "aws --profile review ec2 describe-instances --filters 'Name=tag:Name,Values=café' --no-d@CURSOR@",
+    "flag": "--no-dry-run",
+    "after": "aws --profile review ec2 describe-instances --filters 'Name=tag:Name,Values=café' --no-dry-run @CURSOR@"
+  },
+  {
+    "command": "terraform plan",
+    "before": "terraform -chdir='infra dir' plan -var 'label=café' -out=review.plan -no-c@CURSOR@",
+    "flag": "-no-color",
+    "after": "terraform -chdir='infra dir' plan -var 'label=café' -out=review.plan -no-color @CURSOR@"
+  },
+  {
+    "command": "tofu plan",
+    "before": "tofu -chdir='infra dir' plan -var 'count=2' -out=review.plan -no-c@CURSOR@",
+    "flag": "-no-color",
+    "after": "tofu -chdir='infra dir' plan -var 'count=2' -out=review.plan -no-color @CURSOR@"
+  },
+  {
+    "command": "terraform apply",
+    "before": "terraform apply -parallelism=2 -no-c@CURSOR@ review.plan",
+    "flag": "-no-color",
+    "after": "terraform apply -parallelism=2 -no-color @CURSOR@review.plan"
+  },
+  {
+    "command": "tofu apply",
+    "before": "tofu apply -parallelism=2 -no-c@CURSOR@ review.plan",
+    "flag": "-no-color",
+    "after": "tofu apply -parallelism=2 -no-color @CURSOR@review.plan"
+  },
+  {
+    "command": "cargo build",
+    "before": "cargo build --target --rel@CURSOR@",
+    "flag": "--release",
+    "after": "cargo build --target --release @CURSOR@"
+  },
+  {
+    "command": "ffmpeg",
+    "before": "ffmpeg -i 'input file.mp4' -metadata 'title=café' -f mp4 -t@CURSOR@ out.mp4",
+    "flag": "-t",
+    "after": "ffmpeg -i 'input file.mp4' -metadata 'title=café' -f mp4 -t @CURSOR@out.mp4"
+  },
+  {
+    "command": "ffprobe",
+    "before": "ffprobe -select_streams v:0 -show_s@CURSOR@ 'input file.mp4'",
+    "flag": "-show_streams",
+    "after": "ffprobe -select_streams v:0 -show_streams @CURSOR@'input file.mp4'"
+  },
+  {
+    "command": "rclone copy",
+    "before": "rclone copy 'source dir' remote:dest --create-e@CURSOR@",
+    "flag": "--create-empty-src-dirs",
+    "after": "rclone copy 'source dir' remote:dest --create-empty-src-dirs @CURSOR@"
+  },
+  {
+    "command": "restic backup",
+    "before": "restic backup --exclude '*.tmp' --tag 'daily review' --dry@CURSOR@ 'source dir'",
+    "flag": "--dry-run",
+    "after": "restic backup --exclude '*.tmp' --tag 'daily review' --dry-run @CURSOR@'source dir'"
+  },
+  {
+    "command": "borg create",
+    "before": "borg create --compression zstd --exclude '*.tmp' --dry@CURSOR@ repo::archive 'source dir'",
+    "flag": "--dry-run",
+    "after": "borg create --compression zstd --exclude '*.tmp' --dry-run @CURSOR@repo::archive 'source dir'"
+  },
+  {
+    "command": "magick",
+    "before": "magick 'input file.png' -resize 640x480 -quality 85 -st@CURSOR@ out.jpg",
+    "flag": "-strip",
+    "after": "magick 'input file.png' -resize 640x480 -quality 85 -strip @CURSOR@out.jpg"
+  },
+  {
+    "command": "convert",
+    "before": "convert 'input file.png' -resize 640x480 -st@CURSOR@ out.jpg",
+    "flag": "-strip",
+    "after": "convert 'input file.png' -resize 640x480 -strip @CURSOR@out.jpg"
+  },
+  {
+    "command": "7z",
+    "before": "7z a 'archive name.7z' -y@CURSOR@ 'source dir'",
+    "flag": "-y",
+    "after": "7z a 'archive name.7z' -y @CURSOR@'source dir'"
+  },
+  {
+    "command": "7zz",
+    "before": "7zz a 'archive name.7z' -y@CURSOR@ 'source dir'",
+    "flag": "-y",
+    "after": "7zz a 'archive name.7z' -y @CURSOR@'source dir'"
+  },
+  {
+    "command": "git rebase",
+    "before": "git -C 'repo dir' rebase --onto main --int@CURSOR@ topic",
+    "flag": "--interactive",
+    "after": "git -C 'repo dir' rebase --onto main --interactive @CURSOR@topic"
+  },
+  {
+    "command": "git rebase",
+    "before": "git rebase --interactive --on@CURSOR@ main topic",
+    "flag": "--onto",
+    "after": "git rebase --interactive --onto @CURSOR@main topic"
+  },
+  {
+    "command": "docker build",
+    "before": "docker --context review build --build-arg 'LABEL=cafe' --fi@CURSOR@ 'Dockerfile.test' .",
+    "flag": "--file",
+    "after": "docker --context review build --build-arg 'LABEL=cafe' --file @CURSOR@'Dockerfile.test' ."
+  },
+  {
+    "command": "docker build",
+    "before": "docker build -f 'Dockerfile.test' -t example:first --ta@CURSOR@ example:second .",
+    "flag": "--tag",
+    "after": "docker build -f 'Dockerfile.test' -t example:first --tag @CURSOR@example:second ."
+  },
+  {
+    "command": "find",
+    "before": "find 'source dir' -name '*.py' -ty@CURSOR@ f",
+    "flag": "-type",
+    "after": "find 'source dir' -name '*.py' -type @CURSOR@f"
+  },
+  {
+    "command": "find",
+    "before": "find . -maxdepth 2 -na@CURSOR@ '*.py'",
+    "flag": "-name",
+    "after": "find . -maxdepth 2 -name @CURSOR@'*.py'"
+  }
+]

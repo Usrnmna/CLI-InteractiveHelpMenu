@@ -12,8 +12,9 @@ flowchart TD
     P -->|Yes| B[Browse help]
     P -->|No| M{Discovery mode}
     M -->|off| E[Diagnostic; pending command retained]
-    M -->|man| A[Manual lookup only]
-    M -->|auto| H[Applicable fixed help and manual sources]
+    M -->|Matching cache in man or auto| B
+    M -->|man: cache miss or refresh| A[Manual lookup only]
+    M -->|auto: cache miss or refresh| H[Applicable fixed help and manual sources]
     A --> V[Validate extracted options]
     H --> V
     V -->|Usable options| B
@@ -84,6 +85,10 @@ Additional supported formats include Wget's aligned aliases, pnpm's explicit
 `--[no-]` shorthand, kubectl defaults, AWS parenthesized value types, jq name/value
 pairs, and yt-dlp placeholders with an optional prefix and required remainder.
 These are conservative format rules rather than complete command grammars.
+An optional suffix after a required placeholder, such as `PATTERN[=PATH]`,
+does not make the whole argument optional. Lowercase placeholders without a
+separate declaration column, including some GNU find manual forms, can still
+lack inferred argument requirements and need manual review.
 The [third-party compatibility guide](compatibility.md) records tested paths and
 unsupported forms, including 7-Zip attached-value switches.
 
@@ -167,6 +172,8 @@ identity, discovery mode, timeout, and `MANPATH`.
 Executable changes invalidate the lookup. Manual-page changes are picked up at
 expiration or explicit refresh. Failed or missing sources are recorded in the
 profile; a successful partial profile is cached to avoid repeated probes.
+Parser-schema changes invalidate older entries. The cache TTL accepts integer
+seconds from 0 through 604800; its default is 86400.
 
 ```bash
 export CLI_HELP_DISCOVERY_TIMEOUT=3    # Seconds per source; allowed range: 0.05-30.

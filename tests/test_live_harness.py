@@ -13,6 +13,30 @@ from live_compatibility import check_case, main, program_version
 
 
 class LiveHarnessTests(unittest.TestCase):
+    def test_configured_timeout_reaches_discovery_and_is_recorded(self):
+        profile = build_profile("tool", [("fixture", "--flag   Description")])
+        profile["discovery"] = {"sources": ["tool --help"], "warnings": []}
+        with patch("live_compatibility.shutil.which", return_value="/fake/tool"), patch(
+            "live_compatibility.discover", return_value=profile
+        ) as discover:
+            self.assertEqual(check_case(["tool"], {}, timeout=15)["status"], "passed")
+        self.assertEqual(discover.call_args.args[1].timeout, 15)
+        with patch("sys.argv", ["live_compatibility.py", "--case", "jq", "--timeout", "15"]), patch(
+            "live_compatibility.check_case", return_value={"status": "passed"}
+        ) as check, patch("live_compatibility.program_version", return_value="jq-1.7"), contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(main(), 0)
+        self.assertEqual(check.call_args.kwargs["timeout"], 15)
+        self.assertEqual(json.loads(output.getvalue())["source_timeout_seconds"], 15)
+
+    def test_invalid_timeout_rejects_before_probes(self):
+        for value in ("0", "31", "nan", "inf"):
+            with self.subTest(value=value), patch("sys.argv", ["live_compatibility.py", "--timeout", value]), patch(
+                "live_compatibility.check_case"
+            ) as check, contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                main()
+            self.assertEqual(error.exception.code, 2)
+            check.assert_not_called()
+
     def test_missing_command_is_skipped_without_discovery(self):
         with patch("live_compatibility.shutil.which", return_value=None), patch("live_compatibility.discover") as probe:
             result = check_case(["missing"], load_driver_registry())

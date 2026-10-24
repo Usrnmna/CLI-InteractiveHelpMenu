@@ -7,15 +7,20 @@ the renderer receives the application's PTY output, including curses controls.
 
 import codecs
 from copy import deepcopy
+from datetime import datetime, timezone
 import fcntl
+import hashlib
+from importlib.metadata import version
 import json
 import os
 from pathlib import Path
+import platform
 import pty
 import select
 import shlex
 import signal
 import struct
+import subprocess
 import sys
 import tempfile
 import termios
@@ -170,13 +175,14 @@ def capture_browser(folder):
         durations.append(duration)
 
     try:
-        terminal.send("rsync --", "rsync --")
+        terminal.send("rsync --ar", "rsync --ar")
         frame("1 / 4   Type a command; leave it pending", 1500)
         terminal.send("\x1bh", "Interactive help")
         frame("2 / 4   Alt-H opens categorized help", 2100)
         frames[-1].save(OUTPUT / "help-browser.png")
         terminal.send("/")
-        frame("3 / 4   Press / to search", 800)
+        terminal.send("\x15")
+        frame("3 / 4   Press / then Ctrl-U to replace the initial filter", 800)
         for value in ("ar", "ch", "ive"):
             terminal.send(value)
             frame("3 / 4   Search for archive", 450)
@@ -227,8 +233,9 @@ def capture_review(folder):
         terminal.send("/cancel\n", "Entry:")
         terminal.send("b\n", "Review: number")
         terminal.send("q\n", "demo $ ")
-        assert all(path.read_bytes() == original for path, original in before.items())
-        return terminal.events
+        after = {path: path.read_bytes() for path in collection.rglob("*.json")}
+        assert after == before, "Review collection changed without saving"
+        return {"collection_unchanged": True, "saved": False}, terminal.events
     finally:
         terminal.close()
 
@@ -245,10 +252,29 @@ def main():
         browser.mkdir()
         review.mkdir()
         result, browser_events = capture_browser(browser)
-        review_events = capture_review(review)
+        review_result, review_events = capture_review(review)
     for name, events in [("browser", browser_events), ("review", review_events)]:
         header = {"version": 2, "width": COLUMNS, "height": ROWS, "env": {"TERM": "xterm-256color"}}
         (evidence / (name + ".cast")).write_text("\n".join(json.dumps(item) for item in [header, *events]) + "\n")
+    # Keep machine paths and capture provenance with local evidence, separate
+    # from public media. Hashes identify the working tree even before a commit.
+    source_paths = [ROOT / "tools/capture_readme_media.py", ROOT / "VERSION"]
+    source_paths.extend((ROOT / "cli_help").glob("*.py"))
+    source_paths.extend((ROOT / "bash").glob("*.bash"))
+    source_paths.extend((ROOT / "profiles").glob("*.json"))
+    result.update(
+        captured_at=datetime.now(timezone.utc).isoformat(),
+        application_version=(ROOT / "VERSION").read_text().strip(),
+        python=platform.python_version(),
+        bash=subprocess.check_output(["bash", "--version"], text=True).splitlines()[0],
+        terminal={"columns": COLUMNS, "rows": ROWS, "term": "xterm-256color"},
+        dependencies={name: version(name) for name in ("Pillow", "pyte", "wcwidth")},
+        review=review_result,
+        sources={path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                 for path in sorted(source_paths)},
+        assets={name: hashlib.sha256((OUTPUT / name).read_bytes()).hexdigest()
+                for name in ("help-browser.png", "option-inserted.png", "option-insertion.gif", "guided-review.png")},
+    )
     (evidence / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
     print("Saved README media to", OUTPUT)
