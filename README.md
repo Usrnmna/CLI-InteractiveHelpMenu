@@ -12,11 +12,14 @@ The pending command runs only after a separate, ordinary Enter at the Bash promp
 [Get started](#get-started) · [Browser controls](docs/usage.md#browser-controls) ·
 [Scan and review](#build-and-refine-a-help-collection) · [Documentation](docs/README.md)
 
-![Terminal demonstration: Alt-H opens help for rsync --ar; / and Ctrl-U replace the filter with archive; Enter applies the filter and a second Enter inserts --archive without execution.](docs/assets/option-insertion.gif)
+![Real terminal demonstration: browse rsync categories, insert bandwidth and exclusion options with values, preserve the completed command on cancellation, then scroll all twelve ls Display options and insert a filename filter. Both commands remain unexecuted.](docs/assets/option-insertion.gif)
 
-**Alt-H → search → insert → continue editing.**
-[Static browser view](docs/assets/help-browser.png) ·
-[Final pending command](docs/assets/option-inserted.png)
+**Browse categories → search → insert options and values → continue editing.**
+The 31-second loop shows rsync's nine categories and ls's twelve-option Display
+list, including pane focus, scrolling, required arguments, and cancellation.
+[Static rsync browser](docs/assets/help-browser.png) ·
+[Scrolled ls options](docs/assets/ls-browser.png) ·
+[Assembled rsync command](docs/assets/option-inserted.png)
 
 ## What it provides
 

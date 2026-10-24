@@ -33,7 +33,12 @@ import pyte
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs/assets"
 FONT = Path(os.environ.get("CLI_HELP_MEDIA_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"))
-COLUMNS, ROWS = 100, 28
+COLUMNS, ROWS = 100, 24
+RSYNC_PREFIX = "rsync --archive --compress --human-readable --itemize-changes --partial "
+RSYNC_PATHS = '"/srv/project files/" "/mnt/backup/project files/"'
+LS_PREFIX = "ls --all --human-readable "
+MEDIA_NAMES = ("help-browser.png", "option-inserted.png", "option-insertion.gif",
+               "ls-browser.png", "guided-review.png")
 BACKGROUND, FOREGROUND = "#101923", "#e4edf5"
 COLORS = {"black": "#101923", "red": "#ef798a", "green": "#7fceaa",
           "brown": "#e6c07b", "blue": "#7eaaff", "magenta": "#c792ea",
@@ -59,6 +64,31 @@ class TerminalScreen(pyte.Screen):
             self.primary = None
         super().reset_mode(*modes, **kwargs)
 
+    def scroll_up(self, count=None):
+        """Handle xterm CSI S within the scroll region without moving the cursor."""
+        top, bottom = self.margins or (0, self.lines - 1)
+        cursor_row = self.cursor.y
+        self.cursor.y = bottom
+        for _ in range(min(count or 1, bottom - top + 1)):
+            self.index()
+        self.cursor.y = cursor_row
+
+    def scroll_down(self, count=None):
+        """Handle xterm CSI T, the reverse scroll used by curses optimizations."""
+        top, bottom = self.margins or (0, self.lines - 1)
+        cursor_row = self.cursor.y
+        self.cursor.y = top
+        for _ in range(min(count or 1, bottom - top + 1)):
+            self.reverse_index()
+        self.cursor.y = cursor_row
+
+
+class TerminalStream(pyte.Stream):
+    """Decode curses' xterm scroll-up/down sequences missing from pyte 0.8.2."""
+
+    csi = {**pyte.Stream.csi, "S": "scroll_up", "T": "scroll_down"}
+    events = pyte.Stream.events | {"scroll_up", "scroll_down"}
+
 
 class Terminal:
     """Run isolated Bash, capture its output, and retain actual terminal cells."""
@@ -66,7 +96,7 @@ class Terminal:
     def __init__(self, folder):
         self.folder = folder
         self.screen = TerminalScreen(COLUMNS, ROWS)
-        self.stream = pyte.Stream(self.screen)
+        self.stream = TerminalStream(self.screen)
         self.decoder = codecs.getincrementaldecoder("utf-8")("replace")
         self.output = ""
         self.events = []
@@ -77,7 +107,8 @@ class Terminal:
         rcfile.write_text(
             "PS1='demo $ '; PS2='> '; set +o history\n"
             + "source " + shlex.quote(str(ROOT / "bash/interactive-help.bash")) + "\n"
-            + "rsync() { printf executed > " + shlex.quote(str(self.marker)) + "; }\n"
+            + "rsync() { printf 'rsync\\n' >> " + shlex.quote(str(self.marker)) + "; }\n"
+            + "ls() { printf 'ls\\n' >> " + shlex.quote(str(self.marker)) + "; }\n"
             + "_capture_buffer() { printf '%s\\0%s\\0' \"$READLINE_POINT\" \"$READLINE_LINE\" > "
             + shlex.quote(str(self.snapshot)) + "; }\n"
             + "bind -x '\"\\C-x\\C-g\":_capture_buffer'\n"
@@ -127,6 +158,18 @@ class Terminal:
         os.waitpid(self.pid, 0)
         os.close(self.fd)
 
+    def check_buffer(self, expected):
+        """Verify the real Readline line/cursor and both target execution guards."""
+        self.snapshot.unlink(missing_ok=True)
+        self.send("\x18\x07")
+        fields = self.snapshot.read_bytes().split(b"\0")
+        wanted = [str(len(expected)).encode(), expected.encode(), b""]
+        if fields != wanted:
+            raise RuntimeError(f"Unexpected Readline buffer: {fields!r}; expected {wanted!r}")
+        if self.marker.exists():
+            raise RuntimeError(f"Pending target executed: {self.marker.read_text()}")
+        return {"pending_line": expected, "cursor": len(expected), "executed": False}
+
 
 def color(value, default):
     """Translate pyte's named and RGB color values to Pillow colors."""
@@ -165,40 +208,132 @@ def render(screen, title, caption, first_row=0):
     return image
 
 
-def capture_browser(folder):
-    """Capture Alt-H, interactive search, and insertion; assert no execution."""
-    terminal = Terminal(folder)
-    frames, durations = [], []
+class Demonstration:
+    """Collect checked terminal states and presentation holds for one shared GIF."""
 
-    def frame(caption, duration):
-        frames.append(render(terminal.screen, "CLI Interactive Help Menu | Bash", caption))
-        durations.append(duration)
+    def __init__(self):
+        self.frames = []
+        self.scenes = []
+
+    def frame(self, terminal, command, caption, duration, required=(), absent=()):
+        """Check visible cells before rendering; retain scene evidence locally."""
+        text = "\n".join(terminal.screen.display)
+        # Readline wraps long pending commands without inserting a newline.
+        wrapped_text = "".join(terminal.screen.display)
+        for expected in required:
+            if expected not in text and expected not in wrapped_text:
+                raise RuntimeError(f"Scene {caption!r} lacks {expected!r}:\n{text}")
+        for unexpected in absent:
+            if unexpected in text:
+                raise RuntimeError(f"Scene {caption!r} unexpectedly contains {unexpected!r}:\n{text}")
+        picture = render(terminal.screen, f"CLI Interactive Help Menu | {command}", caption)
+        self.frames.append(picture)
+        self.scenes.append({"command": command, "caption": caption, "duration_ms": duration,
+                            "required": list(required), "absent": list(absent),
+                            "event_count": len(terminal.events),
+                            "screen": terminal.screen.display})
+        return picture
+
+    def save(self):
+        """Encode the checked states with readable holds and a consistent canvas."""
+        self.frames[0].save(OUTPUT / "option-insertion.gif", save_all=True,
+                            append_images=self.frames[1:],
+                            duration=[scene["duration_ms"] for scene in self.scenes],
+                            loop=0, optimize=True, disposal=2)
+
+
+def capture_rsync(folder, demonstration):
+    """Tour real category panes, add valued options, and verify cancellation."""
+    terminal = Terminal(folder)
+    def frame(caption, duration, **checks):
+        """Record a checked rsync state with the shared chapter heading."""
+        return demonstration.frame(terminal, "rsync", caption, duration, **checks)
 
     try:
-        terminal.send("rsync --ar", "rsync --ar")
-        frame("1 / 4   Type a command; leave it pending", 1500)
+        terminal.send(RSYNC_PREFIX + "--", "rsync --archive")
+        frame("1 / 2   rsync | Build on existing options; leave the command pending", 1500)
         terminal.send("\x1bh", "Interactive help")
-        frame("2 / 4   Alt-H opens categorized help", 2100)
-        frames[-1].save(OUTPUT / "help-browser.png")
-        terminal.send("/")
         terminal.send("\x15")
-        frame("3 / 4   Press / then Ctrl-U to replace the initial filter", 800)
-        for value in ("ar", "ch", "ive"):
-            terminal.send(value)
-            frame("3 / 4   Search for archive", 450)
-        terminal.send("\n")
-        frame("3 / 4   Enter applies the search filter", 1700)
+        frame("Alt-H, Ctrl-U | Browse 29 options across 9 categories", 2500,
+              required=("Transfer (4)", "Category 1/9", "Option 1/4", "--archive"),
+              absent=("Filter: --",)).save(OUTPUT / "help-browser.png")
+        terminal.send("\tlll")
+        frame("Tab, Right x3 | Focus categories and browse Output", 1800,
+              required=("CATEGORIES *", "Category 4/9", "--progress", "--stats"))
+        terminal.send("ll")
+        frame("Right x2 | Inspect attribute preservation options", 1800,
+              required=("Category 6/9", "--acls", "--xattrs", "--hard-links"))
+        terminal.send("\x1b[6~")
+        frame("PageDown | Scroll the category pane to Recovery", 2000,
+              required=("Category 9/9", "Recovery (3)", "--partial", "--backup-dir="),
+              absent=("Transfer (4)",))
+        terminal.send("hhhh\tj")
+        frame("Left x4, Tab, Down | Network: --bwlimit= requires RATE", 2300,
+              required=("OPTIONS *", "Category 5/9", "Option 2/4", "Argument required: RATE"))
         terminal.send("\n", "\x1b[?1049l")
-        terminal.send("\x18\x07")
-        cursor, line, empty = terminal.snapshot.read_bytes().split(b"\0")
-        assert (cursor, line, empty) == (b"16", b"rsync --archive ", b"")
-        assert not terminal.marker.exists(), "Pending command executed"
-        frame("4 / 4   --archive inserted | command remains unexecuted", 3500)
-        frames[0].save(OUTPUT / "option-insertion.gif", save_all=True, append_images=frames[1:],
-                       duration=durations, loop=0, optimize=True, disposal=2)
-        frames[-1].save(OUTPUT / "option-inserted.png")
-        return {"pending_line": line.decode(), "cursor": int(cursor), "executed": False,
-                "duration_ms": sum(durations), "frames": len(frames)}, terminal.events
+        terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=")
+        terminal.send("5000 ")
+        terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=5000 ")
+        frame("Enter inserts --bwlimit= | Type its value: 5000", 1800,
+              required=("--bwlimit=5000",))
+        terminal.send("\x1bh", "Interactive help")
+        terminal.send("/exclude")
+        frame("Alt-H, /, exclude | Search another category without losing input", 2000,
+              required=("Search (Enter applies, Esc restores): exclude", "--exclude=", "Option 1/2"))
+        terminal.send("\n")
+        frame("Enter applies the filter | A second Enter selects the option", 900,
+              required=("Filter: exclude", "--exclude="))
+        terminal.send("\n", "\x1b[?1049l")
+        terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=5000 --exclude=")
+        final_line = RSYNC_PREFIX + "--bwlimit=5000 --exclude='*.tmp' " + RSYNC_PATHS + " "
+        terminal.send("'*.tmp' " + RSYNC_PATHS + " ")
+        result = terminal.check_buffer(final_line)
+        frame("Type a quoted pattern and paths | Existing options remain intact", 3000,
+              required=("--bwlimit=5000", "--exclude='*.tmp'"))
+        terminal.send("\x1bh", "Interactive help")
+        frame("Alt-H reopens help | Escape will preserve the complete command", 1500,
+              required=("Interactive help | rsync",))
+        terminal.send("\x1b", "\x1b[?1049l")
+        terminal.check_buffer(final_line)
+        frame("Escape | Command assembled; still unexecuted", 2000,
+              required=("--exclude='*.tmp'",)).save(OUTPUT / "option-inserted.png")
+        result.update(cancel_preserved=True, categories=9, options=29)
+        return result, terminal.events
+    finally:
+        terminal.close()
+
+
+def capture_ls(folder, demonstration):
+    """Show all twelve Display choices through actual option-pane scrolling."""
+    terminal = Terminal(folder)
+    def frame(caption, duration, **checks):
+        """Record a checked ls state with the shared chapter heading."""
+        return demonstration.frame(terminal, "ls", caption, duration, **checks)
+
+    try:
+        terminal.send(LS_PREFIX + "--", "ls --all")
+        frame("2 / 2   ls | Explore a longer option list", 1000)
+        terminal.send("\x1bh", "Interactive help")
+        terminal.send("\x15")
+        frame("Alt-H, Ctrl-U | Display contains 12 options", 1500,
+              required=("Display (12)", "Option 1/12", "--almost-all", "--color="))
+        terminal.send("\x1b[6~")
+        frame("PageDown | Scroll the option pane while categories stay visible", 1600,
+              required=("Option 8/12", "--size", "Display (12)", "Traversal (3)"),
+              absent=("> --all",))
+        terminal.send("\x1bOF")
+        frame("End | Reach option 12/12 and inspect its required argument", 1800,
+              required=("Option 12/12", "--hide=", "Argument required: PATTERN"),
+              absent=("--almost-all",)).save(OUTPUT / "ls-browser.png")
+        terminal.send("\n", "\x1b[?1049l")
+        terminal.check_buffer(LS_PREFIX + "--hide=")
+        final_line = LS_PREFIX + "--hide='*.tmp' \"/srv/project files/\" "
+        terminal.send("'*.tmp' \"/srv/project files/\" ")
+        result = terminal.check_buffer(final_line)
+        frame("Enter inserts --hide= | Command assembled; still unexecuted", 1800,
+              required=("--hide='*.tmp'",))
+        result.update(categories=3, options=19, display_options=12)
+        return result, terminal.events
     finally:
         terminal.close()
 
@@ -229,40 +364,60 @@ def capture_review(folder):
             terminal.send(value + "\n", expected)
         render(terminal.screen, "Guided review | example convert",
                "Example collection | Edit fields without JSON; save explicitly",
-               first_row=10).save(OUTPUT / "guided-review.png")
+               first_row=6).save(OUTPUT / "guided-review.png")
         terminal.send("/cancel\n", "Entry:")
         terminal.send("b\n", "Review: number")
         terminal.send("q\n", "demo $ ")
         after = {path: path.read_bytes() for path in collection.rglob("*.json")}
-        assert after == before, "Review collection changed without saving"
+        if after != before:
+            raise RuntimeError("Review collection changed without saving")
         return {"collection_unchanged": True, "saved": False}, terminal.events
     finally:
         terminal.close()
 
 
+def source_fingerprints():
+    """Identify the generator, default profiles, and runtime used for each capture."""
+    source_paths = [ROOT / "tools/capture_readme_media.py", ROOT / "VERSION",
+                    ROOT / "tools/requirements-media.txt"]
+    source_paths.extend((ROOT / "cli_help").glob("*.py"))
+    source_paths.extend((ROOT / "bash").glob("*.bash"))
+    source_paths.extend((ROOT / "profiles").glob("*.json"))
+    return {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(source_paths)}
+
+
 def main():
     """Write public media and local capture evidence; temporary drafts are removed."""
+    sources = source_fingerprints()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     evidence = ROOT / "tests/reports/readme-media"
     evidence.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="cli-help-media-") as temporary:
         folder = Path(temporary)
-        browser = folder / "browser"
+        browser = folder / "rsync"
+        ls = folder / "ls"
         review = folder / "review"
         browser.mkdir()
+        ls.mkdir()
         review.mkdir()
-        result, browser_events = capture_browser(browser)
+        demonstration = Demonstration()
+        result, browser_events = capture_rsync(browser, demonstration)
+        ls_result, ls_events = capture_ls(ls, demonstration)
         review_result, review_events = capture_review(review)
-    for name, events in [("browser", browser_events), ("review", review_events)]:
+    demonstration.save()
+    for name, events in [("browser", browser_events), ("ls", ls_events), ("review", review_events)]:
         header = {"version": 2, "width": COLUMNS, "height": ROWS, "env": {"TERM": "xterm-256color"}}
         (evidence / (name + ".cast")).write_text("\n".join(json.dumps(item) for item in [header, *events]) + "\n")
     # Keep machine paths and capture provenance with local evidence, separate
     # from public media. Hashes identify the working tree even before a commit.
-    source_paths = [ROOT / "tools/capture_readme_media.py", ROOT / "VERSION"]
-    source_paths.extend((ROOT / "cli_help").glob("*.py"))
-    source_paths.extend((ROOT / "bash").glob("*.bash"))
-    source_paths.extend((ROOT / "profiles").glob("*.json"))
+    if source_fingerprints() != sources:
+        raise RuntimeError("Capture sources changed during recording; regenerate the media")
     result.update(
+        schema_version=2,
+        demonstrations={"rsync": dict(result), "ls": ls_result},
+        frames=len(demonstration.frames),
+        duration_ms=sum(scene["duration_ms"] for scene in demonstration.scenes),
         captured_at=datetime.now(timezone.utc).isoformat(),
         application_version=(ROOT / "VERSION").read_text().strip(),
         python=platform.python_version(),
@@ -270,11 +425,11 @@ def main():
         terminal={"columns": COLUMNS, "rows": ROWS, "term": "xterm-256color"},
         dependencies={name: version(name) for name in ("Pillow", "pyte", "wcwidth")},
         review=review_result,
-        sources={path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-                 for path in sorted(source_paths)},
+        sources=sources,
         assets={name: hashlib.sha256((OUTPUT / name).read_bytes()).hexdigest()
-                for name in ("help-browser.png", "option-inserted.png", "option-insertion.gif", "guided-review.png")},
+                for name in MEDIA_NAMES},
     )
+    (evidence / "scenes.json").write_text(json.dumps(demonstration.scenes, indent=2) + "\n")
     (evidence / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
     print("Saved README media to", OUTPUT)
