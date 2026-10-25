@@ -9,6 +9,20 @@ body:
         Credentials, private paths, full command history, and unredacted buffers
         or probe output must be omitted. Diagnostic reports can contain local
         configuration paths; review and redact those paths before sharing.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Browser controls or display
+        - Command recognition or option insertion
+        - Help discovery or compatibility
+        - Manual import, scanning, or collection review
+        - Installation, release packages, or updates
+        - Documentation, media, or repository configuration
+        - Other or uncertain
+    validations:
+      required: false
   - type: input
     id: revision
     attributes:

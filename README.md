@@ -2,189 +2,199 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**Browse command options while typing. Insert a flag. Keep control of execution.**
+**Find the right option without leaving an unfinished Bash command.**
 
-A Linux Bash prototype for terminal users who need option descriptions without
-abandoning an unfinished command. **Alt-H** opens searchable, categorized help;
-selecting an option returns to the command line with that flag inserted.
-The pending command runs only after a separate, ordinary Enter at the Bash prompt.
+Press **Alt-H** to browse categorized help, search descriptions, and insert an
+option into the line being edited. Continue typing its value or another option;
+the pending command runs only after a separate **Enter at the Bash prompt**.
+This Linux Bash prototype is intended for terminal users assembling commands
+whose flags and argument syntax are difficult to remember.
 
-[Get started](#get-started) · [Browser controls](docs/usage.md#browser-controls) ·
-[Scan and review](#build-and-refine-a-help-collection) · [Documentation](docs/README.md)
+[Get started](#get-started) · [Browser controls](#using-the-browser) ·
+[Compatibility](#compatibility-and-execution-boundaries) · [All guides](docs/README.md)
 
-![Real terminal demonstration: browse rsync categories, insert bandwidth and exclusion options with values, preserve the completed command on cancellation, then scroll all twelve ls Display options and insert a filename filter. Both commands remain unexecuted.](docs/assets/option-insertion.gif)
+![Captured Bash session: browse rsync categories, insert options and values, cancel without changing the pending line, then scroll ls options and insert a filename filter. Neither pending command is executed.](docs/assets/option-insertion.gif)
 
-**Browse categories → search → insert options and values → continue editing.**
-The 31-second loop shows rsync's nine categories and ls's twelve-option Display
-list, including pane focus, scrolling, required arguments, and cancellation.
-[Static rsync browser](docs/assets/help-browser.png) ·
-[Scrolled ls options](docs/assets/ls-browser.png) ·
-[Assembled rsync command](docs/assets/option-inserted.png)
+The 31-second demonstration uses real terminal output with static profiles and
+discovery disabled. [Static browser view](docs/assets/help-browser.png) ·
+[Scrolled option list](docs/assets/ls-browser.png) ·
+[Resulting command line](docs/assets/option-inserted.png) ·
+[Capture method and limits](docs/assets/README.md)
 
 ## What it provides
 
-| Capability | End-user result |
-| --- | --- |
-| **Help alongside command entry** | Search options, scroll categories, and read descriptions before selecting a flag |
-| **Prefixes and structured syntax** | Browse documented commands behind supported prefixes, Python modules, keyword arguments, and concrete stream selectors |
-| **Insertion without execution** | Continue editing arguments after selection; cancel to retain the original command and cursor |
-| **Help for installed tools** | Discover options from help output and local manuals, with Git/Docker subcommand support and loadable drivers |
-| **Reusable help collections** | Import a manual or scan installed commands in bulk, with a report of successes, failures, and review needs |
-| **Guided corrections** | Edit options, categories, and driver settings through terminal forms, then preview and save with backups |
-| **Configurable controls** | Customize the launch shortcut and browser navigation keys |
-| **Passive troubleshooting** | Inspect configuration and command recognition without help probes or disclosure of pending operand values |
-| **Verified release updates** | Check GitHub releases, preserve custom settings during upgrades, and resolve conflicts through guided review |
+- **Help while typing:** categories, description search, scrollable option lists,
+  and argument placeholders in a keyboard-controlled terminal browser.
+- **Literal option insertion:** replace a partial flag, preserve surrounding
+  input, and return to editing. Cancellation retains the original line and cursor.
+- **Several help sources:** bundled and custom profiles, installed help output,
+  local manuals, and explicit drivers for supported subcommand paths.
+- **Editable help collections:** import a manual, scan installed commands, and
+  correct options, categories, and routes through guided forms and previews.
+- **Configurable operation:** launch and navigation keys, discovery modes,
+  passive diagnostics, and per-user updates with backups and conflict review.
 
-```mermaid
-flowchart LR
-    A[Type a command] -->|Alt-H| B[Browse categories and search options]
-    B -->|Search with / then Enter| F[Filtered options]
-    F -->|Enter selects a flag| C[Continue editing the command]
-    B -->|Enter selects a flag| C
-    B -->|Cancel| D[Original command and cursor retained]
-```
-
-The browser includes curated help for everyday Linux tools, service and network
-inspection, language tooling, containers, cloud CLIs, Git families, and embedded
-development. Ordinary curated profiles work without installed targets. Guarded
-vendor/version profiles require identity verification; generated help remains
-inferred and may require corrections.
-
-The [third-party compatibility matrix](docs/compatibility.md) covers **162 command
-paths across 73 executable names**. Included drivers enable nested command routes;
-the guide lists every route, activation instructions, version constraints, and
-verification limits. [Prefix and structured-argument support](docs/invocation-and-structured-arguments.md)
-adds `sudo`/`env`/`command` chains, selected-interpreter `python -m pip` and
-`python -m pytest`, `ip` keywords, FFmpeg stream selectors, and esptool address/file
-pairs. Help selection continues to edit the buffer without executing it.
+**Execution boundary:** selecting an option does not execute the pending command.
+Default automatic discovery can separately invoke an installed program's help
+route. Use `CLI_HELP_DISCOVERY=man` for manual-only discovery or `off` for static
+profiles. [Discovery modes and limitations](docs/discovery-and-safety.md)
 
 ## Get started
 
-Requirements:
+### Requirements
 
-- Linux, Bash **4.4+**, and Python **3.10+** with the standard-library `curses` module.
-- A UTF-8 locale and a terminal at least **60 columns × 16 rows**.
-- The standard Linux `stty` utility for terminal-size detection and resize recovery.
-- Linux `man-db` and local manual pages for manual-based discovery, importing
-  installed pages, and bulk scanning. Text-file imports do not require `man`.
+- **Linux**, **Bash 4.4+**, and **Python 3.10+** with its standard-library `curses`
+  module. The runtime requires no third-party Python packages.
+- A UTF-8 locale, a terminal at least **60 columns × 16 rows**, and the standard
+  Linux `stty` utility for resize detection.
+- Optional: Linux `man-db` and local manual pages for manual discovery, installed
+  manual imports, and bulk scans. Static profiles and text-file imports do not
+  require `man`.
 
-From the repository directory, install for the current user and load the browser:
+The project is an **alpha prototype**. Windows PowerShell and other shells do not
+provide the Bash integration; Linux sessions under WSL are included in the
+[recorded validation](docs/development.md#recorded-validation).
+
+### Install for the current user
+
+Obtain the source checkout:
+
+```bash
+git clone https://github.com/Usrnmna/CLI-InteractiveHelpMenu.git
+cd CLI-InteractiveHelpMenu
+```
+
+From that directory, run as the account that will use the browser, without `sudo`:
 
 ```bash
 bash install.sh
 source "${XDG_DATA_HOME:-$HOME/.local/share}/cli-interactive-help/bash/interactive-help.bash"
 ```
 
-1. Type `rsync --ar` without executing it.
-2. Press **Alt-H**, browse to `--archive`, and press **Enter**.
-3. Continue editing the resulting `rsync --archive ` command line.
+Installation copies the runtime and adds a marked block to `.bashrc`, backing up
+existing contents. New interactive Bash sessions load it automatically.
+For a temporary session directly from the checkout, use
+`source "$PWD/bash/interactive-help.bash"` instead of installing.
 
-Arrow keys navigate the menu; `/` searches; Escape or Ctrl-C cancels.
-If Alt-H is unavailable, press Escape followed by `h`.
-The installer adds a marked block to `.bashrc` and backs up existing contents.
-Use `bash install.sh --no-rc` to skip startup registration, or `bash uninstall.sh`
-to remove the default installation. Edited files and custom collections are retained.
+For versioned downloads, the published
+[v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha)
+offers source archives and a Linux x86_64 installer. Follow the
+[package selection and checksum instructions](docs/releases.md#verify-and-install)
+before installation. The native launcher requires an adjacent Bash/Python runtime
+and glibc 2.34+; source installation remains available for other Linux environments.
+Checkout changes can extend beyond a release snapshot.
 
-To upgrade an existing installation, run `bash update.sh` from the new source
-directory. Custom settings and edited files are preserved; conflicts include
-incoming copies for manual merging and a full backup.
-The [interactive update reviewer](docs/update-review.md) compares conflicts and
-lets each file be kept, replaced, or merged, with backups before saving. Guided
-editing accepts or rejects individual changed blocks without an external editor.
+### Insert the first option
 
-The [GitHub release updater](docs/github-updates.md) checks and verifies published
-packages before upgrading. Run `bash update-from-github.sh --check` to inspect the
-stable channel, or add `--prerelease` to include alpha releases. Run without
-`--check` to upgrade; conflicts open the guided reviewer in an interactive terminal.
+1. Type `rsync --ar` at the Bash prompt **without pressing Enter**.
+2. Press **Alt-H**. The partial flag filters the bundled rsync profile.
+3. With `--archive` selected in the options pane, press **Enter**.
+4. Continue editing `rsync --archive ` at the prompt. The command remains pending.
 
-Version `0.1.2-alpha` is an alpha prerelease. The
-[release guide](docs/releases.md) describes its installer, Linux launcher,
-source/runtime archives, checksums, and source provenance. Published assets are
-listed on [GitHub Releases](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-The preserved `0.1.1-alpha` packages contain an older snapshot. Local builds can
-contain changes beyond a release tag; compare source manifests rather than
-version strings. GitHub release checks do not obtain unpublished changes.
+This example uses a bundled static profile; an installed `rsync` is not required
+to browse it. If Alt-H is unavailable, press Escape followed by `h`.
 
-See [installation, updates, and removal](docs/installation.md) for custom paths
-and recovery. [Browser controls](docs/usage.md) covers shortcuts, Vi keymaps,
-configuration, and loading directly from a checkout without installing.
+See [installation, custom paths, updates, and removal](docs/installation.md) for
+`--no-rc`, startup configuration, and recovery procedures.
 
-## Build and refine a help collection
+## Using the browser
 
-The scanner reads installed manuals and produces editable help plus a report.
-The reviewer provides guided corrections and a preview of the actual help menu.
-Run these commands from the repository directory:
+| Default keys | Action |
+| --- | --- |
+| Up/Down, PageUp/PageDown, Home/End | Navigate the focused list |
+| Left/Right | Change category |
+| Tab | Switch between category and option panes |
+| `/`, then Enter | Apply a search; press Enter again to insert a selected option |
+| Ctrl-U | Clear the filter |
+| Escape or Ctrl-C | Cancel and retain the original line and cursor |
 
-```bash
-python3 cli_help/main.py --scan-installed --limit 100 \
-  --output-dir "$HOME/.config/cli-help/scanned"
+Options requiring values display an argument placeholder. After insertion, type
+the value at the prompt; attached forms leave the cursor next to the flag.
+The [complete controls and configuration guide](docs/usage.md#browser-controls)
+covers description scrolling, alternate keys, Vi keymaps, and terminal resizing.
 
-python3 cli_help/main.py --review-report \
-  "$HOME/.config/cli-help/scanned/scan-report.json"
+```mermaid
+flowchart TD
+    A[Pending Bash command] -->|Alt-H| B[Browse and search help]
+    B -->|Select option with Enter| C[Insert option]
+    B -->|Cancel| D[Keep original line and cursor]
+    C --> E[Continue editing at Bash prompt]
+    D --> E
+    E -->|Separate Enter| F[Bash executes command]
 ```
-
-In a review entry, **o** edits options, **c** edits categories, and **d** edits
-driver settings. **p** previews the menu and **s** saves validated changes with
-backups. JSON editing is optional. Original scan findings remain available.
-
-![Guided review of an example convert profile, showing option selection and prompts for its flag, summary, detail, and argument placeholder.](docs/assets/guided-review.png)
-
-*Guided option editing in an example collection; changes require explicit saving.*
-
-After inspecting a collection with successfully generated entries, activate it:
-
-```bash
-export CLI_HELP_PROFILES="$HOME/.config/cli-help/scanned/profiles"
-export CLI_HELP_DRIVERS="$HOME/.config/cli-help/scanned/drivers"
-python3 cli_help/main.py --check
-```
-
-- [Bulk scanning and report interpretation](docs/bulk-scan.md) covers filters,
-  repeated scans, partial results, and activation.
-- [Guided review and correction](docs/review.md) covers forms, preview, saving,
-  and recovery.
-- [Importing a single manual](docs/manual-import.md) supports installed pages,
-  rendered text, and local manual files.
 
 ## Compatibility and execution boundaries
 
-**Option selection never executes the pending command. Automatic discovery can
-run a separate help invocation of the installed program.** Arbitrary programs
-may have startup side effects. Discovery limits are not a sandbox.
+Curated profiles cover subsets of Linux utilities, development tools, containers,
+cloud CLIs, and embedded tooling. Ordinary static profiles work without installed
+targets; vendor/version-guarded profiles require identity verification.
+Generated help is inferred and can omit options or misidentify value requirements.
 
-To obtain dynamic help without invoking target programs:
+The [command compatibility matrix](docs/compatibility.md) lists maintained paths,
+version constraints, verification limits, and **explicit activation instructions
+for supplied drivers**. Those drivers are not enabled merely by installation.
+[Supported invocation forms](docs/invocation-and-structured-arguments.md) include
+bounded `sudo`/`env`/`command` chains, selected Python modules, and specific keyword
+and stream-selector forms.
+
+The browser accepts simple commands with balanced quoting. Pipelines,
+redirection, shell substitutions, unsupported prefixes, and alias/function
+resolution are outside its supported grammar. Subcommand support depends on
+profiles and drivers. Automatic help invocations can have startup side effects;
+timeouts and output limits do not provide a sandbox.
+
+To prevent target-program invocations during browsing, select a mode before the
+next help request:
 
 ```bash
 export CLI_HELP_DISCOVERY=man
 ```
 
-This mode uses the manual renderer and requires an installed executable with a
-usable local manual. `CLI_HELP_DISCOVERY=off` restricts browsing to static profiles.
-Bulk scanning and manual import do not invoke target programs; review preview
-performs no help discovery.
+Manual-only discovery needs an installed executable and a usable local manual.
+`CLI_HELP_DISCOVERY=off` restricts browsing to static profiles. Bulk manual scanning,
+manual import, and review preview do not invoke target programs. The
+[discovery and safety guide](docs/discovery-and-safety.md) explains all modes,
+fixed routes, cache behavior, and remaining limitations.
 
-The prototype supports simple commands with balanced quoting. Pipelines,
-redirection, shell substitutions, unsupported prefix forms, and shell aliases or
-functions are not resolved. Bounded sudo/env/command chains and Python module
-forms are supported. Generated help can omit unusual option syntax;
-subcommand support depends on available profiles and drivers.
+## Build and refine a help collection
 
-[Discovery and execution boundaries](docs/discovery-and-safety.md) describes
-these limits in full. [Recorded validation](docs/development.md#recorded-validation)
-identifies the tested environment and remaining compatibility limits.
+Import one manual or scan installed commands, inspect the generated report, and
+correct entries through guided forms before activating the collection.
+The reviewer can preview the actual browser and saves validated changes with
+backups. JSON editing is optional.
+
+- [Scan, review, and activate a first collection](docs/bulk-scan.md#first-collection-walkthrough)
+- [Import a single manual or text file](docs/manual-import.md)
+- [Edit options and categories with guided forms](docs/review.md)
+- [Inspect collection consistency and recover saved backups](docs/collection-recovery.md)
+
+## Updates and removal
+
+From a separate new source directory, run `bash update.sh` to upgrade an existing
+installation. Edited files and custom settings are preserved; conflicts retain
+incoming copies and a full backup for [guided review](docs/update-review.md).
+
+To check published releases, run `bash update-from-github.sh --check --prerelease`.
+The alpha channel requires `--prerelease`. Omit `--check` to apply an upgrade;
+equal versions are not reinstalled, and unpublished changes require a local-source
+update. See [GitHub release updates](docs/github-updates.md) for verification and
+conflict handling.
+
+Run `bash uninstall.sh` to remove the default installation. Edited files and
+custom collections are retained. The [installation guide](docs/installation.md)
+covers custom destinations and existing shell sessions after removal.
 
 ## Further documentation
 
-| Purpose | Guide |
+| Task | Guide |
 | --- | --- |
-| Set up the browser and customize controls | [Usage and keybindings](docs/usage.md) |
-| Add or maintain command compatibility | [Profiles and drivers](docs/profiles-and-drivers.md) |
-| Enable third-party command paths and run compatibility checks | [Third-party compatibility matrix](docs/compatibility.md) |
-| Inspect configuration and command recognition without probes | [Passive diagnostics and troubleshooting](docs/diagnostics.md) |
-| Understand discovery, caching, and safe insertion | [Discovery and safety](docs/discovery-and-safety.md) |
-| Import, scan, and correct documentation | [Collection workflows](docs/README.md#help-collection-workflows) |
-| Inspect the implementation or run tests | [Architecture and validation](docs/development.md) |
+| Customize controls, discovery, or startup loading | [Usage and keybindings](docs/usage.md) |
+| Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
+| Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
+| Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
+| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.1.2-alpha notes](docs/release-notes-v0.1.2-alpha.md) |
+| Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
 
-The [documentation index](docs/README.md) provides the complete topic map.
-The [media capture guide](docs/assets/README.md) describes the demonstrations and
-their regeneration.
+The [documentation index](docs/README.md) links all operating guides and dated
+validation reports. [Terminal media capture](docs/assets/README.md) describes the
+demonstrations, annotations, and regeneration procedure.

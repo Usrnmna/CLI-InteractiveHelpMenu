@@ -7,11 +7,18 @@ complete operating instructions, configuration references, and implementation
 evidence. Shell command examples assume the repository root as the working
 directory.
 
-The operating guides describe `0.1.2-alpha` and the current working tree. The
+Start with [installation](installation.md), then try the
+[first option insertion](usage.md#first-option-insertion). For additional commands,
+check [driver activation and supported paths](compatibility.md#enable-the-drivers)
+or [build a help collection](bulk-scan.md#first-collection-walkthrough).
+
+The operating guides describe the current working tree. The
 [versioned changelog](../CHANGELOG.md#version-012---alpha) and
 [release notes](release-notes-v0.1.2-alpha.md) record the prerelease scope. The
-[preserved alpha artifacts](releases.md#version-011---alpha) contain an older
-snapshot. Dated reviews below retain the results and limitations of their own runs.
+[v0.1.2-alpha packages](releases.md#version-012---alpha) are a release snapshot;
+[v0.1.1-alpha artifacts](releases.md#version-011---alpha) are historical packages.
+Neither an equal version string nor a dated review establishes current checkout
+contents. Dated reviews retain the results and limitations of their own runs.
 
 ## Browser use
 
@@ -64,6 +71,8 @@ defines both formats.
 
 ## Development and evidence
 
+- [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
+  pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records
   metadata and resize corrections, ten driver additions, and fresh validation.
 - [Source architecture and validation](development.md) covers module ownership,

@@ -19,6 +19,12 @@ next/previous pages, a case-insensitive command-name filter, and an all/issues
 toggle for inspecting successful or skipped entries. Original diagnostics and
 suggested actions are displayed when an entry opens.
 
+![Guided review of an example convert profile: select an option and edit its flag, summary, detail, and argument placeholder.](assets/guided-review.png)
+
+The image shows actual guided forms using an illustrative temporary collection.
+Changes require explicit saving; the captured partial edit was cancelled.
+[Capture details and regeneration](assets/README.md)
+
 ## Entry actions
 
 | Entry action | Behavior |

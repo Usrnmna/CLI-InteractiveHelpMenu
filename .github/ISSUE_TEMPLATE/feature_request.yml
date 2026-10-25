@@ -1,0 +1,39 @@
+name: Feature or compatibility request
+description: Propose a browser improvement, command route, or documentation change.
+title: '[Request] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the intended terminal workflow and the problem it should solve.
+        Use synthetic filenames, hosts, and argument values. Omit credentials,
+        private paths, unredacted command buffers, and raw local reports.
+        Filing a request does not require running an operational command.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Describe the task and where the current workflow falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Proposed behavior
+      description: Describe the expected interaction and a concrete example using synthetic values.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Command or environment details
+      description: For compatibility requests, identify the executable, subcommand path, implementation/version, and public documentation URL. For other requests, include relevant shell or terminal constraints.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing alternatives
+      description: Describe relevant profiles, drivers, configuration, or workarounds already considered.
+    validations:
+      required: false

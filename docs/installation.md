@@ -9,11 +9,11 @@ are required. Run the scripts as the account that will use the browser, without
 Automatic resize recovery also uses the standard Linux `stty` utility.
 
 These procedures describe the current checkout. The
-[published alpha packages](releases.md#version-011---alpha) contain an older
-snapshot; their version marker does not identify the later development fixes.
-The `v0.1.2-alpha` [prerelease formats](releases.md) contain the current
-foundational functionality. [Local candidates](release-candidate.md) remain
-separate snapshots; preparation alone does not publish an upgrade.
+[v0.1.2-alpha packages](releases.md#version-012---alpha) provide a versioned
+prerelease snapshot; the [v0.1.1-alpha packages](releases.md#version-011---alpha)
+are historical upgrade fixtures. A checkout or [local candidate](release-candidate.md)
+can contain later changes without a new version string. Compare source manifests
+when exact contents matter; preparation alone does not publish an upgrade.
 
 ## Installation
 

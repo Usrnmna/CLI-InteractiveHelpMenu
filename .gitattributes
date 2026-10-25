@@ -5,7 +5,7 @@
 .editorconfig text eol=lf
 *.bash text eol=lf
 *.sh text eol=lf
-*.py text eol=lf
+*.py text eol=lf diff=python
 *.json text eol=lf
 # JSON metadata and text help excerpts use normalized LF like authored source.
 *.md text eol=lf
@@ -13,10 +13,14 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 *.toml text eol=lf
-*.c text eol=lf
+*.c text eol=lf diff=cpp
 *.checksum text eol=lf
 *.txt text eol=lf
 *.1 text eol=lf
+# Terminal recordings and structured capture metadata are UTF-8 text.
+# Local raw captures remain excluded through their report/cache directories.
+*.cast text eol=lf
+*.jsonl text eol=lf
 
 # Preserve media and compressed manual fixtures byte for byte.
 *.gif binary

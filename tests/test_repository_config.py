@@ -62,6 +62,7 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "cli-help-installer.Ab12Cd34/runtime/README.md", "cli-help-review-config-session/drivers/private.json",
             "tests/reports/recommendations-7-9-review/final/rendered-screens.json",
             ".cli-help-rc-session", ".review-state-session", ".cli-help-install.json", "cli-help",
+            "scratch/runtime/cli-help", "tools/bin/cli-help",
             "collection/.scan.lock", "collection/.import.lock", "collection/.review-backups/backup.json",
             "collection/profiles/.cli-help-write-interrupted.tmp", ".cli-help-write-interrupted.tmp",
             "collection/.review-backups/recovery-session/manifest.json",
@@ -87,6 +88,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "docs/cli-help-installer.md", "docs/assets/cli-help-installer.png",
             "docs/assets/option-insertion.gif", "releases/v0.1.1-alpha/cli-help-v0.1.1-alpha-linux-x86_64",
             ".github/workflows/ci.yml", ".github/ISSUE_TEMPLATE/bug_report.yml", ".github/pull_request_template.md",
+            ".github/ISSUE_TEMPLATE/feature_request.yml", ".github/ISSUE_TEMPLATE/config.yml",
+            ".github/CONTRIBUTING.md", ".github/dependabot.yml",
             ".env.example", ".env.development.sample", "config/ssh.example", "examples/project/.env.template",
             "config/.ssh.example", "docs/cli-help-build-reference.md",
             "tests/fixtures/help/cli-help-installer-example.txt",
@@ -106,7 +109,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
                                                  env=self.environment, timeout=10).decode().split("\0")
                 attributes = {output[index + 1]: output[index + 2] for index in range(0, len(output) - 1, 3)}
                 self.assertEqual(attributes, {"binary": "set", "text": "unset", "diff": "unset", "merge": "unset"})
-        for name in ("cli_help/main.py", "docs/usage.md", "tests/fixtures/help/workflow-sed.txt", "profiles/rsync.json"):
+        for name in ("cli_help/main.py", "docs/usage.md", "tests/fixtures/help/workflow-sed.txt", "profiles/rsync.json",
+                     "recording.cast", "capture.jsonl"):
             with self.subTest(path=name):
                 output = subprocess.check_output(["git", "-C", str(self.folder), "check-attr", "-z", "text", "eol", "--", name],
                                                  env=self.environment, timeout=10).decode().split("\0")

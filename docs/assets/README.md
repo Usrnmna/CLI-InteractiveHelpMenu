@@ -7,8 +7,10 @@ sessions. Terminal cells, colors, search results, and form prompts come from the
 application. The title bars and numbered captions are presentation annotations.
 The guided-review image shows the lower viewport containing the form, omitting
 earlier report output.
-The assets are regenerated from the development tree on 2026-10-23; they
-illustrate checkout behavior rather than the preserved alpha release packages.
+The assets were regenerated from the `0.1.2-alpha` working tree on 2026-10-24
+(America/Los_Angeles). They illustrate the captured checkout, rather than proving
+the contents or behavior of a downloaded release package. Source hashes and
+runtime details are recorded in local capture evidence.
 
 | Asset | Content |
 | --- | --- |
@@ -88,8 +90,8 @@ non-execution results, and unchanged review collection contents. `scenes.json`
 records each caption, hold duration, output-event checkpoint, visible cells,
 and required/absent text.
 `browser.cast`, `ls.cast`, and `review.cast` retain the actual output streams.
-Source hashes identify the captured working tree independently of the unchanged
-alpha version. A source change during recording rejects the capture.
+Source hashes identify the captured working tree independently of the alpha
+version string. A source change during recording rejects the capture.
 
 The capture renderer supplements pyte 0.8.2 with xterm scroll-up/down handling
 for the sequences used by curses. The handling follows the
@@ -97,11 +99,16 @@ for the sequences used by curses. The handling follows the
 Application output and list ordering are retained; captions and title bars are
 the only presentation annotations.
 
-Validation on 2026-10-23 independently replayed the recorded rsync and ls output
-through tmux 3.4: all 17 captured screens matched its visible cells. GIF inspection
-also checks every encoded frame, its dimensions, and the complete hold sequence.
+Validation on 2026-10-24 independently replayed the refreshed rsync and ls output
+through tmux 3.4: all 17 captured screens matched its visible cells. The capture
+checks also confirmed exact pending buffers and cursors, cancellation preservation,
+absence of target-execution markers, and unchanged review collection contents.
 This evidence covers the recorded 100×24 xterm interactions on Bash 5.2.21 and
 Python 3.12.3 under Ubuntu 24.04/WSL; other terminal environments remain unverified.
+
+Regenerated captures require fresh checks. Inspect every encoded GIF frame, its
+dimensions, and the complete hold sequence alongside the current raw output and
+source hashes; previous checks do not establish replacement-asset correctness.
 
 Mermaid diagrams are maintained directly in the root README and topic guides.
 Their labels describe implemented flows; the screenshots and GIF show real UI

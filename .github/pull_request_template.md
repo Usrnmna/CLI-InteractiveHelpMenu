@@ -1,39 +1,27 @@
 ## Change and purpose
 
-Describe the concrete problem, resulting behavior, and affected components.
-Link a related issue when available. Use synthetic command arguments in examples.
+<!-- Describe the concrete problem, resulting behavior, and affected components.
+Link a related issue when available. Use synthetic arguments in examples. -->
 
 ## Verification
 
-List commands actually run and their results. Distinguish deterministic fixtures,
-live fixed help/version checks, rendered terminal checks, and unverified cases.
-For terminal changes, include cells, cursor, alternate-screen, and scrollback
-evidence; logical buffer checks alone do not establish visual correctness.
-For compatibility changes, identify captured implementations and versions,
-fixed documentation requests, argument/child boundaries, and any unverified
-variants. For diagnostics, record privacy and no-target-process/no-write checks.
-For argument forms, cover exact names, attached payloads, declared bundles, and
-unchanged legacy defaults. For display changes, cover mixed-width text and delayed
-key sequences. For recovery changes, cover stale evidence, concurrent file changes,
-uncertain locks, unsafe paths, interruptions, and preservation of original bytes.
-For repository configuration, record ignore-policy checks, workflow lint, local
-CI smoke results, and explicit upload paths. Retain strict failure handling;
-private captures, staging files, and recovery backups must remain excluded.
-Check nested tool homes and temporary sessions as well as checkout-root outputs;
-maintained fixtures, environment templates, and curated releases must remain visible.
-For extensionless native artifacts, verify binary Git attributes and editor exclusions.
-For release preparation, identify the candidate version, exact source manifest,
-checksums, isolated actual-artifact lifecycle results, and installed rendered
-adapter evidence. Rebuild after included edits. Distinguish unpublished candidates
-from preserved packages, hosted CI, and any separately authorized publication.
+<!-- List commands actually run and their results. Distinguish fixtures, live
+fixed help/version probes, rendered terminal checks, package checks, and hosted CI.
+For terminal changes, cover visible cells, cursor, and relevant resize/scrollback
+behavior. For compatibility changes, identify the implementation/version, driver
+activation, and insertion boundaries. Configuration changes need ignore/attribute
+checks and workflow lint when applicable. See the contribution and development
+guides for focused checks; unrelated checks need not be listed. -->
 
 ## Limits and compatibility
 
-Describe remaining limitations, configuration/schema compatibility, and any
-required migration. Unrelated changes and existing execution boundaries should
-remain preserved.
-Describe affected driver activation/precedence and cache invalidation when relevant.
+<!-- Describe unverified cases and changes to configuration, precedence, schemas,
+or migration requirements. Release candidates need exact source provenance and
+checksum evidence; local preparation does not establish publication. -->
 
-<!-- Credentials, private paths, complete pending buffers, tool homes, and raw
-probe output must be excluded. Diagnostic reports require review and redaction
-before sharing; local report/cache directories are not PR attachments by default. -->
+<!-- Before submitting, inspect the diff for credentials, private paths, complete
+pending buffers, raw captures, tool homes, staging files, and recovery backups.
+Reports require review and redaction before sharing. -->
+
+<!-- Contribution guidance: .github/CONTRIBUTING.md.
+Detailed validation and evidence limits: docs/development.md. -->

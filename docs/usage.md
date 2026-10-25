@@ -21,10 +21,22 @@ in Bash:
 source "$PWD/bash/interactive-help.bash"
 ```
 
-Type `rsync --` without pressing Enter, then press **Alt-H**. Select an option
-and press Enter to insert it. Escape or Ctrl-C closes the browser and retains
-the original command and cursor position. Alt-H can also be entered as Escape
-followed by `h` in terminals that do not transmit Alt combinations directly.
+### First option insertion
+
+Type `rsync --ar` without pressing Enter, then press **Alt-H**. The text at the
+cursor supplies the initial filter. With `--archive` selected in the options pane,
+press Enter to replace the partial flag and return to `rsync --archive `.
+The inserted flag has a trailing space; the command remains pending at the Bash
+prompt. This bundled static profile does not require an installed `rsync`.
+
+Press Ctrl-U in the browser to clear the initial filter and browse all categories.
+To search descriptions, press `/`, type a term, and press Enter to apply it;
+press Enter again to select an option. Escape or Ctrl-C outside search entry
+closes the browser and retains the original command and cursor position. During
+search entry, Escape restores the previous filter. Alt-H can also be entered as
+Escape followed by `h` in terminals that do not transmit Alt combinations directly.
+
+### Other pending input examples
 
 Examples of supported pending input:
 

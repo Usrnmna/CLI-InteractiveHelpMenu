@@ -22,6 +22,27 @@ Bash buffer. Imported static profiles retain literal option insertion without
 executing the pending command. Existing discovery settings continue to govern
 commands that have no imported profile.
 
+## First collection walkthrough
+
+A bounded first scan limits manual-rendering attempts while retaining a report
+of successful imports and entries requiring adjustment:
+
+```bash
+python3 cli_help/main.py --scan-installed --limit 100 \
+  --output-dir "$HOME/.config/cli-help/scanned"
+
+python3 cli_help/main.py --review-report \
+  "$HOME/.config/cli-help/scanned/scan-report.json"
+```
+
+In a review entry, **o** edits options, **c** edits categories, and **d** edits
+driver settings. **p** previews the menu and **s** saves validated changes with
+backups. Original scan findings remain available. The
+[guided review guide](review.md) explains the forms and save behavior.
+
+Continue with activation only when the collection contains successfully generated
+profile and driver directories. A zero-success scan does not create them.
+
 ## Activating a collection
 
 After inspecting the [scan report](#report-statuses-and-diagnostics) and correcting
@@ -32,6 +53,13 @@ export CLI_HELP_PROFILES="$HOME/.config/cli-help/scanned/profiles"
 export CLI_HELP_DRIVERS="$HOME/.config/cli-help/scanned/drivers"
 python3 cli_help/main.py --check
 ```
+
+These exports select the collection in the current shell. To load it in future
+sessions, place the exports before the adapter's source statement or managed
+startup block. A selected driver directory replaces the previously selected
+custom driver collection; [manual composition](profiles-and-drivers.md#activation-and-manual-composition)
+describes combining collections. Bundled profiles remain available unless replaced
+by a matching custom profile.
 
 ## Filters and scan limits
 

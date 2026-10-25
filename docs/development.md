@@ -224,6 +224,9 @@ subject to their own validation.
 [.gitattributes](../.gitattributes) keeps text checkouts in LF format for Linux
 tools, including when Git runs on Windows. README media and compressed manuals
 are binary and are not subject to line-ending conversion.
+Python and C files select Git's built-in language diff patterns for function
+context. Terminal recordings (`.cast`) and structured capture metadata (`.jsonl`)
+use LF text attributes; raw local captures still belong in ignored directories.
 [.editorconfig](../.editorconfig) applies matching editor defaults while preserving
 significant whitespace in Markdown and help-parser fixtures.
 
@@ -247,6 +250,8 @@ changing the checkout index or consulting personal Git configuration.
 They also check actual Git attributes: extensionless native artifacts remain
 binary in every artifact location, and maintained source/help text retains LF.
 Editor defaults exclude those extensionless binaries from text transformations.
+Unversioned `cli-help` launchers are ignored at every directory depth; versioned
+release launchers remain eligible for tracking.
 Environment-file templates ending in `.example`, `.sample`, or `.template`
 remain eligible for tracking, including names such as `.env.development.example`.
 Ignored caches and reports can contain local machine paths and downloaded tools;
@@ -267,9 +272,14 @@ optional driver/profile setup field records activation, discovery mode, and
 route provenance without requesting private configuration contents. The
 optional package field records artifact format, checksum/manifest agreement, and
 lifecycle status without requesting private receipts or backup contents. The
+[feature-request form](../.github/ISSUE_TEMPLATE/feature_request.yml) records the
+intended interaction and optional command implementation/version details. The
+[issue chooser](../.github/ISSUE_TEMPLATE/config.yml) links the documentation and
+retains free-form reports. The [contribution guide](../.github/CONTRIBUTING.md)
+summarizes local checks and generated-file locations. The
 [pull-request template](../.github/pull_request_template.md) separates observed
-verification from remaining limitations. Both describe privacy precautions;
-diagnostic reports require local-path review and redaction before sharing.
+verification from remaining limitations. Reports and contributions require
+privacy review; diagnostic summaries require local-path redaction before sharing.
 
 ## Continuous integration
 
