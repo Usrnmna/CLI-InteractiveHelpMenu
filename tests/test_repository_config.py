@@ -1,11 +1,12 @@
 """Protect private local artifacts while keeping maintained repository inputs visible."""
 
+import importlib.util
 import os
 from pathlib import Path
 import shutil
 import subprocess
-import tempfile
 import unittest
+import uuid
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,9 +15,14 @@ ROOT = Path(__file__).resolve().parents[1]
 @unittest.skipUnless(shutil.which("git"), "Ignore-policy checks require Git")
 class RepositoryIgnoreTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(prefix="cli-help-ignore-")
-        self.addCleanup(self.temporary.cleanup)
-        self.folder = Path(self.temporary.name)
+        parent = (ROOT / ".cache/repository-config-tests").resolve()
+        parent.mkdir(parents=True, exist_ok=True)
+        self.folder = parent / uuid.uuid4().hex
+        self.folder.mkdir()
+        # Verify the absolute cleanup target before registering a recursive delete.
+        if self.folder.resolve().parent != parent or self.folder.is_symlink():
+            raise RuntimeError("Disposable repository left its intended test directory")
+        self.addCleanup(shutil.rmtree, self.folder)
         self.environment = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
         self.environment.update({"HOME": str(self.folder), "XDG_CONFIG_HOME": str(self.folder / ".config"),
                                  "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull,
@@ -72,6 +78,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "scratch/cli-help-installer.Ab12Cd34/runtime/README.md",
             "scratch/cli-help-screen-session/tmux.sock", "scratch/.review-state-session",
             "scratch/runtime/.cli-help-install.json", "scratch/.cli-help-rc-session", "scratch/.lycheecache",
+            "tests/reports/numerical-inventory/inventory.json", "tests/reports/ci/numerical-inventory-summary.json",
+            "cli-help-inventory-session/profiles/private.json", "scratch/cli-help-inventory-session/help.txt",
         ], True)
 
     def test_source_fixtures_templates_and_public_assets_remain_visible(self):
@@ -94,6 +102,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "config/.ssh.example", "docs/cli-help-build-reference.md",
             "tests/fixtures/help/cli-help-installer-example.txt",
             "releases/v0.1.2-alpha/cli-help-v0.1.2-alpha-linux-x86_64.checksum",
+            "scripts/inventory_numerical_descriptions.py", "tests/test_numerical_inventory.py",
+            "docs/numerical-inventory/README.md", "docs/numerical-inventory/review.json", "docs/cli-help-inventory.md",
         ], False)
 
     def test_native_artifacts_are_binary_and_maintained_text_keeps_lf(self):
@@ -116,6 +126,28 @@ class RepositoryIgnoreTests(unittest.TestCase):
                                                  env=self.environment, timeout=10).decode().split("\0")
                 attributes = {output[index + 1]: output[index + 2] for index in range(0, len(output) - 1, 3)}
                 self.assertEqual(attributes, {"text": "set", "eol": "lf"})
+
+    def test_curated_inventory_is_not_marked_generated(self):
+        """Keep maintained review decisions visible rather than treating them as output."""
+        name = "docs/numerical-inventory/review.json"
+        output = subprocess.check_output(["git", "-C", str(self.folder), "check-attr", "-z",
+                                          "linguist-generated", "text", "eol", "--", name],
+                                         env=self.environment, timeout=10).decode().split("\0")
+        attributes = {output[index + 1]: output[index + 2] for index in range(0, len(output) - 1, 3)}
+        self.assertEqual(attributes, {"linguist-generated": "unset", "text": "set", "eol": "lf"})
+
+    def test_inventory_sessions_are_excluded_from_release_sources(self):
+        """Keep release selection aligned with Git without requiring a Linux build."""
+        spec = importlib.util.spec_from_file_location("release_source_policy", ROOT / "scripts/build_release.py")
+        policy = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(policy)
+        for name in ("docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt"):
+            with self.subTest(path=name):
+                self.assertTrue(policy.excluded_source(Path(name)))
+        for name in ("docs/numerical-inventory/review.json", "docs/cli-help-inventory.md",
+                     "scripts/inventory_numerical_descriptions.py"):
+            with self.subTest(path=name):
+                self.assertFalse(policy.excluded_source(Path(name)))
 
 
 if __name__ == "__main__":

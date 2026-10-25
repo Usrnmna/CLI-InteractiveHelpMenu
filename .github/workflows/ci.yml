@@ -44,6 +44,12 @@ jobs:
           set -euo pipefail
           mkdir -p tests/reports/ci
           python3 -B -m unittest discover -s tests -p test_repository_config.py -v 2>&1 | tee tests/reports/ci/repository-policy.log
+      - name: Reconcile numerical-description inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports/ci
+          python3 -B scripts/inventory_numerical_descriptions.py --check --summary | tee tests/reports/ci/numerical-inventory-summary.json
       - name: Smoke-test passive diagnostics
         shell: bash
         env:
@@ -200,6 +206,7 @@ jobs:
           path: |
             tests/reports/ci/linux-tests.log
             tests/reports/ci/repository-policy.log
+            tests/reports/ci/numerical-inventory-summary.json
             tests/reports/ci/diagnostics-doctor.json
             tests/reports/ci/diagnostics-explain.json
             tests/reports/ci/diagnostics-private-driver.json

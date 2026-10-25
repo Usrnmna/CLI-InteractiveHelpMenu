@@ -35,7 +35,8 @@ PRIVATE_PATTERNS = ("*.pyc", "*.pyo", "*.swp", "*.swo", "*~", ".coverage.*", ".c
     "*.update-review-backup-*", "*.release-update-*", "*.cli-help-backup-*")
 PRIVATE_DIRECTORY_PATTERNS = ("cli-help-installer.*",
     "cli-help-probe-*", "cli-help-review-*", "cli-help-screen-*", "cli-help-build-*", "cli-help-media-*",
-    "cli-help-capture-*", "cli-help-functional-review-*", "cli-help-workflow-verification-*")
+    "cli-help-ignore-*", "cli-help-inventory-*", "cli-help-capture-*", "cli-help-functional-review-*",
+    "cli-help-workflow-verification-*")
 
 
 def excluded_source(relative, directory=False):

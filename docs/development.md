@@ -229,6 +229,12 @@ context. Terminal recordings (`.cast`) and structured capture metadata (`.jsonl`
 use LF text attributes; raw local captures still belong in ignored directories.
 [.editorconfig](../.editorconfig) applies matching editor defaults while preserving
 significant whitespace in Markdown and help-parser fixtures.
+Curated numerical review annotations are explicitly unmarked as generated so
+GitHub's generated-file classification does not hide their review by default.
+The [GitHub attribute reference](https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github)
+describes this diff-display setting.
+Editor text transformations are unset for root cache, report, build and generated
+collection directories to preserve downloaded bytes and reproducible evidence.
 
 [.gitignore](../.gitignore) excludes local Python environments, caches, test
 reports, review backups, collection locks, and local environment files. The
@@ -252,6 +258,10 @@ binary in every artifact location, and maintained source/help text retains LF.
 Editor defaults exclude those extensionless binaries from text transformations.
 Unversioned `cli-help` launchers are ignored at every directory depth; versioned
 release launchers remain eligible for tracking.
+Disposable `cli-help-inventory-*` directories share the ignore, link-scan and
+release-source exclusions used for other temporary sessions. Maintained
+`docs/numerical-inventory/review.json`, its guide, generator and tests remain
+eligible for tracking; generated facts belong under `tests/reports/`.
 Environment-file templates ending in `.example`, `.sample`, or `.template`
 remain eligible for tracking, including names such as `.env.development.example`.
 Ignored caches and reports can contain local machine paths and downloaded tools;
@@ -297,6 +307,15 @@ named log is retained even if a later step fails. Bytecode generation is disable
 for the Linux job. Candidate builds use a fresh runner-temporary parent directory
 so repeated local smoke execution does not overwrite an existing candidate.
 
+A separate inventory step runs
+`python3 -B scripts/inventory_numerical_descriptions.py --check --summary` before
+the runtime smoke checks. It rejects missing, stale, duplicate, conflicting and
+orphaned review assignments. The retained JSON contains aggregate counts and
+diagnostic totals; the complete inventory and raw-help excerpts stay local.
+This is Step 1 reconciliation, not validation of numerical units or implementation
+of the proposed production numerical contract. See the
+[inventory guide](numerical-inventory/README.md) for definitions and limits.
+
 Before the suite, a separate passive smoke check invokes `--doctor` and
 `--explain` with fixed synthetic input and discovery disabled. It checks supplied
 activation, Compose route provenance, private configured-operand/manual-alias
@@ -307,8 +326,9 @@ disclosure before retention.
 After the suite, each job builds a new temporary candidate and runs the
 [package and installed-terminal regressions](release-candidate.md#final-source-and-package-checks)
 against those exact artifacts. Only seven named synthetic diagnostic reports,
-the policy/suite/package logs, aggregate checksum results, and source manifest are
-uploaded. Package binaries, raw captures, arbitrary local reports, tool homes,
+the numerical-inventory summary, policy/suite/package logs, aggregate checksum
+results, and source manifest are uploaded. Package binaries, raw captures,
+arbitrary local reports, tool homes,
 and recovery backups are excluded. The workflow does not publish or tag releases.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check

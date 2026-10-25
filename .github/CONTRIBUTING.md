@@ -45,6 +45,21 @@ python3 -B -m unittest discover -s tests -p test_repository_config.py -v
 git diff --check
 ```
 
+For numerical-description inventory changes, run:
+
+```bash
+python3 -B scripts/inventory_numerical_descriptions.py --check --summary
+python3 -B -m unittest discover -s tests -p test_numerical_inventory.py -v
+```
+
+The [inventory guide](../docs/numerical-inventory/README.md) defines source
+coverage, counting rules, review identities, and unresolved work. New or changed
+entries require review before their annotations or fingerprints are updated.
+Reconciliation checks annotation integrity; it does not establish correct units
+or implement the proposed production numerical contract. Record reviewed and
+unresolved coverage separately. A complete local inventory can contain source
+paths and raw-help excerpts; share the summary rather than the full report.
+
 Keep tests independent of real operational workloads. Browsing or inserting help
 must leave the pending command unexecuted. Fixed help/version/manual probes have
 separate [execution boundaries](../docs/discovery-and-safety.md). Terminal changes
@@ -63,6 +78,7 @@ suites as evidence for a different boundary.
 | Diagnostics and caching | Privacy, absence of target processes and writes in passive modes, provenance, redaction, and relevant cache invalidation |
 | Collection or update recovery | Stale evidence, concurrent edits, uncertain locks, unsafe paths, interruptions, and preservation of original bytes |
 | Repository configuration | Root and nested ignore rules, visible maintained fixtures/templates/releases, binary attributes and editor exclusions, workflow lint, strict failure handling, and explicitly scoped uploads |
+| Numerical inventory | Independent counts, automatic discovery beyond sentinels, stable identities, annotation reconciliation, deterministic passive generation, and explicit semantic uncertainty |
 | Release preparation | Exact candidate source manifest, checksums, actual-package lifecycle checks, and installed rendered adapter evidence; rebuild after changing included inputs and distinguish local candidates from publication |
 
 ## Generated files and release inputs
@@ -73,6 +89,12 @@ checkout-local generated collections. Maintained help fixtures and public
 documentation media remain trackable. The
 [media guide](../docs/assets/README.md) explains actual terminal capture and
 regeneration; screenshots and recordings should reflect observed behavior.
+
+Numerical inventory facts belong in `tests/reports/numerical-inventory/`.
+The guide and `docs/numerical-inventory/review.json` are maintained inputs and
+remain visible to Git. Inventory test sessions use ignored `.cache/` snapshots;
+`cli-help-inventory-*` directories are also excluded at any depth. Matching
+release-source and link-scan rules exclude disposable inventory sessions.
 
 Git ignore rules do not remove tracked files or control release packaging.
 Inspect the diff and selected files before submitting. Preserve historical

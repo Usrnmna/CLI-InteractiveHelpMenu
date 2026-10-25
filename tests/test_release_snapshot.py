@@ -119,11 +119,13 @@ class ReleaseInventoryTests(unittest.TestCase):
             "tests/session.pyc", "docs/guide.md.swp", "config/.netrc", "private-notes.md",
             "tools/.config/gcloud/credentials.db", "tools/.config/gh/hosts.yml",
             "tests/.config/cli-help/profiles/private.json", "tools/.config/containers/auth.json",
+            "docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt",
             "tools/.local/share/containers/storage/private", "tests/htmlcov/index.html", "docs/.DS_Store",
         }
         public = {"cli_help/added_module.py", "tests/fixtures/help/captured.txt", "docs/assets/example.gif",
                   "config/.env.example", "config/.env.development.sample", "config/.env.template",
-                  "docs/cli-help-installer.md", ".github/workflows/fixture.yml"}
+                  "docs/cli-help-installer.md", ".github/workflows/fixture.yml",
+                  "docs/numerical-inventory/review.json", "docs/cli-help-inventory.md"}
         for name in private | public:
             self.put(name)
         selected = {path.relative_to(self.root).as_posix() for path in build_release.source_files(self.root)}

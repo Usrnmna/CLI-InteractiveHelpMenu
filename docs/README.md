@@ -71,6 +71,8 @@ defines both formats.
 
 ## Development and evidence
 
+- [Numerical description implementation inventory](numerical-inventory/README.md)
+  records Step 1 enumeration, review dispositions, and later acceptance criteria.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

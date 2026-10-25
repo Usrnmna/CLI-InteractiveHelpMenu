@@ -17,6 +17,7 @@ body:
         - Browser controls or display
         - Command recognition or option insertion
         - Help discovery or compatibility
+        - Numerical descriptions or implementation inventory
         - Manual import, scanning, or collection review
         - Installation, release packages, or updates
         - Documentation, media, or repository configuration
@@ -65,6 +66,13 @@ body:
       description: Distinguish command-buffer changes, visible rendering, and separate help-discovery requests.
     validations:
       required: true
+  - type: textarea
+    id: numerical_description
+    attributes:
+      label: Numerical meaning or inventory entry
+      description: For numerical-description problems, identify the command, option, displayed placeholder/description, expected unit or scale, implementation/version, and public documentation URL. For inventory failures, include relevant identity and reconciliation reason codes; omit full generated inventories.
+    validations:
+      required: false
   - type: textarea
     id: diagnostics
     attributes:
