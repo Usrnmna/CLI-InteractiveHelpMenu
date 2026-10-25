@@ -50,7 +50,77 @@
           "flag": "group",
           "argument": "GROUP",
           "summary": "Select the device group",
-          "kind": "keyword"
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Network-device groups selector",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in",
+                      "locator": "Link GROUP names/numbers and interface names"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer identifier, not a quantity or severity rank"
+                  },
+                  {
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "group names from configured mapping files"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit selector is added; normal command selection defaults apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Network-device groups"
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: the numeric form identifies network-device groups, not a count, percentage or measurement. Alternatives include group names from configured mapping files. Name mappings are configuration-dependent."
         }
       ]
     }

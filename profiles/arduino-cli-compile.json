@@ -25,7 +25,74 @@
           "flag": "--board-options",
           "argument": "OPTIONS",
           "argument_optional": false,
-          "summary": "Set board options"
+          "summary": "Set board options",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Arduino board/build-property grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.2/commands/arduino-cli_compile/",
+                      "locator": "1.2 documentation: --jobs, --warnings, --board-options and --build-property"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "The Arduino CLI 1.2 reference delegates board options or build-property values to the selected board platform; counts, frequencies and sizes inside those values have key-specific meanings"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Arduino board/build-property grammar",
+                  "reference": {
+                    "source": "https://arduino.github.io/arduino-cli/1.2/commands/arduino-cli_compile/",
+                    "locator": "1.2 documentation: --jobs, --warnings, --board-options and --build-property"
+                  }
+                },
+                "investigation": "Pin the exact CLI release and board-platform property grammar; do not invent a universal unit"
+              }
+            ]
+          },
+          "detail": "The Arduino CLI 1.2 reference delegates board options or build-property values to the selected board platform; counts, frequencies and sizes inside those values have key-specific meanings. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--build-path",
@@ -43,7 +110,74 @@
           "flag": "--build-property",
           "argument": "PROPERTY",
           "argument_optional": false,
-          "summary": "Override a build property"
+          "summary": "Override a build property",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Arduino board/build-property grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.2/commands/arduino-cli_compile/",
+                      "locator": "1.2 documentation: --jobs, --warnings, --board-options and --build-property"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "The Arduino CLI 1.2 reference delegates board options or build-property values to the selected board platform; counts, frequencies and sizes inside those values have key-specific meanings"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Arduino board/build-property grammar",
+                  "reference": {
+                    "source": "https://arduino.github.io/arduino-cli/1.2/commands/arduino-cli_compile/",
+                    "locator": "1.2 documentation: --jobs, --warnings, --board-options and --build-property"
+                  }
+                },
+                "investigation": "Pin the exact CLI release and board-platform property grammar; do not invent a universal unit"
+              }
+            ]
+          },
+          "detail": "The Arduino CLI 1.2 reference delegates board options or build-property values to the selected board platform; counts, frequencies and sizes inside those values have key-specific meanings. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--libraries",
@@ -73,13 +207,31 @@
           "flag": "-j",
           "argument": "JOBS",
           "argument_optional": false,
-          "summary": "Set concurrent jobs"
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "compile-jobs"
+              }
+            ]
+          },
+          "detail": "Arduino CLI 1.2 reference: JOBS counts parallel compilations. Zero selects the available CPU-core count; it is not an unlimited-jobs value. Exact patch applicability and exceptional ranges require verification."
         },
         {
           "flag": "--jobs",
           "argument": "JOBS",
           "argument_optional": false,
-          "summary": "Set concurrent jobs"
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "compile-jobs"
+              }
+            ]
+          },
+          "detail": "Arduino CLI 1.2 reference: JOBS counts parallel compilations. Zero selects the available CPU-core count; it is not an unlimited-jobs value. Exact patch applicability and exceptional ranges require verification."
         },
         {
           "flag": "-v",
@@ -107,5 +259,71 @@
     "source": "https://arduino.github.io/arduino-cli/1.5/commands/arduino-cli_compile/",
     "reviewed": "2026-10-23",
     "kind": "curated subset; not an installed-version guarantee"
+  },
+  "value_definitions": {
+    "compile-jobs": {
+      "kind": "count",
+      "meaning": "Maximum parallel compilations",
+      "review": {
+        "status": "source_derived",
+        "references": [
+          {
+            "source": "https://arduino.github.io/arduino-cli/1.2/commands/arduino-cli_compile/",
+            "locator": "1.2 documentation: --jobs, --warnings, --board-options and --build-property"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Arduino CLI"
+          ]
+        },
+        "version": {
+          "state": "unverified",
+          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "jobs"
+      },
+      "forms": [
+        {
+          "id": "jobs",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "0"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Use the number of available CPU cores"
+            }
+          ],
+          "grammar": "Integer compilation count"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the documented automatic CPU-core-based job count"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "subject": "Parallel compilations",
+      "investigation": "Verify exact Arduino CLI release coverage and signed/range behavior; the 1.2 reference is a documentation series"
+    }
   }
 }

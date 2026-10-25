@@ -38,7 +38,102 @@
           "flag": "--expire",
           "argument": "TIME",
           "argument_optional": false,
-          "summary": "Remove records older than a time"
+          "summary": "Set a Git expiry date/time cutoff",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Unused-worktree record expiry cutoff",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-worktree/2.48.0",
+                      "locator": "--expire for prune; command default is separate from gc.worktreePruneExpire"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/builtin/worktree.c",
+                      "locator": "expire=TIME_MAX before prune option parsing"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
+                      "locator": "parse_expiry_date: never/false map to zero; all/now map to TIME_MAX"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "unverified",
+                  "reason": "A plain number's interpretation must be checked against this command's exact date parser"
+                },
+                "forms": [
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "GIT-DATE/EXPIRY",
+                    "grammar": "Command-specific date/expiry syntax; relative and sentinel forms require verification"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never | false",
+                    "tokens": [
+                      "never",
+                      "false"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use a zero cutoff, preventing ordinary expiry by age",
+                    "sentinel": true
+                  },
+                  {
+                    "id": "all",
+                    "notation": "literal",
+                    "syntax": "all | now",
+                    "tokens": [
+                      "all",
+                      "now"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use TIME_MAX as the cutoff, imposing no additional age restriction",
+                    "sentinel": true
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The direct prune command imposes no additional age restriction (TIME_MAX)"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "time_basis": "Depends on the date/expiry expression and timezone",
+                "investigation": "Verify bare numbers, relative syntax, sentinels and timezone defaults in the exact date/expiry parser"
+              }
+            ]
+          },
+          "detail": "Git 2.48.0: --expire is an expiry date/time expression. The direct prune command initializes its absent cutoff to TIME_MAX, distinct from garbage collection's age policy. The pinned expiry parser maps never/false to a zero cutoff and all/now to TIME_MAX; other eligibility checks still apply. Exact numerical forms remain under investigation; no unit is invented."
         }
       ]
     }

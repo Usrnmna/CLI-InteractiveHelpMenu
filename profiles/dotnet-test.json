@@ -91,7 +91,74 @@
           "flag": "--filter",
           "argument": "EXPRESSION",
           "argument_optional": false,
-          "summary": "Filter test cases"
+          "summary": "Filter test cases",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by .NET test-runner filter grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details",
+                      "locator": "Test-runner filter grammar; exact SDK/test-runner coverage is unpinned"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "The selected test runner interprets filter expressions and their property-specific values; there is no global unit"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": ".NET test-runner filter grammar",
+                  "reference": {
+                    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details",
+                    "locator": "Test-runner filter grammar; exact SDK/test-runner coverage is unpinned"
+                  }
+                },
+                "investigation": "Verify exact SDK/test-runner applicability and filtering grammar"
+              }
+            ]
+          },
+          "detail": "The selected test runner interprets filter expressions and their property-specific values; there is no global unit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--logger",

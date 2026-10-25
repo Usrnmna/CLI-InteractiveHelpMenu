@@ -21,7 +21,74 @@
         {
           "flag": "--numeric",
           "argument": "",
-          "summary": "Display numeric addresses and ports"
+          "summary": "Display numeric addresses and ports",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Display numerical endpoint identifiers",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                      "locator": "--query, --ipv4, --ipv6 and --numeric"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--numeric",
+                    "tokens": [
+                      "--numeric"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Display numerical endpoint identifiers"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: printed addresses and ports identify endpoints, not speeds or sizes. The flag takes no numerical operand."
         },
         {
           "flag": "--tcp",
@@ -41,12 +108,146 @@
         {
           "flag": "--ipv4",
           "argument": "",
-          "summary": "Display IPv4 sockets"
+          "summary": "Display IPv4 sockets",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select IP version 4 sockets",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                      "locator": "--query, --ipv4, --ipv6 and --numeric"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--ipv4",
+                    "tokens": [
+                      "--ipv4"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Select IP version 4 sockets"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: this is an address-family selector, not a quantity; no numerical operand is entered."
         },
         {
           "flag": "--ipv6",
           "argument": "",
-          "summary": "Display IPv6 sockets"
+          "summary": "Display IPv6 sockets",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select IP version 6 sockets",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                      "locator": "--query, --ipv4, --ipv6 and --numeric"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--ipv6",
+                    "tokens": [
+                      "--ipv6"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Select IP version 6 sockets"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: this is an address-family selector, not a quantity; no numerical operand is entered."
         },
         {
           "flag": "--extended",
@@ -61,7 +262,77 @@
         {
           "flag": "--query=",
           "argument": "QUERY",
-          "summary": "Select socket tables"
+          "summary": "Select socket tables",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Socket-table identifier-list grammar",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                      "locator": "--query, --ipv4, --ipv6 and --numeric"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "iproute2 6.13.0: comma-separated socket-table names such as tcp or udp, optionally excluded with !; protocol-name digits are not measured input"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Socket-table identifier-list grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                    "locator": "--query, --ipv4, --ipv6 and --numeric"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: comma-separated socket-table names such as tcp or udp, optionally excluded with !; protocol-name digits are not measured input. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.13.0."
         },
         {
           "flag": "--filter=",

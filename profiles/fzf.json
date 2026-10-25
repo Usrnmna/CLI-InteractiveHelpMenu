@@ -11,9 +11,18 @@
         {
           "flag": "--multi",
           "argument": "[=MAX]",
-          "summary": "Allow multiple selections",
+          "summary": "Allow multiple selections; optional MAX counts items",
           "argument_optional": true,
-          "optional_value_kind": "nonnegative_integer"
+          "optional_value_kind": "nonnegative_integer",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "selection-limit"
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: the optional integer is the maximum number of selected input items. Without MAX, multi-selection has no explicit user cap. Zero disables multi-selection; it does not mean unlimited."
         },
         {
           "flag": "-m",
@@ -21,7 +30,16 @@
           "argument_optional": true,
           "optional_value_kind": "nonnegative_integer",
           "attached": true,
-          "summary": "Allow multiple selections"
+          "summary": "Allow multiple selections; optional MAX counts items",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "selection-limit"
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: the optional integer is the maximum number of selected input items. Without MAX, multi-selection has no explicit user cap. Zero disables multi-selection; it does not mean unlimited."
         },
         {
           "flag": "--exact",
@@ -53,7 +71,139 @@
         {
           "flag": "--height",
           "argument": "HEIGHT",
-          "summary": "Set display height"
+          "summary": "Set height in terminal rows or percent of terminal height",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Finder window height",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                      "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go",
+                      "locator": "parseHeight and parseSize"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fzf"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.60.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "rows"
+                },
+                "forms": [
+                  {
+                    "id": "rows",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "row",
+                      "multiplier": "1"
+                    },
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "grammar": "Nonnegative integer terminal-row count"
+                  },
+                  {
+                    "id": "percentage",
+                    "notation": "suffix",
+                    "syntax": "N%",
+                    "tokens": [
+                      "%"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "ratio",
+                      "multiplier": "0.01",
+                      "relative_to": "terminal height"
+                    },
+                    "bounds": {
+                      "min": "0",
+                      "max": "100"
+                    }
+                  },
+                  {
+                    "id": "inverse-rows",
+                    "notation": "expression",
+                    "syntax": "-N",
+                    "grammar": "Subtract N terminal rows from terminal height; the minus is a layout modifier",
+                    "unit": {
+                      "base": "row",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "inverse-percent",
+                    "notation": "expression",
+                    "syntax": "-N%",
+                    "grammar": "Subtract this percentage of terminal height; the minus is a layout modifier",
+                    "unit": {
+                      "base": "ratio",
+                      "multiplier": "0.01",
+                      "relative_to": "terminal height"
+                    }
+                  },
+                  {
+                    "id": "adaptive-rows",
+                    "notation": "expression",
+                    "syntax": "~N",
+                    "grammar": "Adapt to input size up to N terminal rows; a negative adaptive height is invalid",
+                    "unit": {
+                      "base": "row",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "adaptive-percent",
+                    "notation": "expression",
+                    "syntax": "~N%",
+                    "grammar": "Adapt to input size up to this percentage of terminal height; a negative adaptive height is invalid",
+                    "unit": {
+                      "base": "ratio",
+                      "multiplier": "0.01",
+                      "relative_to": "terminal height"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default full-screen display unless other display options apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: bare integers count terminal rows; a % suffix is a percentage of terminal height (0-100). A leading - subtracts from terminal height; ~ enables adaptive height based on input size. Adaptive height cannot be negative and has additional percentage-margin/padding limitations. These are layout forms, not byte or time quantities."
         },
         {
           "flag": "--layout",
@@ -63,12 +213,148 @@
         {
           "flag": "--bind",
           "argument": "BINDINGS",
-          "summary": "Set key and event bindings as one argument"
+          "summary": "Set key and event bindings as one argument",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by fzf event/action grammar",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                      "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fzf"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.60.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "fzf 0.60.3: key/event bindings and actions; nested commands and action-specific numbers have their own grammar"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "fzf event/action grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                    "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: key/event bindings and actions; nested commands and action-specific numbers have their own grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 0.60.3."
         },
         {
           "flag": "--preview",
           "argument": "COMMAND",
-          "summary": "Set a preview command as one argument"
+          "summary": "Set a preview command as one argument",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by fzf preview command/template grammar",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                      "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fzf"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.60.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "fzf 0.60.3: a preview command with fzf placeholders; it can run when fzf later executes, but it is never executed by this help menu"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "fzf preview command/template grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                    "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: a preview command with fzf placeholders; it can run when fzf later executes, but it is never executed by this help menu. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 0.60.3."
         },
         {
           "flag": "--prompt",
@@ -88,7 +374,76 @@
         {
           "flag": "--nth",
           "argument": "RANGES",
-          "summary": "Select fields for matching"
+          "summary": "Select matching fields by 1-based indices or ranges",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "index",
+                "meaning": "Fields included in matching",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+                      "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fzf"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.60.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "index"
+                },
+                "forms": [
+                  {
+                    "id": "index",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "A nonzero signed decimal integer; positive indices start at 1 and -1 is the last field"
+                  },
+                  {
+                    "id": "fields",
+                    "notation": "expression",
+                    "syntax": "N[,N..M,...]",
+                    "grammar": "Comma-separated nonzero integer indices or inclusive ranges; positive indices start at 1, -1 is the last field, and open endpoints select the beginning/end"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Search all fields"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Input fields after any --with-nth transformation",
+                "origin": "1"
+              }
+            ]
+          },
+          "detail": "fzf 0.60.3: use comma-separated field expressions, such as 1,3..5,-1. Positive indices start at 1; negative indices count from the end (-1 is last); zero is not a field index. Ranges are inclusive, and omitted endpoints extend to the first/last field. Indices apply after --with-nth transformation when that option is used."
         },
         {
           "flag": "--read0",
@@ -103,5 +458,76 @@
       ]
     }
   ],
-  "stop_at_positional": true
+  "stop_at_positional": true,
+  "value_definitions": {
+    "selection-limit": {
+      "kind": "count",
+      "meaning": "Maximum simultaneously selected items",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+            "locator": "--multi, --height, --nth and FIELD INDEX EXPRESSION"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go",
+            "locator": "--multi optionalNumeric; zero equals disabled state"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fzf"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.60.3"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "number"
+      },
+      "forms": [
+        {
+          "id": "number",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "0"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Disable multi-selection in the inspected parser"
+            }
+          ],
+          "grammar": "Decimal integer item count"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Multi-selection is disabled unless enabled through default options"
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Enable multi-selection without an explicit maximum; the implementation's maximum applies"
+      },
+      "subject": "Selected input items"
+    }
+  }
 }

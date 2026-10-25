@@ -37,13 +37,31 @@
         {
           "flag": "--env",
           "argument": "KEY=VALUE",
-          "summary": "Set an environment value"
+          "summary": "Set an environment value",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "environment-value"
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2."
         },
         {
           "flag": "-e",
           "argument": "KEY=VALUE",
           "summary": "Set an environment value",
-          "attached": true
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "environment-value"
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2."
         },
         {
           "flag": "--workdir",
@@ -53,7 +71,209 @@
         {
           "flag": "--user",
           "argument": "USER",
-          "summary": "Select the container user"
+          "summary": "Select the container user",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "composite",
+                "meaning": "Container user/group identity",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+                      "locator": "--publish, --volume, --user and --env"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-exec.1.html",
+                      "locator": "--env and --user"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "USER[:GROUP]",
+                    "grammar": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Command defaults and configuration apply without this explicit value"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "slots": 1,
+                "components": [
+                  {
+                    "id": "user",
+                    "slot": 1,
+                    "required": true,
+                    "semantics": {
+                      "kind": "identifier",
+                      "meaning": "Container username or UID",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+                            "locator": "--publish, --volume, --user and --env"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "Podman"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "5.4.2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "integer"
+                      },
+                      "forms": [
+                        {
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Integer identifier, not a measured quantity"
+                        },
+                        {
+                          "id": "name",
+                          "notation": "expression",
+                          "syntax": "USERNAME",
+                          "grammar": "Symbolic username"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "User accounts"
+                    }
+                  },
+                  {
+                    "id": "group",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "identifier",
+                      "meaning": "Container group name or GID",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+                            "locator": "--publish, --volume, --user and --env"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "Podman"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "5.4.2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "integer"
+                      },
+                      "forms": [
+                        {
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Integer identifier, not a measured quantity"
+                        },
+                        {
+                          "id": "name",
+                          "notation": "expression",
+                          "syntax": "GROUPNAME",
+                          "grammar": "Symbolic group name"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Groups"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults."
         },
         {
           "flag": "--privileged",
@@ -63,5 +283,77 @@
       ]
     }
   ],
-  "stop_at_positional": true
+  "stop_at_positional": true,
+  "value_definitions": {
+    "environment-value": {
+      "kind": "delegated",
+      "meaning": "Value interpreted by Podman environment assignment grammar",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+            "locator": "--publish, --volume, --user and --env"
+          },
+          {
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-exec.1.html",
+            "locator": "--env and --user"
+          },
+          {
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-exec.1.html",
+            "locator": "--env and --user"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Podman"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "5.4.2"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The owning grammar determines any numerical interpretation"
+      },
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "grammar": {
+        "name": "Podman environment assignment grammar",
+        "reference": {
+          "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+          "locator": "--publish, --volume, --user and --env"
+        }
+      }
+    }
+  }
 }

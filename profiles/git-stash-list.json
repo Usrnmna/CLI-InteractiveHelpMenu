@@ -38,13 +38,31 @@
           "flag": "-n",
           "argument": "COUNT",
           "argument_optional": false,
-          "summary": "Limit listed entries"
+          "summary": "Limit listed entries",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-count"
+              }
+            ]
+          },
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
         },
         {
           "flag": "--max-count=",
           "argument": "COUNT",
           "argument_optional": false,
-          "summary": "Limit listed entries"
+          "summary": "Limit listed entries",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-count"
+              }
+            ]
+          },
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
         },
         {
           "flag": "--format=",
@@ -72,5 +90,72 @@
     "source": "https://git-scm.com/docs/git-stash",
     "reviewed": "2026-10-23",
     "kind": "curated subset; not an installed-version guarantee"
+  },
+  "value_definitions": {
+    "output-count": {
+      "kind": "count",
+      "meaning": "Maximum number of stash reflog entries displayed",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-log/2.48.0",
+            "locator": "Commit limiting: --max-count and --since"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.48.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "entries"
+      },
+      "forms": [
+        {
+          "id": "entries",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "0"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Display no selected entries"
+            }
+          ],
+          "grammar": "Nonnegative integer output count"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No explicit maximum output count is imposed"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "subject": "Stash reflog entries"
+    }
   }
 }

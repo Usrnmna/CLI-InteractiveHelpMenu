@@ -1,0 +1,334 @@
+{
+  "format_version": 1,
+  "scope": "Source-reviewed semantic facts for the opt-in Step 3 bundled migration. These are reference expectations, not target execution results or raw help captures.",
+  "sources": {
+    "rsync": {
+      "url": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
+      "version": "3.4.1",
+      "locator": "--bwlimit and size suffixes",
+      "bare_bytes_per_second": "1024",
+      "binary_k": "1024",
+      "decimal_kb": "1000",
+      "zero": "No bandwidth limit"
+    },
+    "openssh": {
+      "url": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/scp.c",
+      "version": "9.9p2",
+      "locator": "main, case 'l': strtonum bounds and multiplication by 1024",
+      "bare_bits_per_second": "1024",
+      "minimum": "1",
+      "maximum": "104857600"
+    },
+    "ffmpeg_time": {
+      "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/utils.texi",
+      "version": "7.1",
+      "locator": "Time duration syntax",
+      "seconds": "1",
+      "milliseconds": "0.001",
+      "microseconds": "0.000001"
+    },
+    "ffmpeg_number": {
+      "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+      "version": "7.1",
+      "locator": "Numerical option prefixes and stream specifiers",
+      "k": "1000",
+      "ki": "1024",
+      "byte_to_bits": "8",
+      "origin": "0"
+    },
+    "ffmpeg_bitrate": {
+      "url": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/codecs.texi",
+      "version": "7.1",
+      "locator": "Generic codec b option; bitrate in bits per second",
+      "base": "bit"
+    },
+    "go_duration": {
+      "url": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/time/format.go",
+      "version": "1.24.0",
+      "locator": "ParseDuration, signed zero and unitMap",
+      "nanoseconds": "0.000000001",
+      "microseconds": "0.000001",
+      "milliseconds": "0.001",
+      "minutes": "60",
+      "hours": "3600",
+      "zero_disables_timeout": true
+    },
+    "go_test": {
+      "url": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go",
+      "version": "1.24.0",
+      "locator": "-count and -timeout help",
+      "default_timeout": "10",
+      "default_timeout_form": "m",
+      "default_count": "1"
+    },
+    "go_alarm": {
+      "url": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go",
+      "version": "1.24.0",
+      "locator": "M.startAlarm: timeout <= 0 returns without creating an alarm",
+      "nonpositive_disables_alarm": true
+    },
+    "pytest": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/runner.py",
+      "version": "8.3.5",
+      "locator": "--durations and --durations-min registration",
+      "durations_subject": "Slowest test durations",
+      "zero": "Display all collected durations"
+    },
+    "fzf": {
+      "url": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
+      "version": "0.60.3",
+      "locator": "FIELD INDEX EXPRESSION and --height",
+      "origin": "1",
+      "percentage": "0.01",
+      "percentage_min": "0",
+      "percentage_max": "100"
+    },
+    "fzf_parser": {
+      "url": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go",
+      "version": "0.60.3",
+      "locator": "--multi optionalNumeric; zero matches disabled state",
+      "zero_multi": "Disable multi-selection"
+    },
+    "esptool4": {
+      "url": "https://raw.githubusercontent.com/espressif/esptool/v4.8.1/docs/en/esptool/flash-modes.rst",
+      "version": "4.8.1",
+      "locator": "Flash sizes and chip-specific flash frequencies",
+      "bytes_per_MB": "1048576",
+      "bytes_per_KB": "1024",
+      "hertz_per_m": "1000000"
+    },
+    "esptool5": {
+      "url": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
+      "version": "5.0.2",
+      "locator": "Flash sizes and chip-specific flash frequencies",
+      "bytes_per_MB": "1048576",
+      "bytes_per_KB": "1024",
+      "hertz_per_m": "1000000"
+    },
+    "esptool_address": {
+      "url": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py",
+      "version": "5.0.2",
+      "locator": "AnyIntType and AddrFilenamePairType",
+      "origin": "0",
+      "token_slots": 2
+    },
+    "journal": {
+      "url": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
+      "version": "257",
+      "locator": "--priority, --boot and --lines",
+      "priority_min": "0",
+      "priority_max": "7",
+      "platform": "Linux",
+      "omitted_lines": "10"
+    },
+    "systemd_time": {
+      "url": "https://www.freedesktop.org/software/systemd/man/257/systemd.time.html",
+      "version": "257",
+      "locator": "Parsing Timestamps; @ epoch seconds and local-time default",
+      "epoch_base": "second"
+    },
+    "ruff": {
+      "url": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+      "version": "0.11.13",
+      "locator": "line_length setting and Unicode width definition",
+      "minimum": "1",
+      "maximum": "320",
+      "default": "88",
+      "python_tokens": ["py37", "py38", "py39", "py310", "py311", "py312", "py313"]
+    },
+    "platformio": {
+      "url": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+      "version": "6.1.18",
+      "locator": "monitor_speed, monitor_rts and monitor_dtr",
+      "baud_default": "9600",
+      "control_tokens": [
+        "0",
+        "1"
+      ]
+    },
+    "iproute": {
+      "url": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+      "version": "6.13.0",
+      "locator": "PREFIX: leading network bits",
+      "ipv4_max": "32",
+      "ipv6_max": "128"
+    },
+    "podman": {
+      "url": "https://docs.podman.io/en/v5.4.2/markdown/podman-logs.1.html",
+      "version": "5.4.2",
+      "locator": "--tail, --since and --until",
+      "all_tail": "-1"
+    },
+    "git_expiry": {
+      "url": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
+      "version": "2.48.0",
+      "locator": "parse_expiry_date: never/false and all/now",
+      "zero_cutoff_tokens": [
+        "never",
+        "false"
+      ],
+      "unbounded_cutoff_tokens": [
+        "all",
+        "now"
+      ]
+    },
+    "openssl": {
+      "url": "https://docs.openssl.org/3.0/man1/openssl-verification-options/",
+      "version": null,
+      "locator": "-verify_depth counts intermediate CA certificates, excluding end entity and trust anchor",
+      "zero_intermediates": "0",
+      "limitation": "Exact client patch applicability and bounds are not verified."
+    },
+    "yq": {
+      "url": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+      "version": "4.44.3",
+      "locator": "--indent default and compact JSON note",
+      "indent_default": "2",
+      "limitation": "Zero/negative behavior is not verified for every output encoder."
+    }
+  },
+  "unresolved_examples": [
+    {
+      "profile": "sftp",
+      "flag": "-B",
+      "reason": "Client/server caps and signed parsing edges"
+    },
+    {
+      "profile": "gcloud-compute-instances-list",
+      "flag": "--page-size",
+      "reason": "Exact SDK release and service pagination limits"
+    },
+    {
+      "profile": "git-log",
+      "flag": "--since=",
+      "reason": "Bare-number and date-parser grammar"
+    },
+    {
+      "profile": "pio-device-monitor",
+      "flag": "--port",
+      "reason": "Numeric serial-selector origin and enumeration stability"
+    },
+    {
+      "profile": "yq-eval",
+      "flag": "--indent",
+      "reason": "Output-encoder special values"
+    },
+    {
+      "profile": "psql",
+      "flag": "--port",
+      "reason": "Exact client patch applicability and accepted bounds"
+    }
+  ],
+  "aliases": {
+    "profiles/ansible-playbook.json": [
+      [
+        "--extra-vars",
+        "-e"
+      ],
+      [
+        "--inventory",
+        "-i"
+      ]
+    ],
+    "profiles/arduino-cli-compile.json": [
+      [
+        "-j",
+        "--jobs"
+      ]
+    ],
+    "profiles/fd.json": [
+      [
+        "--max-depth",
+        "-d"
+      ]
+    ],
+    "profiles/fdfind.json": [
+      [
+        "--max-depth",
+        "-d"
+      ]
+    ],
+    "profiles/fzf.json": [
+      [
+        "--multi",
+        "-m"
+      ]
+    ],
+    "profiles/git-stash-list.json": [
+      [
+        "-n",
+        "--max-count="
+      ]
+    ],
+    "profiles/pio-device-monitor.json": [
+      [
+        "-b",
+        "--baud"
+      ],
+      [
+        "-p",
+        "--port"
+      ]
+    ],
+    "profiles/pio-run.json": [
+      [
+        "-j",
+        "--jobs"
+      ]
+    ],
+    "profiles/platformio-device-monitor.json": [
+      [
+        "-b",
+        "--baud"
+      ],
+      [
+        "-p",
+        "--port"
+      ]
+    ],
+    "profiles/platformio-run.json": [
+      [
+        "-j",
+        "--jobs"
+      ]
+    ],
+    "profiles/podman-exec.json": [
+      [
+        "--env",
+        "-e"
+      ]
+    ],
+    "profiles/podman-run.json": [
+      [
+        "--env",
+        "-e"
+      ],
+      [
+        "--publish",
+        "-p"
+      ],
+      [
+        "--volume",
+        "-v"
+      ]
+    ],
+    "profiles/psql.json": [
+      [
+        "--set",
+        "-v"
+      ],
+      [
+        "--command",
+        "-c"
+      ],
+      [
+        "--dbname",
+        "-d"
+      ],
+      [
+        "--port",
+        "-p"
+      ]
+    ]
+  }
+}

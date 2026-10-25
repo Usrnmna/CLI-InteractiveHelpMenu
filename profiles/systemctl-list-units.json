@@ -57,7 +57,81 @@
         {
           "flag": "--lines=",
           "argument": "LINES",
-          "summary": "Set the number of journal lines"
+          "summary": "Set status journal-line count; 0 hides journal output",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Journal lines included in systemctl status output",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemctl.html",
+                      "locator": "--lines applies to status; zero disables journal output; default 10"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "lines"
+                },
+                "forms": [
+                  {
+                    "id": "lines",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Suppress the status journal output"
+                      }
+                    ],
+                    "grammar": "Decimal integer journal-line count"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "form": "lines",
+                  "value": "10"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Recent journal lines for status output"
+              }
+            ]
+          },
+          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows."
         },
         {
           "flag": "--output=",

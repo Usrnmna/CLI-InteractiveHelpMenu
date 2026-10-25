@@ -1,32 +1,1405 @@
 {
-  "command": ["ffmpeg"],
+  "command": [
+    "ffmpeg"
+  ],
   "description": "FFmpeg input, output, stream selection and codec options. Concrete stream selectors are literal option names; values are entered separately.",
   "categories": [
     {
       "name": "Files and selection",
       "options": [
-        {"flag": "-i", "argument": "URL", "summary": "Read an input file or URL"},
-        {"flag": "-map", "argument": "INPUT:STREAM", "summary": "Select an input stream for the output"},
-        {"flag": "-y", "summary": "Overwrite output files without prompting"},
-        {"flag": "-n", "summary": "Refuse to overwrite output files"},
-        {"flag": "-ss", "argument": "TIME", "summary": "Seek to a position"},
-        {"flag": "-t", "argument": "DURATION", "summary": "Limit the input or output duration"}
+        {
+          "flag": "-i",
+          "argument": "URL",
+          "summary": "Read an input file or URL",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by FFmpeg input URL/protocol grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-ss, -t, -map and input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "FFmpeg 7.1: a file or protocol-specific input URL; embedded port, buffer and timeout fields have protocol-specific meanings"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "FFmpeg input URL/protocol grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                    "locator": "-ss, -t, -map and input/output placement"
+                  }
+                },
+                "investigation": "Verify selected protocol parameters before declaring protocol-specific numerical meanings"
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: a file or protocol-specific input URL; embedded port, buffer and timeout fields have protocol-specific meanings. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 7.1."
+        },
+        {
+          "flag": "-map",
+          "argument": "INPUT:STREAM",
+          "summary": "Select an input stream for the output",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "composite",
+                "meaning": "Input-stream mapping",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-ss, -t, -map and input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "[-]INPUT[:STREAM][:VIEW][?] | [LINKLABEL]",
+                    "grammar": "FFmpeg 7.1: input files and numeric stream indices start at zero. Typed stream specifiers, view selectors and filtergraph labels are alternatives. A leading minus removes an existing mapping; ? makes an unmatched mapping optional, not a numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Command defaults and configuration apply without this explicit value"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "slots": 1,
+                "components": [
+                  {
+                    "id": "input",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "index",
+                      "meaning": "Input-file index",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                            "locator": "-ss, -t, -map and input/output placement"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "FFmpeg"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "7.1"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "index"
+                      },
+                      "forms": [
+                        {
+                          "id": "index",
+                          "notation": "number",
+                          "syntax": "N",
+                          "bounds": {
+                            "min": "0"
+                          },
+                          "grammar": "Nonnegative input-file index in -i declaration order"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Input files in command-line order",
+                      "origin": "0"
+                    }
+                  },
+                  {
+                    "id": "stream",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "index",
+                      "meaning": "Stream index/specifier",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+                            "locator": "Numerical option prefixes and stream specifiers"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "FFmpeg"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "7.1"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "index"
+                      },
+                      "forms": [
+                        {
+                          "id": "index",
+                          "notation": "number",
+                          "syntax": "N",
+                          "bounds": {
+                            "min": "0"
+                          },
+                          "grammar": "Zero-based stream index"
+                        },
+                        {
+                          "id": "specifier",
+                          "notation": "expression",
+                          "syntax": "v[:N] | a[:N] | other documented specifier",
+                          "grammar": "Typed stream selectors have the documented FFmpeg stream-specifier grammar"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Streams within the selected input/type",
+                      "origin": "0"
+                    }
+                  },
+                  {
+                    "id": "view",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "nonnumerical",
+                      "meaning": "Optional multiview selector; view indices/IDs follow the documented view grammar",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                            "locator": "-ss, -t, -map and input/output placement"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "FFmpeg"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "7.1"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "not_applicable",
+                        "reason": "This component is not a scalar numerical value"
+                      },
+                      "forms": [
+                        {
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "VIEW",
+                          "grammar": "Optional multiview selector; view indices/IDs follow the documented view grammar"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      }
+                    }
+                  },
+                  {
+                    "id": "label",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "nonnumerical",
+                      "meaning": "Filtergraph output label in the alternative label form",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                            "locator": "-ss, -t, -map and input/output placement"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "FFmpeg"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "7.1"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "not_applicable",
+                        "reason": "This component is not a scalar numerical value"
+                      },
+                      "forms": [
+                        {
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "LINKLABEL",
+                          "grammar": "Filtergraph output label in the alternative label form"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: input files and numeric stream indices start at zero. Typed stream specifiers, view selectors and filtergraph labels are alternatives. A leading minus removes an existing mapping; ? makes an unmatched mapping optional, not a numerical unit."
+        },
+        {
+          "flag": "-y",
+          "summary": "Overwrite output files without prompting"
+        },
+        {
+          "flag": "-n",
+          "summary": "Refuse to overwrite output files"
+        },
+        {
+          "flag": "-ss",
+          "argument": "TIME",
+          "summary": "Seek to a position; bare values are seconds",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Seek position relative to the selected input/output timeline",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/utils.texi",
+                      "locator": "Time duration syntax"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-ss input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "seconds"
+                },
+                "forms": [
+                  {
+                    "id": "seconds",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "A signed decimal count of seconds"
+                  },
+                  {
+                    "id": "s",
+                    "notation": "suffix",
+                    "syntax": "Ns",
+                    "tokens": [
+                      "s"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "ms",
+                    "notation": "suffix",
+                    "syntax": "Nms",
+                    "tokens": [
+                      "ms"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    }
+                  },
+                  {
+                    "id": "us",
+                    "notation": "suffix",
+                    "syntax": "Nus",
+                    "tokens": [
+                      "us"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000001"
+                    }
+                  },
+                  {
+                    "id": "clock",
+                    "notation": "expression",
+                    "syntax": "[-][HH:]MM:SS[.fraction]",
+                    "grammar": "Hours, minutes and seconds; an optional leading minus sign is part of duration syntax, not a universal sentinel",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit seek is requested"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: accept signed decimal seconds, literal s/ms/us suffixes, or [-][HH:]MM:SS[.fraction]. For example, 200ms is 0.2 seconds. The option applies to an input before -i, or to an output before its URL. Syntax permitting a sign does not establish a special negative-value effect for every input/output mode."
+        },
+        {
+          "flag": "-t",
+          "argument": "DURATION",
+          "summary": "Limit duration; bare values are seconds",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Maximum input/output duration",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/utils.texi",
+                      "locator": "Time duration syntax"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-t input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "seconds"
+                },
+                "forms": [
+                  {
+                    "id": "seconds",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "A signed decimal count of seconds"
+                  },
+                  {
+                    "id": "s",
+                    "notation": "suffix",
+                    "syntax": "Ns",
+                    "tokens": [
+                      "s"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "ms",
+                    "notation": "suffix",
+                    "syntax": "Nms",
+                    "tokens": [
+                      "ms"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    }
+                  },
+                  {
+                    "id": "us",
+                    "notation": "suffix",
+                    "syntax": "Nus",
+                    "tokens": [
+                      "us"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000001"
+                    }
+                  },
+                  {
+                    "id": "clock",
+                    "notation": "expression",
+                    "syntax": "[-][HH:]MM:SS[.fraction]",
+                    "grammar": "Hours, minutes and seconds; an optional leading minus sign is part of duration syntax, not a universal sentinel",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No duration limit is imposed by this option"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: accept signed decimal seconds, literal s/ms/us suffixes, or [-][HH:]MM:SS[.fraction]. For example, 200ms is 0.2 seconds. The option applies to an input before -i, or to an output before its URL. Syntax permitting a sign does not establish a special negative-value effect for every input/output mode."
+        }
       ]
     },
     {
       "name": "Stream codecs",
       "description": "The colon selector is part of the option name. These entries specify all video or audio streams, or stream index zero. Other concrete selectors can be added to custom profiles.",
       "options": [
-        {"flag": "-c:v", "argument": "CODEC", "summary": "Choose the video codec or copy"},
-        {"flag": "-c:a", "argument": "CODEC", "summary": "Choose the audio codec or copy"},
-        {"flag": "-c:v:0", "argument": "CODEC", "summary": "Choose the codec for video stream zero"},
-        {"flag": "-c:a:0", "argument": "CODEC", "summary": "Choose the codec for audio stream zero"},
-        {"flag": "-b:v", "argument": "BITRATE", "summary": "Set the video bitrate"},
-        {"flag": "-b:a", "argument": "BITRATE", "summary": "Set the audio bitrate"},
-        {"flag": "-filter:v", "argument": "FILTERGRAPH", "summary": "Apply a video filtergraph"},
-        {"flag": "-filter:a", "argument": "FILTERGRAPH", "summary": "Apply an audio filtergraph"},
-        {"flag": "-vn", "summary": "Disable video output"},
-        {"flag": "-an", "summary": "Disable audio output"}
+        {
+          "flag": "-c:v",
+          "argument": "CODEC",
+          "summary": "Choose the video codec or copy"
+        },
+        {
+          "flag": "-c:a",
+          "argument": "CODEC",
+          "summary": "Choose the audio codec or copy"
+        },
+        {
+          "flag": "-c:v:0",
+          "argument": "CODEC",
+          "summary": "Choose the codec for video stream zero",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Codec for the first video stream",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-codec stream-specifier selection and stream-copy mode"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+                      "locator": "Stream specifiers: typed stream indices start at zero"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand is a codec name, not the stream index"
+                },
+                "forms": [
+                  {
+                    "id": "codec",
+                    "notation": "expression",
+                    "syntax": "CODEC | copy",
+                    "grammar": "A codec name or copy; the zero-based stream selector is in the literal option name"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Normal codec selection applies without this override"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: the final :0 in this option name selects the first video stream (zero-based). CODEC is a codec name or copy, not a stream number."
+        },
+        {
+          "flag": "-c:a:0",
+          "argument": "CODEC",
+          "summary": "Choose the codec for audio stream zero",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Codec for the first audio stream",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-codec stream-specifier selection and stream-copy mode"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+                      "locator": "Stream specifiers: typed stream indices start at zero"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand is a codec name, not the stream index"
+                },
+                "forms": [
+                  {
+                    "id": "codec",
+                    "notation": "expression",
+                    "syntax": "CODEC | copy",
+                    "grammar": "A codec name or copy; the zero-based stream selector is in the literal option name"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Normal codec selection applies without this override"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: the final :0 in this option name selects the first audio stream (zero-based). CODEC is a codec name or copy, not a stream number."
+        },
+        {
+          "flag": "-b:v",
+          "argument": "BITRATE",
+          "summary": "Set video bitrate in bits/s",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Target video bitrate",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/codecs.texi",
+                      "locator": "Generic codec option b: bitrate in bits/s"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+                      "locator": "Numerical option prefixes"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "bits"
+                },
+                "forms": [
+                  {
+                    "id": "bits",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1",
+                      "per": "second"
+                    },
+                    "grammar": "Numeric target bitrate in bits/second; encoder constraints apply"
+                  },
+                  {
+                    "id": "k",
+                    "notation": "suffix",
+                    "syntax": "NK",
+                    "tokens": [
+                      "K",
+                      "k"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "NM",
+                    "tokens": [
+                      "M"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "g",
+                    "notation": "suffix",
+                    "syntax": "NG",
+                    "tokens": [
+                      "G"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000000000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "ki",
+                    "notation": "suffix",
+                    "syntax": "NKi",
+                    "tokens": [
+                      "Ki"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1024",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "mi",
+                    "notation": "suffix",
+                    "syntax": "NMi",
+                    "tokens": [
+                      "Mi"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1048576",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "gi",
+                    "notation": "suffix",
+                    "syntax": "NGi",
+                    "tokens": [
+                      "Gi"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1073741824",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "bytes",
+                    "notation": "suffix",
+                    "syntax": "NB",
+                    "tokens": [
+                      "B"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "kb",
+                    "notation": "suffix",
+                    "syntax": "NKB",
+                    "tokens": [
+                      "KB",
+                      "kB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "mib",
+                    "notation": "suffix",
+                    "syntax": "NMiB",
+                    "tokens": [
+                      "MiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8388608",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "numeric",
+                    "notation": "expression",
+                    "syntax": "NUMBER[SI_PREFIX][i][B]",
+                    "grammar": "The documented numerical-option grammar supports additional SI prefixes; i chooses binary scaling and B multiplies by eight. Encoder-specific accepted ranges/defaults remain applicable",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1",
+                      "per": "second"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The selected encoder's default rate-control settings apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: bare numbers are bits/second. K or k, M and G use decimal powers of 1000; adding i selects powers of 1024, and a final B multiplies the value by 8. Thus 128k means 128000 bits/second, while 1MiB means 8388608 bits/second. Do not append /s. The selected encoder determines useful bounds, zero-value effects and defaults; zero is not universally an unlimited-rate sentinel."
+        },
+        {
+          "flag": "-b:a",
+          "argument": "BITRATE",
+          "summary": "Set audio bitrate in bits/s",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Target audio bitrate",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/codecs.texi",
+                      "locator": "Generic codec option b: bitrate in bits/s"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/fftools-common-opts.texi",
+                      "locator": "Numerical option prefixes"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "bits"
+                },
+                "forms": [
+                  {
+                    "id": "bits",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1",
+                      "per": "second"
+                    },
+                    "grammar": "Numeric target bitrate in bits/second; encoder constraints apply"
+                  },
+                  {
+                    "id": "k",
+                    "notation": "suffix",
+                    "syntax": "NK",
+                    "tokens": [
+                      "K",
+                      "k"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "NM",
+                    "tokens": [
+                      "M"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "g",
+                    "notation": "suffix",
+                    "syntax": "NG",
+                    "tokens": [
+                      "G"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1000000000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "ki",
+                    "notation": "suffix",
+                    "syntax": "NKi",
+                    "tokens": [
+                      "Ki"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1024",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "mi",
+                    "notation": "suffix",
+                    "syntax": "NMi",
+                    "tokens": [
+                      "Mi"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1048576",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "gi",
+                    "notation": "suffix",
+                    "syntax": "NGi",
+                    "tokens": [
+                      "Gi"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1073741824",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "bytes",
+                    "notation": "suffix",
+                    "syntax": "NB",
+                    "tokens": [
+                      "B"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "kb",
+                    "notation": "suffix",
+                    "syntax": "NKB",
+                    "tokens": [
+                      "KB",
+                      "kB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8000",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "mib",
+                    "notation": "suffix",
+                    "syntax": "NMiB",
+                    "tokens": [
+                      "MiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "8388608",
+                      "per": "second"
+                    }
+                  },
+                  {
+                    "id": "numeric",
+                    "notation": "expression",
+                    "syntax": "NUMBER[SI_PREFIX][i][B]",
+                    "grammar": "The documented numerical-option grammar supports additional SI prefixes; i chooses binary scaling and B multiplies by eight. Encoder-specific accepted ranges/defaults remain applicable",
+                    "unit": {
+                      "base": "bit",
+                      "multiplier": "1",
+                      "per": "second"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The selected encoder's default rate-control settings apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: bare numbers are bits/second. K or k, M and G use decimal powers of 1000; adding i selects powers of 1024, and a final B multiplies the value by 8. Thus 128k means 128000 bits/second, while 1MiB means 8388608 bits/second. Do not append /s. The selected encoder determines useful bounds, zero-value effects and defaults; zero is not universally an unlimited-rate sentinel."
+        },
+        {
+          "flag": "-filter:v",
+          "argument": "FILTERGRAPH",
+          "summary": "Apply a video filtergraph",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by FFmpeg video filtergraph grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-ss, -t, -map and input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "FFmpeg 7.1: filter-specific argument syntax controls numerical meaning; one filtergraph value is entered after this option"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "FFmpeg video filtergraph grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                    "locator": "-ss, -t, -map and input/output placement"
+                  }
+                },
+                "investigation": "Verify per-filter units using the applicable filter documentation; no graph-wide numerical unit exists"
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: filter-specific argument syntax controls numerical meaning; one filtergraph value is entered after this option. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 7.1."
+        },
+        {
+          "flag": "-filter:a",
+          "argument": "FILTERGRAPH",
+          "summary": "Apply an audio filtergraph",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by FFmpeg audio filtergraph grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                      "locator": "-ss, -t, -map and input/output placement"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "FFmpeg"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "FFmpeg 7.1: filter-specific argument syntax controls numerical meaning; one filtergraph value is entered after this option"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "FFmpeg audio filtergraph grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/ffmpeg.texi",
+                    "locator": "-ss, -t, -map and input/output placement"
+                  }
+                },
+                "investigation": "Verify per-filter units using the applicable filter documentation; no graph-wide numerical unit exists"
+              }
+            ]
+          },
+          "detail": "FFmpeg 7.1: filter-specific argument syntax controls numerical meaning; one filtergraph value is entered after this option. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 7.1."
+        },
+        {
+          "flag": "-vn",
+          "summary": "Disable video output"
+        },
+        {
+          "flag": "-an",
+          "summary": "Disable audio output"
+        }
       ]
     }
   ]

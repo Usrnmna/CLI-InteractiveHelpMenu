@@ -12,7 +12,186 @@
         {
           "flag": "-connect",
           "argument": "HOST:PORT",
-          "summary": "Select the remote endpoint"
+          "summary": "Select the remote endpoint",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "composite",
+                "meaning": "Remote TLS endpoint",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
+                      "locator": "OpenSSL 3.0 reference: -verify and -connect"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "HOST:PORT",
+                    "grammar": "OpenSSL 3.0 reference: HOST identifies the remote host/address; PORT identifies a service, not a rate, size or duration. Exact endpoint alternatives and patch coverage remain unpinned."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Command defaults and configuration apply without this explicit value"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "slots": 1,
+                "components": [
+                  {
+                    "id": "host",
+                    "slot": 1,
+                    "required": true,
+                    "semantics": {
+                      "kind": "nonnumerical",
+                      "meaning": "Remote hostname/address",
+                      "review": {
+                        "status": "source_derived",
+                        "references": [
+                          {
+                            "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
+                            "locator": "OpenSSL 3.0 reference: -verify and -connect"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSL"
+                          ]
+                        },
+                        "version": {
+                          "state": "unverified",
+                          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "not_applicable",
+                        "reason": "This component is not a scalar numerical value"
+                      },
+                      "forms": [
+                        {
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "HOST",
+                          "grammar": "Remote hostname/address"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      }
+                    }
+                  },
+                  {
+                    "id": "port",
+                    "slot": 1,
+                    "required": true,
+                    "semantics": {
+                      "kind": "identifier",
+                      "meaning": "Remote service-port identifier",
+                      "review": {
+                        "status": "source_derived",
+                        "references": [
+                          {
+                            "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
+                            "locator": "OpenSSL 3.0 reference: -verify and -connect"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSL"
+                          ]
+                        },
+                        "version": {
+                          "state": "unverified",
+                          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "integer"
+                      },
+                      "forms": [
+                        {
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Integer identifier, not a measured quantity"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Service ports"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "detail": "OpenSSL 3.0 reference: HOST identifies the remote host/address; PORT identifies a service, not a rate, size or duration. Exact endpoint alternatives and patch coverage remain unpinned."
         },
         {
           "flag": "-servername",
@@ -37,7 +216,78 @@
         {
           "flag": "-verify",
           "argument": "DEPTH",
-          "summary": "Set certificate verification depth"
+          "summary": "Set certificate verification depth",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum certificate verification depth",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
+                      "locator": "OpenSSL 3.0 reference: -verify and -connect"
+                    },
+                    {
+                      "source": "https://docs.openssl.org/3.0/man1/openssl-verification-options/",
+                      "locator": "-verify_depth excludes end entity and trust anchor"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "depth"
+                },
+                "forms": [
+                  {
+                    "id": "depth",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer verification-depth limit; not a time or byte count",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Permit no intermediate CA certificates"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This flag does not add an explicit depth/verification request; other verification settings may apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Intermediate CA certificates; end entity and trust anchor do not count",
+                "investigation": "Verify exact patch applicability and supported bounds against the implementation"
+              }
+            ]
+          },
+          "detail": "OpenSSL 3.0 verification reference: DEPTH counts intermediate CA certificates; the end entity and trust anchor do not count. Zero permits no intermediates. -verify enables verification, but s_client can continue after errors unless -verify_return_error is used. Exact patch applicability and bounds remain under review."
         },
         {
           "flag": "-verify_return_error",

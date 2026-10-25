@@ -450,9 +450,10 @@ claims still require authoritative review. A misclassification concealed in
 free prose remains dependent on source review and future heuristics. No pending
 command or operational value is evaluated.
 
-Step 1 annotations are not promoted or refreshed by these APIs. Since the
-existing protected runtime sources are unchanged, this additive module does not
-require changed Step 1 fingerprints. Step 3 should verify and migrate maintained
-descriptions and metadata in priority order, beginning with rates, flash scales,
-and time forms. That migration must preserve the inventory and the unresolved
-status of evidence that remains unverified.
+Step 1 annotations are not promoted or refreshed by these APIs. The
+[Step 3 bundled migration](numerical-inventory/step3-migration.md) records
+source-reviewed descriptions, opt-in metadata and unresolved investigations.
+Its authored-source changes require narrowly justified inventory fingerprint
+updates; the shared APIs and protected runtime sources remain unchanged.
+Source-derived records retain their review diagnostics. Runtime integration and
+global completeness enforcement remain separate implementation boundaries.

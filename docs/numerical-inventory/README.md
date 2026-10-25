@@ -2,10 +2,11 @@
 
 [Documentation index](../README.md) · [Inventory generator](../../scripts/inventory_numerical_descriptions.py)
 
-This directory owns the Step 1 implementation inventory and acceptance criteria
-for numerical option descriptions. It contains planning annotations, not a menu
-metadata schema or a production numerical validator. Runtime behavior and option
-descriptions remain unchanged.
+This directory owns the reproducible implementation inventory, planning reviews
+and acceptance criteria for numerical option descriptions. Step 1 established
+the inventory; the [Step 3 bundled migration](step3-migration.md) records current
+description corrections and opt-in metadata. Inventory classifications remain
+planning annotations rather than a production numerical validation policy.
 
 The supplied `audit_report.rtf` and `recommended_steps.rtf` establish the task
 context. Their findings are evidence and recommendations, not authorization for
@@ -21,6 +22,7 @@ than asserted as permanent constants.
 | [review.json](review.json) | Maintained review groups, exact member identities/fingerprints, work items, and acceptance criteria |
 | `tests/reports/numerical-inventory/inventory.json` | Regenerable local facts and joined reviews; ignored under the existing report policy |
 | [Focused tests](../../tests/test_numerical_inventory.py) | Discovery growth, source relationships, passive operation, output limits, and review integrity |
+| [Bundled migration account](step3-migration.md) | Corrected content, scoped source evidence, unresolved investigations and passive verification |
 
 Run from the repository root with Python 3.10 or newer:
 
@@ -78,12 +80,14 @@ counts are new enumeration results, not evidence of additional verified command
 support. These totals must not be added together. Fixture excerpts, synthetic
 specimens, source requests, and declared routes establish different boundaries.
 
-The current review contains 49 `change_recommended` identities and 4,354
-`investigate` dispositions. There are 4,254 unresolved classifications, principally
-external observations and arity-only declarations. Every identity has an explicit
-disposition, but this is not a completed semantic audit of external manuals.
-The remaining groups identify basic meaning already present, nonnumerical values,
-enumerations requiring form review, and source/routing context.
+After the bundled migration, the review contains 12 `change_recommended`
+identities for shared external documentation, 4,269 `investigate` dispositions
+and 47 `partial_migration_investigate` dispositions. There are 4,246 unresolved
+classifications, principally external observations and arity-only declarations.
+The 128 verified bundled option records and 6 positional components have scoped
+metadata dispositions. Every identity has a disposition, but this is not a
+completed semantic audit of external manuals. Named enumerations requiring
+accepted-form review and source/routing context remain separately classified.
 
 ## Relationships and review identity
 
@@ -174,8 +178,8 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | S1-03 reconciliation | Reject missing, stale, duplicate, conflicting and orphaned review assignments |
 | S1-04 passive determinism | Block process/network entry points, inspect hostile snapshot declarations without execution, compare input hashes and repeat output |
 | S1-05 explicit output | Default to stdout and reject input, annotation and unrelated-file replacement |
-| AC-01 to AC-03 protected runtime | Deferred: preserve inventory, routes, arity, optional/attached forms, boundaries, buffer, cursor, navigation, custom profiles and execution restrictions |
-| AC-04 to AC-06 numerical evidence | Deferred: establish correct meanings, scales, supported forms, component/delegated grammar and implementation/version/platform/chip applicability |
+| AC-01 to AC-03 protected runtime | Step 3 compares protected declarations and passive buffer/cursor behavior; integrated navigation and runtime verification remain deferred |
+| AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
 | AC-07 source preservation | Deferred: associate shared definitions, expose conflicts and invalidate relevant stale caches |
 | AC-08 presentation | Deferred: verify visible cells, narrow widths, Unicode, wrapping, scrolling, resizing and search |
 | AC-09 authoring | Deferred: test import, edit, preview, save, reload and inspect cycles, including stale metadata |
@@ -190,18 +194,20 @@ validation.
 
 ## Handoff boundary
 
-Step 1 is the inventory and acceptance-criteria implementation. The inventory
-does not change production descriptions, routes, parsing, caching, rendering,
-insertion or GitHub settings. Repository policy and CI reconciliation are
-documented separately in the [development guide](../development.md#repository-configuration).
+Step 1 established the inventory and acceptance-criteria implementation. The
+inventory generator does not change production descriptions, routes, parsing,
+caching, rendering, insertion or GitHub settings. Repository policy and CI
+reconciliation are documented separately in the
+[development guide](../development.md#repository-configuration).
 The guide is linked from the documentation index.
 
 The [Step 2 numerical value contract](../numerical-value-contract.md) now provides
 opt-in metadata validation and explanation formatting. It does not promote these
 planning annotations into verified semantics or activate a completeness gate.
-The inventory generator and current fingerprints are unchanged.
+The inventory generator remains unchanged. Step 3 updates only the exact review
+members and fingerprints justified by the inspected authored-content changes.
 
-Step 3 is the subsequent description and metadata migration. It requires
-command-specific source verification and separate implementation scope. The
-inventory reconciliation is not production numerical-quality enforcement, and
-the deferred acceptance criteria above remain subject to later verification.
+The [Step 3 migration account](step3-migration.md) distinguishes verified
+corrections, adequate summaries, source-derived records and remaining external
+work. Reconciliation is not production numerical-quality enforcement. Step 4
+source preservation and later runtime acceptance criteria remain deferred.

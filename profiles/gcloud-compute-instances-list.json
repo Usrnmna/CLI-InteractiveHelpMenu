@@ -15,13 +15,144 @@
           "flag": "--filter",
           "argument": "EXPRESSION",
           "argument_optional": false,
-          "summary": "Filter resources"
+          "summary": "Filter resources",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by gcloud resource-filter grammar",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                      "locator": "List command flags --limit and --page-size; page dated 2026-05-27"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Resource-filter expressions compare properties; numerical units belong to the selected property"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "gcloud resource-filter grammar",
+                  "reference": {
+                    "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                    "locator": "List command flags --limit and --page-size; page dated 2026-05-27"
+                  }
+                },
+                "investigation": "Pin the Cloud SDK release and resource-field definitions"
+              }
+            ]
+          },
+          "detail": "Resource-filter expressions compare properties; numerical units belong to the selected property. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--limit",
           "argument": "LIMIT",
           "argument_optional": false,
-          "summary": "Limit resources"
+          "summary": "Limit resources",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum resources returned",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                      "locator": "List command flags --limit and --page-size; page dated 2026-05-27"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "resources"
+                },
+                "forms": [
+                  {
+                    "id": "resources",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "grammar": "Integer resource count, distinct from per-page size"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The documented default is unlimited resources"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Resources in the final listing",
+                "investigation": "Verify release-specific limit bounds and service interactions for the unpinned Cloud SDK reference"
+              }
+            ]
+          },
+          "detail": "The current gcloud reference describes a final resource-count limit, distinct from resources per API page. The documented default is unlimited. This is not a size or time value; exact release/service behavior remains under review."
         },
         {
           "flag": "--sort-by",
@@ -45,7 +176,71 @@
           "flag": "--page-size",
           "argument": "SIZE",
           "argument_optional": false,
-          "summary": "Set page size"
+          "summary": "Set resources per API page (a count)",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum resources per API page",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                      "locator": "List command flags --limit and --page-size; page dated 2026-05-27"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "resources"
+                },
+                "forms": [
+                  {
+                    "id": "resources",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "1"
+                    },
+                    "grammar": "Integer resource count per response page"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The service determines the default if it supports paging; otherwise no paging applies"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Resources per API response page",
+                "investigation": "Verify the exact Cloud SDK release and Compute Engine service paging limits; the reference is not release-pinned"
+              }
+            ]
+          },
+          "detail": "The current gcloud reference defines page size as a maximum resource count per API page, not bytes. The service determines its default and can apply paging before or after filtering/limit. Exact SDK release and service-specific bounds require verification."
         },
         {
           "flag": "--format",

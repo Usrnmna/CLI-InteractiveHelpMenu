@@ -62,7 +62,71 @@
         {
           "flag": "-checkend",
           "argument": "SECONDS",
-          "summary": "Check impending expiry"
+          "summary": "Check certificate expiry within the next N seconds",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Certificate expiry look-ahead interval",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://docs.openssl.org/3.0/man1/openssl-x509/",
+                      "locator": "OpenSSL 3.0 reference -checkend; exact patch applicability not pinned"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "seconds"
+                },
+                "forms": [
+                  {
+                    "id": "seconds",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Integer seconds relative to the current time"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This explicit expiry check is not requested"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "investigation": "Verify the exact OpenSSL 3.0 patch release and accepted signed/range behavior before broadening applicability"
+              }
+            ]
+          },
+          "detail": "OpenSSL 3.0 reference: SECONDS is a look-ahead interval in seconds. The command exits nonzero if the certificate expires within that interval, or zero otherwise. This is not a certificate lifetime in days. Signed/range and exact patch applicability require verification."
         }
       ]
     }

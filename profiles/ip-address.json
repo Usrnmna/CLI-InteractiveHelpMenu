@@ -26,13 +26,279 @@
           "flag": "scope",
           "argument": "SCOPE",
           "summary": "Filter address scope",
-          "kind": "keyword"
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Address-scope IDs selector",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                      "locator": "Address selectors, numeric scope IDs and PREFIX"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer identifier, not a quantity or severity rank"
+                  },
+                  {
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "scope names such as global, link and host"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit selector is added; normal command selection defaults apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Address-scope IDs"
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: the numeric form identifies address-scope ids, not a count, percentage or measurement. Alternatives include scope names such as global, link and host. Name mappings are configuration-dependent."
         },
         {
           "flag": "to",
           "argument": "PREFIX",
           "summary": "Filter the address prefix",
-          "kind": "keyword"
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                      "locator": "Address selectors, numeric scope IDs and PREFIX"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]",
+                    "grammar": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Command defaults and configuration apply without this explicit value"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "slots": 1,
+                "components": [
+                  {
+                    "id": "address",
+                    "slot": 1,
+                    "required": true,
+                    "semantics": {
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                            "locator": "Address selectors, numeric scope IDs and PREFIX"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "not_applicable",
+                        "reason": "Address grammar defines its representation"
+                      },
+                      "forms": [
+                        {
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS",
+                          "grammar": "Network address, not a scalar quantity"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Network addresses"
+                    }
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                            "locator": "Address selectors, numeric scope IDs and PREFIX"
+                          }
+                        ]
+                      },
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed"
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "bits"
+                      },
+                      "forms": [
+                        {
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N",
+                          "bounds": {
+                            "min": "0",
+                            "max": "128"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128"
+                        }
+                      ],
+                      "when_absent": {
+                        "state": "not_applicable",
+                        "reason": "The component has no independent option-absence default"
+                      },
+                      "when_value_omitted": {
+                        "state": "not_applicable",
+                        "reason": "The enclosing grammar determines component presence"
+                      },
+                      "subject": "Leading network-address bits"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "detail": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior."
         },
         {
           "flag": "label",

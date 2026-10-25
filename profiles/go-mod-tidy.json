@@ -38,13 +38,137 @@
           "flag": "-go",
           "argument": "VERSION",
           "argument_optional": false,
-          "summary": "Set the module Go version"
+          "summary": "Set the module Go version",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Update the go.mod go directive to the given Go version",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                      "locator": "go mod tidy: -go purpose and default"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "A version string has a structured grammar, not a physical scale"
+                },
+                "forms": [
+                  {
+                    "id": "version",
+                    "notation": "expression",
+                    "syntax": "GO-VERSION",
+                    "grammar": "A Go version string, not a floating-point measurement"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit go-directive version override is supplied; module and Go release rules apply"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Go language/toolchain versions"
+              }
+            ]
+          },
+          "detail": "Go 1.24.0 reference: VERSION is a Go release selector, not seconds or a decimal quantity. Update the go.mod go directive to the given Go version. No explicit go-directive version override is supplied; module and Go release rules apply. Version components must not be rescaled."
         },
         {
           "flag": "-compat",
           "argument": "VERSION",
           "argument_optional": false,
-          "summary": "Set compatibility version"
+          "summary": "Set compatibility version",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Preserve module-graph checksums and checks for the selected Go release",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                      "locator": "go mod tidy: -compat purpose and default"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "A version string has a structured grammar, not a physical scale"
+                },
+                "forms": [
+                  {
+                    "id": "version",
+                    "notation": "expression",
+                    "syntax": "GO-VERSION",
+                    "grammar": "A Go version string, not a floating-point measurement"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the Go release prior to the version in the go.mod go directive"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Go language/toolchain versions"
+              }
+            ]
+          },
+          "detail": "Go 1.24.0 reference: VERSION is a Go release selector, not seconds or a decimal quantity. Preserve module-graph checksums and checks for the selected Go release. Use the Go release prior to the version in the go.mod go directive. Version components must not be rescaled."
         }
       ]
     }

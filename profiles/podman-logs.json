@@ -27,17 +27,245 @@
         {
           "flag": "--tail",
           "argument": "LINES",
-          "summary": "Select the number of trailing lines"
+          "summary": "Select the number of trailing lines",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Trailing log lines displayed",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-logs.1.html",
+                      "locator": "--tail, --since and --until"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "lines"
+                },
+                "forms": [
+                  {
+                    "id": "lines",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "-1",
+                        "meaning": "Display all log lines"
+                      }
+                    ],
+                    "grammar": "Integer line count; -1 is the all-lines sentinel"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "form": "lines",
+                  "value": "-1"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Container log lines"
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: LINES counts trailing log lines. The default -1 prints all lines; it is a sentinel, not a negative duration or byte count."
         },
         {
           "flag": "--since",
           "argument": "TIME",
-          "summary": "Select logs since a time"
+          "summary": "Select logs since a timestamp or unit-bearing duration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Container log time cutoff",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-logs.1.html",
+                      "locator": "--tail, --since and --until"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "epoch"
+                },
+                "forms": [
+                  {
+                    "id": "epoch",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Unix timestamp in seconds, not milliseconds"
+                  },
+                  {
+                    "id": "calendar",
+                    "notation": "expression",
+                    "syntax": "RFC3339[.nanoseconds] | documented calendar form",
+                    "grammar": "Use a documented date/time form; quote values containing spaces"
+                  },
+                  {
+                    "id": "relative",
+                    "notation": "expression",
+                    "syntax": "Go-duration",
+                    "grammar": "A Go unit-bearing duration, such as 10m or 1h30m, relative to the client's current time"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit lower log-time cutoff is added"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "time_basis": "Numeric timestamps use the Unix epoch; relative durations use the client clock; unqualified calendar-zone behavior must follow the documented client parser"
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: accepts Unix timestamps in seconds, documented calendar/RFC3339 forms, or Go duration strings such as 10m and 1h30m relative to the client machine's time. Do not supply milliseconds as an unsuffixed Unix timestamp. Zero in the numeric form denotes the Unix epoch, not a universal disable sentinel."
         },
         {
           "flag": "--until",
           "argument": "TIME",
-          "summary": "Select logs until a time"
+          "summary": "Select logs until a timestamp or unit-bearing duration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Container log time cutoff",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-logs.1.html",
+                      "locator": "--tail, --since and --until"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "epoch"
+                },
+                "forms": [
+                  {
+                    "id": "epoch",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Unix timestamp in seconds, not milliseconds"
+                  },
+                  {
+                    "id": "calendar",
+                    "notation": "expression",
+                    "syntax": "RFC3339[.nanoseconds] | documented calendar form",
+                    "grammar": "Use a documented date/time form; quote values containing spaces"
+                  },
+                  {
+                    "id": "relative",
+                    "notation": "expression",
+                    "syntax": "Go-duration",
+                    "grammar": "A Go unit-bearing duration, such as 10m or 1h30m, relative to the client's current time"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit upper log-time cutoff is added"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "time_basis": "Numeric timestamps use the Unix epoch; relative durations use the client clock; unqualified calendar-zone behavior must follow the documented client parser"
+              }
+            ]
+          },
+          "detail": "Podman 5.4.2: accepts Unix timestamps in seconds, documented calendar/RFC3339 forms, or Go duration strings such as 10m and 1h30m relative to the client machine's time. Do not supply milliseconds as an unsuffixed Unix timestamp. Zero in the numeric form denotes the Unix epoch, not a universal disable sentinel."
         },
         {
           "flag": "--names",

@@ -11,13 +11,31 @@
         {
           "flag": "--inventory",
           "argument": "INVENTORY",
-          "summary": "Select an inventory path or host list"
+          "summary": "Select an inventory path or host list",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "inventory-source"
+              }
+            ]
+          },
+          "detail": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "-i",
           "argument": "INVENTORY",
           "summary": "Select an inventory path or host list",
-          "attached": true
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "inventory-source"
+              }
+            ]
+          },
+          "detail": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--limit",
@@ -33,13 +51,31 @@
         {
           "flag": "--extra-vars",
           "argument": "EXTRA_VARS",
-          "summary": "Set extra variables"
+          "summary": "Set extra variables",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "extra-variables"
+              }
+            ]
+          },
+          "detail": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "-e",
           "argument": "EXTRA_VARS",
           "summary": "Set extra variables",
-          "attached": true
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "extra-variables"
+              }
+            ]
+          },
+          "detail": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
         },
         {
           "flag": "--check",
@@ -109,7 +145,71 @@
         {
           "flag": "--forks",
           "argument": "FORKS",
-          "summary": "Set worker count"
+          "summary": "Set worker count",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Parallel worker-process limit",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
+                      "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "workers"
+                },
+                "forms": [
+                  {
+                    "id": "workers",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "1"
+                    },
+                    "grammar": "Integer process count"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured forks; the documented default is 5"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Parallel Ansible worker processes",
+                "investigation": "Bind the documented 2.18-series semantics to a supported exact ansible-core release and verify bounds/configuration overrides"
+              }
+            ]
+          },
+          "detail": "The ansible-core 2.18 reference describes a count of parallel processes, default 5 unless configured. This is not a duration or thread-memory size. Exact release/bounds applicability remains under review."
         },
         {
           "flag": "--vault-password-file",
@@ -118,5 +218,129 @@
         }
       ]
     }
-  ]
+  ],
+  "value_definitions": {
+    "extra-variables": {
+      "kind": "delegated",
+      "meaning": "Value interpreted by Ansible extra-variable grammar",
+      "review": {
+        "status": "source_derived",
+        "references": [
+          {
+            "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
+            "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "unverified",
+          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The owning grammar determines any numerical interpretation"
+      },
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "grammar": {
+        "name": "Ansible extra-variable grammar",
+        "reference": {
+          "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
+          "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+        }
+      },
+      "investigation": "Verify inventory plugin and exact ansible-core release-specific grammar/defaults"
+    },
+    "inventory-source": {
+      "kind": "delegated",
+      "meaning": "Value interpreted by Ansible inventory-source grammar",
+      "review": {
+        "status": "source_derived",
+        "references": [
+          {
+            "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
+            "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "unverified",
+          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The owning grammar determines any numerical interpretation"
+      },
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "grammar": {
+        "name": "Ansible inventory-source grammar",
+        "reference": {
+          "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
+          "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+        }
+      },
+      "investigation": "Verify inventory plugin and exact ansible-core release-specific grammar/defaults"
+    }
+  }
 }

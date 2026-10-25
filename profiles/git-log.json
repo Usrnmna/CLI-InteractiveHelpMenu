@@ -1,20 +1,204 @@
 {
-  "command": ["git", "log"],
+  "command": [
+    "git",
+    "log"
+  ],
   "description": "Inspect Git commit history.",
   "categories": [
-    {"name": "Presentation", "description": "Control commit and graph formatting.", "options": [
-      {"flag": "--oneline", "summary": "Show each commit on one line"},
-      {"flag": "--graph", "summary": "Draw the commit graph"},
-      {"flag": "--decorate", "summary": "Show reference names"},
-      {"flag": "--stat", "summary": "Show change statistics"},
-      {"flag": "--patch", "summary": "Show each commit's patch"}
-    ]},
-    {"name": "Filtering", "description": "Select the commits shown.", "options": [
-      {"flag": "--max-count=", "argument": "COUNT", "summary": "Limit the number of commits"},
-      {"flag": "--author=", "argument": "PATTERN", "summary": "Filter by author"},
-      {"flag": "--grep=", "argument": "PATTERN", "summary": "Filter commit messages"},
-      {"flag": "--since=", "argument": "DATE", "summary": "Show commits newer than a date"},
-      {"flag": "--all", "summary": "Include all references"}
-    ]}
-  ]
+    {
+      "name": "Presentation",
+      "description": "Control commit and graph formatting.",
+      "options": [
+        {
+          "flag": "--oneline",
+          "summary": "Show each commit on one line"
+        },
+        {
+          "flag": "--graph",
+          "summary": "Draw the commit graph"
+        },
+        {
+          "flag": "--decorate",
+          "summary": "Show reference names"
+        },
+        {
+          "flag": "--stat",
+          "summary": "Show change statistics"
+        },
+        {
+          "flag": "--patch",
+          "summary": "Show each commit's patch"
+        }
+      ]
+    },
+    {
+      "name": "Filtering",
+      "description": "Select the commits shown.",
+      "options": [
+        {
+          "flag": "--max-count=",
+          "argument": "COUNT",
+          "summary": "Limit the number of commits",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-count"
+              }
+            ]
+          },
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
+        },
+        {
+          "flag": "--author=",
+          "argument": "PATTERN",
+          "summary": "Filter by author"
+        },
+        {
+          "flag": "--grep=",
+          "argument": "PATTERN",
+          "summary": "Filter commit messages"
+        },
+        {
+          "flag": "--since=",
+          "argument": "DATE",
+          "summary": "Filter by a Git date/time expression",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Commit-date cutoff",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-log/2.48.0",
+                      "locator": "Commit limiting: --max-count and --since"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "unverified",
+                  "reason": "A plain number's interpretation must be checked against this command's exact date parser"
+                },
+                "forms": [
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "GIT-DATE/EXPIRY",
+                    "grammar": "Command-specific date/expiry syntax; relative and sentinel forms require verification"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No commit-date cutoff is added"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "time_basis": "Depends on the date/expiry expression and timezone",
+                "investigation": "Verify bare numbers, relative syntax, sentinels and timezone defaults in the exact date/expiry parser"
+              }
+            ]
+          },
+          "detail": "Git 2.48.0: --since is a date cutoff; accepted calendar and human-relative forms follow Git's date parser, not an assumed milliseconds convention. Exact numerical forms remain under investigation; no unit is invented."
+        },
+        {
+          "flag": "--all",
+          "summary": "Include all references"
+        }
+      ]
+    }
+  ],
+  "value_definitions": {
+    "output-count": {
+      "kind": "count",
+      "meaning": "Maximum number of commits displayed",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-log/2.48.0",
+            "locator": "Commit limiting: --max-count and --since"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.48.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "entries"
+      },
+      "forms": [
+        {
+          "id": "entries",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "0"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Display no selected entries"
+            }
+          ],
+          "grammar": "Nonnegative integer output count"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No explicit maximum output count is imposed"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "subject": "Commits"
+    }
+  }
 }

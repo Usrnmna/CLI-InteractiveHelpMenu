@@ -56,7 +56,71 @@
           "flag": "--readable-sizes",
           "argument": "",
           "argument_optional": false,
-          "summary": "Use human readable sizes"
+          "summary": "Show object sizes as KiB/MiB/GiB with --long",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Format displayed object sizes using binary unit labels",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://cloud.google.com/sdk/gcloud/reference/storage/ls",
+                      "locator": "--readable-sizes uses KiB/MiB/GiB with --long"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--readable-sizes",
+                    "tokens": [
+                      "--readable-sizes"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Format displayed object sizes using binary unit labels"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                },
+                "investigation": "Pin the documented output formatting to supported Cloud SDK releases"
+              }
+            ]
+          },
+          "detail": "The gcloud storage ls reference uses KiB, MiB and GiB with --long, rather than a bare byte count. This is an output-format flag with no numerical operand. Exact Cloud SDK release applicability requires verification."
         },
         {
           "flag": "--buckets",

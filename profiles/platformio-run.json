@@ -61,19 +61,105 @@
           "flag": "-j",
           "argument": "JOBS",
           "argument_optional": false,
-          "summary": "Set concurrent jobs"
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "build-jobs"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name."
         },
         {
           "flag": "--jobs",
           "argument": "JOBS",
           "argument_optional": false,
-          "summary": "Set concurrent jobs"
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "build-jobs"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name."
         },
         {
           "flag": "--upload-port",
           "argument": "PORT",
           "argument_optional": false,
-          "summary": "Select upload port"
+          "summary": "Select upload port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by PlatformIO uploader endpoint grammar",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "--upload-port declaration and upload_port forwarded to the run processor"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "PlatformIO uploader endpoint grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                    "locator": "--upload-port declaration and upload_port forwarded to the run processor"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.1.18."
         },
         {
           "flag": "-v",
@@ -119,5 +205,63 @@
     "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html",
     "reviewed": "2026-10-23",
     "kind": "curated subset; not an installed-version guarantee"
+  },
+  "value_definitions": {
+    "build-jobs": {
+      "kind": "count",
+      "meaning": "Parallel build-job limit",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+            "locator": "--jobs and PLATFORMIO_RUN_JOBS/CPU-count default"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.1.18"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "jobs"
+      },
+      "forms": [
+        {
+          "id": "jobs",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Integer job count; special nonpositive values are not assigned an undocumented meaning"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use PLATFORMIO_RUN_JOBS if set; otherwise the system CPU count, falling back to 1 if unavailable"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "subject": "Concurrent build jobs"
+    }
   }
 }

@@ -1,31 +1,365 @@
 {
-  "command": ["ls"],
+  "command": [
+    "ls"
+  ],
   "description": "List files and directory contents using GNU ls options.",
   "categories": [
-    {"name": "Display", "description": "Control visible files and output formatting.", "options": [
-      {"flag": "--all", "summary": "Include entries beginning with a dot"},
-      {"flag": "--almost-all", "summary": "Include hidden entries except . and .."},
-      {"flag": "-l", "summary": "Use the long listing format"},
-      {"flag": "--human-readable", "summary": "Show readable sizes with -l or -s"},
-      {"flag": "--classify", "summary": "Append file-type indicators"},
-      {"flag": "--color=", "argument": "WHEN", "summary": "Control colored output", "detail": "Typical values are always, auto, and never."},
-      {"flag": "--inode", "summary": "Print each file's inode number"},
-      {"flag": "--size", "summary": "Print allocated size in blocks"},
-      {"flag": "--numeric-uid-gid", "summary": "Print numeric user and group identifiers"},
-      {"flag": "--quote-name", "summary": "Enclose entry names in double quotes"},
-      {"flag": "--escape", "summary": "Print C-style escapes for nongraphic characters"},
-      {"flag": "--hide=", "argument": "PATTERN", "summary": "Hide matching entries"}
-    ]},
-    {"name": "Sorting", "description": "Control ordering of directory entries.", "options": [
-      {"flag": "--reverse", "summary": "Reverse the sorting order"},
-      {"flag": "-t", "summary": "Sort by modification time, newest first"},
-      {"flag": "-S", "summary": "Sort by file size, largest first"},
-      {"flag": "--group-directories-first", "summary": "List directories before files"}
-    ]},
-    {"name": "Traversal", "description": "Control directory and symbolic-link handling.", "options": [
-      {"flag": "--recursive", "summary": "List subdirectories recursively"},
-      {"flag": "--directory", "summary": "List directories themselves"},
-      {"flag": "--dereference", "summary": "Show information for symbolic-link targets"}
-    ]}
+    {
+      "name": "Display",
+      "description": "Control visible files and output formatting.",
+      "options": [
+        {
+          "flag": "--all",
+          "summary": "Include entries beginning with a dot"
+        },
+        {
+          "flag": "--almost-all",
+          "summary": "Include hidden entries except . and .."
+        },
+        {
+          "flag": "-l",
+          "summary": "Use the long listing format"
+        },
+        {
+          "flag": "--human-readable",
+          "summary": "Show sizes with 1024-based suffixes (-l or -s)",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Print size fields with powers-of-1024 suffixes",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--human-readable",
+                    "tokens": [
+                      "--human-readable"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Print size fields with powers-of-1024 suffixes"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "GNU coreutils 9.6: with -l or --size, print sizes using powers of 1024; M means 1048576 bytes, not 1000000. This flag accepts no numerical operand. The separate --si option uses powers of 1000."
+        },
+        {
+          "flag": "--classify",
+          "summary": "Append file-type indicators"
+        },
+        {
+          "flag": "--color=",
+          "argument": "WHEN",
+          "summary": "Control colored output",
+          "detail": "Typical values are always, auto, and never."
+        },
+        {
+          "flag": "--inode",
+          "summary": "Print each file's inode number",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Display filesystem inode numbers",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--inode",
+                    "tokens": [
+                      "--inode"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Display filesystem inode numbers"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "GNU coreutils 9.6: these numbers identify filesystem inode numbers, not physical measurements or counts of files. No numerical operand is accepted."
+        },
+        {
+          "flag": "--size",
+          "summary": "Print allocated usage in blocks; default is 1024 bytes",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Print allocated disk usage in configured blocks",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--size",
+                    "tokens": [
+                      "--size"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Print allocated disk usage in configured blocks"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "GNU coreutils 9.6: prints allocated usage, not logical file length. The usual default block is 1024 bytes; LS_BLOCK_SIZE, BLOCK_SIZE, BLOCKSIZE and --block-size can change it. POSIXLY_CORRECT selects 512-byte blocks if no block-size variable overrides it. --human-readable scales printed values. The flag takes no size argument."
+        },
+        {
+          "flag": "--numeric-uid-gid",
+          "summary": "Print numeric user and group identifiers",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Display user/group identifiers",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag selects a mode and has no numerical operand"
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "--numeric-uid-gid",
+                    "tokens": [
+                      "--numeric-uid-gid"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Display user/group identifiers"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Default mode and other options/configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This fixed flag has no operand"
+                }
+              }
+            ]
+          },
+          "detail": "GNU coreutils 9.6: these numbers identify user/group identifiers, not physical measurements or counts of files. No numerical operand is accepted."
+        },
+        {
+          "flag": "--quote-name",
+          "summary": "Enclose entry names in double quotes"
+        },
+        {
+          "flag": "--escape",
+          "summary": "Print C-style escapes for nongraphic characters"
+        },
+        {
+          "flag": "--hide=",
+          "argument": "PATTERN",
+          "summary": "Hide matching entries"
+        }
+      ]
+    },
+    {
+      "name": "Sorting",
+      "description": "Control ordering of directory entries.",
+      "options": [
+        {
+          "flag": "--reverse",
+          "summary": "Reverse the sorting order"
+        },
+        {
+          "flag": "-t",
+          "summary": "Sort by modification time, newest first"
+        },
+        {
+          "flag": "-S",
+          "summary": "Sort by file size, largest first"
+        },
+        {
+          "flag": "--group-directories-first",
+          "summary": "List directories before files"
+        }
+      ]
+    },
+    {
+      "name": "Traversal",
+      "description": "Control directory and symbolic-link handling.",
+      "options": [
+        {
+          "flag": "--recursive",
+          "summary": "List subdirectories recursively"
+        },
+        {
+          "flag": "--directory",
+          "summary": "List directories themselves"
+        },
+        {
+          "flag": "--dereference",
+          "summary": "Show information for symbolic-link targets"
+        }
+      ]
+    }
   ]
 }

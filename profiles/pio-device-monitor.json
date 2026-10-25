@@ -14,25 +14,61 @@
           "flag": "-p",
           "argument": "PORT",
           "argument_optional": false,
-          "summary": "Select serial port"
+          "summary": "Select serial port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "serial-port-selector"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: this selects a serial device/port, not a TCP service number. Device paths/names and numeric selector conventions depend on enumeration; numeric selector origin and stability remain under investigation."
         },
         {
           "flag": "--port",
           "argument": "PORT",
           "argument_optional": false,
-          "summary": "Select serial port"
+          "summary": "Select serial port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "serial-port-selector"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: this selects a serial device/port, not a TCP service number. Device paths/names and numeric selector conventions depend on enumeration; numeric selector origin and stability remain under investigation."
         },
         {
           "flag": "-b",
           "argument": "BAUD",
           "argument_optional": false,
-          "summary": "Set baud rate"
+          "summary": "Set serial signalling rate in baud",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "baud-rate"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified."
         },
         {
           "flag": "--baud",
           "argument": "BAUD",
           "argument_optional": false,
-          "summary": "Set baud rate"
+          "summary": "Set serial signalling rate in baud",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "baud-rate"
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified."
         },
         {
           "flag": "--parity",
@@ -56,13 +92,163 @@
           "flag": "--rts",
           "argument": "LEVEL",
           "argument_optional": false,
-          "summary": "Set RTS signal"
+          "summary": "Set initial RTS logical state: 0 or 1",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Initial RTS serial control-line state",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_accepted",
+                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude"
+                },
+                "forms": [
+                  {
+                    "id": "off",
+                    "notation": "literal",
+                    "syntax": "0",
+                    "tokens": [
+                      "0"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Logical false/deasserted control-line state"
+                  },
+                  {
+                    "id": "on",
+                    "notation": "literal",
+                    "syntax": "1",
+                    "tokens": [
+                      "1"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Logical true/asserted control-line state"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage."
         },
         {
           "flag": "--dtr",
           "argument": "LEVEL",
           "argument_optional": false,
-          "summary": "Set DTR signal"
+          "summary": "Set initial DTR logical state: 0 or 1",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Initial DTR serial control-line state",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_accepted",
+                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude"
+                },
+                "forms": [
+                  {
+                    "id": "off",
+                    "notation": "literal",
+                    "syntax": "0",
+                    "tokens": [
+                      "0"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Logical false/deasserted control-line state"
+                  },
+                  {
+                    "id": "on",
+                    "notation": "literal",
+                    "syntax": "1",
+                    "tokens": [
+                      "1"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Logical true/asserted control-line state"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage."
         },
         {
           "flag": "--echo",
@@ -120,5 +306,133 @@
     "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html",
     "reviewed": "2026-10-23",
     "kind": "curated subset; not an installed-version guarantee"
+  },
+  "value_definitions": {
+    "baud-rate": {
+      "kind": "quantity",
+      "meaning": "Serial signalling rate",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+            "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.1.18"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "baud"
+      },
+      "forms": [
+        {
+          "id": "baud",
+          "notation": "number",
+          "syntax": "N",
+          "unit": {
+            "base": "baud",
+            "multiplier": "1"
+          },
+          "grammar": "Integer baud rate; supported rates depend on the serial adapter and driver"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use monitor_speed configuration, default 9600"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      }
+    },
+    "serial-port-selector": {
+      "kind": "delegated",
+      "meaning": "Serial-device port selector",
+      "review": {
+        "status": "source_derived",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+            "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+            "locator": "--port accepts a number or device name"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.1.18"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "unverified",
+        "reason": "Verify numeric selector/index conventions against device enumeration for the applicable release"
+      },
+      "forms": [
+        {
+          "id": "port",
+          "notation": "expression",
+          "syntax": "DEVICE | PORT-SELECTOR",
+          "grammar": "Serial port/device selection; a numeric selector is not a TCP port or physical unit"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use project configuration or serial-device selection when no port is specified"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "grammar": {
+        "name": "PlatformIO serial-device selection",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+          "locator": "--port accepts a number or device name"
+        }
+      },
+      "investigation": "Verify numeric selector origin, enumeration stability and device-name matching; do not assign TCP-port bounds"
+    }
   }
 }

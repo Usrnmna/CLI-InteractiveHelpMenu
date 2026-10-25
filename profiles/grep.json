@@ -1,26 +1,156 @@
 {
-  "command": ["grep"],
+  "command": [
+    "grep"
+  ],
   "description": "Search text using GNU grep options.",
   "categories": [
-    {"name": "Matching", "description": "Choose the matching syntax and comparison rules.", "options": [
-      {"flag": "--ignore-case", "summary": "Ignore case distinctions"},
-      {"flag": "--extended-regexp", "summary": "Interpret extended regular expressions"},
-      {"flag": "--fixed-strings", "summary": "Interpret patterns as literal strings"},
-      {"flag": "--word-regexp", "summary": "Match whole words"},
-      {"flag": "--invert-match", "summary": "Select non-matching lines"},
-      {"flag": "--regexp=", "argument": "PATTERN", "summary": "Specify a search pattern"}
-    ]},
-    {"name": "Output", "description": "Choose the information printed for matches.", "options": [
-      {"flag": "--line-number", "summary": "Print line numbers"},
-      {"flag": "--count", "summary": "Print matching-line counts"},
-      {"flag": "--files-with-matches", "summary": "Print names of files containing matches"},
-      {"flag": "--only-matching", "summary": "Print only matched portions of lines"},
-      {"flag": "--context=", "argument": "LINES", "summary": "Print surrounding context lines"}
-    ]},
-    {"name": "Files", "description": "Control recursive searching and file selection.", "options": [
-      {"flag": "--recursive", "summary": "Search directories recursively"},
-      {"flag": "--include=", "argument": "GLOB", "summary": "Search only matching file names"},
-      {"flag": "--exclude=", "argument": "GLOB", "summary": "Skip matching file names"}
-    ]}
+    {
+      "name": "Matching",
+      "description": "Choose the matching syntax and comparison rules.",
+      "options": [
+        {
+          "flag": "--ignore-case",
+          "summary": "Ignore case distinctions"
+        },
+        {
+          "flag": "--extended-regexp",
+          "summary": "Interpret extended regular expressions"
+        },
+        {
+          "flag": "--fixed-strings",
+          "summary": "Interpret patterns as literal strings"
+        },
+        {
+          "flag": "--word-regexp",
+          "summary": "Match whole words"
+        },
+        {
+          "flag": "--invert-match",
+          "summary": "Select non-matching lines"
+        },
+        {
+          "flag": "--regexp=",
+          "argument": "PATTERN",
+          "summary": "Specify a search pattern"
+        }
+      ]
+    },
+    {
+      "name": "Output",
+      "description": "Choose the information printed for matches.",
+      "options": [
+        {
+          "flag": "--line-number",
+          "summary": "Print line numbers"
+        },
+        {
+          "flag": "--count",
+          "summary": "Print matching-line counts"
+        },
+        {
+          "flag": "--files-with-matches",
+          "summary": "Print names of files containing matches"
+        },
+        {
+          "flag": "--only-matching",
+          "summary": "Print only matched portions of lines"
+        },
+        {
+          "flag": "--context=",
+          "argument": "LINES",
+          "summary": "Print surrounding context lines",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Leading and trailing context around a match",
+                "review": {
+                  "status": "source_derived",
+                  "references": [
+                    {
+                      "source": "https://www.gnu.org/software/grep/manual/html_node/Context-Line-Control.html",
+                      "locator": "-C/--context: separate leading and trailing line counts"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "unverified",
+                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "lines"
+                },
+                "forms": [
+                  {
+                    "id": "lines",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "No extra context lines"
+                      }
+                    ],
+                    "grammar": "Integer line count applied independently before and after matches"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Print no additional context unless another context option requests it"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Lines before each match and lines after each match",
+                "investigation": "Verify the documented GNU grep behavior against a pinned release and relevant option interactions"
+              }
+            ]
+          },
+          "detail": "GNU grep reference: N means up to N leading and N trailing context lines around each match, not a total of N lines. Overlapping groups are merged and a line is never printed twice. These options have no effect with --only-matching. Version applicability remains to be pinned."
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "description": "Control recursive searching and file selection.",
+      "options": [
+        {
+          "flag": "--recursive",
+          "summary": "Search directories recursively"
+        },
+        {
+          "flag": "--include=",
+          "argument": "GLOB",
+          "summary": "Search only matching file names"
+        },
+        {
+          "flag": "--exclude=",
+          "argument": "GLOB",
+          "summary": "Skip matching file names"
+        }
+      ]
+    }
   ]
 }

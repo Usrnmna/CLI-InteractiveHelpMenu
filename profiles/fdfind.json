@@ -53,13 +53,31 @@
         {
           "flag": "--max-depth",
           "argument": "DEPTH",
-          "summary": "Limit traversal depth"
+          "summary": "Limit traversal depth",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "maximum-depth"
+              }
+            ]
+          },
+          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited."
         },
         {
           "flag": "-d",
           "argument": "DEPTH",
           "summary": "Limit traversal depth",
-          "attached": true
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "maximum-depth"
+              }
+            ]
+          },
+          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited."
         },
         {
           "flag": "--exclude",
@@ -110,5 +128,66 @@
       ]
     }
   ],
-  "stop_at_positional": true
+  "stop_at_positional": true,
+  "value_definitions": {
+    "maximum-depth": {
+      "kind": "count",
+      "meaning": "Maximum directory traversal depth",
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+            "locator": "--max-depth: directory levels; unlimited when absent"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "10.2.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed"
+        }
+      },
+      "bare": {
+        "state": "accepted",
+        "form": "levels"
+      },
+      "forms": [
+        {
+          "id": "levels",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "0"
+          },
+          "grammar": "Nonnegative integer directory-level depth"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "There is no search-depth limit"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand"
+      },
+      "subject": "Directory traversal levels relative to the search root"
+    }
+  }
 }

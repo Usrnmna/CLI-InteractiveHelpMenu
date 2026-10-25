@@ -49,7 +49,79 @@
           "flag": "--target-version",
           "argument": "VERSION",
           "argument_optional": false,
-          "summary": "Select Python target version"
+          "summary": "Select Python target version",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Minimum Python language version targeted by Ruff",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+                      "locator": "target_version setting, accepted py37-py313 values, py39 default and project inference"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_accepted",
+                  "reason": "Use one of the literal py-prefixed release identifiers"
+                },
+                "forms": [
+                  {
+                    "id": "python-version",
+                    "notation": "literal",
+                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313",
+                    "tokens": [
+                      "py37",
+                      "py38",
+                      "py39",
+                      "py310",
+                      "py311",
+                      "py312",
+                      "py313"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Python 3.7 through 3.13 release identifiers; py310 means Python 3.10, not a scaled number"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configuration/project-version inference; the documented setting default is py39"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Python language versions"
+              }
+            ]
+          },
+          "detail": "Ruff 0.11.13: use the literal Python release IDs py37, py38, py39, py310, py311, py312 or py313. For example, py310 identifies Python 3.10; it is not a decimal value or physical quantity. Without this override, configuration/project inference applies; the documented setting default is py39."
         },
         {
           "flag": "--exclude",
@@ -73,7 +145,75 @@
           "flag": "--config",
           "argument": "CONFIG",
           "argument_optional": false,
-          "summary": "Set configuration path or a setting"
+          "summary": "Set configuration path or a setting",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Ruff configuration path or TOML override grammar",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff/src/args.rs",
+                      "locator": "GlobalConfigArgs.config and ConfigArgumentParser"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Ruff 0.11.13: a configuration-file path or a TOML KEY=VALUE override; numerical meaning belongs to the selected setting"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Ruff configuration path or TOML override grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff/src/args.rs",
+                    "locator": "GlobalConfigArgs.config and ConfigArgumentParser"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "Ruff 0.11.13: a configuration-file path or a TOML KEY=VALUE override; numerical meaning belongs to the selected setting. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 0.11.13."
         },
         {
           "flag": "--isolated",

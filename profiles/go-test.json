@@ -25,13 +25,307 @@
           "flag": "-count",
           "argument": "N",
           "argument_optional": false,
-          "summary": "Repeat tests"
+          "summary": "Repeat tests, benchmarks and fuzz seeds N times",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Repetitions of each test, benchmark and fuzz seed",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go",
+                      "locator": "test flag help for -count and -timeout"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go",
+                      "locator": "test.count uses flag.Uint; runTests repetition loop"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/flag/flag.go",
+                      "locator": "uintValue.Set uses ParseUint with base 0"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Perform zero counted repetitions"
+                      }
+                    ],
+                    "grammar": "Decimal integer repetition count"
+                  },
+                  {
+                    "id": "based",
+                    "notation": "expression",
+                    "syntax": "0xHEX | 0oOCTAL | 0bBINARY | 0OCTAL",
+                    "grammar": "Go flag.Uint uses base-0 parsing; the result is still a repetition count"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "form": "number",
+                  "value": "1"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "subject": "Runs of each test, benchmark and fuzz seed"
+              }
+            ]
+          },
+          "detail": "Go 1.24.0: N is a repetition count, default 1; it is not a time interval. With -cpu, repetitions occur for each GOMAXPROCS value. Examples run once, and -count does not apply to fuzz targets selected by -fuzz. Zero is not an unlimited repetition request. The unsigned Go flag parser also accepts base-prefixed integers; these still count repetitions."
         },
         {
           "flag": "-timeout",
           "argument": "DURATION",
           "argument_optional": false,
-          "summary": "Set test timeout"
+          "summary": "Set timeout with units, such as 30s; 0 disables",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Maximum running time of a test binary",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go",
+                      "locator": "test flag help for -count and -timeout"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/time/format.go",
+                      "locator": "ParseDuration and unitMap"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go",
+                      "locator": "M.startAlarm returns without an alarm when timeout <= 0"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_accepted",
+                  "reason": "Nonzero ordinary bare numbers require a unit; signed literal zero is the exception"
+                },
+                "forms": [
+                  {
+                    "id": "ns",
+                    "notation": "suffix",
+                    "syntax": "Nns",
+                    "tokens": [
+                      "ns"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000000001"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "us",
+                    "notation": "suffix",
+                    "syntax": "Nus",
+                    "tokens": [
+                      "us",
+                      "µs",
+                      "μs"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000001"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "ms",
+                    "notation": "suffix",
+                    "syntax": "Nms",
+                    "tokens": [
+                      "ms"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "notation": "suffix",
+                    "syntax": "Ns",
+                    "tokens": [
+                      "s"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "60"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "h",
+                    "notation": "suffix",
+                    "syntax": "Nh",
+                    "tokens": [
+                      "h"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "3600"
+                    },
+                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable the test timeout alarm"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "compound",
+                    "notation": "expression",
+                    "syntax": "[+|-]NUMBERunit[NUMBERunit...]",
+                    "grammar": "Signed decimal components with unit suffixes; 1h30m is 5400 seconds; no d/day unit. Nonpositive totals disable the timeout alarm in Go 1.24.0",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "disabled",
+                    "notation": "literal",
+                    "syntax": "0 | +0 | -0",
+                    "tokens": [
+                      "0",
+                      "+0",
+                      "-0"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable the test timeout",
+                    "sentinel": true
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default timeout is 10m, or 600 seconds"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                }
+              }
+            ]
+          },
+          "detail": "Go 1.24.0: the timeout is per test binary; the default is 10m. Use case-sensitive ns, us/µs/μs, ms, s, m or h, including combinations such as 1m30s. Bare nonzero numbers are not seconds and are rejected by duration parsing. Literal 0 and signed zero disable the timeout. The pinned testing implementation also disables the alarm for negative unit-bearing durations; that implementation behavior is not asserted for other releases."
         },
         {
           "flag": "-cover",
@@ -91,19 +385,223 @@
           "flag": "-tags",
           "argument": "LIST",
           "argument_optional": false,
-          "summary": "Set build tags"
+          "summary": "Set build tags",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Go build-tag list",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                      "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Go 1.24.0: a comma-separated list of build tags, not a numerical count"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Go build-tag list",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                    "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "Go 1.24.0: a comma-separated list of build tags, not a numerical count. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0."
         },
         {
           "flag": "-ldflags",
           "argument": "FLAGS",
           "argument_optional": false,
-          "summary": "Pass linker arguments"
+          "summary": "Pass linker arguments",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Go linker argument list",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                      "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Go linker argument list",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                    "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0."
         },
         {
           "flag": "-gcflags",
           "argument": "FLAGS",
           "argument_optional": false,
-          "summary": "Pass compiler arguments"
+          "summary": "Pass compiler arguments",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Value interpreted by Go compiler argument list",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                      "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed"
+                  }
+                },
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The owning grammar determines any numerical interpretation"
+                },
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand"
+                },
+                "grammar": {
+                  "name": "Go compiler argument list",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+                    "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0."
         },
         {
           "flag": "-mod",
@@ -121,7 +619,9 @@
     }
   ],
   "stop_at_positional": false,
-  "stop_at_options": ["-args"],
+  "stop_at_options": [
+    "-args"
+  ],
   "documentation": {
     "source": "https://pkg.go.dev/cmd/go",
     "reviewed": "2026-10-23",
