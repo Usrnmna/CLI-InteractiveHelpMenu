@@ -64,6 +64,11 @@ Importing another subcommand merges its route into the same program driver.
 Unrelated routes and global-option declarations are preserved. To update an
 existing matching profile/route, repeat the command with `--replace`; this resets
 that route to manual-only discovery while preserving its positional boundary.
+Source replacement retains the previous authored profile as inactive documentation
+evidence. Numerical claims are not reassigned merely because flags match.
+Supplied optional numerical metadata is structurally checked before writes;
+legacy profiles remain accepted without it. See
+[numerical authoring and source replacement](numerical-inventory/step6-authoring.md).
 Each file is written atomically, and an exclusive `.import.lock` prevents
 concurrent importer updates. A process or system interruption between the profile
 and driver writes may leave a complete profile without its route update. Inspect

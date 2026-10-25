@@ -80,9 +80,9 @@
     },
     {
       "id": "AC-09",
-      "phase": "later",
+      "phase": "step6",
       "requirement": "Authoring workflows preserve valid semantics and flag stale metadata after argument changes.",
-      "verification": "Later import/edit/preview/save/reload/inspect cycles."
+      "verification": "Step 6 controlled import/edit/preview/save/reload, stale-declaration, definition/reference and numerical-inspection tests; native POSIX restoration and terminal acceptance remain platform limits."
     },
     {
       "id": "AC-10",
@@ -7790,7 +7790,7 @@
         "AC-09",
         "AC-10"
       ],
-      "evidence": "source-derived audit finding; no runtime reproduction in Step 1",
+      "evidence": "Passive authoring lifecycle tests and unchanged protected inventories; no factual evidence promotion or global completeness gate",
       "id": "F7",
       "later_steps": [
         2,
@@ -7801,14 +7801,17 @@
       "priority": "P1",
       "proposed_action": "Design the shared contract and strict maintained-content checks later; preserve permissive external/custom compatibility.",
       "sources": [
-        "cli_help/core.py",
+        "cli_help/authoring.py",
+        "cli_help/manual_import.py",
         "cli_help/review.py",
         "cli_help/review_forms.py",
+        "cli_help/collection.py",
+        "tests/test_numerical_authoring.py",
         "tests/run.sh"
       ],
-      "status": "deferred; no production fix enacted",
+      "status": "Step 2 contract and Step 6 scoped authoring preservation implemented; Step 7 inventory-wide future enforcement remains deferred",
       "title": "Authoring and future enforcement",
-      "verification": "Apply the linked acceptance criteria with focused tests at the owning boundary."
+      "verification": "Run numerical-authoring tests, affected passive authoring regressions, Steps 2-5 tests and inventory reconciliation; see step6-authoring.md for boundaries and platform limits."
     }
   ]
 }

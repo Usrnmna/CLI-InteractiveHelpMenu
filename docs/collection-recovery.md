@@ -34,6 +34,7 @@ hashes still require review before sharing. Exit status is zero for `ok` or
 | Finding codes | Meaning and guidance |
 | --- | --- |
 | `collection_json_invalid`, `duplicate_profile`, `duplicate_driver` | Invalid schema/JSON or duplicate identity; inspect the named file locally |
+| `sem_*`, `authoring_semantics_review` | Supplied numerical metadata has structural errors, explicit uncertainty or inactive declarations awaiting review; absent legacy metadata does not trigger completeness findings |
 | `collection_layout_invalid` | A reserved collection directory is a file or another unsupported entry; inspect the named location without replacing it automatically |
 | `profile_route_missing`, `driver_profile_missing` | Unpaired metadata; static-only and discovery-only collections can intentionally produce warnings |
 | `manual_metadata_mismatch`, `import_metadata_invalid` | Imported provenance differs or has an invalid shape; review before regenerating |
@@ -46,6 +47,13 @@ hashes still require review before sharing. Exit status is zero for `ok` or
 Lock age or absence of a PID does not establish staleness. Host differences,
 ownership and PID reuse remain uncertain. Inspection never labels these locks
 safe to remove, and restoration never breaks an existing lock.
+
+Numerical findings retain structured source/pointer, command, option/component
+and correction guidance without including complete profile contents. Explicit
+unresolved or incomplete declarations produce warnings; malformed active metadata
+produces errors. Restoration uses the shared structural check for supplied fields
+before writes. See [numerical authoring and inspection](numerical-inventory/step6-authoring.md)
+for preservation, inactive evidence and platform verification limits.
 
 ## Explicit restoration of an existing review backup
 

@@ -183,7 +183,7 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
 | AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
 | AC-08 presentation | Step 5 checks formatter propagation, visible cells, supported minimum sizes, Unicode, wrapping, scrolling, scripted resize/reopen and search with fake windows; native terminal/Readline acceptance remains separate |
-| AC-09 authoring | Deferred: test import, edit, preview, save, reload and inspect cycles, including stale metadata |
+| AC-09 authoring | Step 6 verifies import/edit/preview/save/reload, stale claims, explicit review, definitions and numerical inspection; native POSIX restoration/terminal acceptance remain platform limits |
 | AC-10 future checks | Deferred: reject deficient maintained additions automatically while preserving honest external-help limits |
 
 Focused verification runs on Windows with Python 3.13. The tests use disposable
@@ -215,4 +215,8 @@ merge and cache guarantees and narrowly justified annotation updates.
 The [Step 5 presentation account](step5-presentation.md) records consistent value
 guidance, search coverage, applicability and passive layout verification.
 Reconciliation is not production numerical-quality enforcement. Native terminal
-acceptance, authoring preservation and global enforcement remain separate work.
+acceptance and global enforcement remain separate work.
+
+The [Step 6 authoring account](step6-authoring.md) records subsequent numerical
+preservation, scoped structural validation and explicit review. Native platform
+acceptance and the future global completeness gate remain separate.

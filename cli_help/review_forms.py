@@ -4,6 +4,7 @@ import json
 
 from core import HelpError
 from manual_import import validate_documents
+from authoring import driver_context, prepare_profile
 
 
 PAGE_SIZE = 12
@@ -108,11 +109,17 @@ def apply_document(draft, document):
     previous = draft.document()
     if document["profile"]["command"] != previous["profile"]["command"]:
         raise HelpError("Guided edits must retain the selected command path.")
+    document["profile"] = prepare_profile(previous["profile"], document["profile"],
+        reviewed=draft.numerical_reviewed(document),
+        context_changed=driver_context(previous["profile"], previous["driver"]) != driver_context(document["profile"], document["driver"]))
     check = dict(document["profile"])
     if not check["categories"]:
         check["categories"] = [{"name": "Draft", "options": [{"flag": "--draft", "summary": "Draft validation"}]}]
     validate_documents(check, document["driver"])
     draft.text = json.dumps(document, ensure_ascii=False, indent=2) + "\n"
+    notes = document["profile"].get("documentation", {}).get("diagnostics", []) if isinstance(document["profile"].get("documentation"), dict) else []
+    if isinstance(notes, list) and any(isinstance(note, dict) and note.get("code") == "authoring_semantics_review" for note in notes):
+        print("Numerical declarations require review and remain inactive. Use Edit JSON and Numerical review; original evidence is retained.")
     print("Draft updated. Preview or Save to continue.")
 
 

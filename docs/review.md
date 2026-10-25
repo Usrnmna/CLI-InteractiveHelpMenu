@@ -35,10 +35,18 @@ Changes require explicit saving; the captured partial edit was cancelled.
 | `e` — Edit JSON | Open a temporary draft containing the profile and complete program driver in a text editor |
 | `a` — Add option | Collect a category, literal flag, argument placeholder, argument optionality, and summary |
 | `m` — Manual import | Replace the draft profile from an installed page, rendered UTF-8 text, or local roff/compressed file |
-| `p` — Preview | Open the actual categorized help browser using the current draft |
-| `v` — Validate | Check profile and driver schemas, command identity, and built-in global-option compatibility |
+| `n` — Numerical review | Inspect numerical explanations, explicit definition consumers and diagnostics; acknowledge current authored evidence without assigning verified status |
+| `p` — Preview | Open the browser using a reconciled copy; draft text and files remain unchanged |
+| `v` — Validate | Check schemas, supplied optional numerical metadata, command identity and built-in global-option compatibility; report inactive declarations needing review |
 | `s` — Save | Confirm replacement of the profile and driver, create backups, and record the review result |
 | `b` — Back | Return to the queue; modified drafts require explicit discard |
+
+Potentially stale numerical declarations remain inactive with their original
+source evidence. **Edit JSON** supports the full metadata contract; **Numerical
+review** inspects and acknowledges the current declarations without changing
+their evidence status. Legacy entries do not require metadata for an unrelated
+edit. The [numerical authoring reference](numerical-inventory/step6-authoring.md)
+defines change-impact rules, shared definitions, preview behavior and corrections.
 
 ## Guided corrections
 

@@ -14,8 +14,11 @@ The contract provides Step 2 infrastructure. The
 [Step 3 migration](numerical-inventory/step3-migration.md) and
 [Step 4 source preservation](numerical-inventory/step4-preservation.md) document
 their separate guarantees. [Step 5 presentation and search](numerical-inventory/step5-presentation.md)
-uses the formatter in the existing browser. Command-specific enrichment,
-authoring integration and a future completeness gate remain separate work.
+uses the formatter in the existing browser. Command-specific enrichment
+and a future completeness gate remain separate work.
+[Step 6 authoring](numerical-inventory/step6-authoring.md) reuses structural checks
+at authored save boundaries, preserving inactive evidence when declarations may
+be stale. It does not change this schema or enable completeness for legacy data.
 Passing these APIs does not establish upstream factual accuracy.
 
 ## Representation and ownership
@@ -467,4 +470,5 @@ updates. The shared contract APIs remain unchanged. Step 4 preserves those
 declarations through source merging and cache round trips with structural checks
 only. Source-derived records retain their review diagnostics. Step 5 integrates
 the opt-in presentation order into the existing read-only browser and search;
-authoring preservation and global completeness enforcement remain separate.
+Step 6 adds scoped authoring preservation and structural save/inspection checks.
+Global completeness enforcement remains separate.

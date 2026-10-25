@@ -12,6 +12,7 @@ from core import HelpError, load_profiles, read_json, validate_profile
 from discovery import MAX_OUTPUT_BYTES, build_profile, run_probe
 from drivers import WORD, parse_driver
 from command_paths import load_driver_registry
+from authoring import driver_context, prepare_profile, validate_authored_profile
 
 
 def read_manual(command: list[str], manual: str | None = None, text_file: Path | None = None,
@@ -85,9 +86,11 @@ class ImportConflict(HelpError):
     """An existing profile or route requires explicit replacement authorization."""
 
 
-def validate_documents(profile: dict, document: dict):
+def validate_documents(profile: dict, document: dict, *, numerical=True):
     """Check a profile/driver pair against the schemas and built-in overlay rules."""
     validate_profile(profile, Path("<edited profile>"))
+    if numerical:
+        validate_authored_profile(profile)
     command = profile["command"]
     name, driver = parse_driver(document)
     if name != command[0] or tuple(command[1:]) not in driver.paths:
@@ -177,19 +180,27 @@ class ManualCollection:
         routes = [route for route in document["paths"] if route["command"] != command[1:]]
         routes.append({**previous, "command": command[1:], "help": [], "man": manual})
         document = {**document, "paths": routes}
-        return self.save_documents(profile, document, replace)
+        return self.save_documents(profile, document, replace, replacement=True)
 
-    def save_documents(self, profile: dict, document: dict, replace=False) -> dict:
+    def save_documents(self, profile: dict, document: dict, replace=False, *, numerical_reviewed=False, replacement=False) -> dict:
         """Validate and persist an edited profile/driver pair under the collection lock.
 
         Explicit replacement permits corrections to driver metadata. Built-in
         global-option arity remains enforced by the normal driver overlay rules.
+        numerical_reviewed represents an explicit author review of these changes,
+        never validator success. Source replacement retains inactive prior content.
         """
-        validate_documents(profile, document)
+        validate_documents(profile, document, numerical=False)
         command = profile["command"]
         if self.contains(command) and not replace:
             raise ImportConflict("This command already has an imported profile or driver route. Use --replace to update it.")
         profile_path, driver_path = self.paths_for(command)
+        previous = read_json(profile_path) if profile_path.exists() else None
+        previous_driver = self.drivers.get(command[0], (None, None))[1]
+        changed = bool(previous is not None and previous_driver is not None
+                       and driver_context(previous, previous_driver) != driver_context(profile, document))
+        profile = prepare_profile(previous, profile, reviewed=numerical_reviewed, replacement=replacement, context_changed=changed)
+        validate_authored_profile(profile)
         atomic_json(profile_path, profile)
         self.profiles[tuple(command)] = profile_path
         atomic_json(driver_path, document)

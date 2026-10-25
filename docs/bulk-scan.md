@@ -40,6 +40,12 @@ driver settings. **p** previews the menu and **s** saves validated changes with
 backups. Original scan findings remain available. The
 [guided review guide](review.md) explains the forms and save behavior.
 
+Per-record generation uses the same structurally checked collection writer as
+manual import. Replacing a profile retains prior authored evidence without
+inventing numerical meanings or promoting review status. The
+[numerical authoring reference](numerical-inventory/step6-authoring.md) explains
+reviewing unannotated values and preserving optional metadata through corrections.
+
 Continue with activation only when the collection contains successfully generated
 profile and driver directories. A zero-success scan does not create them.
 

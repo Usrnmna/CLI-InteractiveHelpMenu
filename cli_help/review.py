@@ -20,7 +20,8 @@ from core import HelpError, read_json, validate_profile
 from discovery import Settings, build_profile
 from drivers import WORD, parse_driver
 from manual_import import ManualCollection, atomic_json, read_manual, validate_documents
-from review_forms import FormCancelled, answer, yes_no, edit_options, edit_categories, edit_driver
+from review_forms import FormCancelled, answer, yes_no, edit_options, edit_categories, edit_driver, apply_document
+from authoring import driver_context, numerical_review, prepare_profile, review_signature, validate_authored_profile
 
 
 PAGE_SIZE = 12
@@ -41,6 +42,7 @@ class Draft:
     text: str
     original: str
     fingerprints: dict
+    numerical_baseline: dict | None = None
 
     def document(self):
         try:
@@ -58,6 +60,40 @@ class Draft:
             check["categories"] = [{"name": "Draft", "options": [{"flag": "--draft", "summary": "Draft validation"}]}]
         validate_profile(check, Path("<draft structure>"))
         parse_driver(document["driver"])
+        return document
+
+    def numerical_reviewed(self, document):
+        """Retain explicit review through lossless edits, expiring it on semantic edits."""
+        if self.numerical_baseline is None:
+            return False
+        baseline = self.numerical_baseline
+        if review_signature(baseline["profile"], baseline["driver"]) != review_signature(document["profile"], document["driver"]):
+            return False
+        try:
+            checked = prepare_profile(baseline["profile"], document["profile"],
+                context_changed=driver_context(baseline["profile"], baseline["driver"]) != driver_context(document["profile"], document["driver"]))
+        except ValueError:
+            return False
+        return review_signature(checked, document["driver"]) == review_signature(document["profile"], document["driver"])
+
+    def prepare(self, *, numerical=True, persist=True):
+        """Reconcile raw edits with the saved baseline, retaining invalid text.
+
+        persist=False returns a safe preview copy without changing draft state.
+        No path writes files or certifies the truth of numerical declarations.
+        """
+        document = self.document()
+        previous = json.loads(self.original)
+        reviewed = self.numerical_reviewed(document)
+        document["profile"] = prepare_profile(previous["profile"], document["profile"], reviewed=reviewed,
+            defer_definition_review=not numerical,
+            context_changed=driver_context(previous["profile"], previous["driver"]) != driver_context(document["profile"], document["driver"]))
+        if numerical:
+            validate_authored_profile(document["profile"])
+        if persist:
+            self.text = json.dumps(document, ensure_ascii=False, indent=2) + "\n"
+            if reviewed:
+                self.numerical_baseline = deepcopy(document)
         return document
 
 
@@ -181,15 +217,15 @@ class ReviewSession:
         text = json.dumps({"profile": profile, "driver": driver}, ensure_ascii=False, indent=2) + "\n"
         return Draft(index, text, text, {path: fingerprint(path) for path in (profile_path, driver_path)})
 
-    def validate(self, draft):
+    def validate(self, draft, *, numerical=True):
         """Validate both schemas and command identity without invoking any help route."""
         document = draft.document()
         profile, driver = document["profile"], document["driver"]
-        validate_documents(profile, driver)
+        validate_documents(profile, driver, numerical=False)
         command = self.report["records"][draft.index]["command"]
         if profile["command"] != command:
             raise HelpError("The profile and driver must retain the selected command path.")
-        return document
+        return draft.prepare(numerical=numerical, persist=numerical)
 
     def import_source(self, draft, kind, value, manual, timeout=2.0):
         """Replace a draft profile from a manual source, without writing the collection."""
@@ -202,7 +238,7 @@ class ReviewSession:
             man_file=Path(value) if kind == "roff" else None, timeout=timeout)
         profile = build_profile(command, [(label, text)])
         profile["imported_from"] = {"source": label, "manual": manual}
-        document["profile"] = profile
+        document["profile"] = prepare_profile(document["profile"], profile, replacement=True)
         for route in document["driver"]["paths"]:
             if route["command"] == command[1:]:
                 route.update(help=[], man=manual)
@@ -232,7 +268,8 @@ class ReviewSession:
                 (backup / f"{number}.json").write_bytes(path.read_bytes())
         atomic_json(backup / "manifest.json", {"files": manifest})
         try:
-            result = self.collection.save_documents(document["profile"], document["driver"], replace=True)
+            result = self.collection.save_documents(document["profile"], document["driver"], replace=True,
+                                                    numerical_reviewed=draft.numerical_reviewed(document))
             report = deepcopy(self.report)
             profile_path, driver_path = self.paths(result["command"])
             report["records"][draft.index]["review"] = {
@@ -286,6 +323,16 @@ def show(value):
     print(json.dumps(value, ensure_ascii=True, indent=2))
 
 
+def show_numerical_notes(profile):
+    """Expose pending authoring review before the existing Validate/Save handoff."""
+    document = profile.get("documentation")
+    notes = document.get("diagnostics") if isinstance(document, dict) else None
+    if isinstance(notes, list):
+        pending = [note for note in notes if isinstance(note, dict) and note.get("code") == "authoring_semantics_review"]
+        if pending:
+            show({"numerical_review_required": pending})
+
+
 def add_option(draft):
     """Prompt for a literal option and validate the resulting draft profile."""
     document = draft.document()
@@ -303,8 +350,23 @@ def add_option(draft):
         category = {"name": category_name, "options": []}
         profile["categories"].append(category)
     category["options"].append(option)
-    validate_profile(profile, Path("<new option>"))
-    draft.text = json.dumps(document, ensure_ascii=False, indent=2) + "\n"
+    apply_document(draft, document)
+
+
+def review_numerical(draft):
+    """Inspect declarations and explicitly acknowledge their current authored evidence.
+
+    This does not assign verified status or claim target behavior. The transient
+    review baseline expires after a relevant edit and is never stored in a profile.
+    """
+    document = draft.document()
+    show(numerical_review(document["profile"]))
+    validate_authored_profile(document["profile"])
+    print("Correct numerical metadata and shared definitions through Edit JSON. Inactive claims remain source evidence.")
+    print("Only a source review establishes factual meaning; validation and preview do not verify it.")
+    if input("Acknowledge the current numerical declarations and cited applicability as reviewed? [y/N]: ").strip().lower() == "y":
+        draft.numerical_baseline = deepcopy(document)
+        print("Current numerical declarations acknowledged; their evidence statuses are unchanged. Save remains separate.")
 
 
 def review_entry(session, index):
@@ -316,7 +378,7 @@ def review_entry(session, index):
     print("Empty profiles require an added option or manual import before preview/save.")
     while True:
         try:
-            action = input("Entry: [o]ptions [c]ategories [d]river [a]dd option [e]dit JSON [m]anual import [p]review [v]alidate [s]ave [b]ack: ").strip().lower()
+            action = input("Entry: [o]ptions [c]ategories [d]river [a]dd option [e]dit JSON [m]anual import [n]umerical review [p]review [v]alidate [s]ave [b]ack: ").strip().lower()
             if action == "e":
                 edit_draft(draft)
             elif action == "o":
@@ -334,14 +396,18 @@ def review_entry(session, index):
                 session.import_source(draft, kind, value, manual or None, Settings.from_environment().timeout)
                 print("Manual imported into the draft; save is required to update the collection.")
             elif action == "p":
-                selected = preview_profile(session.validate(draft)["profile"])
+                selected = preview_profile(session.validate(draft, numerical=False)["profile"])
                 if selected:
                     print("Preview selection only: " + selected["flag"])
+            elif action == "n":
+                review_numerical(draft)
             elif action == "v":
-                session.validate(draft)
+                document = session.validate(draft)
+                show_numerical_notes(document["profile"])
                 print("Valid profile and driver; command execution was not tested.")
             elif action == "s":
-                session.validate(draft)
+                document = session.validate(draft)
+                show_numerical_notes(document["profile"])
                 if input("Save this profile and driver and mark reviewed? [y/N]: ").strip().lower() == "y":
                     show(session.save(draft))
                     print("Saved and marked reviewed. Original scan findings retained.")

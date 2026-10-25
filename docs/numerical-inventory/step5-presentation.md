@@ -166,3 +166,7 @@ No architectural change or contract redesign is required.
 Command-specific enrichment, authoring/import/save changes and global enforcement
 remain deferred. The next plan step is Step 6: carry the contract through every
 authoring workflow. No later step is implemented here.
+
+The subsequent [Step 6 authoring account](step6-authoring.md) documents preservation
+through edits, source replacement, save/reload and inspection. Read-only preview
+uses the same presentation path without making draft changes.

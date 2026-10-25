@@ -15,12 +15,52 @@ from command_paths import load_driver_registry
 from drivers import parse_driver
 from errors import HelpError
 from manual_import import atomic_bytes, validate_documents
+from value_semantics import ValueContext, validate_profile_semantics, validate_value_semantics
 
 
 MAX_ENTRIES = 4096
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_COLLECTION_BYTES = 64 * 1024 * 1024
 LOCKS = (".scan.lock", ".import.lock")
+
+
+def numerical_findings(profile, source):
+    """Describe optional numerical errors and pending reviews without I/O or mutation."""
+    structural = validate_profile_semantics(profile, source=source, mode="structural")
+    warnings = []
+
+    def supplied_warnings(metadata, flag, pointer, arity=None, optional=None):
+        """Select external uncertainty policy only for an explicitly supplied field."""
+        context = ValueContext(source=source, command=tuple(profile["command"]), option=flag,
+                               pointer=pointer, argument_count=arity, value_optional=optional)
+        warnings.extend(diagnostic for diagnostic in validate_value_semantics(metadata, mode="external",
+            context=context, definitions=profile.get("value_definitions")) if diagnostic.severity == "warning")
+
+    for ci, category in enumerate(profile["categories"]):
+        for oi, option in enumerate(category["options"]):
+            if "value_semantics" in option:
+                supplied_warnings(option["value_semantics"], option["flag"], f"/categories/{ci}/options/{oi}/value_semantics",
+                    option.get("argument_count", 1) if option.get("argument") else 0, option.get("argument_optional", False))
+    if "positional_value_semantics" in profile:
+        supplied_warnings(profile["positional_value_semantics"], "<positional_group>", "/positional_value_semantics",
+                          (profile.get("positional_group") or {}).get("argument_count", 0), False)
+    definitions = profile.get("value_definitions")
+    if isinstance(definitions, dict):
+        for name in sorted(definitions):
+            pointer = "/value_definitions/" + name.replace("~", "~0").replace("/", "~1")
+            supplied_warnings({"schema_version": 1, "variants": [{"ref": name}]}, "<definition " + name + ">", pointer)
+    findings = [{"code": diagnostic.code, "severity": diagnostic.severity,
+                 "locations": [source + diagnostic.pointer], "detail": diagnostic.message,
+                 "diagnostic": diagnostic.to_dict()}
+                for diagnostic in (*structural, *warnings)]
+    document = profile.get("documentation")
+    if isinstance(document, dict) and isinstance(document.get("diagnostics"), list):
+        for note in document["diagnostics"]:
+            if isinstance(note, dict) and note.get("code") == "authoring_semantics_review":
+                findings.append({"code": "authoring_semantics_review", "severity": "warning", "locations": [source],
+                                 "detail": "Numerical declarations remain inactive pending authored review; inspect source evidence in the profile.",
+                                 "command": profile["command"], "option": note.get("option")})
+    return findings
 
 
 class RecoveryIncomplete(HelpError):
@@ -233,6 +273,7 @@ def inspect_state(directory):
             documents[relative] = document
             if Path(relative).parent == Path("profiles"):
                 validate_profile(document, Path("<collection profile>"))
+                findings.extend(numerical_findings(document, relative))
                 command = tuple(document["command"])
                 if command in profiles:
                     finding("duplicate_profile", "error", [relative, profiles[command][0]], "Multiple profiles declare the same command path.")
