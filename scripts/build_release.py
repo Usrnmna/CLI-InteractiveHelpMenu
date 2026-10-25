@@ -29,7 +29,8 @@ PRIVATE_NAMES = frozenset({".import.lock", ".scan.lock", ".cli-help-install.json
     ".pypirc", ".bash_history", ".python_history", ".lesshst", ".wget-hsts", ".lycheecache", ".coverage",
     ".DS_Store", "Thumbs.db", "Desktop.ini"})
 PRIVATE_PATHS = ((".config", "gcloud"), (".config", "gh"), (".config", "cli-help"),
-                 (".config", "containers"), (".local", "share", "containers"))
+                 (".config", "containers"), (".local", "share", "containers"),
+                 (".local", "share", "cli-interactive-help"))
 PRIVATE_PATTERNS = ("*.pyc", "*.pyo", "*.swp", "*.swo", "*~", ".coverage.*", ".cli-help-write-*.tmp",
     ".cli-help-rc-*", ".review-state-*", ".cli-help-stage-*", "*.install.lock", "*.update-backup-*",
     "*.update-review-backup-*", "*.release-update-*", "*.cli-help-backup-*")

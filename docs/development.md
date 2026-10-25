@@ -221,8 +221,9 @@ subject to their own validation.
 
 ## Repository configuration
 
-[.gitattributes](../.gitattributes) keeps text checkouts in LF format for Linux
-tools, including when Git runs on Windows. README media and compressed manuals
+[.gitattributes](../.gitattributes) declares LF text format for Linux tools,
+including when Git runs on Windows. Effective attributes do not establish the
+current bytes of an existing checkout. README media and compressed manuals
 are binary and are not subject to line-ending conversion.
 Python and C files select Git's built-in language diff patterns for function
 context. Terminal recordings (`.cast`) and structured capture metadata (`.jsonl`)
@@ -269,6 +270,13 @@ known generated directories are excluded from documentation link scans. Release
 selection has its own explicit roots and reserved-name rules; Git ignore rules
 do not control packaging. Inspect the manifest for custom output/home locations
 as described in [release candidate validation](release-candidate.md).
+The source selector excludes the exact `.local/share/cli-interactive-help`
+directory prefix at any depth, including installed profiles inside isolated
+tool homes. Similarly named maintained reference directories remain eligible.
+The [final numerical-work configuration review and local handoff](numerical-inventory/step9-handoff.md)
+records the source-policy correction, unchanged configuration owners, byte-level
+observations and remaining migration/native acceptance limits. Its passive
+source-list checks do not establish package construction or installation.
 
 [Dependabot configuration](../.github/dependabot.yml) checks GitHub Actions and
 the optional [media requirements](../tools/requirements-media.txt) weekly.

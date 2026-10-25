@@ -237,3 +237,10 @@ existing acceptance criteria to passive test evidence, documents the bounded
 scalar-arity merge repair and distinguishes native/platform gaps from portable
 success. Per-criterion records reside beside the existing criteria in review.json;
 generated outcomes remain under the ignored report directory.
+
+The [Step 9 configuration review and local handoff](step9-handoff.md) records
+effective ignore/attribute/editor/workflow/source-selection policies, one bounded
+private-output exclusion and fresh local verification. Prospective enforcement
+passes; strict completeness and native terminal acceptance remain separate,
+unfulfilled conditions. The handoff preserves the distinction between current
+configuration evidence and historical Steps 1–8 results.

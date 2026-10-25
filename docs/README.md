@@ -87,6 +87,8 @@ defines both formats.
   defines Step 7 prospective gates, exact migration debt, diagnostics and strict-readiness limits.
 - [Integrated numerical behavior verification](numerical-inventory/step8-verification.md)
   maps acceptance criteria to passive evidence, the scalar-arity repair and unresolved native/migration limits.
+- [Final numerical-work configuration review and local handoff](numerical-inventory/step9-handoff.md)
+  records effective repository policies, the focused source-selection correction, current debt and verification limits.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

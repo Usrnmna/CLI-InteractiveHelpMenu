@@ -12,6 +12,14 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def release_source_policy():
+    """Load the trusted passive selector without building or installing artifacts."""
+    spec = importlib.util.spec_from_file_location("release_source_policy", ROOT / "scripts/build_release.py")
+    policy = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(policy)
+    return policy
+
+
 @unittest.skipUnless(shutil.which("git"), "Ignore-policy checks require Git")
 class RepositoryIgnoreTests(unittest.TestCase):
     def setUp(self):
@@ -138,9 +146,7 @@ class RepositoryIgnoreTests(unittest.TestCase):
 
     def test_inventory_sessions_are_excluded_from_release_sources(self):
         """Keep release selection aligned with Git without requiring a Linux build."""
-        spec = importlib.util.spec_from_file_location("release_source_policy", ROOT / "scripts/build_release.py")
-        policy = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(policy)
+        policy = release_source_policy()
         for name in ("docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt"):
             with self.subTest(path=name):
                 self.assertTrue(policy.excluded_source(Path(name)))
@@ -148,6 +154,59 @@ class RepositoryIgnoreTests(unittest.TestCase):
                      "scripts/inventory_numerical_descriptions.py"):
             with self.subTest(path=name):
                 self.assertFalse(policy.excluded_source(Path(name)))
+
+    def test_private_installed_numerical_profiles_are_excluded_from_release_sources(self):
+        """Keep checkout-local installed collections private at every source depth."""
+        name = "tools/home/.local/share/cli-interactive-help/profiles/private.json"
+        self.assert_policy([name], True)
+        policy = release_source_policy()
+        self.assertTrue(policy.excluded_source(Path(name)))
+        self.assertFalse(policy.excluded_source(Path("tools/home/.local/share/cli-interactive-help-reference/README.md")))
+
+    def test_source_selection_keeps_numerical_inputs_and_prunes_private_growth(self):
+        """Exercise actual enumeration with inert files, never package construction."""
+        policy = release_source_policy()
+        snapshot = self.folder / "source-selection"
+        snapshot.mkdir()
+        maintained = ["cli_help/value_semantics.py", "cli_help/presentation.py", "cli_help/authoring.py",
+                      "scripts/check_numerical_coverage.py", "profiles/future.json",
+                      "tests/fixtures/value-semantics/future.json", "docs/numerical-inventory/future.md",
+                      "tools/home/.local/share/cli-interactive-help-reference/README.md"]
+        private = ["tools/home/.local/share/cli-interactive-help/profiles/private.json",
+                   "tools/.cache/numerical-review/input.json", "tests/reports/numerical-inventory/report.json",
+                   "tools/generated-help/profiles/private.json"]
+        for name in [*policy.SOURCE_FILES, *maintained, *private]:
+            path = snapshot / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("Inert source-selection specimen; never executed.\n", encoding="utf-8")
+        selected = {path.relative_to(snapshot).as_posix() for path in policy.source_files(snapshot)}
+        self.assertTrue(set(maintained) <= selected)
+        self.assertFalse(set(private) & selected)
+
+    def test_numerical_sources_reviews_and_fixtures_remain_visible_with_text_attributes(self):
+        """Grow checks from maintained inputs rather than a historical option count."""
+        paths = {"cli_help/value_semantics.py", "cli_help/presentation.py", "cli_help/authoring.py",
+                 "scripts/inventory_numerical_descriptions.py", "scripts/check_numerical_coverage.py"}
+        for pattern in ("profiles/*.json", "docs/numerical-inventory/*", "tests/test_*numerical*.py",
+                        "tests/test_value_semantics.py", "tests/fixtures/value-semantics/*"):
+            paths.update(path.relative_to(ROOT).as_posix() for path in ROOT.glob(pattern) if path.is_file())
+        encoded = ("\0".join(sorted(paths)) + "\0").encode("utf-8")
+        ignored = subprocess.run(["git", "-C", str(self.folder), "check-ignore", "--no-index", "-z", "--stdin"],
+                                 input=encoded, capture_output=True, env=self.environment, timeout=10)
+        self.assertEqual(ignored.returncode, 1, ignored.stderr)
+        self.assertEqual(ignored.stdout, b"")
+        result = subprocess.run(["git", "-C", str(self.folder), "check-attr", "-z", "--stdin",
+                                 "text", "eol", "linguist-generated", "linguist-vendored"],
+                                input=encoded, capture_output=True, env=self.environment, check=True, timeout=10)
+        values = result.stdout.decode("utf-8").split("\0")
+        attributes = {name: {} for name in paths}
+        for index in range(0, len(values) - 1, 3):
+            attributes[values[index]][values[index + 1]] = values[index + 2]
+        for name, selected in attributes.items():
+            with self.subTest(path=name):
+                self.assertEqual((selected["text"], selected["eol"]), ("set", "lf"))
+                self.assertNotEqual(selected["linguist-generated"], "set")
+                self.assertNotEqual(selected["linguist-vendored"], "set")
 
 
 if __name__ == "__main__":
