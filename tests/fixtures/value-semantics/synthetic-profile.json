@@ -1,0 +1,68 @@
+{
+  "command": ["synthetic-contract"],
+  "description": "Synthetic numerical contract specimen; no real target semantics are asserted.",
+  "value_definitions": {
+    "delay": {
+      "kind": "duration",
+      "meaning": "Maximum synthetic wait",
+      "review": {
+        "status": "synthetic",
+        "references": [
+          {"source": "synthetic:contract-specimen", "locator": "delay rule"}
+        ]
+      },
+      "applicability": {
+        "implementation": {"state": "known", "values": ["synthetic-contract"]},
+        "version": {"state": "known", "min": "1", "before": "2"},
+        "platform": {"state": "any"},
+        "chip": {"state": "not_applicable", "reason": "No hardware is involved"}
+      },
+      "bare": {"state": "accepted", "form": "seconds"},
+      "forms": [
+        {
+          "id": "seconds",
+          "notation": "number",
+          "syntax": "N",
+          "unit": {"base": "second", "multiplier": "1"},
+          "bounds": {"min": "0"},
+          "special_values": [{"value": "0", "meaning": "Unlimited wait"}]
+        },
+        {
+          "id": "milliseconds",
+          "notation": "suffix",
+          "syntax": "Nms",
+          "tokens": ["ms"],
+          "case": "sensitive",
+          "unit": {"base": "second", "multiplier": "0.001"},
+          "bounds": {"min": "0", "min_inclusive": false}
+        }
+      ],
+      "when_absent": {
+        "state": "known", "form": "seconds", "value": "0"
+      },
+      "when_value_omitted": {
+        "state": "not_accepted", "reason": "The supplied flag requires an operand"
+      }
+    }
+  },
+  "categories": [
+    {
+      "name": "Synthetic values",
+      "options": [
+        {
+          "flag": "--delay",
+          "argument": "DURATION",
+          "summary": "Synthetic delay value",
+          "value_semantics": {"schema_version": 1, "variants": [{"ref": "delay"}]}
+        },
+        {
+          "flag": "-d",
+          "argument": "DURATION",
+          "summary": "Synthetic delay alias",
+          "value_semantics": {"schema_version": 1, "variants": [{"ref": "delay"}]}
+        },
+        {"flag": "--quiet", "summary": "Synthetic flag without an operand"}
+      ]
+    }
+  ]
+}

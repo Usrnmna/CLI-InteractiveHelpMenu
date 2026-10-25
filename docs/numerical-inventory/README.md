@@ -196,7 +196,12 @@ insertion or GitHub settings. Repository policy and CI reconciliation are
 documented separately in the [development guide](../development.md#repository-configuration).
 The guide is linked from the documentation index.
 
-Step 2 is next: review and define the shared numerical contract and its validator
-using these explicit classifications and unresolved work items. That work
-requires separate authorization. The current inventory reconciliation must not
-be presented as an implemented production numerical schema or enforcement gate.
+The [Step 2 numerical value contract](../numerical-value-contract.md) now provides
+opt-in metadata validation and explanation formatting. It does not promote these
+planning annotations into verified semantics or activate a completeness gate.
+The inventory generator and current fingerprints are unchanged.
+
+Step 3 is the subsequent description and metadata migration. It requires
+command-specific source verification and separate implementation scope. The
+inventory reconciliation is not production numerical-quality enforcement, and
+the deferred acceptance criteria above remain subject to later verification.

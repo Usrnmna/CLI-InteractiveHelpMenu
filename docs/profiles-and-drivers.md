@@ -62,6 +62,11 @@ the helper process can read them.
 
 ## Structured profile metadata
 
+The [numerical value contract](numerical-value-contract.md) defines optional
+descriptive metadata, explicit validation modes, and a pure explanation formatter.
+These APIs are opt-in infrastructure; existing loading and editing behavior do
+not invoke numerical validation or display the new explanations.
+
 | Field | Behavior |
 | --- | --- |
 | `options[].kind` | `flag` by default; `keyword` permits a literal bare keyword such as `dev` |

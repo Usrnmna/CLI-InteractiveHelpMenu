@@ -73,6 +73,8 @@ defines both formats.
 
 - [Numerical description implementation inventory](numerical-inventory/README.md)
   records Step 1 enumeration, review dispositions, and later acceptance criteria.
+- [Numerical value contract and opt-in APIs](numerical-value-contract.md)
+  defines Step 2 metadata, validation policies, diagnostics, and explanation formatting.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records
