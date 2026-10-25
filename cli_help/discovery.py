@@ -5,6 +5,7 @@ action or its arguments. Man-only mode avoids invoking the target executable.
 Neither mechanism is an operating-system sandbox for arbitrary programs.
 """
 
+from copy import deepcopy
 from dataclasses import dataclass
 import hashlib
 import json
@@ -22,12 +23,13 @@ import time
 from core import HelpError, validate_profile
 from command_paths import help_route
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
+from value_semantics import ValueContext, validate_profile_semantics, validate_value_semantics
 
 
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 10
+CACHE_VERSION = 11
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -294,16 +296,32 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     return options, summary
 
 
-def parse_help(text: str, source: str) -> list[dict]:
-    """Extract categories and multiline descriptions from formatted help text."""
+def parse_help_document(text: str, source: str) -> dict:
+    """Extract option text and separately owned shared paragraphs without probes.
+
+    Shared paragraphs require an explicit definition introduction or a clear
+    continuation of an already separated footer. Association uses a declared
+    metavariable or literal flag, never an inferred unit or command-name rule.
+    Unassigned paragraphs remain source documentation rather than option text.
+    """
     entries = []
+    shared = []
+    aliases = []
     heading = "Options"
+    source_heading = heading
     active_options = []
     active_heading = heading
     description = []
     skip_section = False
+    declaration_indent = 0
+    previous_blank = False
+    shared_lines = []
+    shared_start = 0
+    shared_section = source_heading
+    shared_seen = False
 
     def finish():
+        """Freeze the current declaration with its original inline explanation."""
         if not active_options:
             return
         paragraphs = "\n".join(description).strip()
@@ -311,6 +329,13 @@ def parse_help(text: str, source: str) -> list[dict]:
         for option in active_options:
             entries.append({**option, "summary": summary, "detail": paragraphs + f"\nSource: {source}",
                             "category": active_heading})
+
+    def finish_shared():
+        """Retain one source paragraph; resolve its targets after all declarations."""
+        if shared_lines:
+            shared.append({"source": source, "line": shared_start + 1,
+                           "section": shared_section, "text": "\n".join(shared_lines).strip()})
+            shared_lines.clear()
 
     lines = clean_output(text).splitlines()
     # Manual declarations often place a lowercase metavariable on its own
@@ -328,12 +353,40 @@ def parse_help(text: str, source: str) -> list[dict]:
         is_heading = bool(line) and indentation <= 3 and len(line) <= 72 and not line.startswith("-") and (
             line.endswith(":") or line.isupper() and any(char.isalpha() for char in line)
         )
+        if shared_lines and is_heading and line.rstrip(":").lower().endswith("options"):
+            finish_shared()
+            shared_seen = False
+        if shared_lines:
+            if not line:
+                finish_shared()
+                previous_blank = True
+                continue
+            shared_lines.append(line)
+            previous_blank = False
+            continue
+        definition = re.match(r"^(?:The\s+)?([A-Z][A-Z0-9_]+)(?:\s+argument)?\s+(?:is|are|may|can|must)\b", line)
+        common_intro = bool(definition or re.match(r"^(?:Display values|The units|Units|Binary prefixes)\b", line))
+        detached = (indentation < declaration_indent or indentation == declaration_indent == 0) and previous_blank
+        if (not skip_section and line and (not is_heading or common_intro)
+                and (not active_options and common_intro
+                     or detached and (common_intro or shared_seen))):
+            finish()
+            active_options = []
+            description = []
+            shared_lines.append(line)
+            shared_start = line_index
+            shared_section = source_heading
+            shared_seen = True
+            previous_blank = False
+            continue
         if is_heading:
             finish()
             active_options = []
             description = []
             heading = line.rstrip(":").strip().title()
+            source_heading = line.rstrip(":").strip()
             skip_section = heading.lower() in ("example", "examples", "usage", "synopsis", "see also")
+            previous_blank = False
             continue
         if skip_section:
             continue
@@ -343,6 +396,9 @@ def parse_help(text: str, source: str) -> list[dict]:
         if parsed:
             finish()
             active_options, summary = parsed
+            shared_seen = False
+            aliases.append([option["flag"] for option in active_options])
+            declaration_indent = indentation
             if (indentation >= 4 and next_indents[line_index] > indentation
                     and re.fullmatch(r"[a-z][a-z0-9_-]*", summary)
                     and not any(option["argument"] for option in active_options)):
@@ -353,8 +409,38 @@ def parse_help(text: str, source: str) -> list[dict]:
             description = [summary] if summary else []
         elif active_options:
             description.append(line)
+        previous_blank = not line
     finish()
-    return entries
+    finish_shared()
+    arguments = {}
+    for entry in entries:
+        for name in re.findall(r"\b[A-Z][A-Z0-9_]+\b", entry.get("argument", "")):
+            arguments.setdefault(name, set()).add(entry["flag"])
+    for paragraph in shared:
+        intro = re.match(r"^(?:The\s+)?([A-Z][A-Z0-9_]+)(?:\s+argument)?\s+(?:is|are|may|can|must)\b", paragraph["text"])
+        if intro and intro[1] in arguments:
+            targets = set(arguments[intro[1]])
+            association = "metavariable:" + intro[1]
+        elif intro:
+            targets, association = set(), "unassigned"
+        else:
+            referenced = {match[1].rstrip("=") for match in FLAG_PATTERN.finditer(paragraph["text"])}
+            targets = {entry["flag"] for entry in entries if entry["flag"].rstrip("=") in referenced}
+            association = "explicit_flag" if targets else "unassigned"
+        for group in aliases:
+            if targets.intersection(group):
+                targets.update(group)
+        paragraph.update({"options": sorted(targets), "association": association})
+        for entry in entries:
+            if entry["flag"] in targets:
+                entry["detail"] += (f"\n\nShared documentation ({paragraph['section']}):\n" + paragraph["text"]
+                                    + f"\nSource: {source} (line {paragraph['line']})")
+    return {"options": entries, "shared": shared}
+
+
+def parse_help(text: str, source: str) -> list[dict]:
+    """Return the legacy option-list view of a passively parsed help document."""
+    return parse_help_document(text, source)["options"]
 
 
 def parse_bracketed_options(line: str) -> tuple[list[dict], str] | None:
@@ -385,45 +471,305 @@ def parse_bracketed_options(line: str) -> tuple[list[dict], str] | None:
     return options, ""
 
 
-def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> dict:
-    """Merge help and manual definitions, preserving richer manual descriptions."""
-    command = [command] if isinstance(command, str) else command
-    display_name = " ".join(command)
-    by_flag = {}
-    for source, text in sources:
-        for entry in parse_help(text, source):
-            identity = entry["flag"].rstrip("=")
-            if identity in by_flag:
+def _semantic_references(value):
+    """Collect literal shared references from already validated JSON metadata."""
+    if isinstance(value, dict):
+        if set(value) == {"ref"}:
+            return {value["ref"]}
+        return set().union(*(_semantic_references(item) for item in value.values()))
+    if isinstance(value, list):
+        return set().union(*(_semantic_references(item) for item in value))
+    return set()
+
+
+def _rename_references(value, names):
+    """Copy metadata while rebinding exact ref objects within one source scope."""
+    if isinstance(value, dict):
+        if set(value) == {"ref"}:
+            return {"ref": names[value["ref"]]}
+        return {key: _rename_references(item, names) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_rename_references(item, names) for item in value]
+    return value
+
+
+def _value_context(profile, option, source, pointer="/value_semantics"):
+    """Describe existing operand declarations without parsing pending values."""
+    return ValueContext(source=source, command=tuple(profile["command"]), option=option.get("flag", "<positional_group>"),
+                        pointer=pointer, argument_count=option.get("argument_count", 1) if option.get("argument") else 0,
+                        value_optional=option.get("argument_optional", False))
+
+
+def _preservation_note(notes, code, source, command, option, message, **evidence):
+    """Append a structured, nonfatal source-preservation diagnostic."""
+    notes.append({"code": code, "severity": "warning", "source": source, "command": list(command),
+                  "option": option, "message": message, **evidence})
+
+
+def _prepare_semantics(profile, source, ordinal, definitions, notes, alternatives):
+    """Isolate source definitions and retain malformed declarations as evidence.
+
+    Structural checks apply only to explicitly supplied optional metadata.
+    Incomplete and source-derived nodes remain permitted. Invalid declarations
+    are retained outside active metadata so browsing can continue honestly.
+    """
+    result = deepcopy(profile)
+    original_definitions = result.pop("value_definitions", {})
+    source_definitions = original_definitions if isinstance(original_definitions, dict) else {}
+    valid = {}
+    for name, node in source_definitions.items():
+        contract = {"schema_version": 1, "variants": [{"ref": name}]}
+        if (isinstance(name, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", name)
+                and not validate_value_semantics(contract, definitions=source_definitions)):
+            valid[name] = node
+    # A malformed definition name cannot become an accidental cross-source ref.
+    while True:
+        dangling = {name for name, node in valid.items() if _semantic_references(node) - valid.keys()}
+        if not dangling:
+            break
+        valid = {name: node for name, node in valid.items() if name not in dangling}
+    if len(valid) != len(source_definitions) or not isinstance(original_definitions, dict):
+        alternatives.append({"source": source, "field": "value_definitions", "metadata": deepcopy(original_definitions),
+                             "definition_scope": "source"})
+        _preservation_note(notes, "source_definitions_invalid", source, profile["command"], "<definitions>",
+                           "Malformed or dangling source definitions remain inactive; valid independent definitions are preserved.")
+    names = {}
+    for name in valid:
+        candidate = name if ordinal == 1 else f"source-{ordinal}.{name}"
+        while candidate in definitions or candidate in names.values():
+            candidate = "source-" + candidate
+        names[name] = candidate
+    definitions.update({names[name]: _rename_references(node, names) for name, node in valid.items()})
+
+    fields = [(option, "value_semantics", _value_context(profile, option, source))
+              for category in result["categories"] for option in category["options"] if "value_semantics" in option]
+    if "positional_value_semantics" in result:
+        fields.append((result, "positional_value_semantics",
+                       _value_context(profile, result.get("positional_group", {}), source, "/positional_value_semantics")))
+    for owner, field, context in fields:
+        metadata = owner[field]
+        diagnostics = validate_value_semantics(metadata, definitions=source_definitions, context=context)
+        missing = (not diagnostics and bool(_semantic_references(metadata) - valid.keys())
+                   or field == "positional_value_semantics" and not result.get("positional_group"))
+        if diagnostics or missing:
+            alternatives.append({"source": source, "option": context.option, "field": field,
+                                 "metadata": deepcopy(metadata), "value_definitions": deepcopy(original_definitions),
+                                 "definition_scope": "source"})
+            _preservation_note(notes, "source_semantics_invalid", source, profile["command"], context.option,
+                               "Structurally invalid semantics remain in source evidence rather than active metadata.",
+                               validation=[diagnostic.to_dict() for diagnostic in diagnostics])
+            del owner[field]
+        else:
+            owner[field] = _rename_references(metadata, names)
+    return result
+
+
+def _merge_option_text(previous, entry, source, command, notes):
+    """Preserve complementary text and flag possible numerical disagreements.
+
+    Vocabulary matching is a review aid only. It never assigns units, verifies
+    claims or resolves a disagreement. Explicit metadata has separate checks.
+    """
+    old_summary, new_summary = previous.get("summary", ""), entry.get("summary", "")
+    old_detail, new_detail = previous.get("detail", ""), entry.get("detail", "")
+    if old_summary in ("", "Documented option") and new_summary:
+        previous["summary"] = new_summary
+    elif new_summary and new_summary != old_summary and new_summary not in new_detail:
+        new_detail = new_summary + ("\n" + new_detail if new_detail else "")
+    if old_summary and old_summary not in old_detail:
+        old_detail = old_summary + ("\n" + old_detail if old_detail else "")
+    if new_detail and new_detail != old_detail:
+        attribution = "" if f"Source: {source}" in new_detail else f"\nSource: {source}"
+        previous["detail"] = old_detail + ("\n\n" if old_detail else "") + new_detail + attribution
+    elif old_detail:
+        previous["detail"] = old_detail
+    terms = re.compile(r"\b(?:milliseconds?|seconds?|minutes?|hours?|bits?|bytes?|KiB|MiB|GiB|KB|MB|GB|ms|Mbps|Mbit|MHz|kHz)\b|[0-9]+(?:\.[0-9]+)?|%", re.IGNORECASE)
+    left = {match.group().casefold() for match in terms.finditer(old_summary + "\n" + old_detail)}
+    right = {match.group().casefold() for match in terms.finditer(new_summary + "\n" + new_detail)}
+    if left and right and left != right:
+        _preservation_note(notes, "numerical_text_review", source, command, entry["flag"],
+                           "Source explanations contain different numerical terms; verify units, scale and applicability. Both explanations are retained.")
+
+
+def merge_profiles(profiles: list[dict]) -> dict:
+    """Merge source profiles without changing static/custom profile selection.
+
+    First-source text, category and root declarations retain precedence. The
+    discovery builder's larger-arity/required-value rule remains in effect.
+    Semantics are selected atomically, with source alternatives retained and
+    shared definitions isolated. No completeness policy or formatter is used.
+    """
+    if not profiles:
+        raise HelpError("No recognizable option declarations were found for the selected command.", "help_unparsed")
+    command = profiles[0]["command"]
+    result = deepcopy(profiles[0])
+    result["categories"] = []
+    result.pop("value_definitions", None)
+    result.pop("positional_value_semantics", None)
+    documentation = deepcopy(result.get("documentation", {}))
+    documentation = documentation if isinstance(documentation, dict) else {}
+    sources, shared, notes, alternatives = [], [], [], []
+    definitions, by_flag, categories, semantic_sources, option_categories = {}, {}, {}, {}, {}
+    for ordinal, original in enumerate(profiles, 1):
+        flags = [entry.get("flag") for category in original.get("categories", []) for entry in category.get("options", [])]
+        if len(flags) != len(set(flags)):
+            # Formatted sources can repeat a declaration or quote a flag that
+            # is also declared later. Validate every observation, then apply
+            # the same deduplication as the former flat-source builder.
+            for category in original["categories"]:
+                for entry in category["options"]:
+                    validate_profile({**original, "categories": [{**category, "options": [entry]}]}, Path("<source observation>"))
+        else:
+            validate_profile(original, Path("<source profile>"))
+        if original["command"] != command:
+            raise HelpError("Documentation sources must have the same literal command path.")
+        source_documentation = original.get("documentation", {})
+        source = (source_documentation.get("source") if isinstance(source_documentation, dict) else None) or f"source {ordinal}"
+        source = str(source)
+        sources.append({"source": source, "documentation": deepcopy(source_documentation),
+                        "discovery": deepcopy(original.get("discovery", {})),
+                        "profile_context": {field: deepcopy(original[field]) for field in
+                                            ("identity", "stop_at_positional", "stop_at_options", "positional_group") if field in original},
+                        "categories": [{"name": category["name"], "description": category.get("description", "")}
+                                       for category in original["categories"]]})
+        if isinstance(source_documentation, dict):
+            for field, target in (("shared", shared), ("diagnostics", notes), ("alternatives", alternatives)):
+                records = source_documentation.get(field, [])
+                if isinstance(records, list):
+                    target.extend(deepcopy([record for record in records if isinstance(record, dict)
+                                           and (field != "diagnostics" or isinstance(record.get("code"), str)
+                                                and isinstance(record.get("message"), str))]))
+        current = _prepare_semantics(original, source, ordinal, definitions, notes, alternatives)
+        identity_matches = not result.get("identity") or original.get("identity") == result["identity"]
+        recorded_owners = source_documentation.get("semantic_sources", {}) if isinstance(source_documentation, dict) else {}
+        recorded_owners = recorded_owners if isinstance(recorded_owners, dict) else {}
+        for category in current["categories"]:
+            for entry in category["options"]:
+                identity = entry["flag"].rstrip("=")
+                incoming = entry.get("value_semantics")
+                semantic_source = recorded_owners.get(identity, source)
+                semantic_source = semantic_source if isinstance(semantic_source, str) else source
+                if identity not in by_flag:
+                    target = categories.get(category["name"])
+                    if target is None:
+                        target = {**deepcopy(category), "options": []}
+                        categories[category["name"]] = target
+                    elif not target.get("description") and category.get("description"):
+                        target["description"] = category["description"]
+                    target["options"].append(entry)
+                    by_flag[identity] = entry
+                    option_categories[identity] = (category["name"], category.get("description", ""))
+                    if incoming and identity_matches:
+                        semantic_sources[identity] = semantic_source
+                    if incoming and not identity_matches:
+                        alternatives.append({"source": source, "option": entry["flag"], "field": "value_semantics",
+                                             "metadata": entry.pop("value_semantics"), "definition_scope": "profile"})
+                        _preservation_note(notes, "source_identity_review", source, command, entry["flag"],
+                                           "Source identity does not establish applicability to the selected profile; semantics remain a qualified alternative.")
+                    continue
                 previous = by_flag[identity]
-                previous["detail"] += "\n\n" + entry["detail"]
-                old_count = previous.get("argument_count", 1) if previous["argument"] else 0
-                new_count = entry.get("argument_count", 1) if entry["argument"] else 0
-                # Prefer the larger explicit arity. At equal arity, a required
-                # declaration takes precedence over an optional one so another
-                # flag cannot silently occupy a documented required value.
-                old_optional = previous.get("argument_optional", False)
-                new_optional = entry.get("argument_optional", False)
+                incoming_category = (category["name"], category.get("description", ""))
+                if option_categories[identity] != incoming_category:
+                    context_text = f"Source category: {category['name']}"
+                    if category.get("description"):
+                        context_text += "\n" + category["description"]
+                    entry["detail"] = entry.get("detail", "") + "\n" + context_text
+                    selected_category = categories[option_categories[identity][0]]
+                    if (category["name"] == selected_category["name"] and not selected_category.get("description")
+                            and category.get("description")):
+                        selected_category["description"] = category["description"]
+                _merge_option_text(previous, entry, source, command, notes)
+                old_count = previous.get("argument_count", 1) if previous.get("argument") else 0
+                new_count = entry.get("argument_count", 1) if entry.get("argument") else 0
+                old_optional, new_optional = previous.get("argument_optional", False), entry.get("argument_optional", False)
+                declaration_fields = ("flag", "argument", "argument_optional", "argument_count", "argument_style", "attached", "bundle", "optional_value_kind")
+                old_declaration = {field: previous[field] for field in declaration_fields if field in previous}
                 if old_count and new_count and (old_count, old_optional) != (new_count, new_optional):
                     previous["detail"] += ("\n\nArgument declarations disagree across sources; "
                                            "the larger value count, then required values, take precedence.")
                 if new_count > old_count or (new_count == old_count and old_optional and not new_optional):
-                    previous.update({key: entry[key] for key in ("flag", "argument", "argument_optional")})
-                    previous.pop("argument_count", None)
-                    if new_count > 1:
-                        previous["argument_count"] = new_count
-                continue
-            by_flag[identity] = entry
-    if not by_flag:
-        raise HelpError("No recognizable option declarations were found for the selected command.", "help_unparsed")
-    categories = {}
-    for entry in by_flag.values():
-        category = entry.pop("category")
-        categories.setdefault(category, []).append(entry)
-    profile = {"command": command, "description": f"Discovered help for {display_name}; arguments and categories are inferred.",
-               "categories": [{"name": name, "description": "Automatically extracted command documentation.", "options": options}
-                              for name, options in categories.items()]}
-    validate_profile(profile, Path("<discovered help>"))
-    return profile
+                    # Copy the winning declaration coherently; this is identical
+                    # to the former builder rule for its parsed source fields.
+                    for field in declaration_fields:
+                        previous.pop(field, None)
+                        if field in entry:
+                            previous[field] = entry[field]
+                active = previous.get("value_semantics")
+                context = _value_context(result, previous, source)
+                if active and validate_value_semantics(active, context=context, definitions=definitions):
+                    alternatives.append({"source": semantic_sources.get(identity, "source 1"), "option": previous["flag"], "field": "value_semantics",
+                                         "metadata": previous.pop("value_semantics"), "declaration": old_declaration, "definition_scope": "profile"})
+                    _preservation_note(notes, "semantics_arity_review", source, command, previous["flag"],
+                                       "The selected operand declaration differs from earlier semantic metadata; the earlier declaration remains inactive evidence.")
+                    semantic_sources.pop(identity, None)
+                    active = None
+                if incoming:
+                    compatible = identity_matches and not validate_value_semantics(incoming, context=context, definitions=definitions)
+                    if not active and compatible:
+                        previous["value_semantics"] = incoming
+                        semantic_sources[identity] = semantic_source
+                    else:
+                        alternatives.append({"source": source, "option": entry["flag"], "field": "value_semantics",
+                                             "metadata": deepcopy(incoming), "definition_scope": "profile"})
+                        combined = {"schema_version": 1, "variants": [*active["variants"], *incoming["variants"]]} if active else incoming
+                        disagreement = validate_value_semantics(combined, definitions=definitions)
+                        if not compatible or disagreement:
+                            _preservation_note(notes, "value_semantics_conflict", source, command, entry["flag"],
+                                               "Semantic declarations disagree or applicability is not established. First-source compatible semantics retain precedence; alternatives are preserved.",
+                                               validation=[diagnostic.to_dict() for diagnostic in disagreement])
+        if "positional_value_semantics" in current:
+            metadata = current["positional_value_semantics"]
+            if (identity_matches and current.get("positional_group") == result.get("positional_group")
+                    and "positional_value_semantics" not in result):
+                result["positional_value_semantics"] = metadata
+                owner = recorded_owners.get("<positional_group>", source)
+                semantic_sources["<positional_group>"] = owner if isinstance(owner, str) else source
+            else:
+                alternatives.append({"source": source, "option": "<positional_group>", "field": "positional_value_semantics",
+                                     "metadata": metadata, "declaration": deepcopy(current.get("positional_group")), "definition_scope": "profile"})
+                active = result.get("positional_value_semantics")
+                combined = {"schema_version": 1, "variants": [*active["variants"], *metadata["variants"]]} if active else metadata
+                if (not identity_matches or current.get("positional_group") != result.get("positional_group")
+                        or validate_value_semantics(combined, definitions=definitions)):
+                    _preservation_note(notes, "positional_semantics_review", source, command, "<positional_group>",
+                                       "Positional source declarations or semantics differ; the first profile's positional group is unchanged.")
+    result["categories"] = list(categories.values())
+    if definitions:
+        result["value_definitions"] = definitions
+    documentation.update({"sources": sources, "shared": shared, "diagnostics": notes, "alternatives": alternatives,
+                          "semantic_sources": semantic_sources})
+    result["documentation"] = documentation
+    if notes:
+        discovery = result.setdefault("discovery", {})
+        discovery["warnings"] = list(dict.fromkeys([*discovery.get("warnings", []),
+            *(f"{note['code']}: {note['message']}" for note in notes)]))
+    validate_profile(result, Path("<merged help>"))
+    return result
+
+
+def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> dict:
+    """Build and merge passive source profiles, retaining detached documentation."""
+    command = [command] if isinstance(command, str) else list(command)
+    profiles = []
+    for source, text in sources:
+        parsed = parse_help_document(text, source)
+        categories = {}
+        for original in parsed["options"]:
+            entry = dict(original)
+            category = entry.pop("category")
+            categories.setdefault(category, []).append(entry)
+        if not categories:
+            continue
+        notes = []
+        for paragraph in parsed["shared"]:
+            if paragraph["association"] == "unassigned" and re.match(r"^(?:The\s+)?[A-Z][A-Z0-9_]+(?:\s+argument)?\s+(?:is|are|may|can|must)\b|^(?:The units|Units|Binary prefixes)\b", paragraph["text"]):
+                _preservation_note(notes, "shared_documentation_unassigned", source, command, "<shared>",
+                                   "A detached definition has no explicit declared option or metavariable target; its text is retained as shared documentation.", line=paragraph["line"])
+        profiles.append({"command": command, "description": f"Discovered help for {' '.join(command)}; arguments and categories are inferred.",
+                         "categories": [{"name": name, "description": "Automatically extracted command documentation.", "options": options}
+                                        for name, options in categories.items()],
+                         "documentation": {"source": source, "shared": parsed["shared"], "diagnostics": notes}})
+    return merge_profiles(profiles)
 
 
 def executable_identity(path: str) -> dict:
@@ -472,6 +818,8 @@ def read_cache(path: Path, identity: dict, ttl: int) -> dict | None:
             return None
         profile = document["profile"]
         validate_profile(profile, path)
+        if validate_profile_semantics(profile, source=str(path), mode="structural"):
+            return None
         if profile["command"] != identity["command"]:
             return None
         return profile
@@ -483,15 +831,18 @@ def write_cache(path: Path, identity: dict, profile: dict):
     """Atomically store a profile; unavailable cache storage does not block browsing."""
     temporary = None
     try:
+        validate_profile(profile, path)
+        if validate_profile_semantics(profile, source=str(path), mode="structural"):
+            return
         path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        document = json.dumps({"identity": identity, "created": time.time(), "profile": profile}, ensure_ascii=False)
+        document = json.dumps({"identity": identity, "created": time.time(), "profile": profile}, ensure_ascii=False, allow_nan=False)
         if len(document.encode("utf-8")) > MAX_CACHE_BYTES:
             return
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as output:
             temporary = Path(output.name)
             output.write(document)
         os.replace(temporary, path)
-    except OSError:
+    except (OSError, ValueError, TypeError, RecursionError):
         pass
     finally:
         if temporary:
@@ -687,7 +1038,8 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         explanation = " ".join(warnings)
         error_type = ProbeError if probe_failed else HelpError
         raise error_type(f"{error} {explanation} Add a custom profile for this command.") from error
-    profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": warnings,
+    preserved_warnings = profile.get("discovery", {}).get("warnings", [])
+    profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": [*warnings, *preserved_warnings],
                             "executable": executable, "scope": "subcommand" if subcommands else "top-level"}
     if module is not None:
         profile["discovery"].update({"module": module, "interpreter_options": list(interpreter_options),

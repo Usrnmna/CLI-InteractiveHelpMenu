@@ -5,14 +5,17 @@
 
 The version 1 contract describes accepted values without interpreting the pending
 command. Its implementation is [value_semantics.py](../cli_help/value_semantics.py).
-No profile loader, parser, browser, importer, or editing workflow imports this
-module. Numerical completeness is an explicitly selected validation policy.
-Legacy profiles continue to use the existing structural validator unchanged.
+Numerical completeness is an explicitly selected validation policy. Profile
+loading, browsing and editing do not activate it. The source-preservation merger
+and cache explicitly select structural checks for optional metadata; legacy
+profiles continue to use the existing profile validator unchanged.
 
-The contract provides Step 2 infrastructure. Production profile migration,
-command-specific verification, discovery enrichment, source merging, caching,
-rendering, search, authoring integration, and a future completeness gate remain
-separate work. Passing these APIs does not establish those later guarantees.
+The contract provides Step 2 infrastructure. The
+[Step 3 migration](numerical-inventory/step3-migration.md) and
+[Step 4 source preservation](numerical-inventory/step4-preservation.md) document
+their separate guarantees. Command-specific enrichment, formatter presentation,
+search, authoring integration and a future completeness gate remain separate
+work. Passing these APIs does not establish upstream factual accuracy.
 
 ## Representation and ownership
 
@@ -454,6 +457,7 @@ Step 1 annotations are not promoted or refreshed by these APIs. The
 [Step 3 bundled migration](numerical-inventory/step3-migration.md) records
 source-reviewed descriptions, opt-in metadata and unresolved investigations.
 Its authored-source changes require narrowly justified inventory fingerprint
-updates; the shared APIs and protected runtime sources remain unchanged.
-Source-derived records retain their review diagnostics. Runtime integration and
-global completeness enforcement remain separate implementation boundaries.
+updates. The shared contract APIs remain unchanged. Step 4 preserves those
+declarations through source merging and cache round trips with structural checks
+only. Source-derived records retain their review diagnostics. Formatter
+presentation and global completeness enforcement remain separate boundaries.

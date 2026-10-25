@@ -105,7 +105,7 @@
         "source||cli_help/arguments.py": "1b6e63eb17bc95b63e1827db43cb999cbda720070eebc3e90ce2e7fa4d9a77bc",
         "source||cli_help/command_paths.py": "5777b734209a9be9de96464039704d4e133fcbe4fd94115d3635b2e2a5438625",
         "source||cli_help/core.py": "9117524d2e437e16f168fb9a1775ed16cbaa0a1e8907982b4e65416a548b5d36",
-        "source||cli_help/discovery.py": "74ec69ef750bdfce4b828106920930fa86d28cc70cdf156db2c79068db8b2d6e",
+        "source||cli_help/discovery.py": "47e5eb786ab2ccc90a6079b294a81465379e76fc79969d6ec772cce42d237ad2",
         "source||cli_help/drivers.py": "38de66bdcf8287592531fee1c1f6fd09068ad8fe60ca2d618bc6c2a1fb2960a3",
         "source||cli_help/invocation.py": "9f9c8ab41fbb7bb7d9fb719b13ec2ebb70b8180fa308b57638bafaa1283db290",
         "source||cli_help/main.py": "063799a727fcfb6b42a5fd24a4a25aa9f3cf5d411801fc641684b16a7e2d6bba",
@@ -1901,75 +1901,6 @@
     {
       "acceptance": "The selected entry explains its documented numerical meaning without changing option availability, insertion, or command execution.",
       "applicability": "Only the source observations and their recorded versions/identities; other installed versions remain unverified.",
-      "classification": "composite",
-      "deficiency": "Component grammar, index basis, or numeric subfield meaning is not fully explained.",
-      "disposition": "investigate",
-      "entries": {
-        "option|sort|--key": "9daa497f79ddb0c7d3687d7958f672b58bc71988cd75106a13598507bc10325a"
-      },
-      "evidence": "source-derived",
-      "findings": [
-        "F4"
-      ],
-      "id": "composite-arguments",
-      "later_steps": [
-        2,
-        3,
-        6
-      ],
-      "priority": "P2",
-      "proposed_action": "Describe each relevant component, radix/index basis and numerical meaning with the correct grammar.",
-      "reason": "The inspected value joins components such as an endpoint, forwarding address, stream selector, prefix, mount, or connection string.",
-      "references": [
-        "Repository-relative source observations and linked provenance; authoritative version-specific review is required before corrections."
-      ],
-      "verification": "Inspect the exact option and source/version, then compare the accepted forms with the eventual displayed explanation."
-    },
-    {
-      "acceptance": "The selected entry explains its documented numerical meaning without changing option availability, insertion, or command execution.",
-      "applicability": "Only the source observations and their recorded versions/identities; other installed versions remain unverified.",
-      "classification": "quantity",
-      "deficiency": "Source-derived parser flow associates shared rules with the final option, leaving relevant entries without the complete rule.",
-      "disposition": "change_recommended",
-      "entries": {
-        "option|df|--block-size": "c7d25cfaa1b651bbccf6e6f4a33f8368e4cc7cd3f3230ec9c64f5cd15906b1c4",
-        "option|df|-B": "9cd7ad35b96aea60650454e11d6e701f82333f74bbcc3bca28e376aa5cb004a8",
-        "option|du|--block-size": "6ca5bbdad6ebb27527fcf1779f354142fc037f1382788c0f0d1852e8bea48f60",
-        "option|du|--threshold": "324cea7e2cbd7eb67a9a7d7b77438436cfcdfdb57d6885b7db87916df4a3235e",
-        "option|du|-B": "90a36eba4ced681a6b41c5320c212a4be6019cdeaf2133b55351ca58a6a8de25",
-        "option|du|-t": "cf40c9318e2e40f1b035bf78e9882a663c4e7cc64f8b7bd5b275067e64813054",
-        "option|head|--bytes": "55b8b9cd294998aefaf4d2a17a8c0915cf340f8ff6c7df2c409fa8b40e20a419",
-        "option|head|-c": "82ddc7772a2196df8aa9d4c3f0fe9c4fc9344b3bc7ca8ccb834128b752f45e75",
-        "option|sort|--buffer-size": "80be757141c3b5ec50e419efdb27806c072fc7b896d53de6a06bb5e2f0b448d6",
-        "option|sort|-S": "697f385b9c55b2de404e7d74b0908aa97c46a3fbea2b000745f4884d9fb41cb1",
-        "option|tail|--bytes": "a588e22ed7f4b36aaabfcb38705b871b2cee52e625998acc6ab3e5a171b21011",
-        "option|tail|-c": "8856eb2d62c50bb4251f3f5c59bc9362ed92348147664934306937dacd33102f"
-      },
-      "evidence": "source-derived",
-      "findings": [
-        "F5"
-      ],
-      "id": "shared-numerical-definitions",
-      "later_steps": [
-        4,
-        5,
-        8
-      ],
-      "priority": "P1",
-      "proposed_action": "Preserve and explicitly associate shared definitions for these entries; independently verify their command-specific bare-number rules.",
-      "reason": "Selected GNU specimens place SIZE/NUM multiplier definitions after their option lists.",
-      "references": [
-        "tests/fixtures/help/workflow-df.txt",
-        "tests/fixtures/help/workflow-du.txt",
-        "tests/fixtures/help/workflow-head.txt",
-        "tests/fixtures/help/workflow-tail.txt",
-        "tests/fixtures/help/workflow-sort.txt"
-      ],
-      "verification": "Inspect the exact option and source/version, then compare the accepted forms with the eventual displayed explanation."
-    },
-    {
-      "acceptance": "The selected entry explains its documented numerical meaning without changing option availability, insertion, or command execution.",
-      "applicability": "Only the source observations and their recorded versions/identities; other installed versions remain unverified.",
       "classification": "count",
       "deficiency": "Capture wording supplies a basic subject; version applicability and special cases still require review.",
       "disposition": "basic_meaning_present",
@@ -1979,13 +1910,9 @@
         "option|git fetch|--depth": "40d6ded25d97f990aca41d3734b8fe57e8c6925947d19309a65e4034adea5c1d",
         "option|git fetch|--jobs": "da075c64fc11e56172100d06a8ac398f79549806daa522a535695c6f3fc4e36e",
         "option|git fetch|-j": "e6a81d5a1eaaf2531111a454d950b68a8d28f4a2b222ff436a75d60a2ef4035c",
-        "option|head|--lines": "e4616da314e77612b21f350b3641dda625213b2734b73b4357587b5cc753cdea",
-        "option|head|-n": "38afe4f171cc191f83361b2a9050f4547e0768d89a6b59d86c1f7a79c7946ccf",
         "option|sort|--batch-size": "ea12b992c32670a52725b32c53ff6864b7635e6791b52beaa3fffc3f307890f8",
         "option|sort|--parallel": "a9743a3ba1a6c084edf8767dfb95fdd7debb63553bf03382be043604e4ad17f4",
-        "option|tail|--lines": "de3947a92ab9098c72bf5878c761e8926d7e271694a010bc9c52d7869f31b097",
         "option|tail|--max-unchanged-stats": "bc5843be71aef262fd0ac887325406ce7c644dc9a33e1f7b29e6d067352ab9e1",
-        "option|tail|-n": "2447b769236ecc9aaa6ba95b08a4df8919878a0ea04120934e43af248c961e64",
         "option|xz|--threads": "d3b45dfd8f701a91ffa2cad61bb3fc46e9440a673d8190582db1995f5116fb5a",
         "option|xz|-T": "f5c0371d5879393574ed6b31085eaef016aa3cc4ac0488ccefe039084577196b"
       },
@@ -2761,16 +2688,8 @@
         "option|cmake|-S": "0297cc046e33e3e6c5ec4d016b527f3a927bd1bcd8b074fc461f3c51bc555c41",
         "option|convert|-quality": "48869caa7d1d3c7baf1cffd29f69ec1fe27c4d68649922f808ca1cb7f74d354c",
         "option|convert|-resize": "f930e1a1af1f95378782d657ef2cef4c3819c733af8e13e6a22ce5be17c78a06",
-        "option|cp|--backup": "134d7f7bb125b2a264bb27396ca459a0a2116a771fb6dd92e4a81bd111ed35b2",
         "option|cp|--context": "d61d24c137abf6a0b81faf7952233bb46d72739cdbb5ef0cfa0ec33c5329c12f",
-        "option|cp|--no-preserve": "4b3ad67d0c92ee88fcb4fe7e790f75fe30483a2c25fe0aafe99bde8d9b2e10d7",
-        "option|cp|--preserve": "2ff7f15f053ecb96c40518d2561ab542402a7365dc00d514edda915025f6316c",
-        "option|cp|--reflink": "a3f8725a08e07d332bb30d11a1d1d654e03e20e6710d9c4cb92401bff1056e71",
-        "option|cp|--sparse": "4636be578447de5b4d969426117cd346c98aa01400d47f51ea98168a124d33e3",
-        "option|cp|--suffix": "c1ffef96e9192fe78c282b8c1130685f14ac76b7cb78a5d642407d4310b6407c",
         "option|cp|--target-directory": "be8edd63f2ee3426ed7597d0418da7c1d0e3c8de48a566d8ee28b54fc248b316",
-        "option|cp|--update": "576f10464dca6ffdd682e2ea7573d0590038b7375de9f373d179142d41fc6a37",
-        "option|cp|-S": "4b55580d40843c94e0206dcc5e8228993fc6f7d4b573792f80cf2db129b18d74",
         "option|cp|-t": "80c767e517ce16b3b9b7fc243f4f8f55aa6909d66c91e9ee7041a7d73b0f75b5",
         "option|curl|--header": "ef7c860ffc71b01280c064110a6635c598a7cd3f38a98057b6db35aaa52ae99c",
         "option|curl|--output": "bf7897dbafce5ba55b062604ca6293bd6ccda9adbd230f2457f7efe659d6e326",
@@ -2778,7 +2697,6 @@
         "option|curl|-H": "c1270a985f58c80dcd403622b09fc8c2127d265844d168c591ffa9f44bf00cd2",
         "option|curl|-o": "3ef6eecac3b3c8c7b27f755a67910344e15c63b62dbeccd7f8c0cfe122798042",
         "option|df|--exclude-type": "f9df9862addd8e5246020398a260b5e28f6c3167dadb50f790d05419a6c2a819",
-        "option|df|--output": "b60ff3dcaeb07753cfad34b1d3ba799e7eff1a28fd4199e8ab4e1da5e9c986c4",
         "option|df|--type": "cb1b9b9ca6f9542670f3f25516429f1134cf45222cd4d4d77e0adc13ddab0172",
         "option|df|-t": "f8b44d0a9c341e1aa9561fad1cdcbba1dd6c23b9e64b312508c42d2e4b606624",
         "option|df|-x": "af65c5ce2ba8637ad56c5bac4a5b3398de96910223023826c6aaf4e92bfc77eb",
@@ -3804,7 +3722,6 @@
         "option|sort|-C": "66ac7e701051c0276ca023e4ba68c67f0e95026f22bfa83ebacf6f31c3d88fe8",
         "option|sort|-T": "20d62a18596929c308b35d6645f552b82daa8ffe13d3b5374ed52b27816d4340",
         "option|sort|-c": "a6f15f7dbafff708f8befccf00d7afc8890aa31552911e58a3bcb05fafcbc840",
-        "option|sort|-k": "4bb8f1802dba0b65004f0063552dc8fd8d9a534c52d19a8f92182d630772e3cc",
         "option|sort|-o": "d51a8c2d39c15f160e737336315ffd885a5e6a884b54ad0f1ca8b322ac7c2566",
         "option|sort|-t": "515b67c8cecee6f7f6d1d7f8e4aa8a04514247e3aa59edf8f69fd3c3a578b3c4",
         "option|ssh|-B": "c79164ec19f34570780884072bf0ba56a323cdf5d78cf73d1ae63372863b9539",
@@ -3901,9 +3818,7 @@
         "option|systemctl status|-p": "61f8454284af15a33caf5ffd3eda5dad733f8742f5964f6b6baaa07b2fe2d39b",
         "option|systemctl status|-s": "b9ae8eb554ec60a83217ad47ff7312f0d38f055915be6999c7a859d562c2a202",
         "option|systemctl status|-t": "100bcb6593917a61a5294490738e0e1d8506c1e98f77b3833eb74e6c199ea5ef",
-        "option|tail|--follow": "350316d3ad49f16407de250783e395a04d002c5bf5ea331145ce4d56ffcf9952",
         "option|tail|--pid": "91cf5d540bbbf84e68f57eb5b00c799a0a034ec14b53d356fbf7e76072ae2f84",
-        "option|tail|-f": "cfaa5d172cd5b42ee40ae4ce2ed2c352d5f647dd3cd4f2a2356ef7e50316dc22",
         "option|terraform apply|-parallelism": "49bf3ef7be2730a0dbf030cbf69c0c83de8a05a79fcbb2c2f6d68202dcc061be",
         "option|terraform plan|-out": "24153641ba480a3ecac32706ea789b943c4dcbd0e691410cb9ab9b4bb4e33348",
         "option|terraform plan|-var": "7a6db3353241e0628d8777d14ca1418f25a20e4229e4b978206c27479e6284c4",
@@ -4513,7 +4428,6 @@
         "option|cp|--help": "0488a4e9740a4c680f482b887b26e0e2f4726e6fbbf4e4298e53841c94d4f108",
         "option|cp|--interactive": "5277f6764e50067897e1726da8e4afd7e16db10194263afa389567c91d8310cb",
         "option|cp|--link": "71deae584431fd0c6b987291ce3befb7e0e8491a4845410bcc643a01b02d2120",
-        "option|cp|--no-clobber": "d2a3ca4f05c4436525e36a7c5f26bd3378a5aa120f91eb5dd4d496e6f9c870ea",
         "option|cp|--no-dereference": "43a689ecfc5fd36dfc8b778567e2c1e5f00d97064f397dcecc801bf0999c4006",
         "option|cp|--no-target-directory": "bc89d7f766c8cd9c6f603f2992ce4d89f152113f45a56f072b74a8d1eef4b2c1",
         "option|cp|--one-file-system": "343379d259bc41e7c74220e3e6de36b84ca6bf0b1dcc6025e68fe2d19f4c7d8a",
@@ -4523,7 +4437,6 @@
         "option|cp|--strip-trailing-slashes": "0228361acde3b536af3cd66bf77610e2b2baf62e18164c7e27bf64eae0bb0b74",
         "option|cp|--symbolic-link": "0ec5b69b6f385b15a7c323fe1ba39ad873d95b71b1ea5fcf498ee18b102fcfaf",
         "option|cp|--verbose": "7878f1ab31d3dc8c0a81057df2d77cbf595db01fcc81da4026cb7d8e03df457a",
-        "option|cp|--version": "5e2ff08555d9d606c15850ef0fe99c8d0eab5288b6ab24a6463e4d27c15c2419",
         "option|cp|-H": "04d03724a4313f953cfb7c461ae759aaaad2c5e2e6b859d782f40ec7ddab04c0",
         "option|cp|-L": "70ed7441f7fe8dab66b3976e86c5b85175c25f9df042b6ebdd823539fdb410ba",
         "option|cp|-P": "6d6abae921434265b6119f36a8cbe5b758fbb7bbb690dedfe451dab69a8a56f9",
@@ -4536,7 +4449,6 @@
         "option|cp|-f": "bfe55b7b89bc7eed0e8f2f7257831a871a1f453c551ba1a6bd26e7e85898d278",
         "option|cp|-i": "35fce28e5e0034525551ab18df91f69e0b424d4e79bfde314c2d8cf30a2c7447",
         "option|cp|-l": "3842cc03a98f8a164a5d881ae16d543657ce9b5077f229ca7dbb27d8bd9d2d02",
-        "option|cp|-n": "e4079d5686f85c3466f3ef203b835c77c13b03a5161084588248fab383b7c1a1",
         "option|cp|-p": "2a5e41ef7436e3d6ee9b0d0521e7c3bbe19c5895a15aff3902b9fdb873fc93ba",
         "option|cp|-r": "343de038458a5e119f311cfe2d8d6e0d125792b79fa30898f4ee5f80f27acc16",
         "option|cp|-s": "2b6f537e3811ce9468758e719e74a33815b02a901e9f549a0ec335aa02649995",
@@ -4554,7 +4466,6 @@
         "option|df|--si": "bacca8f8b7b5bab8b3539eb7e7b7c1872a9f43b9da9c18e147b4ce6c3db5a906",
         "option|df|--sync": "fd8b268bca9ddad1a789c4e6a6a400fcc39c9a9924e3b97d3a0f59e2d1d86a8a",
         "option|df|--total": "4527ef7bddce741613cf2cf6d58bbc75c8cac23d8311b2d59fb5bedfd2f60f16",
-        "option|df|--version": "059023ce890a58253bcbb02eb0fe65c0b322cbbb07d6a23db8d1b0898ca9c7d5",
         "option|df|-H": "0543fee8369e1ca9da9ef26682f1339945cbf67f1005a4a6602e287a7f723d89",
         "option|df|-P": "c81db3c83873fe8763a152f3013e2cef1b421e981aeb06e7aa15413f7ccb1bd7",
         "option|df|-T": "cd4b3b7efc07b5b84ee104d333e1ed62a92c977fbff71bb3607b99a1f55ac997",
@@ -4700,7 +4611,6 @@
         "option|du|--si": "e05ec0c278fdce4be98a4ce97d48f9387b1b2063938665f3318eb16e8f917ff0",
         "option|du|--summarize": "80b4bd4455aea1e5224738a8116ace473a1e3aedf69c3115a1e79eec1c1e87ad",
         "option|du|--total": "3e2f07000dc5534e8de4097531942eaf559a6a66f7157220198add6f243cbd47",
-        "option|du|--version": "0e51f9354c1193d47bd2649eafca4e75b473738388698a3ef8db7102917bdfb6",
         "option|du|-D": "71f668f5f984b0e8a4bdb7b2aaabcb35be02ec066175e8b99d8259a2d20fc1b4",
         "option|du|-H": "320619ba2fdfb645abb6c010b5d5272f40686efcb1016aab01e1b948bc607f6f",
         "option|du|-L": "92fd1fd3898339e538137910fd984e08142e87070d03a27df8d29ff0ba5a4be2",
@@ -5865,7 +5775,6 @@
         "option|sort|--reverse": "a8d19679718c182837d3120df9f1f8e8d570a5bd89e0b0f1be23ea570fe602d7",
         "option|sort|--stable": "f74d144d478e15971a2a23c5987ff2f71b05c67cf158389f9f4728ce14910bfe",
         "option|sort|--unique": "7223a785375b8da1104d3f4219cba1a4e59d13c42fb6f3714222ad517b67500f",
-        "option|sort|--version": "b9427fc83693ffe069bb291e555093075b5f27480f0562d3256892a18296dc95",
         "option|sort|--version-sort": "bc413d6753659299ca5d956634344176543eb62fa7c39e3cd7ca0dab6d0aafe6",
         "option|sort|--zero-terminated": "e2780e901e3bf1da3cd47f35a5bf56bd88597753056142d0fdf6b01b30a3c50c",
         "option|sort|-M": "f4c6bd10351b652a85be8f50dffa505517919328aeb760d2d6feb641c76041d5",
@@ -7529,9 +7438,164 @@
         "Repository-relative bundled option observations"
       ],
       "verification": "Inspect the exact option and source/version, then compare the accepted forms with the eventual displayed explanation."
+    },
+    {
+      "acceptance": "Relevant shared text survives, unassigned text remains explicit, all original option/source relationships are unchanged, and no guessed numerical metadata is introduced.",
+      "applicability": "Only the existing captured/source observations, their recorded GNU coreutils 9.4 provenance and the documented parser rules. No installed executable, platform or numerical review status is inferred.",
+      "classification": "composite",
+      "deficiency": "The demonstrated text-loss or misplaced-footer behavior is corrected within the inspected formatting boundary. Full numerical interpretation and other installed releases remain unverified.",
+      "disposition": "source_text_preserved",
+      "entries": {
+        "option|sort|--key": "3e723579d4fe258b9ba5285a8973cd14dc4b3d8f0c48019ff7de456ff236adda"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F5"
+      ],
+      "id": "step4-shared-text-composite-related",
+      "later_steps": [
+        5,
+        6,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the source-qualified text and remaining uncertainty; perform later presentation and any independently authorized semantic-enrichment work without replacing captures or changing inventories.",
+      "reason": "The existing source observation now retains detached documentation on explicitly referenced flags/metavariables, or removes unrelated shared prose from a final option. Original classifications are retained.",
+      "references": [
+        "docs/numerical-inventory/step4-preservation.md",
+        "tests/test_documentation_preservation.py",
+        "tests/fixtures/help/workflow-baseline-captured.json",
+        "tests/fixtures/value-semantics/preservation-evidence.json",
+        "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi"
+      ],
+      "verification": "Check explicit targets/aliases, preserved source scope, unchanged declarations and passive cache round trips; source preservation is not factual verification."
+    },
+    {
+      "acceptance": "Relevant shared text survives, unassigned text remains explicit, all original option/source relationships are unchanged, and no guessed numerical metadata is introduced.",
+      "applicability": "Only the existing captured/source observations, their recorded GNU coreutils 9.4 provenance and the documented parser rules. No installed executable, platform or numerical review status is inferred.",
+      "classification": "count",
+      "deficiency": "The demonstrated text-loss or misplaced-footer behavior is corrected within the inspected formatting boundary. Full numerical interpretation and other installed releases remain unverified.",
+      "disposition": "source_text_preserved",
+      "entries": {
+        "option|head|--lines": "bb83dac0ceec42a0bc1f658e8f345e0bde63d54e21693d8de05484c211b23797",
+        "option|head|-n": "44a93e5611a4099fd58adcf1842aec3a1d3f81090f75ab075aa3536161f7d144",
+        "option|tail|--lines": "c16dc3fee1e929416611aed8304c562d0ef521962302040e218a64977a616390",
+        "option|tail|-n": "e92d61b7cc32d68ae48acdb4eb90c7560487be5815964d0b9067532969eecbe0"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F5"
+      ],
+      "id": "step4-shared-text-count-related",
+      "later_steps": [
+        5,
+        6,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the source-qualified text and remaining uncertainty; perform later presentation and any independently authorized semantic-enrichment work without replacing captures or changing inventories.",
+      "reason": "The existing source observation now retains detached documentation on explicitly referenced flags/metavariables, or removes unrelated shared prose from a final option. Original classifications are retained.",
+      "references": [
+        "docs/numerical-inventory/step4-preservation.md",
+        "tests/test_documentation_preservation.py",
+        "tests/fixtures/help/workflow-baseline-captured.json",
+        "tests/fixtures/value-semantics/preservation-evidence.json",
+        "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi"
+      ],
+      "verification": "Check explicit targets/aliases, preserved source scope, unchanged declarations and passive cache round trips; source preservation is not factual verification."
+    },
+    {
+      "acceptance": "Relevant shared text survives, unassigned text remains explicit, all original option/source relationships are unchanged, and no guessed numerical metadata is introduced.",
+      "applicability": "Only the existing captured/source observations, their recorded GNU coreutils 9.4 provenance and the documented parser rules. No installed executable, platform or numerical review status is inferred.",
+      "classification": "quantity",
+      "deficiency": "The demonstrated text-loss or misplaced-footer behavior is corrected within the inspected formatting boundary. Full numerical interpretation and other installed releases remain unverified.",
+      "disposition": "shared_documentation_preserved",
+      "entries": {
+        "option|df|--block-size": "8d7bc99d0f06de948d22d67a56cf69f35639c4782bce16a16696ca6b078717da",
+        "option|df|-B": "98d8c980c4e7ffdde52ec7e68b0883402da6de2439b3922a721702ea7972f41a",
+        "option|du|--block-size": "33565447723ffc59102844422e2fc82960d589bbf2f98735e35df5a4b6cc4757",
+        "option|du|--threshold": "f20f633d19655cec5f429ba465b0476b87e10c133dabeefe06535313d1b4b565",
+        "option|du|-B": "b940d25d4eb12a1b39d197227f54844ed6d1ff62fcc1a3aa1c9c9fbc645fe549",
+        "option|du|-t": "22d7b3241f9ca4e05954c3766400e8b0348dc4057f25cade13d7c5859f509936",
+        "option|head|--bytes": "2a9109cff304437f8f6680ed41319cb4221d3ff72cd8694c60709e5bd06eb1aa",
+        "option|head|-c": "ccc008bcb4900b065dd00b8a3711fc6f0f9a98693c5312e7caf459a34b659e72",
+        "option|sort|--buffer-size": "41775e67bdbbf1e8cd215f995a103acdd856bd88204387b48aa89f2dc0ae9cb1",
+        "option|sort|-S": "ebe4c07cf02d5d922cb32d09e1a35489f8f0b84d431b7aa917d1cd5c720a8dfc",
+        "option|tail|--bytes": "a7f14a9e19d24369c2a93ae140f7aff2f85d114eb788bc8ae6ea5e47ce654ce4",
+        "option|tail|-c": "df40d6d9ea4cb7a7e03239c19312450b3924fb8b20e5c98683491e0c9388480b"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F5"
+      ],
+      "id": "step4-shared-text-quantity-audit-seed",
+      "later_steps": [
+        5,
+        6,
+        8
+      ],
+      "priority": "P1",
+      "proposed_action": "Preserve the source-qualified text and remaining uncertainty; perform later presentation and any independently authorized semantic-enrichment work without replacing captures or changing inventories.",
+      "reason": "The existing source observation now retains detached documentation on explicitly referenced flags/metavariables, or removes unrelated shared prose from a final option. Original classifications are retained.",
+      "references": [
+        "docs/numerical-inventory/step4-preservation.md",
+        "tests/test_documentation_preservation.py",
+        "tests/fixtures/help/workflow-baseline-captured.json",
+        "tests/fixtures/value-semantics/preservation-evidence.json",
+        "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi"
+      ],
+      "verification": "Check explicit targets/aliases, preserved source scope, unchanged declarations and passive cache round trips; source preservation is not factual verification."
+    },
+    {
+      "acceptance": "Relevant shared text survives, unassigned text remains explicit, all original option/source relationships are unchanged, and no guessed numerical metadata is introduced.",
+      "applicability": "Only the existing captured/source observations, their recorded GNU coreutils 9.4 provenance and the documented parser rules. No installed executable, platform or numerical review status is inferred.",
+      "classification": "unresolved",
+      "deficiency": "The demonstrated text-loss or misplaced-footer behavior is corrected within the inspected formatting boundary. Full numerical interpretation and other installed releases remain unverified.",
+      "disposition": "source_text_preserved",
+      "entries": {
+        "option|cp|--backup": "69a2a258bc7a506088cca895e63df6e14fc51032ad04b3420c190fa890d6b038",
+        "option|cp|--no-clobber": "a2b6f87aa3e8cfd33e8f36d1349ff8aae05d3489a6c1b8a9bd5fde11bc11904f",
+        "option|cp|--no-preserve": "b42413039dc8d7b33fbbdf28e765c38d509709c8bc94d60186f400821c531207",
+        "option|cp|--preserve": "9046495fa42babf5a58832fee3d8f17b06d5cf8d7d81500bc24a5b32051692d1",
+        "option|cp|--reflink": "34de59a28614b349c79a5ac146aaa27b2ad58b1450d43a119fcaf80d364a7199",
+        "option|cp|--sparse": "a8e8a3857911f5e44f7cad6c2582296d9f47157ed668e5431d5845e5a16ddb16",
+        "option|cp|--suffix": "efc5617b021277a12aed6c305a4fd687d93037afcc2967c59b95c27e5fc3bb38",
+        "option|cp|--update": "545464e3c5ad2739577c6d910bda9dd0c0d614aa0f0fa019c4e92aa2713987a1",
+        "option|cp|--version": "1972247d08b846d16ba20fb216a800a3452f57b98f650f3539a319c0d7d3e771",
+        "option|cp|-S": "34e4111350b42317cc62590d4c28f1bf13072d3287c3696dfae269cb002a9f9b",
+        "option|cp|-n": "27be6a2faf870797001a125558b82454d14917dd917b68d09f64e3a1fba81b69",
+        "option|df|--output": "3cfd7940a609ffc7375d2a92a5564e11e9a49f7cf0453e0721fd8881a8295c0b",
+        "option|df|--version": "e2a28fbc46fbdd866200b1434785b63a04746f66c8341cd4d78319b30954b4e8",
+        "option|du|--version": "33a6bb9b3147ba62235ca62efd63bb52d6c07ab4508cdd575cfc0d28090f87c2",
+        "option|sort|--version": "041481fbf410849560177fec21dae898e859c7d97ebd9c4de7dea1406a9b3d38",
+        "option|sort|-k": "a7d94219f9f54c0e9bf2f531650459f03d69a5fe0dd9ac34862023586c2cea0b",
+        "option|tail|--follow": "cf5c5c444f5eec25a637895eefac32cbfc001627621c2a3ce1ae9932d1b8f4c7",
+        "option|tail|-f": "ee6f7af6f6a7fd85f08952f03d7e62812ec8ef9bf8fdb6bb2a226697e51d9d3e"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F5"
+      ],
+      "id": "step4-shared-text-unresolved-related",
+      "later_steps": [
+        5,
+        6,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the source-qualified text and remaining uncertainty; perform later presentation and any independently authorized semantic-enrichment work without replacing captures or changing inventories.",
+      "reason": "The existing source observation now retains detached documentation on explicitly referenced flags/metavariables, or removes unrelated shared prose from a final option. Original classifications are retained.",
+      "references": [
+        "docs/numerical-inventory/step4-preservation.md",
+        "tests/test_documentation_preservation.py",
+        "tests/fixtures/help/workflow-baseline-captured.json",
+        "tests/fixtures/value-semantics/preservation-evidence.json",
+        "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi"
+      ],
+      "verification": "Check explicit targets/aliases, preserved source scope, unchanged declarations and passive cache round trips; source preservation is not factual verification."
     }
   ],
-  "scope": "Step 1 planning annotations only; never loaded by the menu. Exact IDs and fingerprints are explicit reviewed dispositions, including investigations, not semantic approvals or blanket exemptions. Step 3 groups record scoped bundled corrections; shared external observations are not promoted by an authored-content review.",
+  "scope": "Step 1 planning annotations only; never loaded by the menu. Exact IDs and fingerprints are explicit reviewed dispositions, including investigations, not semantic approvals or blanket exemptions. Step 3 groups record scoped bundled corrections; shared external observations are not promoted by an authored-content review. Step 4 reviews preserve source text within explicit parser/merge/cache boundaries without promoting external numerical claims to verified status.",
   "system_work_items": [
     {
       "acceptance_criteria": [
@@ -7665,7 +7729,7 @@
         "AC-09",
         "AC-10"
       ],
-      "evidence": "source-derived audit finding; no runtime reproduction in Step 1",
+      "evidence": "Maintained capture and synthetic passive tests; source text, metadata alternatives and cache round trips checked without target probes",
       "id": "F5",
       "later_steps": [
         4,
@@ -7678,9 +7742,9 @@
         "cli_help/discovery.py",
         "cli_help/manual_import.py"
       ],
-      "status": "deferred; no production fix enacted",
+      "status": "Step 4 bounded source preservation implemented; arbitrary formats, presentation and semantic enrichment remain separate",
       "title": "Shared definitions and source merging",
-      "verification": "Apply the linked acceptance criteria with focused tests at the owning boundary."
+      "verification": "Run documentation-preservation tests, affected passive regressions and inventory reconciliation; inspect step4-preservation.md for guarantees and limits."
     },
     {
       "acceptance_criteria": [

@@ -80,8 +80,8 @@ counts are new enumeration results, not evidence of additional verified command
 support. These totals must not be added together. Fixture excerpts, synthetic
 specimens, source requests, and declared routes establish different boundaries.
 
-After the bundled migration, the review contains 12 `change_recommended`
-identities for shared external documentation, 4,269 `investigate` dispositions
+After source preservation, the review contains 12 `shared_documentation_preserved`
+identities, 23 `source_text_preserved` identities, 4,250 `investigate` dispositions
 and 47 `partial_migration_investigate` dispositions. There are 4,246 unresolved
 classifications, principally external observations and arity-only declarations.
 The 128 verified bundled option records and 6 positional components have scoped
@@ -114,8 +114,9 @@ The `entries` array preserves each logical identity and all observed sources:
 
 Provenance resides in `contexts`, referenced by observations. Recorded versions,
 requests, chip/identity guards and source URLs remain evidence; the generator
-does not perform those requests. Shared footer association and parser omissions
-remain limitations of the existing parser. Raw roff is indexed as unrendered;
+does not perform those requests. The [source preservation reference](step4-preservation.md)
+defines bounded shared-footer association; ambiguous associations and unsupported
+formats remain explicit limitations. Raw roff is indexed as unrendered;
 manual rendering is not performed. Source-only or unassigned content must not be
 reported as a verified complete option inventory.
 
@@ -180,7 +181,7 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | S1-05 explicit output | Default to stdout and reject input, annotation and unrelated-file replacement |
 | AC-01 to AC-03 protected runtime | Step 3 compares protected declarations and passive buffer/cursor behavior; integrated navigation and runtime verification remain deferred |
 | AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
-| AC-07 source preservation | Deferred: associate shared definitions, expose conflicts and invalidate relevant stale caches |
+| AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
 | AC-08 presentation | Deferred: verify visible cells, narrow widths, Unicode, wrapping, scrolling, resizing and search |
 | AC-09 authoring | Deferred: test import, edit, preview, save, reload and inspect cycles, including stale metadata |
 | AC-10 future checks | Deferred: reject deficient maintained additions automatically while preserving honest external-help limits |
@@ -209,5 +210,7 @@ members and fingerprints justified by the inspected authored-content changes.
 
 The [Step 3 migration account](step3-migration.md) distinguishes verified
 corrections, adequate summaries, source-derived records and remaining external
-work. Reconciliation is not production numerical-quality enforcement. Step 4
-source preservation and later runtime acceptance criteria remain deferred.
+work. The [Step 4 preservation account](step4-preservation.md) records the parser,
+merge and cache guarantees and narrowly justified annotation updates.
+Reconciliation is not production numerical-quality enforcement. Step 5
+presentation and later runtime acceptance criteria remain deferred.

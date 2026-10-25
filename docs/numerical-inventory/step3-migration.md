@@ -4,9 +4,11 @@
 
 This migration corrects authored menu text and adds opt-in descriptive metadata.
 Essential numerical meaning appears in the existing `summary`, `detail`, or
-profile-description fields. Metadata is not connected to rendering, search,
-discovery, editing, or insertion. No numerical completeness policy is enabled
-for legacy profiles or external help.
+profile-description fields. The migration did not connect metadata to rendering,
+search, discovery, editing or insertion. Subsequent
+[Step 4 source preservation](step4-preservation.md) provides bounded merger/cache
+retention. No numerical completeness policy is enabled for legacy profiles or
+external help.
 
 ## Scope and counting
 
@@ -115,8 +117,9 @@ The unchanged review also retains 102 named-enumeration records requiring
 accepted-form review and 4,246 unresolved classifications across the broader
 inventory. Short categorical labels are not proof of a numerical defect or of
 complete accepted forms. No complete semantic verification is claimed for that
-remaining surface. Twelve `change_recommended` identities concern shared GNU
-numerical documentation; they remain external source-handling work.
+remaining surface. At the Step 3 handoff, twelve `change_recommended` identities
+concerned shared GNU numerical documentation. Step 4 records their bounded
+source-preservation correction without promoting their factual review status.
 
 ## Review reconciliation and protected behavior
 
@@ -191,7 +194,6 @@ Application and maintained test code are unchanged by that accommodation.
 The content migration is complete for the 175 annotated records and three
 positional contracts within the reported evidence boundary. Full verified
 migration remains open for the 47 source-derived records and the explicitly
-unreviewed surfaces above. The next implementation boundary is Step 4:
-preserving numerical documentation through discovery, merging and caching.
-Runtime integration, authoring changes, global enforcement and Steps 4–9 are
-not part of this migration.
+unreviewed surfaces above. The separate Step 4 account documents subsequent
+preservation through discovery, merging and caching. Formatter presentation,
+authoring changes, global enforcement and Steps 5–9 remain outside this migration.

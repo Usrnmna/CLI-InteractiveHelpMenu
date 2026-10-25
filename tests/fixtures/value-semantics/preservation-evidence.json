@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "scope": "Preservation expectations for existing GNU coreutils 9.4 help captures; no installed-version or complete numerical-semantics claim.",
+  "capture_manifest": "tests/fixtures/help/workflow-baseline-captured.json",
+  "authoritative_source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi",
+  "locators": ["Block size", "head invocation", "tail invocation", "sort invocation: --key and --buffer-size"],
+  "cases": [
+    {"command": "df", "option": "--block-size=", "alias": "-B", "fragments": ["powers of 1024", "powers of 1000", "POSIXLY_CORRECT"], "excluded": "--version"},
+    {"command": "du", "option": "--block-size=", "alias": "-B", "fragments": ["powers of 1024", "powers of 1000", "POSIXLY_CORRECT"], "excluded": "--version"},
+    {"command": "du", "option": "--threshold=", "alias": "-t", "fragments": ["powers of 1024", "powers of 1000"], "excluded": "--version"},
+    {"command": "head", "option": "--bytes=", "alias": "-c", "fragments": ["kB 1000", "K 1024", "KiB=K"], "excluded": "--version"},
+    {"command": "head", "option": "--lines=", "alias": "-n", "fragments": ["kB 1000", "K 1024"], "excluded": "--version"},
+    {"command": "tail", "option": "--bytes=", "alias": "-c", "fragments": ["kB 1000", "K 1024", "KiB=K"], "excluded": "--version"},
+    {"command": "tail", "option": "--lines=", "alias": "-n", "fragments": ["kB 1000", "K 1024"], "excluded": "--version"},
+    {"command": "sort", "option": "--buffer-size=", "alias": "-S", "fragments": ["1% of memory", "K 1024 (default)"], "excluded": "--version"},
+    {"command": "sort", "option": "--key=", "alias": "-k", "fragments": ["both are origin 1", "stop position defaults"], "excluded": "--version"}
+  ]
+}

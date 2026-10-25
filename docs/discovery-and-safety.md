@@ -92,6 +92,15 @@ An optional suffix after a required placeholder, such as `PATTERN[=PATH]`,
 does not make the whole argument optional. Lowercase placeholders without a
 separate declaration column, including some GNU find manual forms, can still
 lack inferred argument requirements and need manual review.
+
+Detached definitions retain their source, section and paragraph text. Exact
+metavariable definitions and explicit option/alias references can associate that
+text with applicable options; unmatched definitions remain shared documentation
+with a review diagnostic. This preserves common numerical explanations without
+guessing structured units. Source merges retain complementary text, qualified
+semantic alternatives and the original review status. The
+[numerical preservation reference](numerical-inventory/step4-preservation.md)
+defines association, merge precedence, conflict diagnostics and limitations.
 The [third-party compatibility guide](compatibility.md) records tested paths and
 unsupported forms, including generic 7-Zip attached-value declarations. The
 [explicit syntax guide](argument-syntax.md) describes the curated static subset;
@@ -187,6 +196,13 @@ expiration or explicit refresh. Failed or missing sources are recorded in the
 profile; a successful partial profile is cached to avoid repeated probes.
 Parser-schema changes invalidate older entries. The cache TTL accepts integer
 seconds from 0 through 604800; its default is 86400.
+
+Generation revision 11 preserves shared documentation, optional numerical
+metadata, definition references and source applicability. Cache reads and writes
+structurally check supplied numerical metadata; legacy profiles and incomplete
+but structurally valid semantics remain accepted. Numerical completeness is not
+required for browsing. Old cache files are left intact and become misses through
+the existing identity/version mechanism. No additional target probe is introduced.
 
 In auto mode, supported Python module lookups run a fixed `--version` request
 through the selected interpreter before cache reuse. Pytest adds `--noconftest`

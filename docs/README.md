@@ -77,6 +77,8 @@ defines both formats.
   defines Step 2 metadata, validation policies, diagnostics, and explanation formatting.
 - [Bundled numerical description migration](numerical-inventory/step3-migration.md)
   records Step 3 corrections, source applicability, remaining investigations and focused checks.
+- [Numerical documentation preservation](numerical-inventory/step4-preservation.md)
+  defines Step 4 shared-source association, merge ownership, diagnostics and cache guarantees.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records
