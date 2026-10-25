@@ -77,6 +77,13 @@ does not establish full maintained completeness: strict mode reports the exact
 remaining migration debt. Raw external captures need explicit census review,
 not fabricated verified contracts. Runtime legacy loading remains compatible.
 
+For changes crossing numerical parsing, cache, authoring or presentation owners,
+run `python -X utf8 -B -m unittest discover -s tests -p test_numerical_integration.py -v`.
+The [integrated verification guide](../docs/numerical-inventory/step8-verification.md)
+maps criteria to evidence and distinguishes passive success from native/platform
+acceptance. A small repair needs a demonstrated failing guarantee and a regression
+test; unresolved numerical migration must not be hidden by expanding debt.
+
 Keep tests independent of real operational workloads. Browsing or inserting help
 must leave the pending command unexecuted. Fixed help/version/manual probes have
 separate [execution boundaries](../docs/discovery-and-safety.md). Terminal changes

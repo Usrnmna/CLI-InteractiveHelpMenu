@@ -21,8 +21,9 @@ The contract provides Step 2 infrastructure. The
 [Step 3 migration](numerical-inventory/step3-migration.md) and
 [Step 4 source preservation](numerical-inventory/step4-preservation.md) document
 their separate guarantees. [Step 5 presentation and search](numerical-inventory/step5-presentation.md)
-uses the formatter in the existing browser. Command-specific enrichment
-and a future completeness gate remain separate work.
+uses the formatter in the existing browser. Command-specific enrichment remains
+separate. [Step 8 verification](numerical-inventory/step8-verification.md) records
+integrated preservation, presentation and authoring evidence and its limits.
 [Step 6 authoring](numerical-inventory/step6-authoring.md) reuses structural checks
 at authored save boundaries, preserving inactive evidence when declarations may
 be stale. It does not change this schema or enable completeness for legacy data.

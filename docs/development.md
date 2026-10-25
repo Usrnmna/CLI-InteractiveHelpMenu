@@ -326,6 +326,16 @@ defines eligibility, diagnostics, exceptions and external-help limits. The named
 `tests/reports/ci/numerical-coverage.json` report is retained even on failure; no
 additional report directory or Git configuration is needed.
 
+The [integrated numerical verification account](numerical-inventory/step8-verification.md)
+maps the current acceptance criteria to actual passive paths and records native
+and migration limits. Its focused integration suite runs with
+`python -X utf8 -B -m unittest discover -s tests -p test_numerical_integration.py -v`.
+It crosses captured help, merge/cache, authoring, preview, save/reload, search and
+literal insertion with process/network boundaries blocked. The account records
+the bounded operand-count ownership correction and cache generation 12. Passing
+this suite or the prospective gate does not establish full maintained numerical
+completeness, native terminal behavior or installed-target compatibility.
+
 Before the suite, a separate passive smoke check invokes `--doctor` and
 `--explain` with fixed synthetic input and discovery disabled. It checks supplied
 activation, Compose route provenance, private configured-operand/manual-alias

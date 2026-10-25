@@ -114,6 +114,10 @@ Optional semantic declarations are handled separately from prose:
 - Compatible first-source metadata retains precedence. A valid later declaration
   can populate an absent field when it fits the selected declaration and identity.
   Other declarations remain qualified alternatives rather than being discarded.
+- A semantic declaration's source operand count must match the selected count.
+  Structural validity alone does not establish that association for scalar nodes.
+  The Step 8 correction retains mismatched declarations as inactive evidence;
+  a winning source can supply its own compatible composite metadata.
 - Overlapping contradictory metadata, unmatched identity, or incompatible arity
   produces a structured review diagnostic. Disjoint version scopes are not
   called a unit conflict merely because their meanings differ.
@@ -161,7 +165,8 @@ cannot prove factual accuracy. Both source explanations remain available.
 ## Cache behavior
 
 The existing cache identity design is unchanged. Generation revision
-`CACHE_VERSION = 11` invalidates interpreted profiles made with the previous
+`CACHE_VERSION = 12` includes Step 8's operand-count ownership correction and
+invalidates interpreted profiles made with previous
 parsing/merging rules through the normal key mechanism. Old files are neither
 deleted nor rewritten merely because the revision changed.
 
@@ -241,3 +246,7 @@ Step 5: make numerical meaning consistently visible and searchable.
 The subsequent [Step 5 presentation account](step5-presentation.md) records the
 formatter/search integration and scoped fake-window evidence. Its presentation
 changes do not alter the preservation, merging or cache rules documented here.
+
+The subsequent [Step 8 integration verification](step8-verification.md) corrects
+the narrow scalar-arity association defect and advances generation 11 to 12.
+Other merge precedence, discovery requests and cache policies remain unchanged.

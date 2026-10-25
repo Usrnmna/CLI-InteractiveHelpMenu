@@ -223,8 +223,9 @@ and hosted CI were not exercised. Workflow YAML and failure/report integration
 were checked locally. Git for Windows Bash could not create its signal pipe
 (Win32 error 5), so Bash syntax validation was not established on this host.
 
-Step 8, “Verify the complete behavior and update documentation”, is next;
-it is not implemented here. Command-specific enrichment, additional migration,
+Subsequent [Step 8 integrated verification](step8-verification.md) records current
+cross-component tests, a bounded scalar-arity repair and remaining native gaps.
+Command-specific enrichment, additional migration,
 release work and unrelated configuration changes remain outside this step.
 Prospective success does not establish every numerical factual claim, installed
 version behavior or universal external-help completeness.

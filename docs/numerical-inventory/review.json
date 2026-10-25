@@ -4,90 +4,430 @@
       "id": "S1-01",
       "phase": "step1",
       "requirement": "Every maintained input is enumerated with an explicit role and disposition.",
+      "step8_verification": {
+        "entry_class": "Maintained inputs, profiles, route declarations, captures and review identities",
+        "evidence": [
+          "Current generated inventory",
+          "config/drivers.example",
+          "tests/fixtures/help/matrix.json"
+        ],
+        "expected": "Independent authored-file/record/route counts agree with enumeration and every identity has an explicit disposition.",
+        "follow_up": "Continue regeneration after maintained source changes; no installed-program scan is required.",
+        "limitations": "Declared routes, fixtures and sentinels do not establish complete command grammars or installed-target coverage.",
+        "owners": [
+          "scripts/inventory_numerical_descriptions.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_inventory.NumericalInventoryTests.test_real_source_counts_are_independent_and_reviews_are_complete",
+          "test_numerical_inventory.NumericalInventoryTests.test_independent_counts_and_observation_relationships"
+        ]
+      },
       "verification": "Independent input census and source-count reconciliation."
     },
     {
       "id": "S1-02",
       "phase": "step1",
       "requirement": "Logical identities survive unrelated insertion and regeneration; no new entry inherits review.",
+      "step8_verification": {
+        "entry_class": "New options, profiles, categories, fixtures and repeated observations",
+        "evidence": [
+          "Disposable source-growth mutations"
+        ],
+        "expected": "New identities require exact review and cannot inherit a source, parent, sibling or different file's allowance.",
+        "follow_up": "Keep review identities and exact source-fact invalidation in the existing contributor workflow.",
+        "limitations": "Deliberate policy changes still require substantive review; automation does not prove reviewer intent.",
+        "owners": [
+          "scripts/inventory_numerical_descriptions.py",
+          "scripts/check_numerical_coverage.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_inventory.NumericalInventoryTests.test_new_entries_do_not_inherit_review_and_old_identity_survives_insertion",
+          "test_numerical_coverage.NumericalCoverageTests.test_new_profile_category_required_optional_fixed_and_keyword_are_discovered",
+          "test_numerical_coverage.NumericalCoverageTests.test_same_command_and_flag_in_new_source_cannot_inherit_baseline"
+        ]
+      },
       "verification": "Synthetic profile and fixture growth tests."
     },
     {
       "id": "S1-03",
       "phase": "step1",
       "requirement": "Missing, stale, duplicate, orphaned, and conflicting annotations are actionable.",
+      "step8_verification": {
+        "entry_class": "Missing, stale, duplicate, conflicting and orphaned annotations",
+        "evidence": [
+          "Synthetic annotation and exception mutations"
+        ],
+        "expected": "Malformed review membership and invalid exceptions produce actionable hard failures.",
+        "follow_up": "Inspect exact changed facts rather than bulk-refreshing annotations.",
+        "limitations": "Semantic truth cannot be inferred from matching fingerprints or passing schema checks.",
+        "owners": [
+          "scripts/inventory_numerical_descriptions.py",
+          "scripts/check_numerical_coverage.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_inventory.NumericalInventoryTests.test_stale_duplicate_conflicting_and_orphan_annotations",
+          "test_numerical_coverage.NumericalCoverageTests.test_exceptions_are_narrow_actionable_and_never_hide_structure",
+          "test_numerical_coverage.NumericalCoverageTests.test_changed_review_decision_invalidates_deferral"
+        ]
+      },
       "verification": "Synthetic annotation reconciliation tests and zero current reconciliation diagnostics."
     },
     {
       "id": "S1-04",
       "phase": "step1",
       "requirement": "Enumeration is deterministic, performs no network/target execution, and preserves inputs.",
+      "step8_verification": {
+        "entry_class": "Passive enumeration and deterministic transformations",
+        "evidence": [
+          "Hostile snapshot declaration",
+          "Before/after input hashes"
+        ],
+        "expected": "Enumeration is deterministic, does not evaluate inspected code and preserves inputs under process/network tripwires.",
+        "follow_up": "Retain offline boundaries and avoid target probes in this validation path.",
+        "limitations": "This is repository inspection, not an operating-system sandbox for arbitrary program execution.",
+        "owners": [
+          "scripts/inventory_numerical_descriptions.py",
+          "scripts/check_numerical_coverage.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_inventory.NumericalInventoryTests.test_passive_and_deterministic_with_hostile_snapshot_source",
+          "test_numerical_coverage.NumericalCoverageTests.test_determinism_immutability_hostile_snapshot_and_explicit_write_boundary"
+        ]
+      },
       "verification": "Blocked process/socket tests, hostile snapshot source, before/after input hashes, and repeated output comparison."
     },
     {
       "id": "S1-05",
       "phase": "step1",
       "requirement": "Writes occur only for explicit safe output destinations.",
+      "step8_verification": {
+        "entry_class": "Inventory and coverage report destinations",
+        "evidence": [
+          "Explicit-output and link-protection tests"
+        ],
+        "expected": "Default checking writes no report; explicit destinations cannot replace inspected inputs or unrelated files.",
+        "follow_up": "Keep generated evidence in existing ignored report locations.",
+        "limitations": "Windows native filesystem behavior beyond the selected disposable paths is not claimed.",
+        "owners": [
+          "scripts/inventory_numerical_descriptions.py",
+          "scripts/check_numerical_coverage.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_inventory.NumericalInventoryTests.test_output_requires_explicit_safe_destination",
+          "test_numerical_inventory.NumericalInventoryTests.test_output_rejects_links_even_to_an_existing_inventory",
+          "test_numerical_coverage.NumericalCoverageTests.test_determinism_immutability_hostile_snapshot_and_explicit_write_boundary"
+        ]
+      },
       "verification": "Stdout-only test plus output/input/link protection tests."
     },
     {
       "id": "AC-01",
       "phase": "later",
       "requirement": "Preserve flags, supported routes, command boundaries, optionality, arity and attached forms.",
+      "step8_verification": {
+        "entry_class": "Production inventories, arity, optional values, forms and boundaries",
+        "evidence": [
+          "Starting source hashes and inventory",
+          "Every bundled option",
+          "Passive grammar regressions"
+        ],
+        "expected": "Flags, routes and declaration-selection policy remain unchanged; numerical metadata never changes literal insertion.",
+        "follow_up": "Maintain the same comparisons for future behavior changes.",
+        "limitations": "Passive declaration tests do not establish every executable's operational grammar.",
+        "owners": [
+          "cli_help/core.py",
+          "cli_help/arguments.py",
+          "cli_help/command_paths.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_functional_matrix.InsertionContractTests.test_every_bundled_option_inserts_exactly_midline",
+          "test_functional_matrix.InsertionContractTests.test_end_of_options_marker_stops_insertion",
+          "test_argument_syntax.ArgumentSyntaxTests.test_declared_forms_and_bundles_preserve_literal_input",
+          "test_numerical_integration.NumericalIntegrationTests.test_all_opted_in_profiles_preserve_declarations_explanations_and_insertion"
+        ]
+      },
       "verification": "Later compare full inventories and boundary/insertion tests; an added description cannot change syntax."
     },
     {
       "id": "AC-02",
       "phase": "later",
       "requirement": "Preserve pending buffer text, cursor placement, navigation, cancellation and custom-profile compatibility.",
+      "step8_verification": {
+        "entry_class": "Navigation, cancellation, surrounding pending text and cursor restoration",
+        "evidence": [
+          "Fake-window/scripted input",
+          "Literal pending buffers",
+          "Fresh Bash/WSL availability checks"
+        ],
+        "expected": "Passive navigation, selection, cancellation and cursor/buffer edits pass; full native Bash/Readline acceptance needs an accessible supported environment.",
+        "follow_up": "Run reviewed UI/adapter-only terminal checks with inert data in an accessible supported Linux/WSL environment; do not launch targets.",
+        "limitations": "Git for Windows Bash cannot create a signal pipe (Win32 error 5); WSL enumeration returns E_ACCESSDENIED. No native terminal result.",
+        "owners": [
+          "cli_help/ui.py",
+          "cli_help/core.py",
+          "bash/interactive-help.bash"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "blocked",
+        "tests": [
+          "test_functional_matrix.InsertionContractTests.test_run_browser_cancel_preserves_the_command_line",
+          "test_functional_matrix.InsertionContractTests.test_run_browser_accept_returns_option_without_shell_execution",
+          "test_numerical_presentation.NumericalPresentationTests.test_search_accept_and_insertion_preserve_surrounding_buffer_and_cursor",
+          "test_numerical_presentation.NumericalPresentationTests.test_scripted_search_restore_preview_and_literal_selection_use_existing_controls"
+        ]
+      },
       "verification": "Later logical edits and rendered terminal checks with synthetic values."
     },
     {
       "id": "AC-03",
       "phase": "later",
       "requirement": "Never execute pending commands, value expressions, or edited/untrusted target code.",
+      "step8_verification": {
+        "entry_class": "Pending commands, values, examples and inspected source",
+        "evidence": [
+          "Global process/network/probe tripwires",
+          "Mocked fixed documentation response"
+        ],
+        "expected": "Selected passive paths neither execute pending text nor invoke edited/untrusted targets; mocked discovery receives only the fixed request.",
+        "follow_up": "Keep process/target fixtures excluded unless fully replaced by controlled responses.",
+        "limitations": "Mocks establish internal boundaries, not arbitrary external program behavior or native terminal execution.",
+        "owners": [
+          "cli_help/discovery.py",
+          "cli_help/authoring.py",
+          "cli_help/presentation.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_integration.NumericalIntegrationTests.test_mocked_discovery_cache_hit_and_revision_invalidation_feed_authoring",
+          "test_numerical_integration.NumericalIntegrationTests.test_captured_rate_merge_cache_authoring_preview_reload_and_literal_edit",
+          "test_numerical_presentation.NumericalPresentationTests.test_derived_views_require_no_file_network_process_or_evaluation_access",
+          "test_numerical_authoring.NumericalAuthoringTests.test_authoring_preparation_requires_no_file_network_process_or_evaluation_access"
+        ]
+      },
       "verification": "Later marker-process tests and fixed documentation-request boundary tests."
     },
     {
       "id": "AC-04",
       "phase": "later",
       "requirement": "Numerical descriptions explain verified quantity/count/index/level meaning, scale and accepted forms.",
+      "step8_verification": {
+        "entry_class": "Quantities, rates, time, sizes, counts, indices, levels, mixed forms and sentinels",
+        "evidence": [
+          "tests/fixtures/value-semantics/migration-evidence.json",
+          "Per-entry authoritative reference locators"
+        ],
+        "expected": "Representative reviewed facts agree with current metadata and visible text; strict completeness continues to report exact existing migration debt.",
+        "follow_up": "Resolve exact metadata/evidence investigations under separate production-migration authorization; remove resolved debt and require strict-mode success.",
+        "limitations": "304 missing optional contracts, 47 source-derived option/keyword contracts and nine source-derived definitions remain incomplete. This pass does not re-fetch every upstream reference or establish installed-version truth.",
+        "owners": [
+          "cli_help/value_semantics.py",
+          "profiles"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "deferred",
+        "tests": [
+          "test_numerical_migration.NumericalMigrationTests.test_reference_scales_distinguish_rsync_openssh_and_ffmpeg",
+          "test_numerical_migration.NumericalMigrationTests.test_time_scales_explicit_units_and_literal_zero",
+          "test_numerical_migration.NumericalMigrationTests.test_literal_flash_tokens_have_actual_scale_and_chip_limits",
+          "test_numerical_migration.NumericalMigrationTests.test_counts_indices_levels_percentages_and_defaults",
+          "test_value_semantics.ValueSemanticsTests.test_zero_negative_defaults_unlimited_and_omission_are_distinct"
+        ]
+      },
       "verification": "Later independently sourced semantics and deliberately invalid maintained additions; no guessed units."
     },
     {
       "id": "AC-05",
       "phase": "later",
       "requirement": "Composite and delegated values identify component meaning or their owning grammar.",
+      "step8_verification": {
+        "entry_class": "Composite, positional, identifier and delegated grammar declarations",
+        "evidence": [
+          "tests/fixtures/value-semantics/migration-evidence.json",
+          "Synthetic component/grammar contracts"
+        ],
+        "expected": "Component meanings, existing slots, index origin and owning delegated grammar remain distinct without invented physical units.",
+        "follow_up": "Verify opaque delegated grammars against applicable implementation/version sources before factual promotion.",
+        "limitations": "Checks establish preservation and representative meaning; unresolved delegated upstream grammars remain evidence debt.",
+        "owners": [
+          "cli_help/value_semantics.py",
+          "cli_help/presentation.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_migration.NumericalMigrationTests.test_composites_delegated_values_and_dates_preserve_distinctions",
+          "test_numerical_integration.NumericalIntegrationTests.test_positional_chip_qualifications_survive_cycle_without_inserting_values",
+          "test_value_semantics.ValueSemanticsTests.test_composites_map_components_to_existing_arity",
+          "test_value_semantics.ValueSemanticsTests.test_timestamp_duration_expression_and_delegated_grammar"
+        ]
+      },
       "verification": "Later component examples including ports, prefixes, selectors and nested configuration."
     },
     {
       "id": "AC-06",
       "phase": "later",
       "requirement": "Provenance states relevant implementation/version/platform/chip limits and unresolved external semantics.",
+      "step8_verification": {
+        "entry_class": "Provenance, evidence status and implementation/version/platform/chip applicability",
+        "evidence": [
+          "Reviewed scoped declarations",
+          "Synthetic unknown/disjoint applicability and identity conflicts"
+        ],
+        "expected": "Scopes and investigations survive the pipeline; unknown matching evidence does not select a universal unit or promote status.",
+        "follow_up": "Retain qualified alternatives and specific investigations until independent applicable evidence exists.",
+        "limitations": "No installed target identity, release or chip was probed. Existing pinned source facts remain bounded to their recorded scopes.",
+        "owners": [
+          "cli_help/discovery.py",
+          "cli_help/authoring.py",
+          "cli_help/presentation.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_integration.NumericalIntegrationTests.test_unknown_applicability_variants_remain_qualified_after_cycle",
+          "test_numerical_integration.NumericalIntegrationTests.test_identity_and_arity_conflicts_are_not_activated_by_authoring_roundtrip",
+          "test_numerical_migration.NumericalMigrationTests.test_unresolved_content_remains_diagnostic_and_not_verified",
+          "test_numerical_presentation.NumericalPresentationTests.test_source_derived_and_unresolved_keep_specific_investigation"
+        ]
+      },
       "verification": "Later source review and unmatched-version diagnostics without blocking ordinary external browsing."
     },
     {
       "id": "AC-07",
       "phase": "later",
       "requirement": "Shared definitions reach applicable options; conflicts remain explicit and stale caches do not hide changes.",
+      "step8_verification": {
+        "entry_class": "Shared numerical prose, conflicting metadata, definitions and caches",
+        "evidence": [
+          "tests/fixtures/value-semantics/preservation-evidence.json",
+          "GNU coreutils 9.4 captures",
+          "Synthetic arity/definition conflicts"
+        ],
+        "expected": "Supported shared rules reach exact consumers; conflicting or mismatched metadata remains inactive; cache generation bypasses obsolete interpreted content.",
+        "follow_up": "Preserve source ownership and review new formats; old cache files need not be deleted.",
+        "limitations": "Arbitrary external help formats and same-version/manual changes remain subject to existing parser/TTL/refresh limits; no universal semantic association is claimed.",
+        "owners": [
+          "cli_help/discovery.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_integration.NumericalIntegrationTests.test_GNU_shared_rules_reach_saved_details_search_and_literal_aliases",
+          "test_numerical_integration.NumericalIntegrationTests.test_conflicting_definitions_stay_inactive_through_cache_save_and_reload",
+          "test_numerical_integration.NumericalIntegrationTests.test_identity_and_arity_conflicts_are_not_activated_by_authoring_roundtrip",
+          "test_numerical_integration.NumericalIntegrationTests.test_winning_larger_declaration_keeps_its_own_explicit_composite_metadata",
+          "test_numerical_integration.NumericalIntegrationTests.test_mocked_discovery_cache_hit_and_revision_invalidation_feed_authoring",
+          "test_documentation_preservation.PreservationTests.test_cache_legacy_malformed_expired_and_wrong_identity_cases_are_misses"
+        ]
+      },
       "verification": "Later footer, merge, annotation matching and cache invalidation cases."
     },
     {
       "id": "AC-08",
       "phase": "step5",
       "requirement": "Essential numerical meaning is visible, scrollable and searchable at supported terminal sizes.",
+      "step8_verification": {
+        "entry_class": "Visible/reachable details, search, clipping, scrolling, resizing and Unicode",
+        "evidence": [
+          "Fake-window visible cells and scripted keys",
+          "Scoped reference expectations"
+        ],
+        "expected": "Portable layout/search checks pass at minimum/larger dimensions; full native terminal acceptance is not established.",
+        "follow_up": "Obtain reviewed UI-only native terminal evidence on a supported accessible host; no target workloads are needed.",
+        "limitations": "Fake windows do not establish actual terminal cell rendering, alternate-screen/scrollback restoration or native resize behavior. Bash/WSL access is blocked.",
+        "owners": [
+          "cli_help/ui.py",
+          "cli_help/presentation.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "blocked",
+        "tests": [
+          "test_numerical_integration.NumericalIntegrationTests.test_captured_rate_merge_cache_authoring_preview_reload_and_literal_edit",
+          "test_numerical_presentation.NumericalPresentationTests.test_all_details_are_reachable_at_minimum_size_with_scroll_indicator",
+          "test_numerical_presentation.NumericalPresentationTests.test_unicode_clipping_wrapping_and_controls_preserve_cell_limits",
+          "test_numerical_presentation.NumericalPresentationTests.test_resize_shrink_grow_and_reopen_preserve_selection_and_reachable_text",
+          "test_numerical_presentation.NumericalPresentationTests.test_custom_details_keys_and_scripted_resize_keep_existing_controls"
+        ]
+      },
       "verification": "Step 5 fake-window visible-cell, minimum-width, Unicode, wrapping, scrolling, scripted resize/reopen and search checks; native terminal and Readline acceptance remain separate."
     },
     {
       "id": "AC-09",
       "phase": "step6",
       "requirement": "Authoring workflows preserve valid semantics and flag stale metadata after argument changes.",
+      "step8_verification": {
+        "entry_class": "Import/draft, guided/raw edits, preview, save/reload, stale claims and recovery preflight",
+        "evidence": [
+          "Disposable collections and backups",
+          "Controlled prompts/editor responses",
+          "Unchanged recovery owner source"
+        ],
+        "expected": "Lossless cycles retain data; relevant edits withhold stale active claims; invalid edits preserve saved bytes and recoverable draft text.",
+        "follow_up": "Run the existing reviewed native POSIX recovery cases on a supported environment without operational targets.",
+        "limitations": "Native POSIX descriptor, symlink and byte-restoration cases are platform skips; Windows passive results and source comparison do not prove those filesystem guarantees.",
+        "owners": [
+          "cli_help/manual_import.py",
+          "cli_help/review.py",
+          "cli_help/authoring.py",
+          "cli_help/collection.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_integration.NumericalIntegrationTests.test_all_opted_in_profiles_preserve_declarations_explanations_and_insertion",
+          "test_numerical_integration.NumericalIntegrationTests.test_stale_saved_edit_bypasses_old_discovery_cache_and_keeps_inactive_evidence",
+          "test_numerical_integration.NumericalIntegrationTests.test_invalid_edit_cannot_overwrite_cached_or_saved_valid_profile",
+          "test_numerical_authoring.NumericalAuthoringTests.test_import_draft_inspect_preview_save_reload_does_not_execute_source_examples",
+          "test_numerical_authoring.NumericalAuthoringTests.test_cancelled_guided_edits_preserve_draft_and_review_acknowledgement",
+          "test_numerical_authoring.NumericalAuthoringTests.test_concurrent_change_and_failed_save_retain_original_numerical_evidence",
+          "test_numerical_authoring.NumericalAuthoringTests.test_external_editor_invocation_is_literal_mocked_and_invalid_json_is_retained"
+        ]
+      },
       "verification": "Step 6 controlled import/edit/preview/save/reload, stale-declaration, definition/reference and numerical-inspection tests; native POSIX restoration and terminal acceptance remain platform limits."
     },
     {
       "id": "AC-10",
       "phase": "step7",
       "requirement": "Future maintained additions are discovered and checked without extending fixed lists.",
+      "step8_verification": {
+        "entry_class": "Maintained additions/changes, classification, display propagation and exact exceptions",
+        "evidence": [
+          "Disposable deficient additions, disagreement and exception mutations",
+          "Prospective/strict gate reports"
+        ],
+        "expected": "Deficient additions and invalid deferrals fail automatically; valid unitless/grammar cases pass; prospective success remains distinct from strict readiness.",
+        "follow_up": "Maintain explicit source review; resolve debt before claiming full maintained completeness.",
+        "limitations": "Heuristics are nonfatal review signals and can miss factual misclassification. Exact existing migration debt remains unchanged, not silently approved.",
+        "owners": [
+          "scripts/check_numerical_coverage.py",
+          "scripts/inventory_numerical_descriptions.py"
+        ],
+        "scope": "Current repository data; Windows/Python 3.13 passive and fake-window paths only.",
+        "status": "passed",
+        "tests": [
+          "test_numerical_coverage.NumericalCoverageTests.test_new_profile_category_required_optional_fixed_and_keyword_are_discovered",
+          "test_numerical_coverage.NumericalCoverageTests.test_new_fixture_outside_matrix_and_semantic_reference_need_exact_review",
+          "test_numerical_coverage.NumericalCoverageTests.test_new_positional_components_and_shared_references_are_checked",
+          "test_numerical_coverage.NumericalCoverageTests.test_omission_mutations_fail_actual_details_and_search_propagation",
+          "test_numerical_coverage.NumericalCoverageTests.test_relevant_edit_does_not_inherit_debt_even_after_census_refresh",
+          "test_numerical_coverage.NumericalCoverageTests.test_exceptions_are_narrow_actionable_and_never_hide_structure",
+          "test_numerical_coverage.NumericalCoverageTests.test_valid_count_index_level_expression_and_delegated_forms_need_no_invented_unit",
+          "test_numerical_coverage.NumericalCoverageTests.test_heuristic_disagreement_and_valid_counterexamples"
+        ]
+      },
       "verification": "Offline prospective coverage and exact-debt mutation checks; strict completeness remains explicitly blocked by existing migration debt. External capture uncertainty and manual factual review remain separate."
     }
   ],
@@ -3411,7 +3751,7 @@
         "source||cli_help/collection.py": "530dc93995ba7aa3fe03f1c0b3e0c7f45eb110b4a351da6735671724467f9c1e",
         "source||cli_help/command_paths.py": "5777b734209a9be9de96464039704d4e133fcbe4fd94115d3635b2e2a5438625",
         "source||cli_help/core.py": "9117524d2e437e16f168fb9a1775ed16cbaa0a1e8907982b4e65416a548b5d36",
-        "source||cli_help/discovery.py": "47e5eb786ab2ccc90a6079b294a81465379e76fc79969d6ec772cce42d237ad2",
+        "source||cli_help/discovery.py": "6bb87417d27db67923bfbe482bd4f2e0a64243e1df19a9d3ddd9a30f2fa1f28d",
         "source||cli_help/drivers.py": "38de66bdcf8287592531fee1c1f6fd09068ad8fe60ca2d618bc6c2a1fb2960a3",
         "source||cli_help/invocation.py": "9f9c8ab41fbb7bb7d9fb719b13ec2ebb70b8180fa308b57638bafaa1283db290",
         "source||cli_help/main.py": "063799a727fcfb6b42a5fd24a4a25aa9f3cf5d411801fc641684b16a7e2d6bba",
@@ -3551,7 +3891,7 @@
         "source||scripts/inventory_numerical_descriptions.py": "67c9c59badeac2fc5842a2d7c095af27b54bf443d990c59d530e874acd8a08c8",
         "source||tests/fixtures/help/7z.txt": "3e22ba22b0e75b8d517ad166e5dd34b79d064c698972890406e94548e98d0786",
         "source||tests/fixtures/help/7zz.txt": "dd34861043c4a8f149070ae0fce0bfd732c80db9f614b760494ecb10b8be509f",
-        "source||tests/fixtures/help/README.md": "5b52234b9aa344ca62e247bfba68d9c8ecfcf9ddb9344bba5fff4dad22c63313",
+        "source||tests/fixtures/help/README.md": "6ecf9c0e3c628634c1224e4e55a2994d0beb802baef0cd621fe6704c9175d4a6",
         "source||tests/fixtures/help/ansible-playbook.txt": "53846a00dc34f80cec5e461b3ebd5b6defce540b47aca422ab5983877eaff7b5",
         "source||tests/fixtures/help/aws-ec2-describe-instances.txt": "197bc6de4c2c04b0f715aac1e975539d6a469f47fe95c6cf116fb36ef45d63bf",
         "source||tests/fixtures/help/aws-s3-cp.txt": "8c6de421a7ae5c53dc243fb542c3e4e424b344bca8968030368ec618da18db32",
@@ -11292,9 +11632,9 @@
         "cli_help/discovery.py",
         "cli_help/manual_import.py"
       ],
-      "status": "Step 4 bounded source preservation implemented; arbitrary formats, presentation and semantic enrichment remain separate",
+      "status": "Step 8 passive preservation verified for the reported scope; scalar operand-count ownership repaired with cache generation 12. Arbitrary external formats remain unresolved.",
       "title": "Shared definitions and source merging",
-      "verification": "Run documentation-preservation tests, affected passive regressions and inventory reconciliation; inspect step4-preservation.md for guarantees and limits."
+      "verification": "Run numerical integration and preservation regressions; inspect step8-verification.md for source-ownership correction and actual scope."
     },
     {
       "acceptance_criteria": [
@@ -11323,9 +11663,9 @@
         "cli_help/value_semantics.py",
         "tests/test_numerical_presentation.py"
       ],
-      "status": "Step 5 browser presentation and search implemented; native terminal acceptance remains a later verification boundary",
+      "status": "Step 8 passive details/search/scroll/resize and cross-component propagation verified; native terminal acceptance remains blocked.",
       "title": "Numerical presentation and search",
-      "verification": "Run numerical-presentation tests, relevant passive UI/compatibility checks and inventory reconciliation; see step5-presentation.md for coverage and limits."
+      "verification": "Run numerical integration and presentation tests; native terminal/Readline evidence remains separate from fake windows."
     },
     {
       "acceptance_criteria": [
@@ -11359,9 +11699,9 @@
         "tests/test_numerical_authoring.py",
         "tests/run.sh"
       ],
-      "status": "Steps 2 and 6 shared contract/authoring and Step 7 prospective enforcement implemented; strict maintained readiness remains blocked by exact migration debt.",
+      "status": "Steps 6-7 mechanisms rechecked in Step 8; prospective protection passes while exact strict migration debt remains unresolved.",
       "title": "Authoring and future enforcement",
-      "verification": "Run check_numerical_coverage.py, inventory reconciliation and focused tests; strict mode must continue to report unresolved migration debt."
+      "verification": "Run prospective/strict gates, mutation and authoring tests; inspect Step 8 matrix rather than interpreting prospective success as full completeness."
     }
   ]
 }

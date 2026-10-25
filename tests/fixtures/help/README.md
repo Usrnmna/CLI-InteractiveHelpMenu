@@ -3,10 +3,19 @@
 [Compatibility matrix and live checks](../../../docs/compatibility.md) ·
 [Development and validation](../../../docs/development.md#extended-tests-and-live-compatibility-reports)
 
-`matrix.json` is the maintained list of 160 command paths, tiers, package names,
+`matrix.json` is the maintained compatibility-case list, with command paths, tiers, package names,
 fixture filenames, expected flags and arguments, excluded forms, live sentinels,
 and fixed version requests. Expected values are test assertions; they must not
 be regenerated from parser output when a test fails.
+
+Current counts and observations beyond matrix sentinels come from
+`python -B scripts/inventory_numerical_descriptions.py --check --summary`.
+The matrix is not a complete option or numerical-semantics inventory. Separate
+[numerical reference fixtures](../value-semantics/) distinguish reviewed facts,
+preservation expectations and explicitly synthetic contracts. The
+[Step 8 verification account](../../../docs/numerical-inventory/step8-verification.md)
+records their integrated use without rewriting raw captures or promoting
+unresolved external descriptions into verified metadata.
 
 The individual `.txt` files are compact, hand-authored format specimens with
 paraphrased descriptions. They test argument shapes independently of installed

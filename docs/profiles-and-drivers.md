@@ -64,11 +64,18 @@ the helper process can read them.
 
 The [numerical value contract](numerical-value-contract.md) defines optional
 descriptive metadata, explicit validation modes, and a pure explanation formatter.
-These APIs are opt-in infrastructure; existing loading and editing behavior do
-not invoke numerical validation or display the new explanations.
+The browser displays and searches supplied numerical explanations. Authoring save
+boundaries structurally validate supplied metadata and flag potentially stale
+declarations; legacy profiles remain accepted without it. Repository coverage
+checks explicitly select a separate completeness policy. The
+[integrated verification account](numerical-inventory/step8-verification.md)
+distinguishes demonstrated behavior, unresolved migration and platform limits.
 
 | Field | Behavior |
 | --- | --- |
+| `options[].value_semantics` | Optional descriptive contract; quantities, counts, indices, levels, expressions and delegated values retain their own meanings |
+| `value_definitions` | Explicit shared semantic nodes, referenced within their owning profile |
+| `positional_value_semantics` | Optional explanation beside the existing `positional_group`; does not change insertion or arity |
 | `options[].kind` | `flag` by default; `keyword` permits a literal bare keyword such as `dev` |
 | `options[].attached` | Boolean; recognizes an attached argument for a value-taking flag such as `-p22`; default false |
 | `options[].argument_style` | Explicit `separate`, `equals`, `attached`, or `attached_only` spelling for one value; omitted metadata retains legacy behavior |

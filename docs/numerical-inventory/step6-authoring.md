@@ -166,10 +166,10 @@ On Windows, `python -X utf8 -B` also selects UTF-8 console output. Exact passive
 test selections, exclusions, workflow enumeration and static comparisons are
 recorded under ignored `tests/reports/numerical-inventory/step6-*.json`.
 
-The current census remains 76 profiles, 942 option records, 327 explicit named
+At Step 6 the census contained 76 profiles, 942 option records, 327 explicit named
 paths, 5,243 canonical option/keyword identities, 7,591 parsed observations,
 341 input sources and 6,119 review identities. Counts overlap and are not
-additive. The focused census does not fingerprint these authoring owners; no
+additive. That focused census did not fingerprint these authoring owners; no
 entry fingerprint or numerical evidence classification is refreshed. AC-09 and
 F7 record the scoped authoring implementation and its platform limits.
 
@@ -178,3 +178,8 @@ truth, complete external grammars and native terminal/POSIX acceptance retain
 their stated evidence limits. No architectural decision blocks this implementation.
 Command-specific enrichment, global enforcement, CI and Git/GitHub configuration
 are unchanged. The next plan step is Step 7: enforce future coverage automatically.
+
+Subsequent [Step 7 enforcement](step7-enforcement.md) adds those protected owners
+and prospective checks. [Step 8 integration verification](step8-verification.md)
+records current cross-component evidence, unchanged migration debt and native
+acceptance limits. The preceding counts and boundaries describe Step 6 itself.

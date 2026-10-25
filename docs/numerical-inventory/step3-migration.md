@@ -47,11 +47,13 @@ For example, SHA-256, TLS 1.3 and bzip2 name algorithms, protocols or formats;
 their digits do not create a numerical operand.
 
 The profile inventory remains 76 profiles, 96 categories, 942 options, 463
-value-bearing records and 28 keywords. The wider inventory remains 6,119
+value-bearing records and 28 keywords. At Step 3 the wider inventory contained 6,119
 identities, including 5,243 canonical option/keyword identities and 341 input
 sources. Built-in paths, example drivers, matrix expectations, captures and
 interpreter routes are unchanged. The 175 migrated records do not establish
-coverage of the larger captured or dynamically discovered help surface.
+coverage of the larger captured or dynamically discovered help surface. The
+[current inventory guide](README.md) records Step 7's later source/definition
+census expansion; these migration counts describe their original scope.
 
 ## Principal corrections and evidence
 

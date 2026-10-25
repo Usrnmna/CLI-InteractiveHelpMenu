@@ -29,7 +29,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 11
+CACHE_VERSION = 12
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -696,7 +696,10 @@ def merge_profiles(profiles: list[dict]) -> dict:
                             previous[field] = entry[field]
                 active = previous.get("value_semantics")
                 context = _value_context(result, previous, source)
-                if active and validate_value_semantics(active, context=context, definitions=definitions):
+                # Structural validity alone cannot attach a scalar contract to
+                # a different number of operands selected from another source.
+                if active and (old_count != context.argument_count
+                               or validate_value_semantics(active, context=context, definitions=definitions)):
                     alternatives.append({"source": semantic_sources.get(identity, "source 1"), "option": previous["flag"], "field": "value_semantics",
                                          "metadata": previous.pop("value_semantics"), "declaration": old_declaration, "definition_scope": "profile"})
                     _preservation_note(notes, "semantics_arity_review", source, command, previous["flag"],
@@ -704,13 +707,16 @@ def merge_profiles(profiles: list[dict]) -> dict:
                     semantic_sources.pop(identity, None)
                     active = None
                 if incoming:
-                    compatible = identity_matches and not validate_value_semantics(incoming, context=context, definitions=definitions)
+                    compatible = (identity_matches and new_count == context.argument_count
+                                  and not validate_value_semantics(incoming, context=context, definitions=definitions))
                     if not active and compatible:
                         previous["value_semantics"] = incoming
                         semantic_sources[identity] = semantic_source
                     else:
                         alternatives.append({"source": source, "option": entry["flag"], "field": "value_semantics",
-                                             "metadata": deepcopy(incoming), "definition_scope": "profile"})
+                                             "metadata": deepcopy(incoming),
+                                             "declaration": {field: deepcopy(entry[field]) for field in declaration_fields if field in entry},
+                                             "definition_scope": "profile"})
                         combined = {"schema_version": 1, "variants": [*active["variants"], *incoming["variants"]]} if active else incoming
                         disagreement = validate_value_semantics(combined, definitions=definitions)
                         if not compatible or disagreement:

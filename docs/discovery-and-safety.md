@@ -197,12 +197,18 @@ profile; a successful partial profile is cached to avoid repeated probes.
 Parser-schema changes invalidate older entries. The cache TTL accepts integer
 seconds from 0 through 604800; its default is 86400.
 
-Generation revision 11 preserves shared documentation, optional numerical
+Generation revision 12 preserves shared documentation, optional numerical
 metadata, definition references and source applicability. Cache reads and writes
 structurally check supplied numerical metadata; legacy profiles and incomplete
 but structurally valid semantics remain accepted. Numerical completeness is not
 required for browsing. Old cache files are left intact and become misses through
 the existing identity/version mechanism. No additional target probe is introduced.
+
+Merged numerical metadata must belong to a source with the selected operand
+count, even when a scalar contract would pass structural validation for another
+count. Mismatches retain inactive source evidence and review guidance. The
+[Step 8 verification account](numerical-inventory/step8-verification.md) records
+the reproduced defect, cache invalidation and passive integration coverage.
 
 In auto mode, supported Python module lookups run a fixed `--version` request
 through the selected interpreter before cache reuse. Pytest adds `--noconftest`

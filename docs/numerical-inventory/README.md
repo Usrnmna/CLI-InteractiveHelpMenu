@@ -54,7 +54,8 @@ detail's digest; the source locator remains the owner of complete text.
 
 ## Current enumeration and counting rules
 
-The Step 1 snapshot produces the following overlapping counts:
+The current census produces the following overlapping counts. Regeneration,
+rather than these recorded totals, establishes coverage after future changes:
 
 | Count | Meaning |
 | --- | --- |
@@ -73,7 +74,8 @@ The Step 1 snapshot produces the following overlapping counts:
 | 263 matrix records | Primary and supplementary lists, intentionally overlapping |
 | 170 embedded help sources, 7,591 parsed help observations | All recognized fixture/capture content, beyond sentinels |
 | 5,243 canonical option/keyword identities | Authored, parsed, arity-only, and expected identities reconciled by command and flag |
-| 341 source files, 6,119 total inventory identities | Includes routes, sources, descriptions, categories, and positional components |
+| 356 source files, 6,159 total inventory identities | Includes routes, sources, descriptions, categories, definitions and positional groups/components |
+| 22 shared value definitions | Explicit semantic nodes and their separately reviewed consumers |
 
 The audit's principal profile and explicit-path counts match. Broader observation
 counts are new enumeration results, not evidence of additional verified command
@@ -88,6 +90,9 @@ The 128 verified bundled option records and 6 positional components have scoped
 metadata dispositions. Every identity has a disposition, but this is not a
 completed semantic audit of external manuals. Named enumerations requiring
 accepted-form review and source/routing context remain separately classified.
+Step 7 added 25 `existing_declaration_enumerated` records and protected the
+relevant numerical, authoring and validation owners. The Step 1 counts of 341
+sources and 6,119 identities remain historical evidence rather than requirements.
 
 ## Relationships and review identity
 
@@ -226,3 +231,9 @@ The [Step 7 coverage policy and contributor workflow](step7-enforcement.md)
 defines prospective checks, exact legacy debt, structured diagnostics and
 separate strict-readiness reporting. Inventory reconciliation remains distinct
 and never verifies upstream numerical facts.
+
+The [Step 8 integrated verification account](step8-verification.md) joins the
+existing acceptance criteria to passive test evidence, documents the bounded
+scalar-arity merge repair and distinguishes native/platform gaps from portable
+success. Per-criterion records reside beside the existing criteria in review.json;
+generated outcomes remain under the ignored report directory.
