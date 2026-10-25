@@ -1,12 +1,13 @@
 """Curses browser with independently scrollable categories, options, and details."""
 
 import curses
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 from pathlib import Path
 import unicodedata
 
 from core import HelpError, read_json
+from presentation import option_label, option_text, value_text
 
 
 DEFAULT_KEYS = {
@@ -66,19 +67,30 @@ class Browser:
     selected: int = 0
     detail_offset: int = 0
     focus: str = "options"
+    _text: dict = field(default_factory=dict, init=False, repr=False)
 
     def __post_init__(self):
+        # A modal browser holds one read-only profile. Reopening, including a
+        # preview after editing, derives fresh text; nothing is persisted.
+        positional = value_text(self.profile, self.profile, positional=True)
+        for category in self.profile["categories"]:
+            for option in category["options"]:
+                self._text[id(option)] = option_text(self.profile, category, option, positional=positional)
         for index in range(len(self.profile["categories"])):
             if self.options(index):
                 self.category = index
                 break
 
     def options(self, category=None):
-        """Filter the active category by flag, summary, and description text."""
+        """Match the existing case-insensitive substring query against display text."""
         category = self.category if category is None else category
         query = self.query.casefold()
         return [option for option in self.profile["categories"][category]["options"]
-                if query in (option["flag"] + " " + option["summary"] + " " + option.get("detail", "")).casefold()]
+                if query in self.text(option).searchable]
+
+    def text(self, option):
+        """Return the same derived explanation used by list, details and search."""
+        return self._text[id(option)]
 
     def move_category(self, amount):
         self.category = max(0, min(len(self.profile["categories"]) - 1, self.category + amount))
@@ -121,6 +133,14 @@ def clip_cells(text, width):
             result.append(char)
             used += size
     return "".join(result)
+
+
+def ellipsize_cells(text, width):
+    """Make clipping explicit; full declarations and explanations remain in details."""
+    text = display_text(text)
+    if sum(cell_width(char) for char in text) <= width:
+        return text
+    return clip_cells(text, max(0, width - 1)) + ("…" if width > 0 else "")
 
 
 def wrap_cells(text, width):
@@ -192,36 +212,40 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     first_option = max(0, browser.selected - rows + 1)
     for row, index in enumerate(range(first_option, min(len(options), first_option + rows)), 4):
         option = options[index]
-        separator = "" if option.get("argument_style") == "attached_only" or option["flag"].endswith("=") else "=" if option.get("argument_style") == "equals" else " "
-        label = option["flag"] + (separator + option["argument"] if option.get("argument") else "")
-        if option.get("kind") == "keyword":
-            label += " [keyword]"
-        text = ("> " if index == browser.selected else "  ") + label + "  " + option["summary"]
-        write(screen, row, category_width, text, width - category_width - 1, curses.A_REVERSE if index == browser.selected else 0)
+        label = option_label(option)
+        compact = browser.text(option).compact
+        budget = width - category_width - 1
+        if compact:
+            # Long placeholders cannot consume all space before value guidance.
+            label = ellipsize_cells(label, max(10, (budget - 2) // 3))
+        text = ("> " if index == browser.selected else "  ") + label + "  "
+        text += (compact + "  " if compact else "") + option["summary"]
+        write(screen, row, category_width, ellipsize_cells(text, budget), budget,
+              curses.A_REVERSE if index == browser.selected else 0)
     if not options:
         write(screen, 4, category_width, "No matches. Clear the filter or change category.", width - category_width - 1)
     detail_row = 4 + rows
     count = f"Category {browser.category + 1}/{len(categories)} | Option {browser.selected + 1 if options else 0}/{len(options)}"
     write(screen, detail_row, 0, count, width - 1, curses.A_BOLD)
     category = categories[browser.category]
-    detail = category.get("description", "")
-    if browser.profile.get("positional_group"):
+    if options:
+        detail = "\n".join(browser.text(options[browser.selected]).details)
+    else:
+        detail = category.get("description", "")
+    if not options and browser.profile.get("positional_group"):
         group = browser.profile["positional_group"]
         detail += "\nRepeated value group: " + group["argument"] + ". Enter each complete group manually; placeholders are never inserted."
-    if options:
-        option = options[browser.selected]
-        detail += "\n\n" + option["summary"] + "\n" + option.get("detail", "")
-        if option.get("argument"):
-            label = "Optional argument: " if option.get("argument_optional") else "Argument required: "
-            if option.get("argument_style") == "attached_only":
-                label = "Optional attached argument: " if option.get("argument_optional") else "Attached argument required: "
-            detail += "\n" + label + option["argument"] + ". Enter its value after insertion."
     lines = [wrapped for paragraph in detail.splitlines() for wrapped in wrap_cells(paragraph, width - 2)]
     detail_rows = height - detail_row - 4
-    browser.detail_offset = min(browser.detail_offset, max(0, len(lines) - detail_rows))
+    browser.detail_offset = max(0, min(browser.detail_offset, max(0, len(lines) - detail_rows)))
     for row, text in enumerate(lines[browser.detail_offset:browser.detail_offset + detail_rows], detail_row + 1):
         write(screen, row, 0, text, width - 1)
     labels = lambda action: "/".join(keys[action])
+    visible_end = min(len(lines), browser.detail_offset + detail_rows)
+    progress = f"Details {browser.detail_offset + 1}-{visible_end}/{len(lines)}"
+    if len(lines) > detail_rows:
+        progress += f" | {labels('detail_up')}/{labels('detail_down')} scroll"
+    write(screen, height - 3, 0, progress, width - 1)
     footer = f"{labels('up')}/{labels('down')} move | {labels('focus')} focus | {labels('previous_category')}/{labels('next_category')} category"
     write(screen, height - 2, 0, footer, width - 1)
     accept_label = "inspect" if preview else "insert"

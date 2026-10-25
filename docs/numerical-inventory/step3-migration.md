@@ -7,8 +7,9 @@ Essential numerical meaning appears in the existing `summary`, `detail`, or
 profile-description fields. The migration did not connect metadata to rendering,
 search, discovery, editing or insertion. Subsequent
 [Step 4 source preservation](step4-preservation.md) provides bounded merger/cache
-retention. No numerical completeness policy is enabled for legacy profiles or
-external help.
+retention, and [Step 5 presentation](step5-presentation.md) connects the retained
+explanations to the existing browser and search. No numerical completeness policy
+is enabled for legacy profiles or external help.
 
 ## Scope and counting
 

@@ -74,9 +74,9 @@
     },
     {
       "id": "AC-08",
-      "phase": "later",
+      "phase": "step5",
       "requirement": "Essential numerical meaning is visible, scrollable and searchable at supported terminal sizes.",
-      "verification": "Later visible-cell, narrow-width, Unicode, resize and search checks."
+      "verification": "Step 5 fake-window visible-cell, minimum-width, Unicode, wrapping, scrolling, scripted resize/reopen and search checks; native terminal and Readline acceptance remain separate."
     },
     {
       "id": "AC-09",
@@ -109,7 +109,7 @@
         "source||cli_help/drivers.py": "38de66bdcf8287592531fee1c1f6fd09068ad8fe60ca2d618bc6c2a1fb2960a3",
         "source||cli_help/invocation.py": "9f9c8ab41fbb7bb7d9fb719b13ec2ebb70b8180fa308b57638bafaa1283db290",
         "source||cli_help/main.py": "063799a727fcfb6b42a5fd24a4a25aa9f3cf5d411801fc641684b16a7e2d6bba",
-        "source||cli_help/ui.py": "6e75ea71b40229ab6c3240d2489f2a6f2b3bbbb0c59d90e753bfbc924b1b4b4d",
+        "source||cli_help/ui.py": "4b89d4253eaa18f7c0daca83a70d5749cb1f2cc78c8a439a5e6699952aafcb9b",
         "source||config/drivers.example/7z.json": "9da33bc0f0f08dc49989ba9440f0ba8caf3215cdccbf9d7560b469de71ad3234",
         "source||config/drivers.example/7zz.json": "cf1d621fbfe918f7659cd15508f6db1c29a5fee9c27818ae3bf66a4a792f5178",
         "source||config/drivers.example/ansible-playbook.json": "124b7c80f76a77845ebe4d48d586af37398cafe5850f848966d277ab9167e463",
@@ -7759,7 +7759,7 @@
         "AC-09",
         "AC-10"
       ],
-      "evidence": "source-derived audit finding; no runtime reproduction in Step 1",
+      "evidence": "Reviewed migration fixtures and synthetic fake-window/scripted-key tests; no target execution or upstream factual promotion",
       "id": "F6",
       "later_steps": [
         5,
@@ -7768,11 +7768,14 @@
       "priority": "P2",
       "proposed_action": "Place essential meaning early, retain complete details and search numerical explanations at supported widths.",
       "sources": [
-        "cli_help/ui.py"
+        "cli_help/ui.py",
+        "cli_help/presentation.py",
+        "cli_help/value_semantics.py",
+        "tests/test_numerical_presentation.py"
       ],
-      "status": "deferred; no production fix enacted",
+      "status": "Step 5 browser presentation and search implemented; native terminal acceptance remains a later verification boundary",
       "title": "Numerical presentation and search",
-      "verification": "Apply the linked acceptance criteria with focused tests at the owning boundary."
+      "verification": "Run numerical-presentation tests, relevant passive UI/compatibility checks and inventory reconciliation; see step5-presentation.md for coverage and limits."
     },
     {
       "acceptance_criteria": [

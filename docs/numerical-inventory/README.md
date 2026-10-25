@@ -182,7 +182,7 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | AC-01 to AC-03 protected runtime | Step 3 compares protected declarations and passive buffer/cursor behavior; integrated navigation and runtime verification remain deferred |
 | AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
 | AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
-| AC-08 presentation | Deferred: verify visible cells, narrow widths, Unicode, wrapping, scrolling, resizing and search |
+| AC-08 presentation | Step 5 checks formatter propagation, visible cells, supported minimum sizes, Unicode, wrapping, scrolling, scripted resize/reopen and search with fake windows; native terminal/Readline acceptance remains separate |
 | AC-09 authoring | Deferred: test import, edit, preview, save, reload and inspect cycles, including stale metadata |
 | AC-10 future checks | Deferred: reject deficient maintained additions automatically while preserving honest external-help limits |
 
@@ -212,5 +212,7 @@ The [Step 3 migration account](step3-migration.md) distinguishes verified
 corrections, adequate summaries, source-derived records and remaining external
 work. The [Step 4 preservation account](step4-preservation.md) records the parser,
 merge and cache guarantees and narrowly justified annotation updates.
-Reconciliation is not production numerical-quality enforcement. Step 5
-presentation and later runtime acceptance criteria remain deferred.
+The [Step 5 presentation account](step5-presentation.md) records consistent value
+guidance, search coverage, applicability and passive layout verification.
+Reconciliation is not production numerical-quality enforcement. Native terminal
+acceptance, authoring preservation and global enforcement remain separate work.

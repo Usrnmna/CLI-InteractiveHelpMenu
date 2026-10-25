@@ -13,9 +13,10 @@ profiles continue to use the existing profile validator unchanged.
 The contract provides Step 2 infrastructure. The
 [Step 3 migration](numerical-inventory/step3-migration.md) and
 [Step 4 source preservation](numerical-inventory/step4-preservation.md) document
-their separate guarantees. Command-specific enrichment, formatter presentation,
-search, authoring integration and a future completeness gate remain separate
-work. Passing these APIs does not establish upstream factual accuracy.
+their separate guarantees. [Step 5 presentation and search](numerical-inventory/step5-presentation.md)
+uses the formatter in the existing browser. Command-specific enrichment,
+authoring integration and a future completeness gate remain separate work.
+Passing these APIs does not establish upstream factual accuracy.
 
 ## Representation and ownership
 
@@ -400,7 +401,7 @@ unresolved external record produces warnings, not invented units.
 
 ## Formatter contract
 
-`format_value_semantics(metadata, *, context=None, definitions=None)` returns a
+`format_value_semantics(metadata, *, context=None, definitions=None, presentation=False)` returns a
 tuple of plain-text lines. It first checks structural consistency. Invalid
 metadata raises `ValueSemanticsError`, retaining its structured `diagnostics`.
 Absent metadata returns `("Value meaning: not documented.",)`. Incomplete and
@@ -422,8 +423,13 @@ Exact scale is preferred over a potentially misleading abbreviated unit. Input
 tokens and display meaning remain separate. Form, component, and variant order
 follow documented input order, while mapping-key order cannot change output.
 No shortening, wrapping, searching, terminal control, or insertion occurs here.
-Later UI integration must preserve these lines' essential meaning and verify
-visibility and searchability in actual rendered screens.
+`presentation=True` places bare-number interpretation before the longer meaning,
+labels scope and evidence in the lead, moves complete applicability and evidence
+early, and includes source references, locators and qualifications. Every variant
+and component remains; no target applicability match is inferred. Default output
+and the data contract remain unchanged. The
+[presentation and search reference](numerical-inventory/step5-presentation.md)
+describes the shared derived text, browser integration and layout evidence.
 
 ## Verification and remaining limits
 
@@ -444,7 +450,7 @@ and omission behavior, version conflicts, and deliberately invalid declarations.
 Purity checks block file access, process creation, network sockets, and expression
 evaluation during API use, and compare inputs before and after.
 
-Tests establish representation, structural consistency, selected completeness,
+Contract tests establish representation, structural consistency, selected completeness,
 deterministic formatting, and legacy compatibility. They do not verify real
 rsync/esptool/Go/FFmpeg versions, upstream factual accuracy, target grammar
 acceptance, terminal rendering, or runtime integration. Bounds, all legal
@@ -459,5 +465,6 @@ source-reviewed descriptions, opt-in metadata and unresolved investigations.
 Its authored-source changes require narrowly justified inventory fingerprint
 updates. The shared contract APIs remain unchanged. Step 4 preserves those
 declarations through source merging and cache round trips with structural checks
-only. Source-derived records retain their review diagnostics. Formatter
-presentation and global completeness enforcement remain separate boundaries.
+only. Source-derived records retain their review diagnostics. Step 5 integrates
+the opt-in presentation order into the existing read-only browser and search;
+authoring preservation and global completeness enforcement remain separate.

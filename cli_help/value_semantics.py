@@ -1,6 +1,6 @@
 """Opt-in descriptive value contracts, diagnostics, and plain-text explanations.
 
-No runtime loader imports this module. The APIs inspect supplied dictionaries;
+The APIs inspect supplied dictionaries, including read-only browser presentation;
 they do not read files, validate pending operands, resolve programs, or perform
 I/O. See docs/numerical-value-contract.md for the version 1 data contract.
 """
@@ -776,12 +776,17 @@ def _scope_text(scope):
     return "; ".join(parts)
 
 
-def _explain_node(node, label="Value"):
-    """Return deterministic plain-text lines; retain detail rather than clip it."""
+def _explain_node(node, label="Value", *, presentation=False):
+    """Explain one declaration, optionally placing interpretation and scope first.
+
+    Presentation order changes emphasis only. Reference output remains compatible;
+    neither mode selects applicability variants or interprets pending operands.
+    """
     kind = node["kind"]
     forms = node.get("forms") or []
     bare = node.get("bare") or {}
     first = f"{label}: {node.get('meaning') or 'meaning not documented'}"
+    meaning_first = first
     if bare.get("state") == "accepted":
         form = next(f for f in forms if f["id"] == bare["form"])
         subject = node.get("subject") or node.get("meaning") or "meaning not documented"
@@ -799,7 +804,26 @@ def _explain_node(node, label="Value"):
         first += "; bare-number meaning not verified"
     if kind == "unresolved":
         first += "; unresolved"
+    scope = _scope_text(node.get("applicability"))
+    status = (node.get("review") or {}).get("status", "not documented").replace("_", " ")
+    if presentation:
+        meaning = meaning_first[len(label) + 2:]
+        interpretation = first[len(meaning_first):].removeprefix("; ")
+        qualification = []
+        if status != "verified":
+            qualification.append(status)
+        if scope:
+            qualification.append("scoped")
+        if qualification:
+            label += " (" + "; ".join(qualification) + ")"
+        first = label + ": " + (interpretation + "; " if interpretation else "") + meaning
     lines = [first + "."]
+    if presentation:
+        if scope:
+            lines.append("Applies to: " + scope + ". Matching to an installed target is not established here.")
+        lines.append("Evidence: " + status + ".")
+        if node.get("investigation"):
+            lines.append("Investigation: " + node["investigation"] + ".")
     if bare.get("state") in {"not_accepted", "not_applicable", "unverified"}:
         lines.append(f"Bare-number rule: {bare['state'].replace('_', ' ')}; {bare.get('reason') or 'reason not documented'}.")
     for field, title in (("subject", "Subject"), ("origin", "Index origin"), ("ordering", "Ordering"), ("time_basis", "Time basis")):
@@ -851,23 +875,33 @@ def _explain_node(node, label="Value"):
     for component in node.get("components", []):
         component_label = f"Component {component['id']} (token slot {component['slot']}, "
         component_label += ("required" if component.get("required") else "optional") + ")"
-        lines.extend(_explain_node(component["semantics"], component_label))
-    scope = _scope_text(node.get("applicability"))
-    if scope:
-        lines.append("Applies to: " + scope + ".")
-    status = (node.get("review") or {}).get("status", "not documented").replace("_", " ")
-    lines.append("Evidence: " + status + ".")
-    if node.get("investigation"):
-        lines.append("Investigation: " + node["investigation"] + ".")
+        lines.extend(_explain_node(component["semantics"], component_label, presentation=presentation))
+    if not presentation:
+        if scope:
+            lines.append("Applies to: " + scope + ".")
+        lines.append("Evidence: " + status + ".")
+        if node.get("investigation"):
+            lines.append("Investigation: " + node["investigation"] + ".")
+    else:
+        for reference in (node.get("review") or {}).get("references") or []:
+            text = "Reference: " + (reference.get("source") or "source not documented")
+            text += " — " + (reference.get("locator") or "locator not documented")
+            if reference.get("note"):
+                text += "; " + reference["note"]
+            lines.append(text + ".")
+        if (node.get("review") or {}).get("note"):
+            lines.append("Source qualification: " + node["review"]["note"] + ".")
     return lines
 
 
-def format_value_semantics(metadata, *, context=None, definitions=None):
-    """Return plain-text lines for later UI use; no UI integration is performed.
+def format_value_semantics(metadata, *, context=None, definitions=None, presentation=False):
+    """Return plain-text lines, optionally emphasizing interpretation for browsing.
 
     Structural errors raise ValueSemanticsError with structured diagnostics.
     Partial or unresolved content is labeled explicitly rather than completed by
     guessing. Form and component order follows the supplied documented order.
+    presentation=True places bare-number meaning, scope and evidence early and
+    includes reference locators; default reference output remains unchanged.
     """
     validator = _Validator("structural", context or ValueContext(), definitions)
     nodes = validator.contract(metadata)
@@ -878,5 +912,6 @@ def format_value_semantics(metadata, *, context=None, definitions=None):
         return ("Value meaning: not documented.",)
     lines = []
     for i, node in enumerate(nodes):
-        lines.extend(_explain_node(node, f"Value variant {i + 1}" if len(nodes) > 1 else "Value"))
+        lines.extend(_explain_node(node, f"Value variant {i + 1}" if len(nodes) > 1 else "Value",
+                                   presentation=presentation))
     return tuple(lines)

@@ -101,9 +101,18 @@ source /absolute/path/to/CLI-InteractiveHelpMenu/bash/interactive-help.bash
 During search entry, Enter applies the filter, Escape restores the previous
 filter, Backspace removes a character, and Ctrl-U clears it. A second Enter is
 required to select an option after applying a search. Filtering matches option
-names, summaries, and descriptions. Each category displays its matching count.
+names, summaries, descriptions, argument placeholders and displayed numerical
+explanations, including units, scales, accepted forms and source qualifications.
+Each category displays its matching count.
 When a new search has no matches in the current category, the first matching
 category is selected automatically.
+
+Options with numerical metadata show compact value guidance in the list and at
+the beginning of selected details. Scoped or unresolved guidance retains its
+qualifications. An ellipsis marks clipped list text; the `Details start-end/total`
+line and `[` / `]` controls provide access to the complete explanation and literal
+declaration. See [numerical presentation and search](numerical-inventory/step5-presentation.md)
+for source conflicts, applicability, legacy behavior and verification limits.
 
 Both list panes scroll to keep the selected item visible. The `rsync` profile
 contains nine categories, and the `ls` Display category contains twelve options,

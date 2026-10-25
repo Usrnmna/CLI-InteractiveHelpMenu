@@ -79,6 +79,8 @@ defines both formats.
   records Step 3 corrections, source applicability, remaining investigations and focused checks.
 - [Numerical documentation preservation](numerical-inventory/step4-preservation.md)
   defines Step 4 shared-source association, merge ownership, diagnostics and cache guarantees.
+- [Numerical presentation and search](numerical-inventory/step5-presentation.md)
+  explains Step 5 compact guidance, complete details, search and scoped layout verification.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

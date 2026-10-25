@@ -237,3 +237,7 @@ insertion, guided editor or Git/GitHub configuration is changed. Raw captures an
 historical releases remain intact. Formatter presentation, command-specific
 enrichment, authoring and global enforcement are deferred. The next plan step is
 Step 5: make numerical meaning consistently visible and searchable.
+
+The subsequent [Step 5 presentation account](step5-presentation.md) records the
+formatter/search integration and scoped fake-window evidence. Its presentation
+changes do not alter the preservation, merging or cache rules documented here.
