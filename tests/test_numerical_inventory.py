@@ -46,12 +46,13 @@ class NumericalInventoryTests(unittest.TestCase):
         if self.root.resolve().parent != parent or self.root.is_symlink():
             raise RuntimeError("Disposable snapshot left its intended test directory")
         self.addCleanup(shutil.rmtree, self.root)
-        for relative in ("profiles", "cli_help", "config/drivers.example", "tests/fixtures/help"):
+        for relative in ("profiles", "cli_help", "config/drivers.example", "tests/fixtures/help",
+                         "tests/fixtures/value-semantics"):
             (self.root / relative).mkdir(parents=True)
-        for name in ("command_paths.py", "invocation.py", "core.py", "discovery.py", "drivers.py", "arguments.py", "ui.py", "main.py"):
-            shutil.copyfile(ROOT / "cli_help" / name, self.root / "cli_help" / name)
-        (self.root / "bash").mkdir()
-        shutil.copyfile(ROOT / "bash/interactive-help.bash", self.root / "bash/interactive-help.bash")
+        for relative in (*inventory.PROTECTED_SOURCES, "cli_help/command_paths.py", "cli_help/invocation.py"):
+            destination = self.root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, destination)
         self.profile = {"command": ["sample"], "description": "Synthetic command",
                         "categories": [{"name": "Options", "options": [
                             {"flag": "--count", "argument": "N", "summary": "Select records"},

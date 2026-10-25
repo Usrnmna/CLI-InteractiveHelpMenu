@@ -5,6 +5,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 for script in bash/interactive-help.bash install.sh uninstall.sh update.sh review-update.sh update-from-github.sh; do
     bash -n "$script"
 done
+python3 -B scripts/check_numerical_coverage.py --summary
 python3 cli_help/main.py --check
 CLI_HELP_DRIVERS="$PWD/config/drivers.example" python3 cli_help/main.py --check
 python3 -m unittest discover -s tests -p 'test_*.py' -v

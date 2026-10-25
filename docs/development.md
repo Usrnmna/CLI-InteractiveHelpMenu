@@ -316,6 +316,16 @@ This is Step 1 reconciliation, not validation of numerical units or implementati
 of the proposed production numerical contract. See the
 [inventory guide](numerical-inventory/README.md) for definitions and limits.
 
+The early numerical coverage step and `tests/run.sh` also run
+`python3 -B scripts/check_numerical_coverage.py --summary`. It uses the shared
+contract and actual presentation helpers, rejects deficient maintained additions
+and invalid deferrals, and reports exact unchanged migration debt. Strict
+readiness is a separate mode and is not yet satisfied. The
+[coverage policy and contributor workflow](numerical-inventory/step7-enforcement.md)
+defines eligibility, diagnostics, exceptions and external-help limits. The named
+`tests/reports/ci/numerical-coverage.json` report is retained even on failure; no
+additional report directory or Git configuration is needed.
+
 Before the suite, a separate passive smoke check invokes `--doctor` and
 `--explain` with fixed synthetic input and discovery disabled. It checks supplied
 activation, Compose route provenance, private configured-operand/manual-alias
@@ -326,7 +336,7 @@ disclosure before retention.
 After the suite, each job builds a new temporary candidate and runs the
 [package and installed-terminal regressions](release-candidate.md#final-source-and-package-checks)
 against those exact artifacts. Only seven named synthetic diagnostic reports,
-the numerical-inventory summary, policy/suite/package logs, aggregate checksum
+the numerical-inventory summary and coverage report, policy/suite/package logs, aggregate checksum
 results, and source manifest are uploaded. Package binaries, raw captures,
 arbitrary local reports, tool homes,
 and recovery backups are excluded. The workflow does not publish or tag releases.

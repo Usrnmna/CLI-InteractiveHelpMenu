@@ -50,6 +50,12 @@ jobs:
           set -euo pipefail
           mkdir -p tests/reports/ci
           python3 -B scripts/inventory_numerical_descriptions.py --check --summary | tee tests/reports/ci/numerical-inventory-summary.json
+      - name: Enforce numerical coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports/ci
+          python3 -B scripts/check_numerical_coverage.py --output tests/reports/ci/numerical-coverage.json --summary
       - name: Smoke-test passive diagnostics
         shell: bash
         env:
@@ -207,6 +213,7 @@ jobs:
             tests/reports/ci/linux-tests.log
             tests/reports/ci/repository-policy.log
             tests/reports/ci/numerical-inventory-summary.json
+            tests/reports/ci/numerical-coverage.json
             tests/reports/ci/diagnostics-doctor.json
             tests/reports/ci/diagnostics-explain.json
             tests/reports/ci/diagnostics-private-driver.json

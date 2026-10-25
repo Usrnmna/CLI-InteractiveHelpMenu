@@ -60,6 +60,23 @@ or implement the proposed production numerical contract. Record reviewed and
 unresolved coverage separately. A complete local inventory can contain source
 paths and raw-help excerpts; share the summary rather than the full report.
 
+For maintained command/category/option/keyword/component or fixture changes,
+also run the offline prospective numerical gate:
+
+```bash
+python3 -B scripts/check_numerical_coverage.py --summary
+python3 -B -m unittest discover -s tests -p test_numerical_coverage.py -v
+```
+
+The [coverage policy and contributor workflow](../docs/numerical-inventory/step7-enforcement.md)
+defines classification, metadata, provenance, display/search propagation and
+exact exceptions. New and relevant changed content cannot inherit legacy debt.
+Inspect full diagnostics without `--summary`; resolve heuristic disagreements
+through source review rather than guessed units. Current prospective success
+does not establish full maintained completeness: strict mode reports the exact
+remaining migration debt. Raw external captures need explicit census review,
+not fabricated verified contracts. Runtime legacy loading remains compatible.
+
 Keep tests independent of real operational workloads. Browsing or inserting help
 must leave the pending command unexecuted. Fixed help/version/manual probes have
 separate [execution boundaries](../docs/discovery-and-safety.md). Terminal changes
@@ -79,6 +96,7 @@ suites as evidence for a different boundary.
 | Collection or update recovery | Stale evidence, concurrent edits, uncertain locks, unsafe paths, interruptions, and preservation of original bytes |
 | Repository configuration | Root and nested ignore rules, visible maintained fixtures/templates/releases, binary attributes and editor exclusions, workflow lint, strict failure handling, and explicitly scoped uploads |
 | Numerical inventory | Independent counts, automatic discovery beyond sentinels, stable identities, annotation reconciliation, deterministic passive generation, and explicit semantic uncertainty |
+| Numerical coverage | Prospective gate, shared contract diagnostics, exact debt/exception invalidation, omission/growth mutations and actual display/search propagation; strict readiness and factual verification remain separate |
 | Release preparation | Exact candidate source manifest, checksums, actual-package lifecycle checks, and installed rendered adapter evidence; rebuild after changing included inputs and distinguish local candidates from publication |
 
 ## Generated files and release inputs

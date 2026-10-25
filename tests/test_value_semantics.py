@@ -128,6 +128,20 @@ class ValueSemanticsTests(unittest.TestCase):
         del node["subject"]
         self.assertIn("sem_incomplete", self.codes(contract(node)))
 
+    def test_generic_labels_are_incomplete_without_changing_structural_legacy_policy(self):
+        """Exact vague labels cannot substitute for meaning; prose is not inferred."""
+        for kind, field, label in (("quantity", "meaning", "size"), ("duration", "meaning", "time"),
+                                   ("count", "subject", "number"), ("index", "subject", "index")):
+            node = synthetic_node(kind)
+            node["review"]["status"] = "source_derived"
+            node[field] = label
+            with self.subTest(kind=kind):
+                metadata = contract(node)
+                self.assertNotIn("sem_meaning_vague", self.codes(metadata, mode="structural"))
+                self.assertIn("sem_meaning_vague", self.codes(metadata))
+                self.assertTrue(any(d.code == "sem_meaning_vague" and d.severity == "warning"
+                                    for d in validate_value_semantics(metadata, mode="external")))
+
     def test_levels_enumerations_and_numeric_fixed_flags(self):
         forms = [{"id": "low", "notation": "literal", "syntax": "0 or quiet", "tokens": ["0", "quiet"],
                   "case": "insensitive", "meaning": "Minimum synthetic detail"},

@@ -507,6 +507,15 @@ class _Validator:
         if not self.enum(kind, path + "/kind", KINDS):
             return value
         self.text(value.get("meaning"), path + "/meaning", True)
+        # A generic label cannot supply the subject or numerical interpretation.
+        # This is a completeness check, not a prose parser or unit inference.
+        vague = {"size", "speed", "time", "number", "value", "count", "index", "level", "quantity"}
+        for field in ("meaning", "subject"):
+            text = value.get(field)
+            if isinstance(text, str) and text.strip().casefold().rstrip(".") in vague:
+                self.issue("sem_meaning_vague", path + "/" + field,
+                           "Describe the specific quantity or counted/indexed subject; a generic label is insufficient.",
+                           incomplete=True)
         status = self.review(value.get("review"), path + "/review")
         self.applicability(value.get("applicability"), path + "/applicability")
         for field in ("subject", "ordering", "time_basis", "investigation"):

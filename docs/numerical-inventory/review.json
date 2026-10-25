@@ -86,12 +86,3314 @@
     },
     {
       "id": "AC-10",
-      "phase": "later",
+      "phase": "step7",
       "requirement": "Future maintained additions are discovered and checked without extending fixed lists.",
-      "verification": "Later CI mutation cases for missing units, ambiguous scale, unsupported forms and misclassification; external limits remain explicit."
+      "verification": "Offline prospective coverage and exact-debt mutation checks; strict completeness remains explicitly blocked by existing migration debt. External capture uncertainty and manual factual review remain separate."
     }
   ],
   "baseline_reference": "audit_report.rtf and recommended_steps.rtf; supplied references at revision cda11feb600520d16a3302e96b51ea9895e3a7d2",
+  "coverage_policy": {
+    "exceptions": [],
+    "format_version": 1,
+    "legacy_baseline": {
+      "entries": [
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "318f4aabba5cecd0333e484835e00d18122c955f5be98cca66d1e65ce83acc04",
+          "id": "option|7z x|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/7z-x.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a70a161b5023efcd5f2fb4d51188babcc19de2cec4fd8046c53ce0b8f0c7b55e",
+          "id": "option|7z x|-t",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/7z-x.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d70721fa6c80f73a9e437ef8caf0b26533deca4e6ef2d43f16c1cb5e083bceb9",
+          "id": "option|7zz x|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/7zz-x.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "94f92b8d8da669cdf2595d0c812ed6470c88579eb7f18ca3b07aae097fb7324a",
+          "id": "option|7zz x|-t",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/7zz-x.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d76e1782e4b40fbb354ee5e1ea2faeb7b7a0033e272b1313f5c777d8ae869001",
+          "id": "option|ansible-playbook|--become-user",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "af304d063ac1f65bb0fb6ce1a40a5dd7645f5508d1f60844d6f96ca6ef46fe9e",
+          "id": "option|ansible-playbook|--extra-vars",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "9613e09151b5de56a272bbc5148f089346bfaa8b4228cc60d4da93858b6b1cd0",
+          "id": "option|ansible-playbook|--forks",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d23ab49100a835118ab1984447c45d6554f0b6ccaa1b4bea6798780168a4b636",
+          "id": "option|ansible-playbook|--inventory",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "90e1848c6bc9ffd32531229a23d5473eb1e40e085a25cffb0e37c704717b06de",
+          "id": "option|ansible-playbook|--limit",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "34234139e00cb240bc0797ff9fbfcad9c4ff8ddf4f8a1892825e5f3b53aa4cf4",
+          "id": "option|ansible-playbook|--private-key",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f44b21b12a26869a9c9f7924a564ce6990ec40ab7f35a00c04e04d7615090100",
+          "id": "option|ansible-playbook|--skip-tags",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c1c07eac26d9c021f2ae9ddb7afc4eb1acdc6e2e6c2f9286cce9f21f1699a419",
+          "id": "option|ansible-playbook|--tags",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0a94afee9954f83cc8fa168a732bab77fc97cfd6a37d309cdcfafd427abc35c7",
+          "id": "option|ansible-playbook|--user",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e0f917dd57096603e0ba78590c6cfda61b55355a5c16910bd07c778db12e8223",
+          "id": "option|ansible-playbook|--vault-password-file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "5fb747be761c40a4b46e6157357ce1cffcd3d89346dea66ba76ba75c5d91b35b",
+          "id": "option|ansible-playbook|-e",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "ba24edfccd26a9f212b541b1dad83dc3ca686b7d0530f02e7cd5995f85d37433",
+          "id": "option|ansible-playbook|-i",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9109f271ed8960ae32bc4222891e2da64947d00a5e35f98fb2ebc5113a3f7d66",
+          "id": "option|ansible-playbook|-l",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "3c175e47f48480ef2c053635293d8b055fa95cb50678bd596477263afc1f67b7",
+          "id": "value_definition|ansible-playbook|extra-variables",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "681e9968bb0bfa7ad5559b08d1af2f3f52dc7a3b48171425d934deabb1f08bbe",
+          "id": "value_definition|ansible-playbook|inventory-source",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/ansible-playbook.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "128818ef92d10a09578a1171bf0ed8e8e1d6f41e14b3d98e836190006cb48bec",
+          "id": "option|arduino-cli compile|--board-options",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6ec6e382ed85f7df6bf795c123d81d34fd3193dff071e6be3b038449f8fd3e93",
+          "id": "option|arduino-cli compile|--build-path",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "c824d537ac7d0afc1dc072c6003dd14c1407f6d9dd3a479c5a659b6cc7522399",
+          "id": "option|arduino-cli compile|--build-property",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1b94bd12a5ccd8f1a654231972d837a9d2f4f47f529005291a8a0253d4b501e7",
+          "id": "option|arduino-cli compile|--fqbn",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d759b932fb88c1ae080ca303abed3bd498a3af4d53de1bc83d8341928533b9f3",
+          "id": "option|arduino-cli compile|--jobs",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "94e9d26aafa3d83abe504f896f60df3d34e92019a8a6168e1ce5fbd1561df3d8",
+          "id": "option|arduino-cli compile|--libraries",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "53e6d1940e4ae8ae6b741d5d18fcc3c311382c63f1a2e132792d554c7e6b95ee",
+          "id": "option|arduino-cli compile|--output-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "daa9a04a1cc41b214cb9a0deabc635325fe174ec44ac5389949677ade9555671",
+          "id": "option|arduino-cli compile|--warnings",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "81b5ecff82c32b4311677a285101b57f5377b0c0fe7409a1dbdaa1ca81a0deed",
+          "id": "option|arduino-cli compile|-b",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "68ce3af184e4eca6d3f2fb675783c94e1f35ef744a5e3647677292c2ea6d9369",
+          "id": "option|arduino-cli compile|-j",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "e45cd4ec9cb15b3c4b1c555b6568463d976e335a53c5b8453203f8a113c2ae3e",
+          "id": "value_definition|arduino-cli compile|compile-jobs",
+          "review_fingerprint": "7e8e4455e617840be50e81a25203d207f59193c30c4eb2377ee6d87df0bd3332",
+          "source": "profiles/arduino-cli-compile.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c00ece2f0ea6fdb1a09f36fb1e6fdeb62752cdcd7794e3bf53058e6f60ff6646",
+          "id": "option|az account show|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-account-show.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "31725525af7bbe87f633d782c98c710e8b7e3619e491d6f029b204ed10deac48",
+          "id": "option|az account show|--query",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/az-account-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e71ffc8bc8babf4e5c068bd7f7e18782589848a392ea278d358ce4e3ae221436",
+          "id": "option|az account show|--subscription",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-account-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b7a091625fdb26b555f252774f00e69789564af8df3639426f8d0e2949696c5b",
+          "id": "option|az account show|-o",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-account-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bd33605bc1d7e1445f7eff6bcfebc423519fb79068e20e60bbdf67d574ef3be7",
+          "id": "option|az account show|-s",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-account-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e7ede003827a3045888fa0a688fe2b8153e47c7b1aceb22b2f45fda0a6deb9b6",
+          "id": "option|az storage blob list|--account-name",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b8382be5fdffb9952934ad97a458ce3d5986eb38cedee43a2ca8d63085c8516a",
+          "id": "option|az storage blob list|--auth-mode",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "006d4d18c444d373db779e00c007ccca3c2cf32f21b81acd1ec52b86e95d6e5d",
+          "id": "option|az storage blob list|--container-name",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "24824a3fe5166c2ca30c79cb9b899047641ffc8b0a4a5b9684b950d2989fbf86",
+          "id": "option|az storage blob list|--delimiter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "942bef2bd418b812eb91f4a374e3a665dd4d45625dda694c00d64316b59bd389",
+          "id": "option|az storage blob list|--include",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b3aa3c0ef9f18b8e39f93de9898488766c5b94e3bb1b28f9475345ff7730c26e",
+          "id": "option|az storage blob list|--marker",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d257f42556e32ee08f58c5f93022e5386453469a7f011b7eca9fce48ea4df263",
+          "id": "option|az storage blob list|--num-results",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "33b1735581f2e6c53b0a0128d3b500e26f82e4ab8926032f14326eeb1b2e46cd",
+          "id": "option|az storage blob list|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d5cdd5f9f6475d6d2c1d8277eb45c181f1488109122bb2be58a694ac3d864640",
+          "id": "option|az storage blob list|--prefix",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "27dc53960db3629c773d376783a38e55bc5335a8fc92967281487ee29bb93da6",
+          "id": "option|az storage blob list|--query",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "21262e505c9b70e80be2dc58a3d8160eb58bfd776672bbfeb59b2dad5619f0e4",
+          "id": "option|az storage blob list|--subscription",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "000a2f1809cd053c3929e84af4d83b9b43d85a8273e2b5821c1c798bc1f22a23",
+          "id": "option|az storage blob list|-c",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9bbd7e28673ccfeab6f19718ffa57f9830359ba1ee090517100a1a42ac2071d1",
+          "id": "option|az storage blob list|-o",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-storage-blob-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b4fcff1d4b1552b002d3267d02b9996832647b3e71bfbb358b1d1fef219a6814",
+          "id": "option|az vm list|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "345a13c921ebf2cf5b99cb6bd5642214e266b2d718db687cfbe5419406d98a0e",
+          "id": "option|az vm list|--query",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "fe9549edcbf7f3d5eb093cc6b247f377e1c155284c99bd6823ba525e8c74f5f5",
+          "id": "option|az vm list|--resource-group",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5a80bfaff8e472065abd2f53019acca79bce252b522d48fda5a917d06fc4ddb4",
+          "id": "option|az vm list|--subscription",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "65c564d16f72da2f06e3c58885f6334c9787c9e6e3a9ab57e155d4444107d643",
+          "id": "option|az vm list|-g",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b56ff0a4267441b1e9763642958d4f01c247ec9dbeb335f3693c0e4c28c7b4ea",
+          "id": "option|az vm list|-o",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/az-vm-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8d1ecceef8a88d72e7548d9e72a8cd2918849a9d4d75705080e5efff49e703b8",
+          "id": "option|bun run|--cwd",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/bun-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1afdd3dfab86518e8f06fd09f057297529f92bd45ba4029486888530212d77ad",
+          "id": "option|bun run|--env-file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/bun-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "638b3d2002f554290ead068d777f93500bbb84692a99d15b42146b8d92057a87",
+          "id": "option|bun run|--preload",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/bun-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e2b64dea33cfc7a7fe1acae9f19dc83e0e5bbc380cd7b4dffa4ef891bdfe7824",
+          "id": "option|dotnet build|--configuration",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bec4867da314301f5c06fc8369f92103fd03d1b0335201cbc7cb23aa73783564",
+          "id": "option|dotnet build|--framework",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e54fbf0694ef7449370a6d6fc1daaddd5ea68487bb627e08f061c8499d096439",
+          "id": "option|dotnet build|--output",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "cf6393b052b7ef9ff2a4a3c6d34f9290c21750042a2ff33e1fb30fc4894f8245",
+          "id": "option|dotnet build|--runtime",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "580299caaaa7ee5ae93c63d82cd2675a1d69e7c820f90377768f5a473bea5335",
+          "id": "option|dotnet build|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c3895162dc10a90ab94f618410235849f734bc902d3e41e416bd91c1f72687ba",
+          "id": "option|dotnet build|-c",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6b1df984ad566c859a377eeb497f54988a5f0dda2b85505897de8f33c0e94132",
+          "id": "option|dotnet build|-f",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6d2e831f4d59ef8d94b3aa5b25235292c74b19b2cd49fc8fa6d8e5a2bdabc17e",
+          "id": "option|dotnet build|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "368a66e26dc2f1ee20a97f4bb5e59e2324d9a0d24ef2b437c89fd049139ba45d",
+          "id": "option|dotnet build|-r",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ea7ba95ae5184e87ddbd5803a7795303cb38f2a4eca7033b5dd93bc965c07396",
+          "id": "option|dotnet build|-v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f214180f90b0b3ace05f04b270771dfd2cd3b65e1243cbda4ca4856a2a1be7de",
+          "id": "option|dotnet publish|--configuration",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "72feef2eeb4b73d9f30e89219db53a61706856a726231270015c54bd8481f600",
+          "id": "option|dotnet publish|--framework",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "fb7d1a89c6d72fc3698ab0539e42952160f00ea0fe786be4ceefeff87851a3bf",
+          "id": "option|dotnet publish|--output",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "87478547f1140df15960311953a5ea6caca08b81aa99cf2ac520a30eaed4e1d6",
+          "id": "option|dotnet publish|--runtime",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "63772b4bd6b969d9ef22c655285dcce28c7a7a6b4a76875994b16ba14e4a9558",
+          "id": "option|dotnet publish|--self-contained",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ec10d450f8cc2270f05d1ca1b401d94e342b46f1e50b9f70e5bc65359bfc4068",
+          "id": "option|dotnet publish|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b97ab80af6de71516709ff57d39b46c58abdbfb52da9921812a45fc4b9e6a18e",
+          "id": "option|dotnet publish|-c",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2fe78dfd5b0c50f223321b39eaaa2cbe2de43727da0a643b748bb92226f28870",
+          "id": "option|dotnet publish|-f",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "51963893205f1348d5a28c9049713a0b293fef9dcfe3bb7fb572bf6d66ee7604",
+          "id": "option|dotnet publish|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f13dd6c540300b65d69a0f6394037ade1377a342951f12b6f225fb2cccb7b775",
+          "id": "option|dotnet publish|-r",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e4b4ca5453be5494040995a312b0c0de11427e297a5ecb571070e38d9817be7f",
+          "id": "option|dotnet publish|-v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-publish.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0cddd071c0c5007e3a6643bffd8721f2057af02e2621c7ff75484db8afe823f0",
+          "id": "option|dotnet restore|--configfile",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8094ae6b0b3088444f61eaed5536ec49237a586acd1234f594aee8980f527f29",
+          "id": "option|dotnet restore|--packages",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2dd3dda240911826328f242667d376dd1c0b5b6e1767f6e7439ea50a41f280d4",
+          "id": "option|dotnet restore|--runtime",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b8e5c3da65ad95fcfebae07a940eca2b571fa73e3ef29e3744cae7a17859261d",
+          "id": "option|dotnet restore|--source",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "462b517ef2b5e860a325021f696c386d7d0e26396279866046cdac936069a4cc",
+          "id": "option|dotnet restore|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "902750965d20ecd5334828cb98be7959a24959df6f0b1c862bcac9bb5d0448f0",
+          "id": "option|dotnet restore|-r",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5e53205d6ff4677db9dd7c3c7c15a1e7e914dc263bcef5927b676fd2de892743",
+          "id": "option|dotnet restore|-s",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6ae808f7aef778af25fd2e13df59310e7f8066f134da39f1c59b3caaafb03df7",
+          "id": "option|dotnet restore|-v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-restore.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f97cc2dfb69a8a8086bb7a11071fea3790ef7513d7896de28b280f2b7fb0a064",
+          "id": "option|dotnet run|--configuration",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c6d74b560d04b5e0d8ec4e37610ac3533f54d41ab9f232d8cfab4d992913bfbc",
+          "id": "option|dotnet run|--framework",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "db50f851adb5aa1d6a4469abb2bced5d16316a4918c2a6996442966b7684ffb9",
+          "id": "option|dotnet run|--launch-profile",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "79f3b588278f757152b04920e0d20fe55081b050d6b6a512af88f0e953cf326e",
+          "id": "option|dotnet run|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3fade8224ee171cde6b7b026bc9193a6a2e1082a50f57e28cb3962dbe18f8af7",
+          "id": "option|dotnet run|--runtime",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4385597d8fc7d1120d87715df606a8a27eb5ae0a9fead86f388a3ab68ab12179",
+          "id": "option|dotnet run|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2223e9c1ea5b749baf8793921b81d228e76ae4b53a6e972976cef6cba31d5f4a",
+          "id": "option|dotnet run|-c",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f6321e0a06b25f09cd657cd3015b6f7924b7d3a24a12f876a24779470a085098",
+          "id": "option|dotnet run|-f",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "07629a62ec3710ce40b0e7a7dc4be7a3a3cf28cbf8f379ff5fe644c13c2d8b82",
+          "id": "option|dotnet run|-r",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "885948c0e5047f24546efd3e918ace2dc8f6d6a314c47be54710dbf5a24841d2",
+          "id": "option|dotnet run|-v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bd07cf0172f7ff9d83dd4faadfbb57be4a5f2c87e10b4dd8d93d092303ab47b9",
+          "id": "option|dotnet test|--collect",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "40788c9ad1e5fe13e3b0148f96218b04d4315c9b988e9a7590621d1ef5215d46",
+          "id": "option|dotnet test|--configuration",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "b2c71fd41cda02b0e9d2e7af1537cd6fba51787e89ec90a80012accb49d24847",
+          "id": "option|dotnet test|--filter",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c1475b96a2249d321970ffd3c7c8e35e8da25b937d821565f75eab09c4de7462",
+          "id": "option|dotnet test|--framework",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "aeb8dd093d29f6f254c9245a6cb7315d3341c42ae4de9a8e39bf7e4d546b1d12",
+          "id": "option|dotnet test|--logger",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a97459a5d3a4a0e0f4d653852040ecfbb4158db423445c790a3a3b0c0b1cad66",
+          "id": "option|dotnet test|--output",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7907aba38ddaa33c805761b65453732c5585bd52b29b641d0bd1b307263f48c9",
+          "id": "option|dotnet test|--results-directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "24663726d0850a9d4a359f8ae1beaf5aa6638efe5e3cf5fbad56c2e12cd26ff9",
+          "id": "option|dotnet test|--runtime",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5fde915dd57e495d67b97ee8c019d65f318e69a371a34a2fc73a5d90afd367e9",
+          "id": "option|dotnet test|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5f0a581efd6f68351abc7561cdce04a74651bc49218d387ddf7e06860da71dee",
+          "id": "option|dotnet test|-c",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "947ddca0eee1c1e5ecf3521b6dbe998d6e7916a944220c0935e0399e7e3dbbfd",
+          "id": "option|dotnet test|-f",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ba9d5dca862e339886c6b58ebced9b875fd003648b9c82c179eb32f4cc400761",
+          "id": "option|dotnet test|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1e5d77d2346b048e91b475313c78a9f69fc41c72485c88189bedb9caf131846c",
+          "id": "option|dotnet test|-r",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0e4c052d4845efaeecbda2734d3ae0a764a1f16f0dec405b86dc7215824e2c2a",
+          "id": "option|dotnet test|-v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/dotnet-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4e5c5d8d1ef9844340570e1964efb24cf6a581115db09991e601c2e20cc68bf7",
+          "id": "option|esptool write-flash|--flash-mode",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/esptool-write-flash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1b898bf0e7867c5a0daaa8370f8d9ece6453b142aec86a5497e9e17e6609f6e7",
+          "id": "option|esptool.py write-flash|--flash-mode",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/esptool.py-write-flash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "077af3e3fc40b469dea06d4a87371d2570e591faa2572a61e61f027beb3c75e2",
+          "id": "option|esptool.py write_flash|--flash_mode",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/esptool.py-write_flash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8a2b9f29f3289560b9dfd0c5e1db43178d9008a8ba569cc00a29945f2a4a87f5",
+          "id": "option|fd|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8ea6411d2979d725bd89fccb7a47e99f7a0947df4450df706cfaf27963e88c51",
+          "id": "option|fd|--extension",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b83db8ba4ee41d5e47b734bc896bc3e8d1d7d298ca6ebec855b138fd4959b45d",
+          "id": "option|fd|--type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8f6cf36668bd334b84cbbcb429ad73427ae33b1518aa255cc8bcfb5ec8fea6a1",
+          "id": "option|fd|-E",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "78c2b298cd4de8ce7c382dd875030c0cad9c479f388da8062f3ed56505190808",
+          "id": "option|fd|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5d8a99ab027743b9ed18cdcc8dfe8567821ef434a7503d5fa2e4f9691b8a9107",
+          "id": "option|fd|-t",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/fd.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3265c5fda98a949d96be4a746112740f8679ebe07b5f9c9924aabd1e93c6986e",
+          "id": "option|fdfind|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a40cf5d61507e9d3c3d0acbb25fab473c2d6e0738d46089d43741848739dc313",
+          "id": "option|fdfind|--extension",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c40ca8c1fefe5cc6feafdc7b010650e0eeda2ae9b7656bc3a0312883049b18b3",
+          "id": "option|fdfind|--type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9be602450e0e17080016f8ff6a6f4357a5fc38eb1108332714f43b9e1360126c",
+          "id": "option|fdfind|-E",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "18a2078fdad45cef28422cc63566b43d5d38ac1198bf452ca7f26912b9475767",
+          "id": "option|fdfind|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8ef701ec496987977d3c0a6ba7db433f0d8899e512e2f29b26195f997d1d8a89",
+          "id": "option|fdfind|-t",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/fdfind.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8001d7d13f75ffe6a75b0b70a4ea8c0684ca31d17b439b2c8ceb609f08934816",
+          "id": "option|ffmpeg|-c:a",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ffmpeg.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9e13cbea05887aeba05efa862ae7a7f45cd1a7043f640a4d503382f3890bb54d",
+          "id": "option|ffmpeg|-c:v",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ffmpeg.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "fbc1c6799179eecfc6c3b3255a902697196109c7278730b74cdeb1abb3601a20",
+          "id": "option|ffmpeg|-filter:a",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ffmpeg.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "f270d18e2391b3317dfbc896018d2045b29e6d126ed1eb5e4db59ede642f81f1",
+          "id": "option|ffmpeg|-filter:v",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ffmpeg.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "dbb3a74338ff03ff5946d122128bb37ab73c8b6a74dff93f148d9fff9fdca46f",
+          "id": "option|ffmpeg|-i",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/ffmpeg.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c152c16b790b94ad738bc6ba04f596a37856616e1c9c2b2fd76d10415f73e7e8",
+          "id": "option|fzf|--delimiter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e18da8e33b76ce3042a345a85b2cbbc0761833f35d3b8c1758f4f955097f6dbf",
+          "id": "option|fzf|--filter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0f19763de9115bd61f6df15dc4db34bb75b175f3abaa87407113d47b7871640f",
+          "id": "option|fzf|--header",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9629f6616a42d98cb5126ab7fb2a0cde7603bb1a670973cbae3eed4454bda1f6",
+          "id": "option|fzf|--layout",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4ecf2f38356cbe9f5b34d79351da521e2f470d9dd11e02be899638135bfbe6ec",
+          "id": "option|fzf|--prompt",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d0e2038322455855eda7ece4d1182c7c02d59c59ba1d77dcaba72bd4610ca2f8",
+          "id": "option|fzf|--query",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d00ff6eb45e966d72dd16c29a5673805b46b893112a88db67e9614e9afc07839",
+          "id": "option|fzf|-f",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7d44e3c7a4d26258b31d1f37edd9c063761a77bbdb0a6ec8d7e006f89eb3d4db",
+          "id": "option|fzf|-q",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/fzf.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8c9bd0eea5632cbab78cabfe01a0d0b4bb9a8df86b22ebcc65d7d0cf4063d4b5",
+          "id": "option|gcloud compute instances list|--account",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c1077d9e086fdb7db3f84aaa082f4cf617fd5f7af7a796bedd802f678d82f620",
+          "id": "option|gcloud compute instances list|--configuration",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "98788c45f0222e337ddc855155674fb7d6286ead873a19b30df17ff83dff265c",
+          "id": "option|gcloud compute instances list|--filter",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a9e00475e5842c4023781acedba50807113e21a24552256e7d2b7f8fd0e6c598",
+          "id": "option|gcloud compute instances list|--format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "9316bb60a392118a04ee874a90137170352a96b685e0f5b9a9cfb788127da9ff",
+          "id": "option|gcloud compute instances list|--limit",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "7a24b33772b7229f06b8fbff530d26b7463070ff2e99ee0c33f4a8aef127f961",
+          "id": "option|gcloud compute instances list|--page-size",
+          "review_fingerprint": "0f84396b6c972b38d86d9aa8dac312ab816e99740a22850c938ee3a724196c2d",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4afff68e045e975ca997cfbd49fde8dd23ea41faa87963c134f653f4ac2676e9",
+          "id": "option|gcloud compute instances list|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "36de91ef256c4e3439938d3b59f98a19fb4570ce13c19949496ae99355d1efb0",
+          "id": "option|gcloud compute instances list|--sort-by",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4b744467f126109013c307d34f4cfc85c2432bc5695d3e6e7e02f0a751423383",
+          "id": "option|gcloud compute instances list|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "25c6a145a0f8d82be0d41252b1e5a8262975336e1ca43e70dc142687530e2f65",
+          "id": "option|gcloud compute instances list|--zones",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-compute-instances-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c21649900945e620f59489402e80d4517b8454bc870f666975057623db42402d",
+          "id": "option|gcloud config list|--account",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-config-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "db9bdbd83b4c014c37f2adf8ac12345723c059ad42a42cb13d342a0e51529377",
+          "id": "option|gcloud config list|--configuration",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-config-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b6c7aa7610d46992b7cb861572ddcae8595fe8c65abb2a61535f98a1daba3dc3",
+          "id": "option|gcloud config list|--format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-config-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1cd986b746d430691b8a0a21222ab03a2b0719b46f9680111683ab7411548931",
+          "id": "option|gcloud config list|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-config-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c49c2245f86e160c40260ac67f246f96a0a006ded3e4ba93c76b6d12957ce9b0",
+          "id": "option|gcloud config list|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-config-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3adb0638045439827f7736bc504a0c4741e84907ed38d901792b8936194630fc",
+          "id": "option|gcloud storage ls|--account",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f08804616477174e553bd81aca35a8495caa4e9648211d425811e5882c6503f7",
+          "id": "option|gcloud storage ls|--configuration",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "084c4d9580df7b5ae313a051b4e70afb27410b4df6024689e6640b95b44d5211",
+          "id": "option|gcloud storage ls|--format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "48ea08be960cec9c3767ea18eab6d038e8cd380ff7945ff7feff7402d7def784",
+          "id": "option|gcloud storage ls|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "1ce5267d8bea8a91700af2a47296580ed30da9d5ec11080b601f303a7b5302dd",
+          "id": "option|gcloud storage ls|--readable-sizes",
+          "review_fingerprint": "33546aa5aba47b0bf699b5c7114632ad26072cd47bb3483d17af0138bfd00593",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0ee9cdbf5966d535688f6014ca7963d34d999022803aafa1a8a5490ef14bdf43",
+          "id": "option|gcloud storage ls|--verbosity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/gcloud-storage-ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1b6fd0d0a5491de3b8e5be879d4c38723eba63a76d3f879a757daba695527d77",
+          "id": "option|git commit|--file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-commit.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "93f8c3156156c4480fecf13191d9e648668744749e0f7d3ac512fbbbcd9c6df1",
+          "id": "option|git commit|--message",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-commit.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bd422231947b85683927a44602bd3a973036c1f69e9de04968f7002ca819b51b",
+          "id": "option|git log|--author",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-log.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "51f9a378bde559292ff3680c7e6dbe92fec1a2a593a84b9bd31f3c6b555db46c",
+          "id": "option|git log|--grep",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-log.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "f4e56acc55defd07a2a9901df300c57954e7a2d7646d1baad73c4b6c2310bc63",
+          "id": "option|git log|--since",
+          "review_fingerprint": "1a8569274da4b1c6de43d96b602a0aa67abc31464a9757a3975bb87ec10b05f5",
+          "source": "profiles/git-log.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "970cc139a312206a217a20fb39d3e6dce253a7019c70814a9b995c8dfe006b50",
+          "id": "option|git stash list|--date",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/git-stash-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8f277eb6b4f4010f12c48044e6a682a1833e15d07d496378d637802949f46d10",
+          "id": "option|git stash list|--format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/git-stash-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c2bddd2e5cfb215cb5f43c708d62a3163be3ae6c13efb841b1dc7bcbfd746945",
+          "id": "option|git stash list|--grep",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash-list.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "31e3d73bd1d0eb268489adb746d19f9b1f6e523cb8e49eef79e68a4a179d8835",
+          "id": "option|git stash push|--message",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash-push.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3df834158720f34421998fbc2e0173636a8a8ee09c5f3c0b02cadf9620d643fc",
+          "id": "option|git stash push|--pathspec-from-file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash-push.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5ff85e8f69166a630983d7c2f493cc8f9debac3043fbc5ece8224d7c0c45d870",
+          "id": "option|git stash push|-m",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash-push.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "002a8ebf1a2dbee6644fcb065207c03402c59c8f088b967a9a5e2424a2e795c4",
+          "id": "option|git stash|--message",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ab5ed13a23c8c6aeaee51e1acad8f9f7f2d3b31647845865100bfdb4cdcd4654",
+          "id": "option|git stash|--pathspec-from-file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4d64e593bd67ae88435ad5ff88af4de8a91b30adf95688aa83307bb2bd5e78bc",
+          "id": "option|git stash|-m",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-stash.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "290b5944b4f8c6f66baafeb34bd9685db3e4467e03654e0f380fc4efae3fd95f",
+          "id": "option|git worktree add|--reason",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-worktree-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b90f73a114ac33e7fcc17eccd78ce0021e4190f4ebd3158194c4e5241c2469ee",
+          "id": "option|git worktree add|-B",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-worktree-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "557177f7585e39acee862be385e9b9d1c91950a98b469ac03d3a457960e15229",
+          "id": "option|git worktree add|-b",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/git-worktree-add.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "ff74208df568d1e9a27aa6d13edae8ed951fbfce6a7289d0f3ef5a37857fb53d",
+          "id": "option|git worktree prune|--expire",
+          "review_fingerprint": "1a8569274da4b1c6de43d96b602a0aa67abc31464a9757a3975bb87ec10b05f5",
+          "source": "profiles/git-worktree-prune.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "09a7d721dc48a79fafab9e6aecc282b07613ce7a6f93956923dc7107011e3b43",
+          "id": "option|go build|-mod",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/go-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9a41681cc4c29ab14de2f25b98ba799f735c0b887ed00eb21a55ca426921a729",
+          "id": "option|go build|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/go-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5568d028e056b89466bb4c3617fdc6b88fa32c5db8a2aad1f43b8b9cddf40938",
+          "id": "option|go run|-mod",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/go-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6829ba1956968f5d4b8998f2169be576ea102a932e03189752afb86a68099c7e",
+          "id": "option|go test|-bench",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/go-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b936774dc536e50cca9755edca0fd0ce54c3bbb9730babbf6a2125ab48d7e6a7",
+          "id": "option|go test|-coverprofile",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/go-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "27c0861b77941668a3588bd5b69cdf777c3b88565d064e034b7c2b6a05f4680d",
+          "id": "option|go test|-mod",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/go-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "aeeda313eb41e6621450f34a66002ee7e9985be66f8b0473062214c5d57ab4e8",
+          "id": "option|go test|-o",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/go-test.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "07f927df84c2d92cfd40ea1e03bde93f0e15c911eaa7b7f545224a1d2221a568",
+          "id": "option|go test|-run",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/go-test.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d449ca5eb0a81b1cc53721fd122d2c5d4210d7e36613806975e2a2e63ac9a1de",
+          "id": "option|grep|--context",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/grep.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c50df18d1884f14488332bbd05a4e96b5664be5ae11b4023be15ead545afcd9e",
+          "id": "option|grep|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/grep.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3b728ad7956c60ede8961b34fc4a08692bf0369cea12c416413e4ed5b0ba372d",
+          "id": "option|grep|--include",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/grep.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1c839f604ae395f288051ca0b31b9f71d8a27b61d59f71da941e9d667fe860f5",
+          "id": "option|grep|--regexp",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/grep.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d9d14ab29a1d08ce16cf0df33f4e3fae616cc8b8bbbd55281166390666791ca8",
+          "id": "keyword|ip address|dev",
+          "review_fingerprint": "8b8f6400a23749cb09a4f5eeed0b94422f1325229525b32f4b28efda3456ed37",
+          "source": "profiles/ip-address.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6b89e32c174b7e870e2b23015e5eb75a54969908d645db566a1ccb70e4563cb9",
+          "id": "keyword|ip address|label",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ip-address.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "419a8fba90968b5e5d5cedebedc167b4b7d67cffe378a248a8d47dd4f3d48bac",
+          "id": "keyword|ip link|dev",
+          "review_fingerprint": "8b8f6400a23749cb09a4f5eeed0b94422f1325229525b32f4b28efda3456ed37",
+          "source": "profiles/ip-link.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d4982e9f4b2a831a5ff1f2496b899bdadda389378c8a0b630549519c35c2fd52",
+          "id": "keyword|ip link|master",
+          "review_fingerprint": "8b8f6400a23749cb09a4f5eeed0b94422f1325229525b32f4b28efda3456ed37",
+          "source": "profiles/ip-link.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "59ff2204a0375d4942a9b933f7c72584e45bb5af478387c6198a18410ff04929",
+          "id": "keyword|ip link|type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ip-link.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e86dd710c0e616d86f6829af326c33e9dceedd6221ee39ed09d1d0d357a34870",
+          "id": "keyword|ip route|dev",
+          "review_fingerprint": "8b8f6400a23749cb09a4f5eeed0b94422f1325229525b32f4b28efda3456ed37",
+          "source": "profiles/ip-route.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e2187ef7e8fa6fabae3a388484c71dbde683964c055bf70a3f63b2952995df01",
+          "id": "keyword|ip route|type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ip-route.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1b0432c68848bc42f53dd9b618f3bc82aca8668ebd60683f4ac7f1bc34fcdc6b",
+          "id": "option|journalctl|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/journalctl.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0bf5c0637e8e30a8ccb4457a7639243eb9c99739ca664395c5509bdf3fbeee75",
+          "id": "option|journalctl|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/journalctl.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e1d61b82bf6792af8c3a9379f413a5f0a9faf229f6968750b8782e8da3b5c848",
+          "id": "option|journalctl|--unit",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/journalctl.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c7130e1e90c39317f213f0fb446d6e196874741b7510d1327d5f97eae53b72a1",
+          "id": "option|journalctl|-u",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/journalctl.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d69b9bbc166a4be44e466ad46708762dce5c4af7ecb4180b79cd1ca8b79ecc75",
+          "id": "option|ls|--color",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "56535a67b5459577244e2ae83421e332c47479f929a033d3d293595c0127e0dd",
+          "id": "option|ls|--hide",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ls.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2bf2dc5549dc72385f199afb94c205cdd6ecee3e236085bde8dcde3e95eb8210",
+          "id": "option|openssl dgst|-hmac",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-dgst.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2006bc60841e8eb3974e1d3086b79fc8d7dc16f05db32eb550717069e0114c95",
+          "id": "option|openssl dgst|-out",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-dgst.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7d75e1c556d6cd730a56715b12049539f60c4f6b7bf81bd6a0788b55e5a734dc",
+          "id": "option|openssl dgst|-sign",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-dgst.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "89818a5006aca373677f61a7a232704db141a06cad68b4b1287daf7f00c26f64",
+          "id": "option|openssl dgst|-signature",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-dgst.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "eee05370ceb90f19b3a25df04a5406b64ff4e3e236edf73731eee3fd28ef3837",
+          "id": "option|openssl dgst|-verify",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-dgst.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0f69a7194efbf706b62136f7a8d744f0f9050c7fdc4dbda018e58b32cea5d754",
+          "id": "option|openssl s_client|-CAfile",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "01f5a37442fcc5fd2ac38fcf6aa050c96e90d3d4c1b4f26eaf34ef47884ee190",
+          "id": "option|openssl s_client|-cert",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "be40de656b992a5775a785b6657839c04f69ae3b4cbe56fae0b8aea2c69ee952",
+          "id": "option|openssl s_client|-connect",
+          "review_fingerprint": "663a967c3c7eebbf7d0a91f8015afd2092f6c3734a721afb85690492140f9008",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d239596e24acd3cb98469574b2d3a09ac7076d1a81cb1b9e9d2fdb80ec9ce76a",
+          "id": "option|openssl s_client|-key",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7eb47917afa950f6a698b3a3e61ab3f1713421556a4b163ba805e424e004deac",
+          "id": "option|openssl s_client|-servername",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2d81ba039809442288cb9b8b85a02f1bf047a5f59a22448e44730c306cba57bc",
+          "id": "option|openssl s_client|-starttls",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "fd064dc2c03f226977af886db52452c03dd7c5abffb616d1454f7d2499dd3a61",
+          "id": "option|openssl s_client|-verify",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/openssl-s_client.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "8f04256a003295b665c3475bcbf6a6f98f461ae77c47fb9c58fc5703369ec87e",
+          "id": "option|openssl x509|-checkend",
+          "review_fingerprint": "ce2627133436ceee37be45d5b84f66b543c107e795a4273f35693ea950602bba",
+          "source": "profiles/openssl-x509.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1ddf4d9cff3ee8ae126b825a2cde82e5b1f8c7a1592a22650086155405142bcc",
+          "id": "option|openssl x509|-in",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-x509.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "6161e8c51771aed27946f43a4a63afe405926325511e68e4dd7345cc52ae18ed",
+          "id": "option|openssl x509|-inform",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/openssl-x509.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "03ab2d07dff747c7a76ac300183559f945f49789f1347985a3ad190752b6752f",
+          "id": "option|openssl x509|-out",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/openssl-x509.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4dd9d4799cd07700078443599a6a7e644226544a4bf6932314fab9d4c5182a93",
+          "id": "option|openssl x509|-outform",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/openssl-x509.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "93fc9e25943944e153aa729240c8bf30475358cd129c21ef78bfb73189d27d88",
+          "id": "option|pio device monitor|--encoding",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "987548d42a920771d2ac1109f5448132059400e4e7e9b13522f165535111ded0",
+          "id": "option|pio device monitor|--environment",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a25135c62e7057e68c56d60552b3efc4a5614399a20ed6fc8ac398deee758ae2",
+          "id": "option|pio device monitor|--filter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f695aed616509c5287608450486b0f391b70f17ac26ba549cf96eadd5be5d8b8",
+          "id": "option|pio device monitor|--parity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "4ebde4cb996e5a452e651d49a99a72e96213a483dd7e2c0bb8b49ececa8cb044",
+          "id": "option|pio device monitor|--port",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7ae511e5b770d6a04913edeeca376c5a48019f8d434c21e1bcf7732efc0540a4",
+          "id": "option|pio device monitor|--project-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3bf07ede4915889faad88d7f7f133b678427a2ea25701cd5ae2ffc1ee196c5a9",
+          "id": "option|pio device monitor|-d",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e752f90e283aa5a482dbeb69791fbb803a14093678bef55f68068244942a6af5",
+          "id": "option|pio device monitor|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9d510761273788318a440c963f02a6fb7da9a9ed59a0723d1b93f6417da335e8",
+          "id": "option|pio device monitor|-f",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "ca1673dd4d956f897dbb6e5d4b995c2d49ab19232791f5d744eec0e1f17f72da",
+          "id": "option|pio device monitor|-p",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "7da6d2dee3b932b13b04318c848168c0ad98d3eabf710c194373a98217b3e002",
+          "id": "value_definition|pio device monitor|serial-port-selector",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/pio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "682429ff43a4ac2903582681056aa85fcb7e470d4b1b021ca4543745e7c98155",
+          "id": "option|pio run|--environment",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "df84de52463dcedf4b4b951a275922af5084f3ef8a354e04cc0cfe2e72a03022",
+          "id": "option|pio run|--project-conf",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e82bad80977a6d23c3756b5cc091c8bb2a29e3a0597723ecd66cc21183c5a358",
+          "id": "option|pio run|--project-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d90c74a0efbe036770e7a040b60863b143d99b7d84e92954e3399c2e481b97d5",
+          "id": "option|pio run|--target",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a962124f683cb89b72bfa55d43688947ad38c403ec669a77e27df8c5840f911d",
+          "id": "option|pio run|-c",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "dfb6427e6ea2bc45157271256407bb7f674ae4b633cb882622fc59389418d4ca",
+          "id": "option|pio run|-d",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d64102df7daf3f6a7e4949cf9eec594cbd5096b90f40c555d59b09ad4ce56c07",
+          "id": "option|pio run|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "fd62126d3c8ab3897543094370944a74b539902cb69f2b43cd184a961d077a7e",
+          "id": "option|pio run|-t",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2baa53028ee9434b955855f2706e7e538a390c8589bfb18c1e1dbfb0ca53317d",
+          "id": "option|platformio device monitor|--encoding",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9c4faa6843f1853b9dbe8bcb8808acaa14168de40ddde964770eb540784a00d0",
+          "id": "option|platformio device monitor|--environment",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "869ed34da7a1b609c67279b47cec83109677147aff1e1550298bb31862c09671",
+          "id": "option|platformio device monitor|--filter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "48f3a6b23d993f68ad6b137b9203ab32a76f7a7c1c2d7dd99738ff917a80863b",
+          "id": "option|platformio device monitor|--parity",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "dbd8f0fcedae869cf786c54ba763d220dfce70d64b5f111cbd8f386b3d5e3afb",
+          "id": "option|platformio device monitor|--port",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f2c5834342f41288312ce975c85ace7477057b5c78391695a9527383feeb2a14",
+          "id": "option|platformio device monitor|--project-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9c6d4d305a32e49e0da1071d557f506e1fefe8c9bbe07547ef3e7f3de2102e3b",
+          "id": "option|platformio device monitor|-d",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bfcea7f179dce51adb449a7bd600c0ea05785954e6f58253b15b7ea4eae9f5c8",
+          "id": "option|platformio device monitor|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "32866a68fc38160df8d3118f78b9ff5131af598de9b9d1fca0a9a1e792dde71e",
+          "id": "option|platformio device monitor|-f",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "2a6352db0de4cda8164a609c5f3baf5b8a4052f2bdd35d3bb31851a6171d5107",
+          "id": "option|platformio device monitor|-p",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "8eb298851c5a78f897d206ec62399427d364c3d2c85c0d61e9132e1abfe2c536",
+          "id": "value_definition|platformio device monitor|serial-port-selector",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/platformio-device-monitor.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "78ad9d829d10884f0a7f52f4b3f41a5badc1f65c44474e2b758726eedd3e2ede",
+          "id": "option|platformio run|--environment",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "80117911d2230a2e66c404ff44f61c58574c44455e110e70f2bc80905d1f4365",
+          "id": "option|platformio run|--project-conf",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e0587034290b7b31f0bf44d1480e0fd755552fad9d0a24b332dd28b2398e3e98",
+          "id": "option|platformio run|--project-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a1c0bba3c3be20950253887909c73b17c03fd42c599ec8aa9d5cf89fe06450c9",
+          "id": "option|platformio run|--target",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "21f79a4362d16f15905a87209d6339af690c1e3154f511072bbb620a86761673",
+          "id": "option|platformio run|-c",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5a069871c1561f21589ae0c4e853c95f68e11f43b50a40156bcec3b1b8004810",
+          "id": "option|platformio run|-d",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "37bfed4a3bfe24427d0c085eaf0d4c9f6ab403a0d3acfc57119b827e372c14b9",
+          "id": "option|platformio run|-e",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "405298c5a039c608457590298771cb0d876452fa4c075cebb70d32a1476b6522",
+          "id": "option|platformio run|-t",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/platformio-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c572d4f20f099c8ee788e92626a7f40dfc56a62d19482e98255f4de5356460d1",
+          "id": "option|podman build|--file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "88d0d246e7502552ec19481b216ea0763e450721a7899d455c5e6d10539c0802",
+          "id": "option|podman build|--platform",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "096faf2181b97bddd1d0f9a69339155b7dbd8fcb17f0cda09cf1801f4ba38098",
+          "id": "option|podman build|--pull",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8f9b41047aa7b8c8fd89bc42c5a2bfb9707244290aa2bf39d13d3886164de7e6",
+          "id": "option|podman build|--tag",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "30ae1a3b5476e7da53056b9a02d3bfdb071bae13add471e64c72652966b64b6a",
+          "id": "option|podman build|--target",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3485f166544bb4ec17671bfd292e435ef6196f46de07b869f7e8623d68565207",
+          "id": "option|podman build|-f",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3ef67600b41e7e07478e352a7b199bfef53a69c8001db22d93e048e0f9238141",
+          "id": "option|podman build|-t",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-build.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "697f8bf9f89f7d067a4a1d1e4690cfd50bf3d5e181595332278443bae546bd3d",
+          "id": "option|podman exec|--workdir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-exec.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e1824389ea2b14eb63d71159c0ed5c81e932727280a6154a0df6176ca2cd5ee1",
+          "id": "option|podman run|--name",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-run.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0c30283429daf9d50472367d4b93ee7b278b827eb202e35a087fa8407457a7e1",
+          "id": "option|podman run|--workdir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/podman-run.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "926b0d5c1a1fc8fd9e58d12aec19c61a698a41f08288765c3ba860d50b0402a9",
+          "id": "option|psql|--command",
+          "review_fingerprint": "fb631edb8c46ac954a28745e53a460590788fcaf544ebce9b79423506dbece92",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "41490469f88fdded0e3f85a9af02669901389b81083dfafab9a6acf644693b93",
+          "id": "option|psql|--dbname",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "414307a940c6b15a6e142305b76c168eb6a52f40c4547a427433949964f61923",
+          "id": "option|psql|--file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9b51c904028207e997844d7ff93707248acb65edea0522ab2cc0f6c4c9aa6101",
+          "id": "option|psql|--host",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "b54c4d88d9e077477dcae3a40bb6cd1c5fa3300317de920ddf937860afc8c278",
+          "id": "option|psql|--port",
+          "review_fingerprint": "153c6828293a0e5204f659582ffc2322f2eb690f577829fa9d7b23ba2056bc5e",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "108f6410c9c4fb38a8aee715137d030cdcbc71affda943b8ed16d917dc92820a",
+          "id": "option|psql|--set",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "4963ce13152eb68812b0c7cea55e38f65a850499a0879dcd997228b0095ac38b",
+          "id": "option|psql|--username",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "75242f262078ae80ea213e778cb11a26857b50f17691d4492c799fed22cd0058",
+          "id": "option|psql|-U",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d142fc47b4b8112d47d9bf3dbe42cd9823be8a06577d398c44c24d4a8d8602dc",
+          "id": "option|psql|-c",
+          "review_fingerprint": "fb631edb8c46ac954a28745e53a460590788fcaf544ebce9b79423506dbece92",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "2bede2f925c81ededce14a785043261d2731f9cf73db11d2ed29e96aac58ddc2",
+          "id": "option|psql|-d",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8f8e9dd205de14acfd41e018c3ec667d07e1d0343725b8bef21bdcfa755ece1d",
+          "id": "option|psql|-f",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c7a26dd6ef4ccce1e0aea52f613ac5e13fe2812c6a357fd06b4babd470fbff77",
+          "id": "option|psql|-h",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "993b38f92995c8a863698de5f92004ce5077fc2ef00b278732dee336ae62b261",
+          "id": "option|psql|-p",
+          "review_fingerprint": "153c6828293a0e5204f659582ffc2322f2eb690f577829fa9d7b23ba2056bc5e",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "d38ccce10305d0fff46f8d3681785bd1bb8502f64fdf6a002c32712c65886936",
+          "id": "option|psql|-v",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "0d858a94160bdc59e859eb024dcc25fb79f70e35535994e67410861ff788188c",
+          "id": "value_definition|psql|command-string",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "bca024661020a36b0e5e45bb55e2f17c1d31f6c224f37b8e482fb0b03ccb0deb",
+          "id": "value_definition|psql|database-request",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "efcbb0f682697a12bb4f298803dd4d64f37efedaf7bb7c87ab82628b426ceab1",
+          "id": "value_definition|psql|server-port",
+          "review_fingerprint": "8a28bda6bbc02720a4881d052e3c099d1687f8fc574e5c34d1bc14aa78c3bd01",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "fd63265b5c3ac66a8133a854d2180837ab099786556a80e7c1808b47c95c9156",
+          "id": "value_definition|psql|variables",
+          "review_fingerprint": "a1247e3487d0cb04fb103811707590c60f7b7bada6362973aedc49a190daee3b",
+          "source": "profiles/psql.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c945427534d1148c1d91d2eb6a5fea6d05b8a1668e12cfded5aa2acb3b9c1338",
+          "id": "option|pytest|--basetemp",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "90ac47730c280f09fe2865e4a63aaa66e08a82729d190eecff568e0273ed4c58",
+          "id": "option|pytest|--capture",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "14014dbed753121b430f03e624a7a152171b141f3cf38fb28ad7e7f8b5824994",
+          "id": "option|pytest|--junit-xml",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ac091501a33fefedef7ba4e044fa09221ed4b3b3f6b436846dbc0b22e260924e",
+          "id": "option|pytest|--rootdir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "922650904412985085e3bbac7d3c07cb73356c1415e59ba1fa47309d680b6e9b",
+          "id": "option|pytest|--tb",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2562a53e05283eda04ae6b66329ccd58c9508de7eceb6a27691b9054b7f34de0",
+          "id": "option|pytest|-c",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "450f5980964b618a78c47eb07ea05a7d6d38274c907b03300f0de5cd163e36d9",
+          "id": "option|pytest|-p",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/pytest.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "9d40870e0c56bd333900b3ddd6547f6444475df040a0482b6aa34166ea7a58c7",
+          "id": "option|rsync|--backup-dir",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/rsync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "1235c6492946cf9a4499f9c15862de62f3c4571112d752090a7241136780c03f",
+          "id": "option|rsync|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/rsync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c71582eb1544661e1636fa9f65a0025e79cdebd0d2f6054381e6ea779fc4038f",
+          "id": "option|rsync|--exclude-from",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/rsync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5c5db697d7d9bae028d0acfe513b7c9b8f56f588656eb727dff75ab66e2d2852",
+          "id": "option|rsync|--include",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/rsync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "0b7487b3b4c69a414b09a639fb6299f044698f85aedb58b746a580d6e3c907f0",
+          "id": "option|ruff check|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ruff-check.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f25af5d4f05432351be2934b2c9e4b76a1165253cc4fc74206495b2510275323",
+          "id": "option|ruff check|--ignore",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ruff-check.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e263ff7665c0a20e6c51352928dee7ae3b531d28e797506ed9ddabe762ca4664",
+          "id": "option|ruff check|--output-format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ruff-check.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "928d0354fe537099f33e50b061553e07dbfc63a5ada273857f6fb814546d52ce",
+          "id": "option|ruff check|--select",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ruff-check.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c9b925c1f74622bab2bb4ff347b05f9ca67359197756201e015086750b95c2ea",
+          "id": "option|ruff format|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ruff-format.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "915e3891b4b868595878178d6982dd4043566783d9c1790c70631f203852f911",
+          "id": "option|ruff format|--extension",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/ruff-format.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7d7ca96533bcd45293da5c62c107017db064d085f04dad5ce767633184ff999e",
+          "id": "option|ruff format|--stdin-filename",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ruff-format.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7db842bd9c6568c9c3639b9429d3eb02394ec983d39cf1cad0a7b84e0683d8b9",
+          "id": "option|scp|-F",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/scp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "10142a32c7d5ab1eb8556189ccbd816315c0c23644bc70960b29ac3e3a5a7e9f",
+          "id": "option|scp|-S",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/scp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c987eeb5dcfc9dcab11bb3c787c516da414b1026c81719e537459ebccb5a9703",
+          "id": "option|scp|-i",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/scp.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "e49771f673dfb575166266ed35ab1281f1b0db57fab54ab4d22e9ca18d9c8907",
+          "id": "option|sftp|-B",
+          "review_fingerprint": "82eeec31ab73f11a13958f2b91710ef06efd164bea92e70291f45f4e30d5a5b2",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "71232e7b67ebe2afa83c9e9c8a8f693df89ca1d3c0f1c2cc0bd1a0c3389777e2",
+          "id": "option|sftp|-F",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "d5cb3d7709306becf66391c70c8fc7cdaec48930d78f811a921e10b4fd7d2eb1",
+          "id": "option|sftp|-R",
+          "review_fingerprint": "a4db8dc7e13c8e1aed07a2a0e65a649c21c5a869fd0ae0c2072bdab05d967dcb",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "56ae6cb4c1de3ae7b57ed1b1c141f13b94da13b831a5fa101961dc7159e48c4f",
+          "id": "option|sftp|-b",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "469989a2611affe47e863f7dcd8ee2f13ca46b7a40df42184366a0063490114c",
+          "id": "option|sftp|-i",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "12458007cdf9c324bea0c4277e2fa212a37d6b2bf1617de14e2cea8d61b1be98",
+          "id": "option|sftp|-s",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/sftp.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c3f53cea43701efe46f1c0ca17390d530ec012d85ef50623924b859c68602d62",
+          "id": "option|ss|--filter",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ss.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a1b8700db9fc05ef3ad85baddd8d3945f939f14d3c65f7554fba2aa0dde721da",
+          "id": "option|ssh|-E",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ssh.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "21904ed1b93647e2004df3366be112b38d1e3ad2b70ff2f1823421ec441421ad",
+          "id": "option|ssh|-F",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ssh.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c8a91cb5ee61ba5ad69d8da579f7964289893020cff6342ca5f586cb3cd7d144",
+          "id": "option|ssh|-i",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ssh.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f6ab9bdc531558664d760918e88e2d55124b434de4fdf354c69d7dfa2433b8cc",
+          "id": "option|ssh|-l",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/ssh.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "fce2cc1c8f9f2e14b73b97498fd0e77fa3b492c98a3d30e4a6c29c22e67f221e",
+          "id": "option|systemctl list-units|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-list-units.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "aa3b44fb43411d94721171fb516945cd2df543fb7f1627677115f3923be7c759",
+          "id": "option|systemctl list-units|--state",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-list-units.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f247bfa5b499adefc4bb95a423ea6d474d72b6b3588d26e35fc7206c1bc1ef3f",
+          "id": "option|systemctl list-units|--type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-list-units.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "8c2072812c3e81804035f88f02fbeae3f383469a03937691418d292bf4c6941c",
+          "id": "option|systemctl show|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "c5443d388ef96ba082c3e6475bb43bd42b1d01ad6fb0734d69c7ac372c5981b2",
+          "id": "option|systemctl show|--property",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/systemctl-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "feb5fbb10f5bb45f3aca2d3ec40ca1ea04c0bc52acbc118fdc4f565b94b5b25e",
+          "id": "option|systemctl show|--state",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "642168a873880caebee49a2397034463637b81f7a93fe99d6ddd1dab1769c9fc",
+          "id": "option|systemctl show|--type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-show.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "2f82f62e64ab387d251cb7980cc4fb9f298be7a4c5a933ef921819bdbda20559",
+          "id": "option|systemctl status|--output",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-status.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "aeaf8873325e4eacf64370d5080f3a551f3d19adcec9af2c4185ebf5244de55a",
+          "id": "option|systemctl status|--state",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-status.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "04f76decf99db143e6d0cc1c160ea606e4d91b0a54ce5908945e4d56a9507c8f",
+          "id": "option|systemctl status|--type",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/systemctl-status.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "7931b9d2557c776be5db3e56395e3f1784271e7579763c15e4a76be2a632301c",
+          "id": "option|tar|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/tar.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "3371b50f72b90f24efacc9921c643d3cd7000f2a87684e064f6beafc17b4f71b",
+          "id": "option|tar|--exclude",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/tar.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "87b1c0743ad61887326f2063c4fb74e5a63b6edb436e701f73793a2c51bd72e7",
+          "id": "option|tar|--file",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/tar.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "216c87ab8d3191ec653b0e7dec37dfd6cc826c780443effe90561ae83e547cef",
+          "id": "option|uv add|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "5475a63d7feb78d9a2757a7028acf912bbb3bae4eddcc244a52c4a50a83e0a47",
+          "id": "option|uv add|--group",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d38d9d02af1c17dc07368e729f6f917d5f6c870e5989d3a99c1d3e0dbcaf6df2",
+          "id": "option|uv add|--optional",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "283e11f8fbcaeac146cfa5888985971f37af7cc07f4eda5e2b6f28ce9a637b6f",
+          "id": "option|uv add|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "3da604aabbead62188fdea044d9064eeb90010c882bb68a816d1b1a0ea672e9f",
+          "id": "option|uv add|--python",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ce7e3e9cb96be61fb88c2eb49bdd03bee0ebee74a233680e164f52c7c52ec72a",
+          "id": "option|uv add|--rev",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-add.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "bcba77548a9a6022edd230abea3aeb6f7b635f5a39b623936727af7ba0eb0678",
+          "id": "option|uv lock|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "d6929e9191d22e960c7d40daa2a56e5c1491555a30fbf9aef63c3d3b2f279ec0",
+          "id": "option|uv lock|--prerelease",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "63f465a59422b6e52e83a4778f31d1fa27057620b4289ce7bbf8d50efbf81eac",
+          "id": "option|uv lock|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "ce69ef92af3fc493f364f9d7838a2e5e9cc764afe2d3874ba15a9f0a8fb94671",
+          "id": "option|uv lock|--python",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "867d5e18d818f1ef1796e0c550edd1a11a2368e6e8333a8d08b894254d0d6bf4",
+          "id": "option|uv lock|--resolution",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "e78e743e34dae8079d3c4f0e90d803e3db8a5861d0e3e3ace416162b710d1238",
+          "id": "option|uv lock|--upgrade-package",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-lock.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "b3d3485cfb2441fbed4aaf2f189bdd88632760184f47a3f3450d92f9e50f5646",
+          "id": "option|uv sync|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-sync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "09096b9f56edc46a740b501ba299ee5d94d693e1ebe0ef905f7d13c03b63d458",
+          "id": "option|uv sync|--extra",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-sync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "04160998b530f396124384977dcc344da871cb7a4ff298d7df00234b516571a7",
+          "id": "option|uv sync|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-sync.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "9bd60c74fdc98e988119f1584f0b163ddc48dafc1ca75b7e444ae6e6e94a986d",
+          "id": "option|uv sync|--python",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/uv-sync.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "be65a72ad26bc5371e2cc9485ee133c76e57ab4da93dcb48beb0e5260eb85f98",
+          "id": "option|uv tool install|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-tool-install.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "ed130416da3e5e47838a64158a2054578d2205993e02c33e77515fb24692df1b",
+          "id": "option|uv tool install|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-tool-install.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "27a4ac24e5ba13d02a0e1e3609a542a72c791d6ff4f0063171ad0e63833ef834",
+          "id": "option|uv tool install|--python",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/uv-tool-install.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "78655c31264102b53eaedf2eb8401c4f010a69b614ba5c9c8aafe2b291f9b507",
+          "id": "option|uv tool install|--with",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-tool-install.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "19cfd5dfee616a5c142ed2dab45cdbe3c1e83eaea7fb76e7ec2eefe7a68cb66e",
+          "id": "option|uv tool install|--with-editable",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-tool-install.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "52d75e7a2f0c912bb8b0ffca5e94d8ba3aeeaba42238744de35cc0da0732b542",
+          "id": "option|uv venv|--directory",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-venv.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "68d2bb81ec1ea779d8b590e4d207b522b2b16e75c7026dbd08815022b6711110",
+          "id": "option|uv venv|--project",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-venv.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "04745dbc99866e829d36aea5580c22ed3b48307f45a4f141b175f7d788146b63",
+          "id": "option|uv venv|--prompt",
+          "review_fingerprint": "b350ec499ed57aa58c271db46e1f617817d06094b9e0ab205e86b226e63806a8",
+          "source": "profiles/uv-venv.json"
+        },
+        {
+          "codes": [
+            "sem_review_required",
+            "sem_unverified"
+          ],
+          "fingerprint": "7d0654812fdafb1cf91e0a3d629dcea842880b4c6c6b4e37838336c9cf96c368",
+          "id": "option|uv venv|--python",
+          "review_fingerprint": "4561201f01cae81aa8448160d95f0318922e67dba112def405aa0621e0c416de",
+          "source": "profiles/uv-venv.json"
+        },
+        {
+          "codes": [
+            "sem_review_required"
+          ],
+          "fingerprint": "fc737c955443bd3c904e687e5cc4b4b8c8321cb7d307af3156af47bc1e65aeb4",
+          "id": "option|yq eval|--indent",
+          "review_fingerprint": "0f84396b6c972b38d86d9aa8dac312ab816e99740a22850c938ee3a724196c2d",
+          "source": "profiles/yq-eval.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "16f6fa5b0d789390d94c89354f728ced73464a7ba11e042f8f355a11570facdb",
+          "id": "option|yq eval|--input-format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/yq-eval.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "f61b52ce04a07760ab788a88ff8a4dbaa4630907bd7699589638beec03fd03c2",
+          "id": "option|yq eval|--output-format",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/yq-eval.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "a0d2804a8d4d4e95ec7225e86afcfa9eb00fc2bc34eedb118d39bfcfb987aa9f",
+          "id": "option|yq eval|-o",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/yq-eval.json"
+        },
+        {
+          "codes": [
+            "sem_metadata_missing"
+          ],
+          "fingerprint": "07dee6d570dc63190ec92f7e0c5ee86ef83eb6d929827471a0aed1d8b42046e8",
+          "id": "option|yq eval|-p",
+          "review_fingerprint": "541431897ca02b25efd638b282a7f1367ff4d280a5fb91d4407a038e7992842a",
+          "source": "profiles/yq-eval.json"
+        }
+      ],
+      "invalidation": "Any relevant authored contract, grammar, profile/category context, referenced definition, review decision or deferred requirement change requires reassessment. New siblings, consumers, profiles and fixtures cannot inherit a row. Remove resolved debt; do not expand this baseline to silence failures.",
+      "origin_revision": "59a30191c3b0b04d3c3ea27b6517fe3e7b59cbaa",
+      "reason": "Earlier opt-in migration leaves exact existing optional-metadata omissions and source-derived investigations. Additional production migration is outside Step 7; this bounded snapshot enables prospective protection without claiming full completeness.",
+      "scope": "Only the exact existing source/identity pairs and completeness codes below. Per-entry review groups and metadata retain evidence, applicability and investigations. Shared definitions overlap their consumers and are not additive option coverage."
+    }
+  },
   "format_version": 1,
   "groups": [
     {
@@ -101,15 +3403,24 @@
       "deficiency": "No census omission identified. Extracted entries retain separate semantic dispositions.",
       "disposition": "source_enumerated",
       "entries": {
+        "source||.github/workflows/ci.yml": "848d9494698f420314b913124300c1a8a010923ebd1064ca5276d1b8de60d5b6",
         "source||bash/interactive-help.bash": "ad286db0fe13b53344e55057836623407b4e42687aee3d23ca280ca655e56a8c",
         "source||cli_help/arguments.py": "1b6e63eb17bc95b63e1827db43cb999cbda720070eebc3e90ce2e7fa4d9a77bc",
+        "source||cli_help/authoring.py": "26b642dd8cb0bc874193939db84a4e8e546dc21c6b74d7144f4894036a3f0e79",
+        "source||cli_help/bulk_scan.py": "bf94e9694224bc742a60cda4b7b59410e974305aef4f255d1b142fc5201421ed",
+        "source||cli_help/collection.py": "530dc93995ba7aa3fe03f1c0b3e0c7f45eb110b4a351da6735671724467f9c1e",
         "source||cli_help/command_paths.py": "5777b734209a9be9de96464039704d4e133fcbe4fd94115d3635b2e2a5438625",
         "source||cli_help/core.py": "9117524d2e437e16f168fb9a1775ed16cbaa0a1e8907982b4e65416a548b5d36",
         "source||cli_help/discovery.py": "47e5eb786ab2ccc90a6079b294a81465379e76fc79969d6ec772cce42d237ad2",
         "source||cli_help/drivers.py": "38de66bdcf8287592531fee1c1f6fd09068ad8fe60ca2d618bc6c2a1fb2960a3",
         "source||cli_help/invocation.py": "9f9c8ab41fbb7bb7d9fb719b13ec2ebb70b8180fa308b57638bafaa1283db290",
         "source||cli_help/main.py": "063799a727fcfb6b42a5fd24a4a25aa9f3cf5d411801fc641684b16a7e2d6bba",
+        "source||cli_help/manual_import.py": "ffff75aea4d7b9b9dc226c08b1905471321e57b42f055bbd7daece4102910a04",
+        "source||cli_help/presentation.py": "12045fe4e7105805471fa8f9077eeb8f19217cab3ae1005c0528efca6c7e001a",
+        "source||cli_help/review.py": "005b0de552e4959e57cb39f43c33212e54a32efdbdebf6345a8070e3fce3a8b3",
+        "source||cli_help/review_forms.py": "e956f695c89bf4097e72fe8dd40c27fba02f574c0f2a6ca1d91122b9a320ec17",
         "source||cli_help/ui.py": "4b89d4253eaa18f7c0daca83a70d5749cb1f2cc78c8a439a5e6699952aafcb9b",
+        "source||cli_help/value_semantics.py": "1f4e55d896e66dfda64375a640d72bf31bf3a418edd19aca419baf97b07a332e",
         "source||config/drivers.example/7z.json": "9da33bc0f0f08dc49989ba9440f0ba8caf3215cdccbf9d7560b469de71ad3234",
         "source||config/drivers.example/7zz.json": "cf1d621fbfe918f7659cd15508f6db1c29a5fee9c27818ae3bf66a4a792f5178",
         "source||config/drivers.example/ansible-playbook.json": "124b7c80f76a77845ebe4d48d586af37398cafe5850f848966d277ab9167e463",
@@ -236,6 +3547,8 @@
         "source||profiles/uv-tool-install.json": "72dd4582b67e365c4e5dc22a1937728da4c11d8bd5832061b6de6a117ab03acc",
         "source||profiles/uv-venv.json": "a26bd1422f5a2ee60e578fac5a8e058ca7135ad0582867c545fd64d01412ad52",
         "source||profiles/yq-eval.json": "30215eaa2fbd253b8f795fee7c094f7118b0d57d4752b0e678539a5363f8b70f",
+        "source||scripts/check_numerical_coverage.py": "eb37cc183c0326914adb4c913998621e65bba6ef49a359b9f7066a3b09f2c4c9",
+        "source||scripts/inventory_numerical_descriptions.py": "67c9c59badeac2fc5842a2d7c095af27b54bf443d990c59d530e874acd8a08c8",
         "source||tests/fixtures/help/7z.txt": "3e22ba22b0e75b8d517ad166e5dd34b79d064c698972890406e94548e98d0786",
         "source||tests/fixtures/help/7zz.txt": "dd34861043c4a8f149070ae0fce0bfd732c80db9f614b760494ecb10b8be509f",
         "source||tests/fixtures/help/README.md": "5b52234b9aa344ca62e247bfba68d9c8ecfcf9ddb9344bba5fff4dad22c63313",
@@ -441,7 +3754,11 @@
         "source||tests/fixtures/help/workflow-tail.txt": "87c2702a38236592aab5097406bfa03452942641585ce3f30c7213c5b737e90a",
         "source||tests/fixtures/help/workflow-xz.txt": "877fb8981c2ada3584d9a36f7d4f94742685a4423c337faa7ad0430cd1b1ef44",
         "source||tests/fixtures/help/yq-eval.txt": "bae7f28f11bda536a6a46e7a35cfa887aa9893a0f5c386f39b1f55d6ed48e59c",
-        "source||tests/fixtures/help/yt-dlp.txt": "548d8b71d50e117cb043967fc82bc71c8ac01e743c638d908b1a994f7e228256"
+        "source||tests/fixtures/help/yt-dlp.txt": "548d8b71d50e117cb043967fc82bc71c8ac01e743c638d908b1a994f7e228256",
+        "source||tests/fixtures/value-semantics/migration-evidence.json": "f7dd60fe4db80f0239ced876458ef070c4793e37079a13b4c3530d1fcb350bba",
+        "source||tests/fixtures/value-semantics/preservation-evidence.json": "3bdb53cba6c4d350d2a6bf20f16afc49fc7576a514ab624a55583cad03dd392e",
+        "source||tests/fixtures/value-semantics/synthetic-profile.json": "20b91df5d741ac0a0d42afee2c8f87b9ddcc1cbce2df28f75f27550734200561",
+        "source||tests/run.sh": "d197e27c596f43956a1b14c559cc180c731cee8a4871347f5166fa5c21bbe23f"
       },
       "evidence": "source-derived",
       "findings": [
@@ -7593,6 +10910,239 @@
         "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/doc/coreutils.texi"
       ],
       "verification": "Check explicit targets/aliases, preserved source scope, unchanged declarations and passive cache round trips; source preservation is not factual verification."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "composite",
+      "deficiency": "No new defect assigned to the existing verified declaration; applicability remains bounded by its metadata.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "positional_group|esptool write-flash|": "ed1fd402978f73cb36a0a3c52cfb31dda8bce2a4cdee7b8ff10576a0e11d3c62",
+        "positional_group|esptool.py write-flash|": "848216281db3db5afe231467267010fd34a78854edc4295f642a2fe4645a20c9",
+        "positional_group|esptool.py write_flash|": "bac0bccf518b14e1c84b02848450f33238d1db93551402afdf0c65832f2e5aa3"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-positional-group-composite-verified",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "composite",
+      "deficiency": "No new defect assigned to the existing verified declaration; applicability remains bounded by its metadata.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|podman run|published-port": "36867c812b0f880f3ffde34b6545cd556e90756cfa4e1b4cf91e2a7a90fc0694"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-composite-verified",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "count",
+      "deficiency": "Completeness remains unresolved as recorded by the existing declaration.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|arduino-cli compile|compile-jobs": "bc39040928f1d76066c293cc126ffd2b517de03a80911537e2bbdc02ce081c66"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-count-source_derived",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "count",
+      "deficiency": "No new defect assigned to the existing verified declaration; applicability remains bounded by its metadata.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|fdfind|maximum-depth": "c584e919c5c23432d7877325474bd145077cf1b998c19ab02065955340df4c5b",
+        "value_definition|fd|maximum-depth": "8f9561783ddd880953c6c918a47fa651cf26721d9ca02e6aa7baf75a321d7de0",
+        "value_definition|fzf|selection-limit": "d01efb8c56795a952c4bdd29160fcd3ebb4fc1d35c1b4071489aa0a58521a64c",
+        "value_definition|git log|output-count": "59a2ba4a6a1e2af51fac3c8fc15eab3e20c2abcfc9bf5bc5ed81cbe0cf235c8f",
+        "value_definition|git stash list|output-count": "aaeb06d1687ad759119b24618ccd06b3863a67393173759e57b388b5697e22c1",
+        "value_definition|pio run|build-jobs": "c8f2d08fe96c05ad3196b4d7d397738977ee904e3174e7b6f46567bfdad4ddbd",
+        "value_definition|platformio run|build-jobs": "f9043004f119036ccb04a6fb353e3d955bb4b4886c2172c46b898d4e946fe65b"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-count-verified",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "delegated_value",
+      "deficiency": "Completeness remains unresolved as recorded by the existing declaration.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|ansible-playbook|extra-variables": "d95ac1547dd83267d136b908646313876685899427a0aa5d5592fe1257092527",
+        "value_definition|ansible-playbook|inventory-source": "f9ce4e4217ddf1b5edad39942b7a3d0afc142bcdd67e93d31f463eacfe8b9af3",
+        "value_definition|pio device monitor|serial-port-selector": "233a584011cdea3b8cee47cbc6c9931dc4f6c87c5f6e1ee79c086398dc52007f",
+        "value_definition|platformio device monitor|serial-port-selector": "45bf7ffd29e332d1cfb9fbad61847430063aad263d4dfc1d1cb1d4376f769e67",
+        "value_definition|psql|command-string": "d597fdbdc5db81d1f07f94e3c439dcc9add1f2786c72fcffb0bfd137a438712c",
+        "value_definition|psql|database-request": "ea2390369f5f5995759051813ef69c0ec35a5c95873d89e6b4f6e2f55cb93dd9",
+        "value_definition|psql|variables": "1e525e4a7334e354a239dc7650fefef25508e2da2d5b786ac55ad5f04b1a2ae4"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-delegated-source_derived",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "delegated_value",
+      "deficiency": "No new defect assigned to the existing verified declaration; applicability remains bounded by its metadata.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|podman exec|environment-value": "7e0fc299bf77c0d3b3897275598029058b3eb57376b05cc3ca22771a76231b07",
+        "value_definition|podman run|environment-value": "03327a21785fdcbc9cf4c2f3bf863265bcc9a6d9a499750860e72d6001ff8339",
+        "value_definition|podman run|volume-specification": "0390b1bf09e09c7532bfa0a1652d7839912444ad8b5f63887bb1df426b8665ce"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-delegated-verified",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "identifier_or_index",
+      "deficiency": "Completeness remains unresolved as recorded by the existing declaration.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|psql|server-port": "18f019b23b697b99bbf69ae1d8f5e7f3fd40f9f2e1e2cfb7169bb0db02f010d7"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-identifier-source_derived",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
+    },
+    {
+      "acceptance": "Definitions/components remain independently reviewed, new consumers do not inherit debt, and source-derived evidence is not promoted.",
+      "applicability": "Only the implementation/version/platform/chip facets explicitly recorded in this existing definition or positional declaration.",
+      "classification": "quantity",
+      "deficiency": "No new defect assigned to the existing verified declaration; applicability remains bounded by its metadata.",
+      "disposition": "existing_declaration_enumerated",
+      "entries": {
+        "value_definition|pio device monitor|baud-rate": "4bab4b6c95612807447ff454ee20c494536a12143aaaec0d73b081391f493056",
+        "value_definition|platformio device monitor|baud-rate": "d36b88c75eec86dddd3355f30818eee89c7f59e89fe80a5ab5e1b411bfe7df65"
+      },
+      "evidence": "source-derived",
+      "findings": [
+        "F7"
+      ],
+      "id": "step7-value-definition-quantity-verified",
+      "later_steps": [
+        7,
+        8
+      ],
+      "priority": "P2",
+      "proposed_action": "Preserve the existing declaration and explicit consumers; resolve the recorded investigation before changing source-derived status.",
+      "reason": "Previously authored optional declarations are now independently enumerated. Declared evidence status is retained; enumeration is not new factual verification.",
+      "references": [
+        "docs/numerical-inventory/step3-migration.md",
+        "Existing declaration review.references and applicability fields"
+      ],
+      "verification": "Shared structural/completeness validation, explicit consumer reference checks and prospective mutation tests; no target execution."
     }
   ],
   "scope": "Step 1 planning annotations only; never loaded by the menu. Exact IDs and fingerprints are explicit reviewed dispositions, including investigations, not semantic approvals or blanket exemptions. Step 3 groups record scoped bundled corrections; shared external observations are not promoted by an authored-content review. Step 4 reviews preserve source text within explicit parser/merge/cache boundaries without promoting external numerical claims to verified status.",
@@ -7790,7 +11340,7 @@
         "AC-09",
         "AC-10"
       ],
-      "evidence": "Passive authoring lifecycle tests and unchanged protected inventories; no factual evidence promotion or global completeness gate",
+      "evidence": "Offline inventory/contract/presentation checks and synthetic mutation tests; no new upstream factual verification, target probes or hosted workflow results.",
       "id": "F7",
       "later_steps": [
         2,
@@ -7799,7 +11349,7 @@
         8
       ],
       "priority": "P1",
-      "proposed_action": "Design the shared contract and strict maintained-content checks later; preserve permissive external/custom compatibility.",
+      "proposed_action": "Resolve the exact existing migration debt before enabling full maintained completeness; retain offline prospective and exact-exception checks.",
       "sources": [
         "cli_help/authoring.py",
         "cli_help/manual_import.py",
@@ -7809,9 +11359,9 @@
         "tests/test_numerical_authoring.py",
         "tests/run.sh"
       ],
-      "status": "Step 2 contract and Step 6 scoped authoring preservation implemented; Step 7 inventory-wide future enforcement remains deferred",
+      "status": "Steps 2 and 6 shared contract/authoring and Step 7 prospective enforcement implemented; strict maintained readiness remains blocked by exact migration debt.",
       "title": "Authoring and future enforcement",
-      "verification": "Run numerical-authoring tests, affected passive authoring regressions, Steps 2-5 tests and inventory reconciliation; see step6-authoring.md for boundaries and platform limits."
+      "verification": "Run check_numerical_coverage.py, inventory reconciliation and focused tests; strict mode must continue to report unresolved migration debt."
     }
   ]
 }

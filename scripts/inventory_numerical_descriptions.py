@@ -25,6 +25,17 @@ from core import HelpError, validate_profile
 
 REVIEW_PATH = Path("docs/numerical-inventory/review.json")
 ARTIFACT_KIND = "numerical_description_inventory"
+# These owners can change the meaning retained, displayed, edited, or checked.
+# Snapshot readers inspect their text; none of the inspected modules is imported.
+PROTECTED_SOURCES = (
+    "cli_help/core.py", "cli_help/discovery.py", "cli_help/drivers.py",
+    "cli_help/arguments.py", "cli_help/ui.py", "cli_help/main.py",
+    "bash/interactive-help.bash", "cli_help/value_semantics.py",
+    "cli_help/presentation.py", "cli_help/authoring.py", "cli_help/manual_import.py",
+    "cli_help/bulk_scan.py", "cli_help/review.py", "cli_help/review_forms.py",
+    "cli_help/collection.py", "scripts/inventory_numerical_descriptions.py",
+    "scripts/check_numerical_coverage.py", "tests/run.sh", ".github/workflows/ci.yml",
+)
 CLASSIFICATIONS = {
     "quantity", "count", "identifier_or_index", "level_or_enumeration",
     "timestamp_or_duration_expression", "composite", "delegated_value",
@@ -217,6 +228,16 @@ class Inventory:
             self.route(command, {"path": path.as_posix(), "pointer": "/command"}, "bundled_profile")
             self.add("profile_description", command, "", {"path": path.as_posix(), "pointer": "/description"},
                      "authored_description", description=doc.get("description", ""), context=context)
+            definitions = doc.get("value_definitions", {})
+            if not isinstance(definitions, dict):
+                self.issue("inventory_value_definitions", path.as_posix(),
+                           "Shared definitions must be a mapping; inspect the numerical structural diagnostics.")
+                definitions = {}
+            for name, definition in sorted(definitions.items()):
+                self.counts["profile_value_definitions"] += 1
+                pointer = "/value_definitions/" + name.replace("~", "~0").replace("/", "~1")
+                self.add("value_definition", command, name, {"path": path.as_posix(), "pointer": pointer},
+                         "authored_value_definition", definition=definition, context=context)
             for ci, category in enumerate(doc["categories"]):
                 self.counts["profile_categories"] += 1
                 self.add("category", command, category["name"], {"path": path.as_posix(), "pointer": f"/categories/{ci}"},
@@ -231,6 +252,9 @@ class Inventory:
             group = doc.get("positional_group")
             if group:
                 self.counts["profile_positional_groups"] += 1
+                self.add("positional_group", command, "", {"path": path.as_posix(), "pointer": "/positional_group"},
+                         "authored_positional_group", group=group,
+                         value_semantics=doc.get("positional_value_semantics"), context=context)
                 for index, component in enumerate(group["argument"].split()):
                     self.add("positional_component", command, component,
                              {"path": path.as_posix(), "pointer": "/positional_group"},
@@ -476,9 +500,10 @@ class Inventory:
 
     def finish(self):
         """Freeze observations and reconcile explicit paths without additive totals."""
-        for path in ("cli_help/core.py", "cli_help/discovery.py", "cli_help/drivers.py",
-                     "cli_help/arguments.py", "cli_help/ui.py", "cli_help/main.py", "bash/interactive-help.bash"):
+        for path in PROTECTED_SOURCES:
             self.read(Path(path), "protected_runtime_contract_context")
+        for path in sorted(self.files(Path("tests/fixtures/value-semantics"))):
+            self.read(path, "numerical_reference_fixture")
         for name, source in sorted(self.sources.items()):
             source["roles"].sort()
             self.add("source", (), name, {"path": name}, "input_source", roles=source["roles"], text_sha256=source["text_sha256"])

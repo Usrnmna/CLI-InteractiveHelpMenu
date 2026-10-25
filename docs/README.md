@@ -83,6 +83,8 @@ defines both formats.
   explains Step 5 compact guidance, complete details, search and scoped layout verification.
 - [Numerical metadata through authoring](numerical-inventory/step6-authoring.md)
   records Step 6 import/edit/preview/save preservation, stale-data review and inspection boundaries.
+- [Automatic numerical coverage and contributor workflow](numerical-inventory/step7-enforcement.md)
+  defines Step 7 prospective gates, exact migration debt, diagnostics and strict-readiness limits.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

@@ -184,7 +184,7 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
 | AC-08 presentation | Step 5 checks formatter propagation, visible cells, supported minimum sizes, Unicode, wrapping, scrolling, scripted resize/reopen and search with fake windows; native terminal/Readline acceptance remains separate |
 | AC-09 authoring | Step 6 verifies import/edit/preview/save/reload, stale claims, explicit review, definitions and numerical inspection; native POSIX restoration/terminal acceptance remain platform limits |
-| AC-10 future checks | Deferred: reject deficient maintained additions automatically while preserving honest external-help limits |
+| AC-10 future checks | Step 7 checks prospective maintained completeness, exact debt validity and display/search propagation; strict readiness remains blocked by explicitly reported migration debt |
 
 Focused verification runs on Windows with Python 3.13. The tests use disposable
 snapshots in the existing ignored `.cache/` area and do not invoke target
@@ -205,7 +205,8 @@ The guide is linked from the documentation index.
 The [Step 2 numerical value contract](../numerical-value-contract.md) now provides
 opt-in metadata validation and explanation formatting. It does not promote these
 planning annotations into verified semantics or activate a completeness gate.
-The inventory generator remains unchanged. Step 3 updates only the exact review
+Step 2 left enumeration unchanged; Step 7 extends its census as described below.
+Step 3 updates only the exact review
 members and fingerprints justified by the inspected authored-content changes.
 
 The [Step 3 migration account](step3-migration.md) distinguishes verified
@@ -220,3 +221,8 @@ acceptance and global enforcement remain separate work.
 The [Step 6 authoring account](step6-authoring.md) records subsequent numerical
 preservation, scoped structural validation and explicit review. Native platform
 acceptance and the future global completeness gate remain separate.
+
+The [Step 7 coverage policy and contributor workflow](step7-enforcement.md)
+defines prospective checks, exact legacy debt, structured diagnostics and
+separate strict-readiness reporting. Inventory reconciliation remains distinct
+and never verifies upstream numerical facts.

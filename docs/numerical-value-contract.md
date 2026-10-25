@@ -10,6 +10,13 @@ loading, browsing and editing do not activate it. The source-preservation merger
 and cache explicitly select structural checks for optional metadata; legacy
 profiles continue to use the existing profile validator unchanged.
 
+The offline [Step 7 coverage policy](numerical-inventory/step7-enforcement.md)
+explicitly selects maintained completeness for repository checks. Its prospective
+mode accounts for exact existing migration debt; strict readiness remains a
+separate result. Exact generic meaning/subject labels such as “time” or “number”
+receive `sem_meaning_vague` in completeness modes rather than supplying units or
+counted subjects. Runtime legacy loading remains unchanged.
+
 The contract provides Step 2 infrastructure. The
 [Step 3 migration](numerical-inventory/step3-migration.md) and
 [Step 4 source preservation](numerical-inventory/step4-preservation.md) document
