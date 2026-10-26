@@ -1,21 +1,187 @@
 {
-  "command": ["git", "commit"],
-  "description": "Record staged changes in a Git commit.",
   "categories": [
-    {"name": "Message", "description": "Choose the commit message source.", "options": [
-      {"flag": "--message", "argument": "MESSAGE", "summary": "Supply the commit message", "detail": "After insertion, enter a quoted message if it contains spaces."},
-      {"flag": "--file", "argument": "FILE", "summary": "Read the commit message from a file"},
-      {"flag": "--edit", "summary": "Open the message editor"}
-    ]},
-    {"name": "Content", "description": "Control the changes included in the commit.", "options": [
-      {"flag": "--all", "summary": "Stage modified and deleted tracked files"},
-      {"flag": "--patch", "summary": "Interactively choose changes"},
-      {"flag": "--amend", "summary": "Replace the current branch's tip commit", "detail": "This changes commit identity when the command is subsequently executed."}
-    ]},
-    {"name": "Inspection", "description": "Inspect proposed commit content and status.", "options": [
-      {"flag": "--dry-run", "summary": "Show what would be committed"},
-      {"flag": "--verbose", "summary": "Include a diff in the message template"},
-      {"flag": "--short", "summary": "Show short status in dry-run output"}
-    ]}
-  ]
+    {
+      "description": "Choose the commit message source.",
+      "name": "Message",
+      "options": [
+        {
+          "argument": "MESSAGE",
+          "detail": "After insertion, enter a quoted message if it contains spaces.",
+          "flag": "--message",
+          "summary": "Supply the commit message",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit message text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal message string; repeated message options form separate paragraphs."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the other selected message source or Git's normal message-editor workflow."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-commit.txt",
+                      "locator": "--message"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "--file",
+          "summary": "Read the commit message from a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit message source file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a message file; a literal - reads the message from standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use another selected message source or Git's normal message-editor workflow."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-commit.txt",
+                      "locator": "--file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--edit",
+          "summary": "Open the message editor"
+        }
+      ]
+    },
+    {
+      "description": "Control the changes included in the commit.",
+      "name": "Content",
+      "options": [
+        {
+          "flag": "--all",
+          "summary": "Stage modified and deleted tracked files"
+        },
+        {
+          "flag": "--patch",
+          "summary": "Interactively choose changes"
+        },
+        {
+          "detail": "This changes commit identity when the command is subsequently executed.",
+          "flag": "--amend",
+          "summary": "Replace the current branch's tip commit"
+        }
+      ]
+    },
+    {
+      "description": "Inspect proposed commit content and status.",
+      "name": "Inspection",
+      "options": [
+        {
+          "flag": "--dry-run",
+          "summary": "Show what would be committed"
+        },
+        {
+          "flag": "--verbose",
+          "summary": "Include a diff in the message template"
+        },
+        {
+          "flag": "--short",
+          "summary": "Show short status in dry-run output"
+        }
+      ]
+    }
+  ],
+  "command": [
+    "git",
+    "commit"
+  ],
+  "description": "Record staged changes in a Git commit."
 }

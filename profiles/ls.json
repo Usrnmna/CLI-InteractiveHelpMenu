@@ -1,12 +1,8 @@
 {
-  "command": [
-    "ls"
-  ],
-  "description": "List files and directory contents using GNU ls options.",
   "categories": [
     {
-      "name": "Display",
       "description": "Control visible files and output formatting.",
+      "name": "Display",
       "options": [
         {
           "flag": "--all",
@@ -21,290 +17,434 @@
           "summary": "Use the long listing format"
         },
         {
+          "detail": "GNU coreutils 9.6: with -l or --size, print sizes using powers of 1024; M means 1048576 bytes, not 1000000. This flag accepts no numerical operand. The separate --si option uses powers of 1000.",
           "flag": "--human-readable",
           "summary": "Show sizes with 1024-based suffixes (-l or -s)",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Print size fields with powers-of-1024 suffixes",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
-                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "GNU coreutils"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.6"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Print size fields with powers-of-1024 suffixes",
                     "notation": "literal",
                     "syntax": "--human-readable",
                     "tokens": [
                       "--human-readable"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Print size fields with powers-of-1024 suffixes"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Print size fields with powers-of-1024 suffixes",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "GNU coreutils 9.6: with -l or --size, print sizes using powers of 1024; M means 1048576 bytes, not 1000000. This flag accepts no numerical operand. The separate --si option uses powers of 1000."
+          }
         },
         {
           "flag": "--classify",
           "summary": "Append file-type indicators"
         },
         {
-          "flag": "--color=",
           "argument": "WHEN",
+          "detail": "Typical values are always, auto, and never.",
+          "flag": "--color=",
           "summary": "Control colored output",
-          "detail": "Typical values are always, auto, and never."
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Color-output policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "yes",
+                    "tokens": [
+                      "yes"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "force",
+                    "tokens": [
+                      "force"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "tty",
+                    "tokens": [
+                      "tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "if-tty",
+                    "tokens": [
+                      "if-tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  },
+                  {
+                    "id": "choice-8",
+                    "notation": "literal",
+                    "syntax": "no",
+                    "tokens": [
+                      "no"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  },
+                  {
+                    "id": "choice-9",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not enable color through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This maintained entry is the attached --color=WHEN form and requires WHEN; upstream's separate plain --color spelling implies always"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls --color WHEN"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "detail": "GNU coreutils 9.6: these numbers identify filesystem inode numbers, not physical measurements or counts of files. No numerical operand is accepted.",
           "flag": "--inode",
           "summary": "Print each file's inode number",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Display filesystem inode numbers",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
-                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "GNU coreutils"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.6"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Display filesystem inode numbers",
                     "notation": "literal",
                     "syntax": "--inode",
                     "tokens": [
                       "--inode"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Display filesystem inode numbers"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Display filesystem inode numbers",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "GNU coreutils 9.6: these numbers identify filesystem inode numbers, not physical measurements or counts of files. No numerical operand is accepted."
+          }
         },
         {
+          "detail": "GNU coreutils 9.6: prints allocated usage, not logical file length. The usual default block is 1024 bytes; LS_BLOCK_SIZE, BLOCK_SIZE, BLOCKSIZE and --block-size can change it. POSIXLY_CORRECT selects 512-byte blocks if no block-size variable overrides it. --human-readable scales printed values. The flag takes no size argument.",
           "flag": "--size",
           "summary": "Print allocated usage in blocks; default is 1024 bytes",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Print allocated disk usage in configured blocks",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
-                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "GNU coreutils"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.6"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Print allocated disk usage in configured blocks",
                     "notation": "literal",
                     "syntax": "--size",
                     "tokens": [
                       "--size"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Print allocated disk usage in configured blocks"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Print allocated disk usage in configured blocks",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "GNU coreutils 9.6: prints allocated usage, not logical file length. The usual default block is 1024 bytes; LS_BLOCK_SIZE, BLOCK_SIZE, BLOCKSIZE and --block-size can change it. POSIXLY_CORRECT selects 512-byte blocks if no block-size variable overrides it. --human-readable scales printed values. The flag takes no size argument."
+          }
         },
         {
+          "detail": "GNU coreutils 9.6: these numbers identify user/group identifiers, not physical measurements or counts of files. No numerical operand is accepted.",
           "flag": "--numeric-uid-gid",
           "summary": "Print numeric user and group identifiers",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Display user/group identifiers",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
-                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "GNU coreutils"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.6"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Display user/group identifiers",
                     "notation": "literal",
                     "syntax": "--numeric-uid-gid",
                     "tokens": [
                       "--numeric-uid-gid"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Display user/group identifiers"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Display user/group identifiers",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "GNU coreutils 9.6: these numbers identify user/group identifiers, not physical measurements or counts of files. No numerical operand is accepted."
+          }
         },
         {
           "flag": "--quote-name",
@@ -315,15 +455,75 @@
           "summary": "Print C-style escapes for nongraphic characters"
         },
         {
-          "flag": "--hide=",
           "argument": "PATTERN",
-          "summary": "Hide matching entries"
+          "flag": "--hide=",
+          "summary": "Hide matching entries",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Hidden-name wildcard pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Shell-style filename wildcard pattern hiding matching names; --all/--almost-all can override this behavior."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this hide pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
+                      "locator": "ls --hide"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
     {
-      "name": "Sorting",
       "description": "Control ordering of directory entries.",
+      "name": "Sorting",
       "options": [
         {
           "flag": "--reverse",
@@ -344,8 +544,8 @@
       ]
     },
     {
-      "name": "Traversal",
       "description": "Control directory and symbolic-link handling.",
+      "name": "Traversal",
       "options": [
         {
           "flag": "--recursive",
@@ -361,5 +561,9 @@
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "ls"
+  ],
+  "description": "List files and directory contents using GNU ls options."
 }

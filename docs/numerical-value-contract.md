@@ -29,6 +29,11 @@ at authored save boundaries, preserving inactive evidence when declarations may
 be stale. It does not change this schema or enable completeness for legacy data.
 Passing these APIs does not establish upstream factual accuracy.
 
+The later [maintained debt-resolution account](numerical-inventory/debt-resolution.md)
+records completion of current maintained contracts under the unchanged APIs and
+coverage policy. This does not activate completeness for runtime legacy/external
+profiles or establish installed-target applicability.
+
 ## Representation and ownership
 
 Optional `options[].value_semantics` contains:

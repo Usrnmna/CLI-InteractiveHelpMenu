@@ -1,124 +1,304 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-p",
+          "summary": "Interactively select changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--patch",
+          "summary": "Interactively select changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-S",
+          "summary": "Store only staged changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--staged",
+          "summary": "Store only staged changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-k",
+          "summary": "Keep staged changes in the worktree"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--keep-index",
+          "summary": "Keep staged changes in the worktree"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-keep-index",
+          "summary": "Revert staged changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-u",
+          "summary": "Include untracked files"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--include-untracked",
+          "summary": "Include untracked files"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-a",
+          "summary": "Include ignored files"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--all",
+          "summary": "Include ignored files"
+        },
+        {
+          "argument": "MESSAGE",
+          "argument_optional": false,
+          "flag": "-m",
+          "summary": "Set the stash description",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Stash description text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal stash description string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Generate the normal stash description from the working branch/commit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-stash.txt",
+                      "locator": "--message"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "MESSAGE",
+          "argument_optional": false,
+          "flag": "--message",
+          "summary": "Set the stash description",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Stash description text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal stash description string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Generate the normal stash description from the working branch/commit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-stash.txt",
+                      "locator": "--message"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-q",
+          "summary": "Suppress progress messages"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--quiet",
+          "summary": "Suppress progress messages"
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--pathspec-from-file",
+          "summary": "Read pathspecs from a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pathspec source file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a file containing pathspec elements; - reads standard input. Line/NUL separators and quoting depend on --pathspec-file-nul and Git pathspec rules."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use command-line pathspecs rather than reading a pathspec file."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-stash.txt",
+                      "locator": "--pathspec-from-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--pathspec-file-nul",
+          "summary": "Use NUL-separated pathspecs"
+        }
+      ]
+    }
+  ],
   "command": [
     "git",
     "stash",
     "push"
   ],
   "description": "Options for git stash push.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "-p",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Interactively select changes"
-        },
-        {
-          "flag": "--patch",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Interactively select changes"
-        },
-        {
-          "flag": "-S",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Store only staged changes"
-        },
-        {
-          "flag": "--staged",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Store only staged changes"
-        },
-        {
-          "flag": "-k",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Keep staged changes in the worktree"
-        },
-        {
-          "flag": "--keep-index",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Keep staged changes in the worktree"
-        },
-        {
-          "flag": "--no-keep-index",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Revert staged changes"
-        },
-        {
-          "flag": "-u",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Include untracked files"
-        },
-        {
-          "flag": "--include-untracked",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Include untracked files"
-        },
-        {
-          "flag": "-a",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Include ignored files"
-        },
-        {
-          "flag": "--all",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Include ignored files"
-        },
-        {
-          "flag": "-m",
-          "argument": "MESSAGE",
-          "argument_optional": false,
-          "summary": "Set the stash description"
-        },
-        {
-          "flag": "--message",
-          "argument": "MESSAGE",
-          "argument_optional": false,
-          "summary": "Set the stash description"
-        },
-        {
-          "flag": "-q",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Suppress progress messages"
-        },
-        {
-          "flag": "--quiet",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Suppress progress messages"
-        },
-        {
-          "flag": "--pathspec-from-file",
-          "argument": "FILE",
-          "argument_optional": false,
-          "summary": "Read pathspecs from a file"
-        },
-        {
-          "flag": "--pathspec-file-nul",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Use NUL-separated pathspecs"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://git-scm.com/docs/git-stash",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://git-scm.com/docs/git-stash"
+  },
+  "stop_at_positional": false
 }

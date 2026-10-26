@@ -1,32 +1,39 @@
 {
-  "command": [
-    "openssl",
-    "s_client"
-  ],
-  "description": "openssl s_client shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
-          "flag": "-connect",
           "argument": "HOST:PORT",
+          "detail": "One token: host with optional :service, [IPv6]:service, or :service using the backend's empty-host handling. A service can be a numeric port or backend service name; a host without :service retains the separately selected/default port, normally 4433. Endpoint parsing does not treat a bare host string as a numerical index. Host and service have independent identifier meanings; no numerical port is a transfer rate or size. Reference scope: OpenSSL 3.0.16.",
+          "flag": "-connect",
           "summary": "Select the remote endpoint",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "composite",
-                "meaning": "Remote TLS endpoint",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
-                      "locator": "OpenSSL 3.0 reference: -verify and -connect"
-                    }
-                  ]
+                "meaning": "Remote TLS host and service",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "endpoint",
+                    "notation": "expression",
+                    "syntax": "HOST[:SERVICE]",
+                    "grammar": "One token: host with optional :service, [IPv6]:service, or :service using the backend's empty-host handling. A service can be a numeric port or backend service name; a host without :service retains the separately selected/default port, normally 4433. Endpoint parsing does not treat a bare host string as a numerical index."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use localhost:4433 unless another destination option/positional target overrides it."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -36,113 +43,61 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
-                },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "HOST:PORT",
-                    "grammar": "OpenSSL 3.0 reference: HOST identifies the remote host/address; PORT identifies a service, not a rate, size or duration. Exact endpoint alternatives and patch coverage remain unpinned."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-connect host and optional port, default localhost:4433"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/crypto/bio/bio_addr.c",
+                      "locator": "BIO_PARSE_PRIO_HOST grammar"
+                    }
+                  ]
                 },
                 "slots": 1,
                 "components": [
                   {
                     "id": "host",
                     "slot": 1,
-                    "required": true,
+                    "required": false,
                     "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Remote hostname/address",
-                      "review": {
-                        "status": "source_derived",
-                        "references": [
-                          {
-                            "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
-                            "locator": "OpenSSL 3.0 reference: -verify and -connect"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSL"
-                          ]
-                        },
-                        "version": {
-                          "state": "unverified",
-                          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
+                      "kind": "identifier",
+                      "meaning": "Remote host identifier",
                       "bare": {
                         "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
+                        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                       },
                       "forms": [
                         {
                           "id": "text",
                           "notation": "expression",
-                          "syntax": "HOST",
-                          "grammar": "Remote hostname/address"
+                          "syntax": "VALUE",
+                          "grammar": "DNS name or IP address; bracket IPv6 literals when combining them with a service/port."
                         }
                       ],
                       "when_absent": {
                         "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "This is a component of the enclosing endpoint"
                       },
                       "when_value_omitted": {
                         "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "port",
-                    "slot": 1,
-                    "required": true,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "Remote service-port identifier",
-                      "review": {
-                        "status": "source_derived",
-                        "references": [
-                          {
-                            "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
-                            "locator": "OpenSSL 3.0 reference: -verify and -connect"
-                          }
-                        ]
+                        "reason": "Component omission is governed by the enclosing endpoint grammar"
                       },
                       "applicability": {
                         "implementation": {
@@ -152,89 +107,127 @@
                           ]
                         },
                         "version": {
-                          "state": "unverified",
-                          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                          "state": "known",
+                          "values": [
+                            "3.0.16"
+                          ]
                         },
                         "platform": {
                           "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                         },
                         "chip": {
                           "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
+                          "reason": "No chip-specific interpretation is claimed by this parameter contract"
                         }
                       },
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/crypto/bio/bio_addr.c",
+                            "locator": "BIO_parse_hostserv host syntax"
+                          }
+                        ]
+                      },
+                      "subject": "Remote network hosts"
+                    }
+                  },
+                  {
+                    "id": "port",
+                    "slot": 1,
+                    "required": false,
+                    "semantics": {
+                      "kind": "identifier",
+                      "meaning": "Remote service/port identifier",
                       "bare": {
-                        "state": "accepted",
-                        "form": "integer"
+                        "state": "not_applicable",
+                        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                       },
                       "forms": [
                         {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "VALUE",
+                          "grammar": "Decimal TCP port or service name resolved by the networking backend; names are not numeric quantities and a port is not a byte count. Omitted service retains the surrounding default."
                         }
                       ],
                       "when_absent": {
                         "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "This is a component of the enclosing endpoint"
                       },
                       "when_value_omitted": {
                         "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
+                        "reason": "Component omission is governed by the enclosing endpoint grammar"
                       },
-                      "subject": "Service ports"
+                      "applicability": {
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSL"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "3.0.16"
+                          ]
+                        },
+                        "platform": {
+                          "state": "not_applicable",
+                          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                        },
+                        "chip": {
+                          "state": "not_applicable",
+                          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                        }
+                      },
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/crypto/bio/bio_addr.c",
+                            "locator": "BIO_parse_hostserv and BIO_lookup service resolution"
+                          }
+                        ]
+                      },
+                      "subject": "TCP services/ports"
                     }
                   }
                 ]
               }
             ]
-          },
-          "detail": "OpenSSL 3.0 reference: HOST identifies the remote host/address; PORT identifies a service, not a rate, size or duration. Exact endpoint alternatives and patch coverage remain unpinned."
+          }
         },
         {
-          "flag": "-servername",
           "argument": "NAME",
-          "summary": "Set TLS SNI"
-        },
-        {
-          "flag": "-CAfile",
-          "argument": "FILE",
-          "summary": "Read trusted certificates"
-        },
-        {
-          "flag": "-cert",
-          "argument": "FILE",
-          "summary": "Select a client certificate"
-        },
-        {
-          "flag": "-key",
-          "argument": "FILE",
-          "summary": "Select a private key"
-        },
-        {
-          "flag": "-verify",
-          "argument": "DEPTH",
-          "summary": "Set certificate verification depth",
+          "flag": "-servername",
+          "summary": "Set TLS SNI",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "count",
-                "meaning": "Maximum certificate verification depth",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://docs.openssl.org/3.0/man1/openssl-s_client/",
-                      "locator": "OpenSSL 3.0 reference: -verify and -connect"
-                    },
-                    {
-                      "source": "https://docs.openssl.org/3.0/man1/openssl-verification-options/",
-                      "locator": "-verify_depth excludes end entity and trust anchor"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "TLS server-name indication",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "DNS server-name string for the TLS SNI extension."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Derive SNI from an appropriate DNS-form connect host unless other SNI options override it."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -244,82 +237,402 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-servername"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-CAfile",
+          "summary": "Read trusted certificates",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Trusted certificate bundle file",
                 "bare": {
-                  "state": "accepted",
-                  "form": "depth"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "depth",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer verification-depth limit; not a time or byte count",
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "Permit no intermediate CA certificates"
-                      }
-                    ]
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing trusted CA certificates in PEM form."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "This flag does not add an explicit depth/verification request; other verification settings may apply"
+                  "meaning": "Use other configured/default trust sources unless those sources are disabled."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "subject": "Intermediate CA certificates; end entity and trust anchor do not count",
-                "investigation": "Verify exact patch applicability and supported bounds against the implementation"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-CAfile"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "OpenSSL 3.0 verification reference: DEPTH counts intermediate CA certificates; the end entity and trust anchor do not count. Zero permits no intermediates. -verify enables verification, but s_client can continue after errors unless -verify_return_error is used. Exact patch applicability and bounds remain under review."
+          }
         },
         {
-          "flag": "-verify_return_error",
+          "argument": "FILE",
+          "flag": "-cert",
+          "summary": "Select a client certificate",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "TLS client certificate file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing the client certificate; input format follows the associated format option."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not load a client certificate through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-cert"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-key",
+          "summary": "Select a private key",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "TLS client private-key file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Private-key filename; passphrase and provider configuration follow their own options."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the key associated with the selected certificate/default key handling."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DEPTH",
+          "detail": "Positive C int, with base-autodetected decimal, 0x hexadecimal or leading-zero octal spelling. Zero and negatives are rejected by this option's 'p' parser; the upper bound is the build's INT_MAX. A depth of N permits up to N intermediate CAs, plus leaf and trust anchor. Reference scope: OpenSSL 3.0.16.",
+          "flag": "-verify",
+          "summary": "Set positive intermediate-CA depth; zero is invalid",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Positive certificate verification depth",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Positive C int, with base-autodetected decimal, 0x hexadecimal or leading-zero octal spelling. Zero and negatives are rejected by this option's 'p' parser; the upper bound is the build's INT_MAX. A depth of N permits up to N intermediate CAs, plus leaf and trust anchor.",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not enable peer verification through this option; other verification settings remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/s_client.c",
+                      "locator": "verify option valtype p"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c",
+                      "locator": "opt_int/opt_long and valtype p requires >0"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-verification-options.pod",
+                      "locator": "verify_depth intermediate CA definition"
+                    }
+                  ]
+                },
+                "subject": "Intermediate CA certificates, excluding the leaf and trust anchor"
+              }
+            ]
+          }
+        },
+        {
           "argument": "",
+          "flag": "-verify_return_error",
           "summary": "Stop on certificate verification errors"
         },
         {
-          "flag": "-showcerts",
           "argument": "",
+          "flag": "-showcerts",
           "summary": "Show sent certificates"
         },
         {
-          "flag": "-starttls",
           "argument": "PROTOCOL",
-          "summary": "Negotiate TLS for a supported protocol"
+          "flag": "-starttls",
+          "summary": "Negotiate TLS for a supported protocol",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "STARTTLS application protocol",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Protocol name selecting a STARTTLS negotiation, such as smtp, pop3, imap, ftp, xmpp, xmpp-server, irc, postgres, mysql, lmtp, nntp, sieve or ldap; accepted names are protocol selectors, not numerical TLS versions."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Start TLS directly rather than requesting a STARTTLS protocol exchange."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-s_client.pod.in",
+                      "locator": "-starttls"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-quiet",
           "argument": "",
+          "flag": "-quiet",
           "summary": "Reduce output"
         },
         {
-          "flag": "-tls1_2",
           "argument": "",
+          "flag": "-tls1_2",
           "summary": "Use TLS 1.2"
         },
         {
-          "flag": "-tls1_3",
           "argument": "",
+          "flag": "-tls1_3",
           "summary": "Use TLS 1.3"
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "openssl",
+    "s_client"
+  ],
+  "description": "openssl s_client shell argument reference."
 }

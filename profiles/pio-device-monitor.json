@@ -1,387 +1,920 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "PORT",
+          "argument_optional": false,
+          "detail": "Device/port string or fnmatch-style device pattern passed through SerialPortFinder and the serial backend. An explicit non-pattern string, including digit-only text, is forwarded unchanged; it is not converted to an enumerated device index. Pattern selection uses the first matching enumerated device and ordering is not stable. Backend URL forms retain backend-specific meanings. Reference scope: PlatformIO Core 6.1.18.",
+          "flag": "-p",
+          "summary": "Select serial port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "serial-port-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PORT",
+          "argument_optional": false,
+          "detail": "Device/port string or fnmatch-style device pattern passed through SerialPortFinder and the serial backend. An explicit non-pattern string, including digit-only text, is forwarded unchanged; it is not converted to an enumerated device index. Pattern selection uses the first matching enumerated device and ordering is not stable. Backend URL forms retain backend-specific meanings. Reference scope: PlatformIO Core 6.1.18.",
+          "flag": "--port",
+          "summary": "Select serial port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "serial-port-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "BAUD",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified.",
+          "flag": "-b",
+          "summary": "Set serial signalling rate in baud",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "baud-rate"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "BAUD",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified.",
+          "flag": "--baud",
+          "summary": "Set serial signalling rate in baud",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "baud-rate"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PARITY",
+          "argument_optional": false,
+          "flag": "--parity",
+          "summary": "Set parity",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Serial parity selection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "N",
+                    "tokens": [
+                      "N"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "No parity"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "E",
+                    "tokens": [
+                      "E"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Even parity"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "O",
+                    "tokens": [
+                      "O"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Odd parity"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "S",
+                    "tokens": [
+                      "S"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Space parity"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "M",
+                    "tokens": [
+                      "M"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Mark parity"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project monitor_parity; the built-in default is N."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+                      "locator": "env.monitor_parity"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--rtscts",
+          "summary": "Enable hardware flow control"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--xonxoff",
+          "summary": "Enable software flow control"
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage.",
+          "flag": "--rts",
+          "summary": "Set initial RTS logical state: 0 or 1",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "off",
+                    "meaning": "Logical false/deasserted control-line state",
+                    "notation": "literal",
+                    "syntax": "0",
+                    "tokens": [
+                      "0"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "on",
+                    "meaning": "Logical true/asserted control-line state",
+                    "notation": "literal",
+                    "syntax": "1",
+                    "tokens": [
+                      "1"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Initial RTS serial control-line state",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults",
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage.",
+          "flag": "--dtr",
+          "summary": "Set initial DTR logical state: 0 or 1",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "off",
+                    "meaning": "Logical false/deasserted control-line state",
+                    "notation": "literal",
+                    "syntax": "0",
+                    "tokens": [
+                      "0"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "on",
+                    "meaning": "Logical true/asserted control-line state",
+                    "notation": "literal",
+                    "syntax": "1",
+                    "tokens": [
+                      "1"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Initial DTR serial control-line state",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults",
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--echo",
+          "summary": "Echo input locally"
+        },
+        {
+          "argument": "FILTER",
+          "argument_optional": false,
+          "flag": "-f",
+          "summary": "Select a stream filter",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Serial monitor filter names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Names of installed monitor filters; repeat to build a filter chain. The filter implementation owns any key-specific transformation semantics."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured monitor_filters; no additional CLI filter is appended."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "filters registration, get_available_filters and unknown-filter handling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILTER",
+          "argument_optional": false,
+          "flag": "--filter",
+          "summary": "Select a stream filter",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Serial monitor filter names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Names of installed monitor filters; repeat to build a filter chain. The filter implementation owns any key-specific transformation semantics."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured monitor_filters; no additional CLI filter is appended."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "filters registration, get_available_filters and unknown-filter handling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ENCODING",
+          "argument_optional": false,
+          "flag": "--encoding",
+          "summary": "Set stream encoding",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Serial text encoding name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Codec name such as UTF-8, Latin-1 or hexlify, interpreted by the monitor/codec registry; digits are part of the name, not a byte count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured monitor_encoding; the built-in value is UTF-8."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
+                      "locator": "env.monitor_encoding"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ENVIRONMENT",
+          "argument_optional": false,
+          "flag": "-e",
+          "summary": "Select project environment",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "PlatformIO project environment",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Named platformio.ini environment selecting monitor configuration."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project's default environment."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "get_project_options"
+                    }
+                  ]
+                },
+                "subject": "PlatformIO environments"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ENVIRONMENT",
+          "argument_optional": false,
+          "flag": "--environment",
+          "summary": "Select project environment",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "PlatformIO project environment",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Named platformio.ini environment selecting monitor configuration."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project's default environment."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "get_project_options"
+                    }
+                  ]
+                },
+                "subject": "PlatformIO environments"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "-d",
+          "summary": "Select project directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO project directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Existing directory path used as the project working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "project-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--project-dir",
+          "summary": "Select project directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO project directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Existing directory path used as the project working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+                      "locator": "project-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "pio",
     "device",
     "monitor"
   ],
   "description": "Options for pio device monitor.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "-p",
-          "argument": "PORT",
-          "argument_optional": false,
-          "summary": "Select serial port",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "serial-port-selector"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: this selects a serial device/port, not a TCP service number. Device paths/names and numeric selector conventions depend on enumeration; numeric selector origin and stability remain under investigation."
-        },
-        {
-          "flag": "--port",
-          "argument": "PORT",
-          "argument_optional": false,
-          "summary": "Select serial port",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "serial-port-selector"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: this selects a serial device/port, not a TCP service number. Device paths/names and numeric selector conventions depend on enumeration; numeric selector origin and stability remain under investigation."
-        },
-        {
-          "flag": "-b",
-          "argument": "BAUD",
-          "argument_optional": false,
-          "summary": "Set serial signalling rate in baud",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "baud-rate"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified."
-        },
-        {
-          "flag": "--baud",
-          "argument": "BAUD",
-          "argument_optional": false,
-          "summary": "Set serial signalling rate in baud",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "baud-rate"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified."
-        },
-        {
-          "flag": "--parity",
-          "argument": "PARITY",
-          "argument_optional": false,
-          "summary": "Set parity"
-        },
-        {
-          "flag": "--rtscts",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Enable hardware flow control"
-        },
-        {
-          "flag": "--xonxoff",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Enable software flow control"
-        },
-        {
-          "flag": "--rts",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set initial RTS logical state: 0 or 1",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "enumeration",
-                "meaning": "Initial RTS serial control-line state",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
-                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "PlatformIO Core"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.1.18"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_accepted",
-                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude"
-                },
-                "forms": [
-                  {
-                    "id": "off",
-                    "notation": "literal",
-                    "syntax": "0",
-                    "tokens": [
-                      "0"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Logical false/deasserted control-line state"
-                  },
-                  {
-                    "id": "on",
-                    "notation": "literal",
-                    "syntax": "1",
-                    "tokens": [
-                      "1"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Logical true/asserted control-line state"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage."
-        },
-        {
-          "flag": "--dtr",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set initial DTR logical state: 0 or 1",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "enumeration",
-                "meaning": "Initial DTR serial control-line state",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
-                      "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "PlatformIO Core"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.1.18"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_accepted",
-                  "reason": "Only literal logical states 0 and 1 are accepted, not an arbitrary level magnitude"
-                },
-                "forms": [
-                  {
-                    "id": "off",
-                    "notation": "literal",
-                    "syntax": "0",
-                    "tokens": [
-                      "0"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Logical false/deasserted control-line state"
-                  },
-                  {
-                    "id": "on",
-                    "notation": "literal",
-                    "syntax": "1",
-                    "tokens": [
-                      "1"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Logical true/asserted control-line state"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use the monitor configuration or serial backend's initial state when no explicit override is supplied"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage."
-        },
-        {
-          "flag": "--echo",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Echo input locally"
-        },
-        {
-          "flag": "-f",
-          "argument": "FILTER",
-          "argument_optional": false,
-          "summary": "Select a stream filter"
-        },
-        {
-          "flag": "--filter",
-          "argument": "FILTER",
-          "argument_optional": false,
-          "summary": "Select a stream filter"
-        },
-        {
-          "flag": "--encoding",
-          "argument": "ENCODING",
-          "argument_optional": false,
-          "summary": "Set stream encoding"
-        },
-        {
-          "flag": "-e",
-          "argument": "ENVIRONMENT",
-          "argument_optional": false,
-          "summary": "Select project environment"
-        },
-        {
-          "flag": "--environment",
-          "argument": "ENVIRONMENT",
-          "argument_optional": false,
-          "summary": "Select project environment"
-        },
-        {
-          "flag": "-d",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Select project directory"
-        },
-        {
-          "flag": "--project-dir",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Select project directory"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
+    "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html"
   },
+  "stop_at_positional": false,
   "value_definitions": {
     "baud-rate": {
-      "kind": "quantity",
-      "meaning": "Serial signalling rate",
-      "review": {
-        "status": "verified",
-        "references": [
-          {
-            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
-            "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
-          }
-        ]
-      },
       "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
         "implementation": {
           "state": "known",
           "values": [
             "PlatformIO Core"
           ]
         },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
         "version": {
           "state": "known",
           "values": [
             "6.1.18"
           ]
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
         }
       },
       "bare": {
-        "state": "accepted",
-        "form": "baud"
+        "form": "baud",
+        "state": "accepted"
       },
       "forms": [
         {
+          "grammar": "Integer baud rate; supported rates depend on the serial adapter and driver",
           "id": "baud",
           "notation": "number",
           "syntax": "N",
           "unit": {
             "base": "baud",
             "multiplier": "1"
-          },
-          "grammar": "Integer baud rate; supported rates depend on the serial adapter and driver"
+          }
         }
       ],
+      "kind": "quantity",
+      "meaning": "Serial signalling rate",
+      "review": {
+        "references": [
+          {
+            "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults",
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py"
+          }
+        ],
+        "status": "verified"
+      },
       "when_absent": {
-        "state": "known",
-        "meaning": "Use monitor_speed configuration, default 9600"
+        "meaning": "Use monitor_speed configuration, default 9600",
+        "state": "known"
       },
       "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
       }
     },
     "serial-port-selector": {
       "kind": "delegated",
-      "meaning": "Serial-device port selector",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",
-            "locator": "monitor_speed, monitor_rts and monitor_dtr types/defaults"
-          },
-          {
-            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
-            "locator": "--port accepts a number or device name"
-          }
-        ]
+      "meaning": "PlatformIO serial-port selection grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Device/port string or fnmatch-style device pattern passed through SerialPortFinder and the serial backend. An explicit non-pattern string, including digit-only text, is forwarded unchanged; it is not converted to an enumerated device index. Pattern selection uses the first matching enumerated device and ordering is not stable. Backend URL forms retain backend-specific meanings."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use configured monitor_port or automatic board/device selection; no stable numerical selection index is promised."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
       },
       "applicability": {
         "implementation": {
@@ -398,41 +931,33 @@
         },
         "platform": {
           "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
         },
         "chip": {
           "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
         }
       },
-      "bare": {
-        "state": "unverified",
-        "reason": "Verify numeric selector/index conventions against device enumeration for the applicable release"
-      },
-      "forms": [
-        {
-          "id": "port",
-          "notation": "expression",
-          "syntax": "DEVICE | PORT-SELECTOR",
-          "grammar": "Serial port/device selection; a numeric selector is not a TCP port or physical unit"
-        }
-      ],
-      "when_absent": {
-        "state": "known",
-        "meaning": "Use project configuration or serial-device selection when no port is specified"
-      },
-      "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/finder.py",
+            "locator": "SerialPortFinder.find initial_port and match_serial_port"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
+            "locator": "--port string declaration and initial_port forwarding"
+          }
+        ]
       },
       "grammar": {
-        "name": "PlatformIO serial-device selection",
+        "name": "PlatformIO serial-port selection grammar",
         "reference": {
-          "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py",
-          "locator": "--port accepts a number or device name"
+          "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/finder.py",
+          "locator": "SerialPortFinder.find initial_port and match_serial_port"
         }
-      },
-      "investigation": "Verify numeric selector origin, enumeration stability and device-name matching; do not assign TCP-port bounds"
+      }
     }
   }
 }

@@ -1,70 +1,45 @@
 {
-  "command": [
-    "ip",
-    "link"
-  ],
-  "description": "ip link listing and filter argument reference.",
-  "stop_at_positional": true,
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "",
           "flag": "show",
-          "argument": "",
-          "summary": "Display the selected objects",
-          "kind": "keyword"
-        },
-        {
-          "flag": "dev",
-          "argument": "IFNAME",
-          "summary": "Select the network interface",
-          "kind": "keyword"
-        },
-        {
-          "flag": "up",
-          "argument": "",
-          "summary": "Select running interfaces",
-          "kind": "keyword"
-        },
-        {
-          "flag": "type",
-          "argument": "TYPE",
-          "summary": "Select the link type",
-          "kind": "keyword"
-        },
-        {
-          "flag": "master",
-          "argument": "DEVICE",
-          "summary": "Select links with this master",
-          "kind": "keyword"
-        },
-        {
-          "flag": "nomaster",
-          "argument": "",
-          "summary": "Select links without a master",
-          "kind": "keyword"
-        },
-        {
-          "flag": "group",
-          "argument": "GROUP",
-          "summary": "Select the device group",
           "kind": "keyword",
+          "summary": "Display the selected objects"
+        },
+        {
+          "argument": "IFNAME",
+          "flag": "dev",
+          "kind": "keyword",
+          "summary": "Select the network interface",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "identifier",
-                "meaning": "Network-device groups selector",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in",
-                      "locator": "Link GROUP names/numbers and interface names"
-                    }
-                  ]
+                "meaning": "Network interface name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Interface/device name from the network namespace; digits in a name do not imply an interface index or numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this device-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -80,49 +55,256 @@
                     ]
                   },
                   "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                      "locator": "dev"
+                    }
+                  ]
+                },
+                "subject": "Network interfaces"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "up",
+          "kind": "keyword",
+          "summary": "Select running interfaces"
+        },
+        {
+          "argument": "TYPE",
+          "flag": "type",
+          "kind": "keyword",
+          "summary": "Select the link type",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Link-kind selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Kernel link-kind name, such as bridge, bond, vlan or veth; available link kinds depend on the running kernel/driver registry, not a numerical type code."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not restrict the listing by link kind."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in",
+                      "locator": "type TYPE link kind list"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DEVICE",
+          "flag": "master",
+          "kind": "keyword",
+          "summary": "Select links with this master",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Master network interface name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Interface/device name from the network namespace; digits in a name do not imply an interface index or numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this device-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in",
+                      "locator": "master"
+                    }
+                  ]
+                },
+                "subject": "Network interfaces"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "nomaster",
+          "kind": "keyword",
+          "summary": "Select links without a master"
+        },
+        {
+          "argument": "GROUP",
+          "detail": "iproute2 6.13.0: the numeric form identifies network-device groups, not a count, percentage or measurement. Alternatives include group names from configured mapping files. Name mappings are configuration-dependent.",
+          "flag": "group",
+          "kind": "keyword",
+          "summary": "Select the device group",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
                     "state": "known",
                     "values": [
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "id"
+                  "form": "id",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
                     "id": "id",
                     "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer identifier, not a quantity or severity rank"
+                    "syntax": "N"
                   },
                   {
+                    "grammar": "group names from configured mapping files",
                     "id": "name",
                     "notation": "expression",
-                    "syntax": "NAME",
-                    "grammar": "group names from configured mapping files"
+                    "syntax": "NAME"
                   }
                 ],
+                "kind": "identifier",
+                "meaning": "Network-device groups selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Link GROUP names/numbers and interface names",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Network-device groups",
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit selector is added; normal command selection defaults apply"
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Network-device groups"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
               }
             ]
-          },
-          "detail": "iproute2 6.13.0: the numeric form identifies network-device groups, not a count, percentage or measurement. Alternatives include group names from configured mapping files. Name mappings are configuration-dependent."
+          }
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "ip",
+    "link"
+  ],
+  "description": "ip link listing and filter argument reference.",
+  "stop_at_positional": true
 }

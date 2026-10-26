@@ -1,161 +1,348 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--oneline",
+          "summary": "Show one line per stash"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--stat",
+          "summary": "Show change statistics"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-p",
+          "summary": "Show patches"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--patch",
+          "summary": "Show patches"
+        },
+        {
+          "argument": "COUNT",
+          "argument_optional": false,
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "flag": "-n",
+          "summary": "Limit listed entries",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-count"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "COUNT",
+          "argument_optional": false,
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "flag": "--max-count=",
+          "summary": "Limit listed entries",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-count"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--format=",
+          "summary": "Set commit presentation",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Git pretty-format grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Named formats such as oneline, short, medium, full, fuller, reference, email, mboxrd and raw, or format:/tformat: placeholders and formatting directives. Embedded widths and dates follow pretty-format rules, not one universal unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default stash-log presentation."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/pretty-formats.txt",
+                      "locator": "PRETTY FORMATS and placeholder grammar"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Git pretty-format grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/pretty-formats.txt",
+                    "locator": "PRETTY FORMATS and placeholder grammar"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--date=",
+          "summary": "Select date presentation",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Git date display format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Date presentation selector including relative, local, iso, iso-strict, rfc, short, raw, human, unix, normal/default or format:strftime text; selectors choose rendering, not an input duration. The unix format displays epoch seconds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default date presentation."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/rev-list-options.txt",
+                      "locator": "--date"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
+          "argument_optional": false,
+          "flag": "--grep=",
+          "summary": "Filter stash messages",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit-message matching expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Regular expression matching commit/stash messages; multiple patterns and selected regexp modes follow Git log rules."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a message-pattern restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/rev-list-options.txt",
+                      "locator": "--grep"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "git",
     "stash",
     "list"
   ],
   "description": "Options for git stash list.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "--oneline",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Show one line per stash"
-        },
-        {
-          "flag": "--stat",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Show change statistics"
-        },
-        {
-          "flag": "-p",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Show patches"
-        },
-        {
-          "flag": "--patch",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Show patches"
-        },
-        {
-          "flag": "-n",
-          "argument": "COUNT",
-          "argument_optional": false,
-          "summary": "Limit listed entries",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "output-count"
-              }
-            ]
-          },
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
-        },
-        {
-          "flag": "--max-count=",
-          "argument": "COUNT",
-          "argument_optional": false,
-          "summary": "Limit listed entries",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "output-count"
-              }
-            ]
-          },
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
-        },
-        {
-          "flag": "--format=",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set commit presentation"
-        },
-        {
-          "flag": "--date=",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Select date presentation"
-        },
-        {
-          "flag": "--grep=",
-          "argument": "PATTERN",
-          "argument_optional": false,
-          "summary": "Filter stash messages"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://git-scm.com/docs/git-stash",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
+    "source": "https://git-scm.com/docs/git-stash"
   },
+  "stop_at_positional": false,
   "value_definitions": {
     "output-count": {
-      "kind": "count",
-      "meaning": "Maximum number of stash reflog entries displayed",
-      "review": {
-        "status": "verified",
-        "references": [
-          {
-            "source": "https://git-scm.com/docs/git-log/2.48.0",
-            "locator": "Commit limiting: --max-count and --since"
-          }
-        ]
-      },
       "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
         "implementation": {
           "state": "known",
           "values": [
             "Git"
           ]
         },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
         "version": {
           "state": "known",
           "values": [
             "2.48.0"
           ]
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
         }
       },
       "bare": {
-        "state": "accepted",
-        "form": "entries"
+        "form": "entries",
+        "state": "accepted"
       },
       "forms": [
         {
-          "id": "entries",
-          "notation": "number",
-          "syntax": "N",
           "bounds": {
             "min": "0"
           },
+          "grammar": "Nonnegative integer output count",
+          "id": "entries",
+          "notation": "number",
           "special_values": [
             {
-              "value": "0",
-              "meaning": "Display no selected entries"
+              "meaning": "Display no selected entries",
+              "value": "0"
             }
           ],
-          "grammar": "Nonnegative integer output count"
+          "syntax": "N"
         }
       ],
+      "kind": "count",
+      "meaning": "Maximum number of stash reflog entries displayed",
+      "review": {
+        "references": [
+          {
+            "locator": "Commit limiting: --max-count and --since",
+            "source": "https://git-scm.com/docs/git-log/2.48.0"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Stash reflog entries",
       "when_absent": {
-        "state": "known",
-        "meaning": "No explicit maximum output count is imposed"
+        "meaning": "No explicit maximum output count is imposed",
+        "state": "known"
       },
       "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "subject": "Stash reflog entries"
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
     }
   }
 }

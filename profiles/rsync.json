@@ -1,17 +1,13 @@
 {
-  "command": [
-    "rsync"
-  ],
-  "description": "Copy and synchronize files locally or over a remote transport.",
   "categories": [
     {
-      "name": "Transfer",
       "description": "Control which files are copied and how directory trees are traversed.",
+      "name": "Transfer",
       "options": [
         {
+          "detail": "Equivalent to -rlptgoD. Preserves common file attributes and recurses into directories. ACLs, extended attributes, and hard links require separate options.",
           "flag": "--archive",
-          "summary": "Enable archive mode",
-          "detail": "Equivalent to -rlptgoD. Preserves common file attributes and recurses into directories. ACLs, extended attributes, and hard links require separate options."
+          "summary": "Enable archive mode"
         },
         {
           "flag": "--recursive",
@@ -28,13 +24,13 @@
       ]
     },
     {
-      "name": "Preview",
       "description": "Inspect proposed changes before running a transfer.",
+      "name": "Preview",
       "options": [
         {
+          "detail": "Combine with --itemize-changes to inspect planned updates. Selecting this option only inserts text into the shell buffer.",
           "flag": "--dry-run",
-          "summary": "Show a trial run without changing files",
-          "detail": "Combine with --itemize-changes to inspect planned updates. Selecting this option only inserts text into the shell buffer."
+          "summary": "Show a trial run without changing files"
         },
         {
           "flag": "--itemize-changes",
@@ -43,56 +39,39 @@
       ]
     },
     {
-      "name": "Filtering",
       "description": "Include and exclude paths using rsync pattern syntax.",
+      "name": "Filtering",
       "options": [
         {
+          "argument": "PATTERN",
+          "detail": "The cursor remains after the equals sign. Enter and quote the pattern as required by Bash.",
           "flag": "--exclude=",
-          "argument": "PATTERN",
           "summary": "Exclude matching paths",
-          "detail": "The cursor remains after the equals sign. Enter and quote the pattern as required by Bash."
-        },
-        {
-          "flag": "--include=",
-          "argument": "PATTERN",
-          "summary": "Include matching paths"
-        },
-        {
-          "flag": "--exclude-from=",
-          "argument": "FILE",
-          "summary": "Read exclusion patterns from a file"
-        }
-      ]
-    },
-    {
-      "name": "Output",
-      "description": "Control status and diagnostic output.",
-      "options": [
-        {
-          "flag": "--verbose",
-          "summary": "Increase output detail"
-        },
-        {
-          "flag": "--progress",
-          "summary": "Show transfer progress"
-        },
-        {
-          "flag": "--human-readable",
-          "summary": "Scale printed numbers by 1000; repeat for 1024",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Increment the printed-number readability level",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Rsync exclusion filter pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Rsync filter pattern excluding matching transfer paths; matching/anchoring rules follow rsync's filter grammar."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not append this CLI exclusion filter."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -109,41 +88,238 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
+                      "locator": "--exclude="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
+          "flag": "--include=",
+          "summary": "Include matching paths",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Rsync inclusion filter pattern",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "selected",
-                    "notation": "literal",
-                    "syntax": "--human-readable",
-                    "tokens": [
-                      "--human-readable"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Increment the printed-number readability level"
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Rsync filter pattern including matching paths according to ordered filter rules."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Do not append this CLI inclusion filter."
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "rsync"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.4.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
+                      "locator": "--include="
+                    }
+                  ]
                 }
               }
             ]
-          },
-          "detail": "rsync 3.4.1 defaults to level 1 (digit grouping). One occurrence selects level 2 using powers of 1000; a second selects level 3 using powers of 1024. Printed K/M/G/T/P letters do not by themselves identify the scale. The flag takes no number and does not change --bwlimit input units. Releases before 3.1.0 have different starting levels."
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "--exclude-from=",
+          "summary": "Read exclusion patterns from a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Rsync exclusion file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a file containing exclusion patterns; - reads standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not load an exclusion-pattern file through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "rsync"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.4.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
+                      "locator": "--exclude-from="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Control status and diagnostic output.",
+      "name": "Output",
+      "options": [
+        {
+          "flag": "--verbose",
+          "summary": "Increase output detail"
+        },
+        {
+          "flag": "--progress",
+          "summary": "Show transfer progress"
+        },
+        {
+          "detail": "rsync 3.4.1 defaults to level 1 (digit grouping). One occurrence selects level 2 using powers of 1000; a second selects level 3 using powers of 1024. Printed K/M/G/T/P letters do not by themselves identify the scale. The flag takes no number and does not change --bwlimit input units. Releases before 3.1.0 have different starting levels.",
+          "flag": "--human-readable",
+          "summary": "Scale printed numbers by 1000; repeat for 1024",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "rsync"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.4.1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Increment the printed-number readability level",
+                    "notation": "literal",
+                    "syntax": "--human-readable",
+                    "tokens": [
+                      "--human-readable"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Increment the printed-number readability level",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh",
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
         },
         {
           "flag": "--stats",
@@ -156,342 +332,332 @@
       ]
     },
     {
-      "name": "Network",
       "description": "Configure transport and bandwidth.",
+      "name": "Network",
       "options": [
         {
           "flag": "--compress",
           "summary": "Compress file data during transfer"
         },
         {
-          "flag": "--bwlimit=",
           "argument": "RATE",
+          "detail": "rsync 3.4.1: a bare rate uses 1024 bytes/second; fractions are allowed. Single-letter K/M/G/T/P and KiB/MiB/GiB/TiB/PiB use powers of 1024; KB/MB/GB/TB/PB use powers of 1000; B means bytes. Suffix letters are case-insensitive. The size grammar also allows a trailing +1 or -1 byte offset. Rates are rounded to KiB/second granularity; a nonzero limit cannot be smaller than 1024 bytes/second. Zero disables the limit. Do not append a literal /s suffix.",
+          "flag": "--bwlimit=",
           "summary": "Limit bandwidth in KiB/s when unsuffixed; 0 is unlimited",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "quantity",
-                "meaning": "Maximum socket transfer rate",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "rsync"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "3.4.1"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "kibibytes"
+                  "form": "kibibytes",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "grammar": "Nonnegative decimal magnitude; fractions are supported",
                     "id": "kibibytes",
                     "notation": "number",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "N",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1024",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ],
-                    "grammar": "Nonnegative decimal magnitude; fractions are supported"
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "bytes",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NB",
                     "tokens": [
                       "B"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "binary-k",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NK",
                     "tokens": [
                       "K",
                       "KiB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1024",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "decimal-k",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NKB",
                     "tokens": [
                       "KB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1000",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "binary-m",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NM",
                     "tokens": [
                       "M",
                       "MiB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1048576",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "decimal-m",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NMB",
                     "tokens": [
                       "MB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1000000",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "binary-g",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NG",
                     "tokens": [
                       "G",
                       "GiB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1073741824",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "decimal-g",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NGB",
                     "tokens": [
                       "GB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1000000000",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "binary-t",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NT",
                     "tokens": [
                       "T",
                       "TiB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1099511627776",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "decimal-t",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NTB",
                     "tokens": [
                       "TB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1000000000000",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "binary-p",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NP",
                     "tokens": [
                       "P",
                       "PiB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1125899906842624",
                       "per": "second"
-                    },
+                    }
+                  },
+                  {
                     "bounds": {
                       "min": "0"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
-                  },
-                  {
+                    "case": "insensitive",
                     "id": "decimal-p",
                     "notation": "suffix",
+                    "special_values": [
+                      {
+                        "meaning": "No bandwidth limit",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "NPB",
                     "tokens": [
                       "PB"
                     ],
-                    "case": "insensitive",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1000000000000000",
                       "per": "second"
-                    },
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No bandwidth limit"
-                      }
-                    ]
+                    }
                   },
                   {
+                    "grammar": "The documented size grammar permits a one-byte offset after scaling; the bandwidth result is rounded to a KiB/second granularity",
                     "id": "offset",
                     "notation": "expression",
                     "syntax": "N[SIZE_SUFFIX][+1|-1]",
-                    "grammar": "The documented size grammar permits a one-byte offset after scaling; the bandwidth result is rounded to a KiB/second granularity",
                     "unit": {
                       "base": "byte",
                       "multiplier": "1",
@@ -499,167 +665,177 @@
                     }
                   }
                 ],
+                "kind": "quantity",
+                "meaning": "Maximum socket transfer rate",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh",
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
                   "form": "kibibytes",
+                  "state": "known",
                   "value": "0"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "rsync 3.4.1: a bare rate uses 1024 bytes/second; fractions are allowed. Single-letter K/M/G/T/P and KiB/MiB/GiB/TiB/PiB use powers of 1024; KB/MB/GB/TB/PB use powers of 1000; B means bytes. Suffix letters are case-insensitive. The size grammar also allows a trailing +1 or -1 byte offset. Rates are rounded to KiB/second granularity; a nonzero limit cannot be smaller than 1024 bytes/second. Zero disables the limit. Do not append a literal /s suffix."
+          }
         },
         {
-          "flag": "--timeout=",
           "argument": "SECONDS",
+          "detail": "rsync 3.4.1: the value is an integer count of seconds without a unit suffix. No transferred data for this interval causes exit. The default is 0, meaning no I/O timeout; this is not the connection-establishment timeout.",
+          "flag": "--timeout=",
           "summary": "Set I/O inactivity timeout in seconds; 0 disables",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "duration",
-                "meaning": "Maximum I/O inactivity before exiting",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "rsync"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "3.4.1"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "seconds"
+                  "form": "seconds",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
+                    "bounds": {
+                      "min": "0"
+                    },
                     "id": "seconds",
                     "notation": "number",
+                    "special_values": [
+                      {
+                        "meaning": "Disable the I/O timeout",
+                        "value": "0"
+                      }
+                    ],
                     "syntax": "N",
                     "unit": {
                       "base": "second",
                       "multiplier": "1"
-                    },
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "Disable the I/O timeout"
-                      }
-                    ]
+                    }
                   }
                 ],
+                "kind": "duration",
+                "meaning": "Maximum I/O inactivity before exiting",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh",
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
                   "form": "seconds",
+                  "state": "known",
                   "value": "0"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "rsync 3.4.1: the value is an integer count of seconds without a unit suffix. No transferred data for this interval causes exit. The default is 0, meaning no I/O timeout; this is not the connection-establishment timeout."
+          }
         },
         {
-          "flag": "--rsh=",
           "argument": "COMMAND",
-          "summary": "Specify the remote shell command",
           "detail": "The command is entered manually as an option value. It is not invoked by the help browser. rsync 3.4.1: a remote-shell command and its arguments; shell words and any nested numerical options retain their owning command's rules. Any numerical subvalues follow the owning grammar's rules. Reference scope: 3.4.1.",
+          "flag": "--rsh=",
+          "summary": "Specify the remote shell command",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by rsync remote-shell command grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "rsync"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "3.4.1"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "grammar": "rsync 3.4.1: a remote-shell command and its arguments; shell words and any nested numerical options retain their owning command's rules",
                     "id": "grammar",
                     "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "rsync 3.4.1: a remote-shell command and its arguments; shell words and any nested numerical options retain their owning command's rules"
+                    "syntax": "VALUE"
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use RSYNC_RSH if set or the configured default remote shell"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
                 "grammar": {
                   "name": "rsync remote-shell command grammar",
                   "reference": {
-                    "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                    "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh"
+                    "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh",
+                    "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
                   }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by rsync remote-shell command grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--bwlimit, --max-size, --timeout, --human-readable and --rsh",
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use RSYNC_RSH if set or the configured default remote shell",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
@@ -668,8 +844,8 @@
       ]
     },
     {
-      "name": "Attributes",
       "description": "Preserve additional file metadata when supported by the filesystems.",
+      "name": "Attributes",
       "options": [
         {
           "flag": "--acls",
@@ -684,22 +860,146 @@
           "summary": "Preserve hard links"
         },
         {
+          "detail": "rsync 3.4.1: UID/GID numbers are account identifiers, not quantities. This flag takes no number and disables normal name-based user/group mapping.",
           "flag": "--numeric-ids",
           "summary": "Transfer numeric user and group identifiers",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "rsync"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.4.1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Transfer numeric user/group identity values",
+                    "notation": "literal",
+                    "syntax": "--numeric-ids",
+                    "tokens": [
+                      "--numeric-ids"
+                    ]
+                  }
+                ],
                 "kind": "enumeration",
                 "meaning": "Transfer numeric user/group identity values",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
-                      "locator": "--numeric-ids: numeric UID/GID transfer instead of name mapping"
+                      "locator": "--numeric-ids: numeric UID/GID transfer instead of name mapping",
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md"
                     }
-                  ]
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Deletion options affect destination data when the command is subsequently executed.",
+      "name": "Deletion",
+      "options": [
+        {
+          "detail": "Review the source and destination carefully. A dry run can show proposed deletions before execution.",
+          "flag": "--delete",
+          "summary": "Delete extraneous destination files"
+        },
+        {
+          "flag": "--delete-after",
+          "summary": "Delete extraneous files after transfer"
+        }
+      ]
+    },
+    {
+      "description": "Control file change detection.",
+      "name": "Comparison",
+      "options": [
+        {
+          "flag": "--checksum",
+          "summary": "Compare checksums instead of modification time and size"
+        },
+        {
+          "flag": "--size-only",
+          "summary": "Use file size to decide whether an update is needed"
+        }
+      ]
+    },
+    {
+      "description": "Retain partial transfers and backup copies.",
+      "name": "Recovery",
+      "options": [
+        {
+          "flag": "--partial",
+          "summary": "Keep partially transferred files"
+        },
+        {
+          "flag": "--backup",
+          "summary": "Keep backups of replaced destination files"
+        },
+        {
+          "argument": "DIRECTORY",
+          "flag": "--backup-dir=",
+          "summary": "Store backups in a separate directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Rsync backup directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path used with backup behavior for replaced/deleted destination files; relative paths resolve according to rsync's documented destination rules."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal backup location/naming rules when backups are enabled."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -716,91 +1016,31 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
-                },
-                "forms": [
-                  {
-                    "id": "selected",
-                    "notation": "literal",
-                    "syntax": "--numeric-ids",
-                    "tokens": [
-                      "--numeric-ids"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Transfer numeric user/group identity values"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
-                },
-                "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/RsyncProject/rsync/v3.4.1/rsync.1.md",
+                      "locator": "--backup-dir="
+                    }
+                  ]
                 }
               }
             ]
-          },
-          "detail": "rsync 3.4.1: UID/GID numbers are account identifiers, not quantities. This flag takes no number and disables normal name-based user/group mapping."
-        }
-      ]
-    },
-    {
-      "name": "Deletion",
-      "description": "Deletion options affect destination data when the command is subsequently executed.",
-      "options": [
-        {
-          "flag": "--delete",
-          "summary": "Delete extraneous destination files",
-          "detail": "Review the source and destination carefully. A dry run can show proposed deletions before execution."
-        },
-        {
-          "flag": "--delete-after",
-          "summary": "Delete extraneous files after transfer"
-        }
-      ]
-    },
-    {
-      "name": "Comparison",
-      "description": "Control file change detection.",
-      "options": [
-        {
-          "flag": "--checksum",
-          "summary": "Compare checksums instead of modification time and size"
-        },
-        {
-          "flag": "--size-only",
-          "summary": "Use file size to decide whether an update is needed"
-        }
-      ]
-    },
-    {
-      "name": "Recovery",
-      "description": "Retain partial transfers and backup copies.",
-      "options": [
-        {
-          "flag": "--partial",
-          "summary": "Keep partially transferred files"
-        },
-        {
-          "flag": "--backup",
-          "summary": "Keep backups of replaced destination files"
-        },
-        {
-          "flag": "--backup-dir=",
-          "argument": "DIRECTORY",
-          "summary": "Store backups in a separate directory"
+          }
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "rsync"
+  ],
+  "description": "Copy and synchronize files locally or over a remote transport."
 }

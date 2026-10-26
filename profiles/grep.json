@@ -1,12 +1,8 @@
 {
-  "command": [
-    "grep"
-  ],
-  "description": "Search text using GNU grep options.",
   "categories": [
     {
-      "name": "Matching",
       "description": "Choose the matching syntax and comparison rules.",
+      "name": "Matching",
       "options": [
         {
           "flag": "--ignore-case",
@@ -29,15 +25,75 @@
           "summary": "Select non-matching lines"
         },
         {
-          "flag": "--regexp=",
           "argument": "PATTERN",
-          "summary": "Specify a search pattern"
+          "flag": "--regexp=",
+          "summary": "Specify a search pattern",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Search pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Pattern interpreted by the selected basic/extended/Perl regexp or fixed-string mode; repeated patterns provide alternatives."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the positional pattern or patterns selected through other options."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: Matching Control --regexp"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
     {
-      "name": "Output",
       "description": "Choose the information printed for matches.",
+      "name": "Output",
       "options": [
         {
           "flag": "--line-number",
@@ -56,23 +112,44 @@
           "summary": "Print only matched portions of lines"
         },
         {
-          "flag": "--context=",
           "argument": "LINES",
+          "detail": "Nonnegative base-10 integer, without unit suffix. Zero adds no context. Counts apply separately before and after each match; overlapping groups are merged. Overflow saturates at the implementation's intmax_t maximum instead of imposing a smaller guessed fixed limit. Reference scope: GNU grep 3.11.",
+          "flag": "--context=",
           "summary": "Print surrounding context lines",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "count",
-                "meaning": "Leading and trailing context around a match",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://www.gnu.org/software/grep/manual/html_node/Context-Line-Control.html",
-                      "locator": "-C/--context: separate leading and trailing line counts"
-                    }
-                  ]
+                "meaning": "Context lines on each side of a match",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative base-10 integer, without unit suffix. Zero adds no context. Counts apply separately before and after each match; overlapping groups are merged. Overflow saturates at the implementation's intmax_t maximum instead of imposing a smaller guessed fixed limit.",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Do not add surrounding context lines"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Add no surrounding context through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -82,75 +159,183 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "3.11"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "accepted",
-                  "form": "lines"
-                },
-                "forms": [
-                  {
-                    "id": "lines",
-                    "notation": "number",
-                    "syntax": "N",
-                    "bounds": {
-                      "min": "0"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: context_length_arg xstrtoimax base 10 and overflow saturation"
                     },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No extra context lines"
-                      }
-                    ],
-                    "grammar": "Integer line count applied independently before and after matches"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Print no additional context unless another context option requests it"
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: Context Line Control --context"
+                    }
+                  ]
                 },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Lines before each match and lines after each match",
-                "investigation": "Verify the documented GNU grep behavior against a pinned release and relevant option interactions"
+                "subject": "Lines before and after each matching line"
               }
             ]
-          },
-          "detail": "GNU grep reference: N means up to N leading and N trailing context lines around each match, not a total of N lines. Overlapping groups are merged and a line is never printed twice. These options have no effect with --only-matching. Version applicability remains to be pinned."
+          }
         }
       ]
     },
     {
-      "name": "Files",
       "description": "Control recursive searching and file selection.",
+      "name": "Files",
       "options": [
         {
           "flag": "--recursive",
           "summary": "Search directories recursively"
         },
         {
-          "flag": "--include=",
           "argument": "GLOB",
-          "summary": "Search only matching file names"
+          "flag": "--include=",
+          "summary": "Search only matching file names",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Included filename glob",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename wildcard pattern using *, ? and bracket expressions; it does not specify file size or count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI inclusion glob is added."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: --include="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--exclude=",
           "argument": "GLOB",
-          "summary": "Skip matching file names"
+          "flag": "--exclude=",
+          "summary": "Skip matching file names",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded filename glob",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename wildcard pattern using *, ? and bracket expressions; it does not specify file size or count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI exclusion glob is added."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: --exclude="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "grep"
+  ],
+  "description": "Search text using GNU grep options."
 }

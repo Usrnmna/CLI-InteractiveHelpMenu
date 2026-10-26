@@ -1,74 +1,296 @@
 {
-  "command": [
-    "fd"
-  ],
-  "description": "fd shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "",
           "flag": "--hidden",
-          "argument": "",
           "summary": "Search hidden files and directories"
         },
         {
+          "argument": "",
           "flag": "-H",
-          "argument": "",
           "summary": "Search hidden files and directories"
         },
         {
+          "argument": "",
           "flag": "--no-ignore",
-          "argument": "",
           "summary": "Include ignored paths"
         },
         {
+          "argument": "",
           "flag": "-I",
-          "argument": "",
           "summary": "Include ignored paths"
         },
         {
+          "argument": "TYPE",
           "flag": "--type",
-          "argument": "TYPE",
-          "summary": "Select the entry type"
-        },
-        {
-          "flag": "-t",
-          "argument": "TYPE",
           "summary": "Select the entry type",
-          "attached": true
-        },
-        {
-          "flag": "--extension",
-          "argument": "EXT",
-          "summary": "Select a filename extension"
-        },
-        {
-          "flag": "-e",
-          "argument": "EXT",
-          "summary": "Select a filename extension",
-          "attached": true
-        },
-        {
-          "flag": "--max-depth",
-          "argument": "DEPTH",
-          "summary": "Limit traversal depth",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "ref": "maximum-depth"
+                "kind": "enumeration",
+                "meaning": "Filesystem entry type selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Type names/aliases: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe and b/block-device, c/char-device where supported; repeat type selection as documented. These are entry kinds, not numerical levels."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not restrict to a selected entry type."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--type"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited."
+          }
         },
         {
-          "flag": "-d",
-          "argument": "DEPTH",
-          "summary": "Limit traversal depth",
+          "argument": "TYPE",
           "attached": true,
+          "flag": "-t",
+          "summary": "Select the entry type",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Filesystem entry type selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Type names/aliases: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe and b/block-device, c/char-device where supported; repeat type selection as documented. These are entry kinds, not numerical levels."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not restrict to a selected entry type."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--type"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "EXT",
+          "flag": "--extension",
+          "summary": "Select a filename extension",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filename extension",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Extension text, optionally preceded by a dot; repeated extension filters select matching filenames."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add an extension restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--extension"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "EXT",
+          "attached": true,
+          "flag": "-e",
+          "summary": "Select a filename extension",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filename extension",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Extension text, optionally preceded by a dot; repeated extension filters select matching filenames."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add an extension restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--extension"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DEPTH",
+          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited.",
+          "flag": "--max-depth",
+          "summary": "Limit traversal depth",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -76,118 +298,256 @@
                 "ref": "maximum-depth"
               }
             ]
-          },
-          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited."
+          }
         },
         {
+          "argument": "DEPTH",
+          "attached": true,
+          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited.",
+          "flag": "-d",
+          "summary": "Limit traversal depth",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "maximum-depth"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
           "flag": "--exclude",
-          "argument": "PATTERN",
-          "summary": "Exclude a glob pattern"
-        },
-        {
-          "flag": "-E",
-          "argument": "PATTERN",
           "summary": "Exclude a glob pattern",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded path glob",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Gitignore-style glob excluding matching paths; repeated exclusions are combined as documented."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI exclusion glob is added; standard ignore rules remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--exclude"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--full-path",
+          "argument": "PATTERN",
+          "attached": true,
+          "flag": "-E",
+          "summary": "Exclude a glob pattern",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded path glob",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Gitignore-style glob excluding matching paths; repeated exclusions are combined as documented."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI exclusion glob is added; standard ignore rules remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
+                      "locator": "--exclude"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "",
+          "flag": "--full-path",
           "summary": "Match against full paths"
         },
         {
-          "flag": "--absolute-path",
           "argument": "",
+          "flag": "--absolute-path",
           "summary": "Display absolute paths"
         },
         {
-          "flag": "--glob",
           "argument": "",
+          "flag": "--glob",
           "summary": "Interpret the search pattern as a glob"
         },
         {
-          "flag": "--fixed-strings",
           "argument": "",
+          "flag": "--fixed-strings",
           "summary": "Interpret the search pattern literally"
         },
         {
-          "flag": "--case-sensitive",
           "argument": "",
+          "flag": "--case-sensitive",
           "summary": "Match case sensitively"
         },
         {
-          "flag": "--ignore-case",
           "argument": "",
+          "flag": "--ignore-case",
           "summary": "Match without case sensitivity"
         },
         {
-          "flag": "--print0",
           "argument": "",
+          "flag": "--print0",
           "summary": "Separate paths with NUL bytes"
         }
       ]
     }
   ],
+  "command": [
+    "fd"
+  ],
+  "description": "fd shell argument reference.",
   "stop_at_positional": true,
   "value_definitions": {
     "maximum-depth": {
-      "kind": "count",
-      "meaning": "Maximum directory traversal depth",
-      "review": {
-        "status": "verified",
-        "references": [
-          {
-            "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
-            "locator": "--max-depth: directory levels; unlimited when absent"
-          }
-        ]
-      },
       "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
         "implementation": {
           "state": "known",
           "values": [
             "fd"
           ]
         },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
         "version": {
           "state": "known",
           "values": [
             "10.2.0"
           ]
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
         }
       },
       "bare": {
-        "state": "accepted",
-        "form": "levels"
+        "form": "levels",
+        "state": "accepted"
       },
       "forms": [
         {
-          "id": "levels",
-          "notation": "number",
-          "syntax": "N",
           "bounds": {
             "min": "0"
           },
-          "grammar": "Nonnegative integer directory-level depth"
+          "grammar": "Nonnegative integer directory-level depth",
+          "id": "levels",
+          "notation": "number",
+          "syntax": "N"
         }
       ],
+      "kind": "count",
+      "meaning": "Maximum directory traversal depth",
+      "review": {
+        "references": [
+          {
+            "locator": "--max-depth: directory levels; unlimited when absent",
+            "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Directory traversal levels relative to the search root",
       "when_absent": {
-        "state": "known",
-        "meaning": "There is no search-depth limit"
+        "meaning": "There is no search-depth limit",
+        "state": "known"
       },
       "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "subject": "Directory traversal levels relative to the search root"
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
     }
   }
 }

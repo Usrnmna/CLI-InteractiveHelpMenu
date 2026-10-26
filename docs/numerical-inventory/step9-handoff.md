@@ -2,6 +2,10 @@
 
 [Implementation inventory](README.md) · [Integrated verification](step8-verification.md) · [Repository policy guide](../development.md#repository-configuration)
 
+This account retains the Step 9 configuration-review snapshot. The subsequent
+[maintained debt resolution](debt-resolution.md) completes its recorded strict
+debt without reopening configuration or supplying native acceptance evidence.
+
 Step 9 is complete within the final configuration-review and local-handoff scope.
 The only source-policy correction excludes checkout-local installed application
 data from release-source selection. Numerical migration, runtime integration and

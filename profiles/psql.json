@@ -1,43 +1,145 @@
 {
-  "command": [
-    "psql"
-  ],
-  "description": "psql shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "HOST",
           "flag": "--host",
-          "argument": "HOST",
-          "summary": "Select the database server"
-        },
-        {
-          "flag": "-h",
-          "argument": "HOST",
           "summary": "Select the database server",
-          "attached": true
-        },
-        {
-          "flag": "--port",
-          "argument": "PORT",
-          "summary": "Select the server port",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "ref": "server-port"
+                "kind": "nonnumerical",
+                "meaning": "PostgreSQL server host/socket location",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Host name, address or Unix socket directory, with comma-separated hosts supported by libpq; a leading slash denotes a socket directory where supported."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use libpq service/environment/default host selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--host -h"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: PORT is a TCP port number or local Unix-domain socket filename extension, not a measured quantity. Defaults come from PGPORT or the compile-time setting, usually 5432. Exact patch applicability remains unpinned."
+          }
         },
         {
-          "flag": "-p",
-          "argument": "PORT",
-          "summary": "Select the server port",
+          "argument": "HOST",
           "attached": true,
+          "flag": "-h",
+          "summary": "Select the database server",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PostgreSQL server host/socket location",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Host name, address or Unix socket directory, with comma-separated hosts supported by libpq; a leading slash denotes a socket directory where supported."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use libpq service/environment/default host selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--host -h"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PORT",
+          "detail": "Decimal integer port identifier, without unit suffix; zero/negative ports are invalid. A single port applies to all hosts or a comma-separated port list matches the host list. Empty per-host entries use the default; list lengths must match unless one port is shared. Each explicit numeric port must be 1..65535. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "--port",
+          "summary": "Select the server port",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -45,23 +147,158 @@
                 "ref": "server-port"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: PORT is a TCP port number or local Unix-domain socket filename extension, not a measured quantity. Defaults come from PGPORT or the compile-time setting, usually 5432. Exact patch applicability remains unpinned."
+          }
         },
         {
+          "argument": "PORT",
+          "attached": true,
+          "detail": "Decimal integer port identifier, without unit suffix; zero/negative ports are invalid. A single port applies to all hosts or a comma-separated port list matches the host list. Empty per-host entries use the default; list lengths must match unless one port is shared. Each explicit numeric port must be 1..65535. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "-p",
+          "summary": "Select the server port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "server-port"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "USER",
           "flag": "--username",
-          "argument": "USER",
-          "summary": "Select the database user"
-        },
-        {
-          "flag": "-U",
-          "argument": "USER",
           "summary": "Select the database user",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Database login role name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Database user/role name string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use libpq user/environment/default role selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--username -U"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--dbname",
+          "argument": "USER",
+          "attached": true,
+          "flag": "-U",
+          "summary": "Select the database user",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Database login role name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Database user/role name string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use libpq user/environment/default role selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--username -U"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "DBNAME",
+          "detail": "Database name or a conninfo keyword=value string/connection URI when the operand contains the recognized conninfo syntax. Embedded hosts, ports, timeouts and other keys retain libpq's field-specific meanings; a database name has no universal numerical unit. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "--dbname",
           "summary": "Select the database or connection string",
           "value_semantics": {
             "schema_version": 1,
@@ -70,14 +307,14 @@
                 "ref": "database-request"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: a database name, connection string or URI; embedded port and configuration fields retain libpq's meanings. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "-d",
           "argument": "DBNAME",
-          "summary": "Select the database",
           "attached": true,
+          "detail": "Database name or a conninfo keyword=value string/connection URI when the operand contains the recognized conninfo syntax. Embedded hosts, ports, timeouts and other keys retain libpq's field-specific meanings; a database name has no universal numerical unit. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "-d",
+          "summary": "Select the database",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -85,12 +322,12 @@
                 "ref": "database-request"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: a database name, connection string or URI; embedded port and configuration fields retain libpq's meanings. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
+          "argument": "COMMAND",
+          "detail": "A server-parsable SQL command string without psql-specific mixing, or a single psql backslash command. Multiple SQL statements in one string are one server request; repeated -c/-f options supply additional requests. Numerical literals retain SQL/command-specific types and meanings; this is not an operating-system shell command. Reference scope: PostgreSQL psql 17.4.",
           "flag": "--command",
-          "argument": "COMMAND",
           "summary": "Supply SQL or one psql backslash command",
           "value_semantics": {
             "schema_version": 1,
@@ -99,14 +336,14 @@
                 "ref": "command-string"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: one SQL command string without psql-specific syntax, or one backslash command; it is not an operating-system shell command. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "-c",
           "argument": "COMMAND",
-          "summary": "Supply SQL or one psql backslash command",
           "attached": true,
+          "detail": "A server-parsable SQL command string without psql-specific mixing, or a single psql backslash command. Multiple SQL statements in one string are one server request; repeated -c/-f options supply additional requests. Numerical literals retain SQL/command-specific types and meanings; this is not an operating-system shell command. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "-c",
+          "summary": "Supply SQL or one psql backslash command",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -114,43 +351,163 @@
                 "ref": "command-string"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: one SQL command string without psql-specific syntax, or one backslash command; it is not an operating-system shell command. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
+          "argument": "FILE",
           "flag": "--file",
-          "argument": "FILE",
-          "summary": "Read input commands from a file"
-        },
-        {
-          "flag": "-f",
-          "argument": "FILE",
           "summary": "Read input commands from a file",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "psql command input file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing SQL/psql input; - reads standard input. File contents follow SQL and psql command grammar."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read commands from the normal input/other selected command sources."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--file -f"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "FILE",
+          "attached": true,
+          "flag": "-f",
+          "summary": "Read input commands from a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "psql command input file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing SQL/psql input; - reads standard input. File contents follow SQL and psql command grammar."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read commands from the normal input/other selected command sources."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "17.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+                      "locator": "--file -f"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
           "flag": "--no-psqlrc",
-          "argument": "",
           "summary": "Skip startup files"
         },
         {
+          "argument": "",
           "flag": "-X",
-          "argument": "",
           "summary": "Skip startup files"
         },
         {
-          "flag": "--no-password",
           "argument": "",
+          "flag": "--no-password",
           "summary": "Never prompt for a password"
         },
         {
-          "flag": "--password",
           "argument": "",
+          "flag": "--password",
           "summary": "Prompt for a password"
         },
         {
+          "argument": "NAME=VALUE",
+          "detail": "NAME=VALUE sets a psql variable; NAME alone unsets it and NAME= sets an empty value. Names/values use psql variable grammar, including key-specific boolean/integer settings; no universal numerical unit is implied. Reference scope: PostgreSQL psql 17.4.",
           "flag": "--set",
-          "argument": "NAME=VALUE",
           "summary": "Set a psql variable",
           "value_semantics": {
             "schema_version": 1,
@@ -159,14 +516,14 @@
                 "ref": "variables"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: NAME=VALUE sets a variable, NAME alone unsets it, and NAME= sets an empty value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "-v",
           "argument": "NAME=VALUE",
-          "summary": "Set a psql variable",
           "attached": true,
+          "detail": "NAME=VALUE sets a psql variable; NAME alone unsets it and NAME= sets an empty value. Names/values use psql variable grammar, including key-specific boolean/integer settings; no universal numerical unit is implied. Reference scope: PostgreSQL psql 17.4.",
+          "flag": "-v",
+          "summary": "Set a psql variable",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -174,100 +531,53 @@
                 "ref": "variables"
               }
             ]
-          },
-          "detail": "PostgreSQL 17 reference: NAME=VALUE sets a variable, NAME alone unsets it, and NAME= sets an empty value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "--tuples-only",
           "argument": "",
+          "flag": "--tuples-only",
           "summary": "Omit headings and footers"
         },
         {
-          "flag": "--csv",
           "argument": "",
+          "flag": "--csv",
           "summary": "Use CSV output"
         },
         {
-          "flag": "--single-transaction",
           "argument": "",
+          "flag": "--single-transaction",
           "summary": "Wrap input in one transaction"
         }
       ]
     }
   ],
+  "command": [
+    "psql"
+  ],
+  "description": "psql shell argument reference.",
   "value_definitions": {
-    "variables": {
-      "kind": "delegated",
-      "meaning": "Value interpreted by psql variable assignment",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://www.postgresql.org/docs/17/app-psql.html",
-            "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-          }
-        ]
-      },
-      "applicability": {
-        "implementation": {
-          "state": "known",
-          "values": [
-            "PostgreSQL psql"
-          ]
-        },
-        "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
-        }
-      },
-      "bare": {
-        "state": "not_applicable",
-        "reason": "The owning grammar determines any numerical interpretation"
-      },
-      "forms": [
-        {
-          "id": "grammar",
-          "notation": "expression",
-          "syntax": "VALUE",
-          "grammar": "PostgreSQL 17 reference: NAME=VALUE sets a variable, NAME alone unsets it, and NAME= sets an empty value"
-        }
-      ],
-      "when_absent": {
-        "state": "known",
-        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-      },
-      "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "grammar": {
-        "name": "psql variable assignment",
-        "reference": {
-          "source": "https://www.postgresql.org/docs/17/app-psql.html",
-          "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-        }
-      },
-      "investigation": "Pin the PostgreSQL client patch release and connection/variable grammar before extending verified applicability"
-    },
     "command-string": {
       "kind": "delegated",
-      "meaning": "Value interpreted by SQL or psql backslash-command grammar",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://www.postgresql.org/docs/17/app-psql.html",
-            "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-          }
-        ]
+      "meaning": "SQL or psql backslash-command grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "A server-parsable SQL command string without psql-specific mixing, or a single psql backslash command. Multiple SQL statements in one string are one server request; repeated -c/-f options supply additional requests. Numerical literals retain SQL/command-specific types and meanings; this is not an operating-system shell command."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Read commands from normal input or other explicitly selected command/file sources."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
       },
       "applicability": {
         "implementation": {
@@ -277,119 +587,59 @@
           ]
         },
         "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+          "state": "known",
+          "values": [
+            "17.4"
+          ]
         },
         "platform": {
           "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
         },
         "chip": {
           "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
         }
       },
-      "bare": {
-        "state": "not_applicable",
-        "reason": "The owning grammar determines any numerical interpretation"
-      },
-      "forms": [
-        {
-          "id": "grammar",
-          "notation": "expression",
-          "syntax": "VALUE",
-          "grammar": "PostgreSQL 17 reference: one SQL command string without psql-specific syntax, or one backslash command; it is not an operating-system shell command"
-        }
-      ],
-      "when_absent": {
-        "state": "known",
-        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-      },
-      "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+            "locator": "psql -d/-c/-v and variable processing"
+          }
+        ]
       },
       "grammar": {
         "name": "SQL or psql backslash-command grammar",
         "reference": {
-          "source": "https://www.postgresql.org/docs/17/app-psql.html",
-          "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
+          "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+          "locator": "psql -d/-c/-v and variable processing"
         }
-      },
-      "investigation": "Pin the PostgreSQL client patch release and connection/variable grammar before extending verified applicability"
+      }
     },
     "database-request": {
       "kind": "delegated",
-      "meaning": "Value interpreted by libpq database/connection grammar",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://www.postgresql.org/docs/17/app-psql.html",
-            "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-          }
-        ]
-      },
-      "applicability": {
-        "implementation": {
-          "state": "known",
-          "values": [
-            "PostgreSQL psql"
-          ]
-        },
-        "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
-        }
-      },
+      "meaning": "libpq connection/database grammar",
       "bare": {
         "state": "not_applicable",
-        "reason": "The owning grammar determines any numerical interpretation"
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
       },
       "forms": [
         {
-          "id": "grammar",
+          "id": "text",
           "notation": "expression",
           "syntax": "VALUE",
-          "grammar": "PostgreSQL 17 reference: a database name, connection string or URI; embedded port and configuration fields retain libpq's meanings"
+          "grammar": "Database name or a conninfo keyword=value string/connection URI when the operand contains the recognized conninfo syntax. Embedded hosts, ports, timeouts and other keys retain libpq's field-specific meanings; a database name has no universal numerical unit."
         }
       ],
       "when_absent": {
         "state": "known",
-        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+        "meaning": "Use libpq service/environment defaults; the database commonly defaults to the selected role name."
       },
       "when_value_omitted": {
         "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "grammar": {
-        "name": "libpq database/connection grammar",
-        "reference": {
-          "source": "https://www.postgresql.org/docs/17/app-psql.html",
-          "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-        }
-      },
-      "investigation": "Pin the PostgreSQL client patch release and connection/variable grammar before extending verified applicability"
-    },
-    "server-port": {
-      "kind": "identifier",
-      "meaning": "PostgreSQL server port/socket identifier",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://www.postgresql.org/docs/17/app-psql.html",
-            "locator": "PostgreSQL 17 documentation series: -p/-d/-c/-v; exact patch applicability not pinned"
-          }
-        ]
+        "reason": "The option requires its operand"
       },
       "applicability": {
         "implementation": {
@@ -399,18 +649,40 @@
           ]
         },
         "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+          "state": "known",
+          "values": [
+            "17.4"
+          ]
         },
         "platform": {
           "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
         },
         "chip": {
           "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
         }
       },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+            "locator": "psql -d/-c/-v and variable processing"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "libpq connection/database grammar",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+          "locator": "psql -d/-c/-v and variable processing"
+        }
+      }
+    },
+    "server-port": {
+      "kind": "identifier",
+      "meaning": "PostgreSQL server port/socket identifier",
       "bare": {
         "state": "accepted",
         "form": "port"
@@ -420,19 +692,129 @@
           "id": "port",
           "notation": "number",
           "syntax": "N",
-          "grammar": "Port identifier or Unix-domain socket filename extension"
+          "grammar": "Decimal integer port identifier, without unit suffix; zero/negative ports are invalid.",
+          "bounds": {
+            "min": "1",
+            "max": "65535"
+          }
+        },
+        {
+          "id": "ports",
+          "notation": "expression",
+          "syntax": "PORT[,PORT...]",
+          "grammar": "A single port applies to all hosts or a comma-separated port list matches the host list. Empty per-host entries use the default; list lengths must match unless one port is shared. Each explicit numeric port must be 1..65535."
         }
       ],
       "when_absent": {
         "state": "known",
-        "meaning": "Use PGPORT or the compile-time default, usually 5432"
+        "meaning": "Use PGPORT/service or the compile-time default, normally 5432."
       },
       "when_value_omitted": {
         "state": "not_accepted",
-        "reason": "This option requires an operand"
+        "reason": "The option requires its operand"
       },
-      "subject": "TCP ports or Unix-domain socket filename extensions",
-      "investigation": "Pin exact PostgreSQL patch applicability and accepted bounds"
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "17.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+            "locator": "--port server/socket naming"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/src/interfaces/libpq/fe-connect.c",
+            "locator": "conninfo host/port lists and thisport 1..65535 validation"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/libpq.sgml",
+            "locator": "Connection Parameter Key Words port"
+          }
+        ]
+      },
+      "subject": "TCP ports or Unix-domain socket filename suffixes"
+    },
+    "variables": {
+      "kind": "delegated",
+      "meaning": "psql variable assignment grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "NAME=VALUE sets a psql variable; NAME alone unsets it and NAME= sets an empty value. Names/values use psql variable grammar, including key-specific boolean/integer settings; no universal numerical unit is implied."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not add a CLI variable assignment; built-in/startup variable behavior remains applicable."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "17.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+            "locator": "psql -d/-c/-v and variable processing"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "psql variable assignment grammar",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
+          "locator": "psql -d/-c/-v and variable processing"
+        }
+      }
     }
   }
 }

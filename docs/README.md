@@ -89,6 +89,8 @@ defines both formats.
   maps acceptance criteria to passive evidence, the scalar-arity repair and unresolved native/migration limits.
 - [Final numerical-work configuration review and local handoff](numerical-inventory/step9-handoff.md)
   records effective repository policies, the focused source-selection correction, current debt and verification limits.
+- [Maintained numerical contract debt resolution](numerical-inventory/debt-resolution.md)
+  records the later strict-completeness migration, source corrections, unchanged checks and remaining external/native limits.
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

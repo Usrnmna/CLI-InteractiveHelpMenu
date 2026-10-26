@@ -1,54 +1,38 @@
 {
-  "command": [
-    "podman",
-    "build"
-  ],
-  "description": "podman build shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "NAME",
           "flag": "--tag",
-          "argument": "NAME",
-          "summary": "Tag the resulting image"
-        },
-        {
-          "flag": "-t",
-          "argument": "NAME",
           "summary": "Tag the resulting image",
-          "attached": true
-        },
-        {
-          "flag": "--file",
-          "argument": "FILE",
-          "summary": "Select a Containerfile"
-        },
-        {
-          "flag": "-f",
-          "argument": "FILE",
-          "summary": "Select a Containerfile",
-          "attached": true
-        },
-        {
-          "flag": "--build-arg",
-          "argument": "KEY=VALUE",
-          "summary": "Set a build argument",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by Containerfile build-argument grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
-                      "locator": "--build-arg interpolates Containerfile instructions"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Container image name/tag",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Image reference name with an optional tag, resolved by Podman's image naming rules; tag digits are identifiers."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not assign a CLI-specified name/tag to the resulting image."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -65,73 +49,544 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--tag -t"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "attached": true,
+          "flag": "-t",
+          "summary": "Tag the resulting image",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Container image name/tag",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit"
+                    "grammar": "Image reference name with an optional tag, resolved by Podman's image naming rules; tag digits are identifiers."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Do not assign a CLI-specified name/tag to the resulting image."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": "Containerfile build-argument grammar",
-                  "reference": {
-                    "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
-                    "locator": "--build-arg interpolates Containerfile instructions"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--tag -t"
+                    }
+                  ]
                 }
               }
             ]
-          },
-          "detail": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2."
+          }
         },
         {
-          "flag": "--no-cache",
+          "argument": "FILE",
+          "flag": "--file",
+          "summary": "Select a Containerfile",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Containerfile source path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a Containerfile/Dockerfile; - selects standard input where the command supports it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the context's default Containerfile/Dockerfile discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--file -f"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "attached": true,
+          "flag": "-f",
+          "summary": "Select a Containerfile",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Containerfile source path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a Containerfile/Dockerfile; - selects standard input where the command supports it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the context's default Containerfile/Dockerfile discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--file -f"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY=VALUE",
+          "detail": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "flag": "--build-arg",
+          "summary": "Set a build argument",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "Containerfile build-argument grammar",
+                  "reference": {
+                    "locator": "--build-arg interpolates Containerfile instructions",
+                    "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by Containerfile build-argument grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--build-arg interpolates Containerfile instructions",
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "",
+          "flag": "--no-cache",
           "summary": "Disable build cache"
         },
         {
-          "flag": "--pull",
           "argument": "POLICY",
           "argument_optional": true,
-          "summary": "Select the image pull policy"
+          "flag": "--pull",
+          "summary": "Select the image pull policy",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Base-image pull policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Attempt to pull the image"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "missing",
+                    "tokens": [
+                      "missing"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Pull only when the image is not present locally"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use only local images"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "newer",
+                    "tokens": [
+                      "newer"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Pull when a newer image is available"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use missing."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "A supplied --pull without POLICY selects always."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--pull"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--target",
           "argument": "STAGE",
-          "summary": "Select the final build stage"
+          "flag": "--target",
+          "summary": "Select the final build stage",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Final build-stage name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Named stage from an AS declaration in the Containerfile."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Build the final stage."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--target"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--platform",
           "argument": "PLATFORM",
-          "summary": "Select the target platform"
+          "flag": "--platform",
+          "summary": "Select the target platform",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Target image platform",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "OS/architecture[/variant] identifier, optionally repeated or comma-separated as documented; it does not convert numerical values or promise emulator availability."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the host's normal platform selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.4.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
+                      "locator": "--platform"
+                    }
+                  ]
+                },
+                "subject": "OCI image platforms"
+              }
+            ]
+          }
         },
         {
-          "flag": "--quiet",
           "argument": "",
+          "flag": "--quiet",
           "summary": "Reduce build output"
         }
       ]
     }
   ],
+  "command": [
+    "podman",
+    "build"
+  ],
+  "description": "podman build shell argument reference.",
   "stop_at_positional": true
 }

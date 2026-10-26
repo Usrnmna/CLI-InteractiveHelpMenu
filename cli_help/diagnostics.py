@@ -185,6 +185,7 @@ def inspect_cache(command, executable_word, invocation, settings, registry):
     name = Path(executable_word).name
     guarded = name in {"yq", "yarn", "esptool", "esptool.py"}
     needs_identity = guarded or bool(invocation.module and settings.mode == "auto")
+    manual_scope = None
     if invocation.module:
         arguments, manual_name = module_help_route(invocation.module, tuple(command[1:]), invocation.interpreter_options)
     else:
@@ -196,6 +197,7 @@ def inspect_cache(command, executable_word, invocation, settings, registry):
             summary["refresh_guidance"] = "Supply or edit an explicit static profile, or configure a reviewed driver route."
             return summary, None
         arguments, manual_name = list(route.arguments), route.manual
+        manual_scope = route.manual_scope
         if name == "pytest" and len(command) == 1:
             arguments = ["--help", "--noconftest"]
     executable = shutil.which(executable_word)
@@ -205,7 +207,7 @@ def inspect_cache(command, executable_word, invocation, settings, registry):
     manual = shutil.which("man")
     expected = cache_identity(command, os.path.abspath(executable), arguments, manual_name,
                               os.path.abspath(manual) if manual else None, settings,
-                              invocation.module, invocation.interpreter_options)
+                              invocation.module, invocation.interpreter_options, manual_scope)
     summary["status"] = "miss"
     candidates = []
     try:

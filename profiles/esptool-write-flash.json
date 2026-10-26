@@ -1,246 +1,83 @@
 {
-  "command": [
-    "esptool",
-    "write-flash"
-  ],
-  "description": "Options for esptool write-flash. esptool v5 or newer, hyphenated CLI; no automatic rewrite to legacy spellings. ADDRESS is a byte offset (decimal or base-prefixed, such as 0x1000); FILE is its filename. Enter complete ADDRESS FILE pairs. Numerical tables are verified only for 5.0.2.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
-          "flag": "--flash-mode",
           "argument": "MODE",
           "argument_optional": false,
-          "summary": "Set flash mode"
-        },
-        {
-          "flag": "--flash-size",
-          "argument": "SIZE",
-          "argument_optional": false,
-          "summary": "Set flash size; literal 4MB means 4 MiB",
+          "flag": "--flash-mode",
+          "summary": "Set flash mode",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "quantity",
-                "meaning": "SPI flash size encoded in a bootable image header",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash size choices and ESPTOOL_FS default"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "esptool"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "5.0.2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "known",
-                    "values": [
-                      "ESP8266"
-                    ]
-                  }
-                },
+                "kind": "enumeration",
+                "meaning": "Flash I/O mode",
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "size-256kb",
+                    "id": "choice-1",
                     "notation": "literal",
-                    "syntax": "256KB",
+                    "syntax": "qio",
                     "tokens": [
-                      "256KB"
+                      "qio"
                     ],
                     "case": "sensitive",
-                    "meaning": "Flash size 262144 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "262144"
-                    }
+                    "meaning": "Quad I/O"
                   },
                   {
-                    "id": "size-512kb",
+                    "id": "choice-2",
                     "notation": "literal",
-                    "syntax": "512KB",
+                    "syntax": "qout",
                     "tokens": [
-                      "512KB"
+                      "qout"
                     ],
                     "case": "sensitive",
-                    "meaning": "Flash size 524288 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "524288"
-                    }
+                    "meaning": "Quad output"
                   },
                   {
-                    "id": "size-1mb",
+                    "id": "choice-3",
                     "notation": "literal",
-                    "syntax": "1MB",
+                    "syntax": "dio",
                     "tokens": [
-                      "1MB"
+                      "dio"
                     ],
                     "case": "sensitive",
-                    "meaning": "Flash size 1048576 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "1048576"
-                    }
+                    "meaning": "Dual I/O"
                   },
                   {
-                    "id": "size-2mb",
+                    "id": "choice-4",
                     "notation": "literal",
-                    "syntax": "2MB",
+                    "syntax": "dout",
                     "tokens": [
-                      "2MB"
+                      "dout"
                     ],
                     "case": "sensitive",
-                    "meaning": "Flash size 2097152 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "2097152"
-                    }
+                    "meaning": "Dual output"
                   },
                   {
-                    "id": "size-4mb",
-                    "notation": "literal",
-                    "syntax": "4MB",
-                    "tokens": [
-                      "4MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 4194304 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "4194304"
-                    }
-                  },
-                  {
-                    "id": "size-2mb-c1",
-                    "notation": "literal",
-                    "syntax": "2MB-c1",
-                    "tokens": [
-                      "2MB-c1"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 2097152 bytes; ESP8266 c1 layout",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "2097152"
-                    }
-                  },
-                  {
-                    "id": "size-4mb-c1",
-                    "notation": "literal",
-                    "syntax": "4MB-c1",
-                    "tokens": [
-                      "4MB-c1"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 4194304 bytes; ESP8266 c1 layout",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "4194304"
-                    }
-                  },
-                  {
-                    "id": "size-8mb",
-                    "notation": "literal",
-                    "syntax": "8MB",
-                    "tokens": [
-                      "8MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 8388608 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "8388608"
-                    }
-                  },
-                  {
-                    "id": "size-16mb",
-                    "notation": "literal",
-                    "syntax": "16MB",
-                    "tokens": [
-                      "16MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 16777216 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "16777216"
-                    }
-                  },
-                  {
-                    "id": "keep",
+                    "id": "choice-5",
                     "notation": "literal",
                     "syntax": "keep",
                     "tokens": [
                       "keep"
                     ],
                     "case": "sensitive",
-                    "meaning": "Keep the bootable image header's size",
-                    "sentinel": true
-                  },
-                  {
-                    "id": "detect",
-                    "notation": "literal",
-                    "syntax": "detect",
-                    "tokens": [
-                      "detect"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
-                    "sentinel": true
+                    "meaning": "Preserve the image header's existing flash mode"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size"
+                  "meaning": "Preserve the existing header mode unless environment/configuration supplies an override."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              },
-              {
-                "kind": "quantity",
-                "meaning": "SPI flash size encoded in a bootable image header",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash size choices and ESPTOOL_FS default"
-                    }
-                  ]
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -257,8 +94,240 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
+                      "locator": "flash mode choices and image-header scope"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SIZE",
+          "argument_optional": false,
+          "detail": "esptool 5.0.2: use exact chip-specific tokens, not an arbitrary number. MB tokens denote MiB (1048576 bytes); ESP8266 KB tokens denote KiB. ESP8266 also has -c1 layout tokens; ESP32-S2/S3/P4 permit additional larger sizes. keep preserves the image header; detect reads flash ID and the documented detection-failure fallback is 4MB. The default is keep unless ESPTOOL_FS overrides it. These fields apply to a bootable-image header at the chip's bootloader offset; supported sizes depend on chip, ROM/stub and flash hardware. Other releases require verification.",
+          "flag": "--flash-size",
+          "summary": "Set flash size; literal 4MB means 4 MiB",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "state": "known",
+                    "values": [
+                      "ESP8266"
+                    ]
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "esptool"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.0.2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "size-256kb",
+                    "meaning": "Flash size 262144 bytes",
+                    "notation": "literal",
+                    "syntax": "256KB",
+                    "tokens": [
+                      "256KB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "262144"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-512kb",
+                    "meaning": "Flash size 524288 bytes",
+                    "notation": "literal",
+                    "syntax": "512KB",
+                    "tokens": [
+                      "512KB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "524288"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-1mb",
+                    "meaning": "Flash size 1048576 bytes",
+                    "notation": "literal",
+                    "syntax": "1MB",
+                    "tokens": [
+                      "1MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-2mb",
+                    "meaning": "Flash size 2097152 bytes",
+                    "notation": "literal",
+                    "syntax": "2MB",
+                    "tokens": [
+                      "2MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2097152"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-4mb",
+                    "meaning": "Flash size 4194304 bytes",
+                    "notation": "literal",
+                    "syntax": "4MB",
+                    "tokens": [
+                      "4MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "4194304"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-2mb-c1",
+                    "meaning": "Flash size 2097152 bytes; ESP8266 c1 layout",
+                    "notation": "literal",
+                    "syntax": "2MB-c1",
+                    "tokens": [
+                      "2MB-c1"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2097152"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-4mb-c1",
+                    "meaning": "Flash size 4194304 bytes; ESP8266 c1 layout",
+                    "notation": "literal",
+                    "syntax": "4MB-c1",
+                    "tokens": [
+                      "4MB-c1"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "4194304"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-8mb",
+                    "meaning": "Flash size 8388608 bytes",
+                    "notation": "literal",
+                    "syntax": "8MB",
+                    "tokens": [
+                      "8MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "8388608"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-16mb",
+                    "meaning": "Flash size 16777216 bytes",
+                    "notation": "literal",
+                    "syntax": "16MB",
+                    "tokens": [
+                      "16MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "16777216"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "keep",
+                    "meaning": "Keep the bootable image header's size",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "keep",
+                    "tokens": [
+                      "keep"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "detect",
+                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "detect",
+                    "tokens": [
+                      "detect"
+                    ]
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "SPI flash size encoded in a bootable image header",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
+                    },
+                    {
+                      "locator": "Flash size choices and ESPTOOL_FS default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
                   "chip": {
                     "state": "known",
                     "values": [
@@ -270,148 +339,148 @@
                       "ESP32-C5",
                       "ESP32-C61"
                     ]
-                  }
-                },
-                "bare": {
-                  "state": "not_accepted",
-                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count"
-                },
-                "forms": [
-                  {
-                    "id": "size-1mb",
-                    "notation": "literal",
-                    "syntax": "1MB",
-                    "tokens": [
-                      "1MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 1048576 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "1048576"
-                    }
                   },
-                  {
-                    "id": "size-2mb",
-                    "notation": "literal",
-                    "syntax": "2MB",
-                    "tokens": [
-                      "2MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 2097152 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "2097152"
-                    }
-                  },
-                  {
-                    "id": "size-4mb",
-                    "notation": "literal",
-                    "syntax": "4MB",
-                    "tokens": [
-                      "4MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 4194304 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "4194304"
-                    }
-                  },
-                  {
-                    "id": "size-8mb",
-                    "notation": "literal",
-                    "syntax": "8MB",
-                    "tokens": [
-                      "8MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 8388608 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "8388608"
-                    }
-                  },
-                  {
-                    "id": "size-16mb",
-                    "notation": "literal",
-                    "syntax": "16MB",
-                    "tokens": [
-                      "16MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 16777216 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "16777216"
-                    }
-                  },
-                  {
-                    "id": "keep",
-                    "notation": "literal",
-                    "syntax": "keep",
-                    "tokens": [
-                      "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the bootable image header's size",
-                    "sentinel": true
-                  },
-                  {
-                    "id": "detect",
-                    "notation": "literal",
-                    "syntax": "detect",
-                    "tokens": [
-                      "detect"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
-                    "sentinel": true
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              },
-              {
-                "kind": "quantity",
-                "meaning": "SPI flash size encoded in a bootable image header",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash size choices and ESPTOOL_FS default"
-                    }
-                  ]
-                },
-                "applicability": {
                   "implementation": {
                     "state": "known",
                     "values": [
                       "esptool"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "5.0.2"
                     ]
+                  }
+                },
+                "bare": {
+                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "size-1mb",
+                    "meaning": "Flash size 1048576 bytes",
+                    "notation": "literal",
+                    "syntax": "1MB",
+                    "tokens": [
+                      "1MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
                   },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  {
+                    "case": "sensitive",
+                    "id": "size-2mb",
+                    "meaning": "Flash size 2097152 bytes",
+                    "notation": "literal",
+                    "syntax": "2MB",
+                    "tokens": [
+                      "2MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2097152"
+                    }
                   },
+                  {
+                    "case": "sensitive",
+                    "id": "size-4mb",
+                    "meaning": "Flash size 4194304 bytes",
+                    "notation": "literal",
+                    "syntax": "4MB",
+                    "tokens": [
+                      "4MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "4194304"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-8mb",
+                    "meaning": "Flash size 8388608 bytes",
+                    "notation": "literal",
+                    "syntax": "8MB",
+                    "tokens": [
+                      "8MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "8388608"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-16mb",
+                    "meaning": "Flash size 16777216 bytes",
+                    "notation": "literal",
+                    "syntax": "16MB",
+                    "tokens": [
+                      "16MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "16777216"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "keep",
+                    "meaning": "Keep the bootable image header's size",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "keep",
+                    "tokens": [
+                      "keep"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "detect",
+                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "detect",
+                    "tokens": [
+                      "detect"
+                    ]
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "SPI flash size encoded in a bootable image header",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
+                    },
+                    {
+                      "locator": "Flash size choices and ESPTOOL_FS default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
                   "chip": {
                     "state": "known",
                     "values": [
@@ -419,202 +488,202 @@
                       "ESP32-S3",
                       "ESP32-P4"
                     ]
-                  }
-                },
-                "bare": {
-                  "state": "not_accepted",
-                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count"
-                },
-                "forms": [
-                  {
-                    "id": "size-1mb",
-                    "notation": "literal",
-                    "syntax": "1MB",
-                    "tokens": [
-                      "1MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 1048576 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "1048576"
-                    }
                   },
-                  {
-                    "id": "size-2mb",
-                    "notation": "literal",
-                    "syntax": "2MB",
-                    "tokens": [
-                      "2MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 2097152 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "2097152"
-                    }
-                  },
-                  {
-                    "id": "size-4mb",
-                    "notation": "literal",
-                    "syntax": "4MB",
-                    "tokens": [
-                      "4MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 4194304 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "4194304"
-                    }
-                  },
-                  {
-                    "id": "size-8mb",
-                    "notation": "literal",
-                    "syntax": "8MB",
-                    "tokens": [
-                      "8MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 8388608 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "8388608"
-                    }
-                  },
-                  {
-                    "id": "size-16mb",
-                    "notation": "literal",
-                    "syntax": "16MB",
-                    "tokens": [
-                      "16MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 16777216 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "16777216"
-                    }
-                  },
-                  {
-                    "id": "size-32mb",
-                    "notation": "literal",
-                    "syntax": "32MB",
-                    "tokens": [
-                      "32MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 33554432 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "33554432"
-                    }
-                  },
-                  {
-                    "id": "size-64mb",
-                    "notation": "literal",
-                    "syntax": "64MB",
-                    "tokens": [
-                      "64MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 67108864 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "67108864"
-                    }
-                  },
-                  {
-                    "id": "size-128mb",
-                    "notation": "literal",
-                    "syntax": "128MB",
-                    "tokens": [
-                      "128MB"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Flash size 134217728 bytes",
-                    "unit": {
-                      "base": "byte",
-                      "multiplier": "134217728"
-                    }
-                  },
-                  {
-                    "id": "keep",
-                    "notation": "literal",
-                    "syntax": "keep",
-                    "tokens": [
-                      "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the bootable image header's size",
-                    "sentinel": true
-                  },
-                  {
-                    "id": "detect",
-                    "notation": "literal",
-                    "syntax": "detect",
-                    "tokens": [
-                      "detect"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
-                    "sentinel": true
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              }
-            ]
-          },
-          "detail": "esptool 5.0.2: use exact chip-specific tokens, not an arbitrary number. MB tokens denote MiB (1048576 bytes); ESP8266 KB tokens denote KiB. ESP8266 also has -c1 layout tokens; ESP32-S2/S3/P4 permit additional larger sizes. keep preserves the image header; detect reads flash ID and the documented detection-failure fallback is 4MB. The default is keep unless ESPTOOL_FS overrides it. These fields apply to a bootable-image header at the chip's bootloader offset; supported sizes depend on chip, ROM/stub and flash hardware. Other releases require verification."
-        },
-        {
-          "flag": "--flash-freq",
-          "argument": "FREQ",
-          "argument_optional": false,
-          "summary": "Set SPI flash clock; literal 40m means 40 MHz",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "quantity",
-                "meaning": "SPI flash clock frequency",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash frequency choices and ESPTOOL_FF default"
-                    }
-                  ]
-                },
-                "applicability": {
                   "implementation": {
                     "state": "known",
                     "values": [
                       "esptool"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "5.0.2"
                     ]
+                  }
+                },
+                "bare": {
+                  "reason": "Supply one of the literal chip-specific tokens, not a bare byte count",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "size-1mb",
+                    "meaning": "Flash size 1048576 bytes",
+                    "notation": "literal",
+                    "syntax": "1MB",
+                    "tokens": [
+                      "1MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
                   },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                  {
+                    "case": "sensitive",
+                    "id": "size-2mb",
+                    "meaning": "Flash size 2097152 bytes",
+                    "notation": "literal",
+                    "syntax": "2MB",
+                    "tokens": [
+                      "2MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2097152"
+                    }
                   },
+                  {
+                    "case": "sensitive",
+                    "id": "size-4mb",
+                    "meaning": "Flash size 4194304 bytes",
+                    "notation": "literal",
+                    "syntax": "4MB",
+                    "tokens": [
+                      "4MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "4194304"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-8mb",
+                    "meaning": "Flash size 8388608 bytes",
+                    "notation": "literal",
+                    "syntax": "8MB",
+                    "tokens": [
+                      "8MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "8388608"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-16mb",
+                    "meaning": "Flash size 16777216 bytes",
+                    "notation": "literal",
+                    "syntax": "16MB",
+                    "tokens": [
+                      "16MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "16777216"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-32mb",
+                    "meaning": "Flash size 33554432 bytes",
+                    "notation": "literal",
+                    "syntax": "32MB",
+                    "tokens": [
+                      "32MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "33554432"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-64mb",
+                    "meaning": "Flash size 67108864 bytes",
+                    "notation": "literal",
+                    "syntax": "64MB",
+                    "tokens": [
+                      "64MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "67108864"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "size-128mb",
+                    "meaning": "Flash size 134217728 bytes",
+                    "notation": "literal",
+                    "syntax": "128MB",
+                    "tokens": [
+                      "128MB"
+                    ],
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "134217728"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "keep",
+                    "meaning": "Keep the bootable image header's size",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "keep",
+                    "tokens": [
+                      "keep"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "detect",
+                    "meaning": "Detect from flash ID; the documented fallback is 4MB if detection fails",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "detect",
+                    "tokens": [
+                      "detect"
+                    ]
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "SPI flash size encoded in a bootable image header",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
+                    },
+                    {
+                      "locator": "Flash size choices and ESPTOOL_FS default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FS overrides the default; otherwise keep the image header's size",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FREQ",
+          "argument_optional": false,
+          "detail": "esptool 5.0.2: lowercase m in these literal tokens denotes MHz, not minutes or millihertz. ESP32 uses 20m/26m/40m/80m; ESP32-C2 uses 15m/20m/30m/60m; ESP32-H2 uses 12m/16m/24m/48m; other target-specific sets are documented in the flash parameter reference. keep preserves the image header; the default is keep unless ESPTOOL_FF overrides it. Hardware must support the selected clock, and the option only changes applicable bootable-image headers. Other chips/releases require their own verified table.",
+          "flag": "--flash-freq",
+          "summary": "Set SPI flash clock; literal 40m means 40 MHz",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
                   "chip": {
                     "state": "known",
                     "values": [
@@ -625,367 +694,367 @@
                       "ESP32-S3",
                       "ESP32-P4"
                     ]
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "esptool"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.0.2"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value"
+                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "freq-20",
+                    "meaning": "20 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "20m",
                     "tokens": [
                       "20m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "20 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "20000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-26",
+                    "meaning": "26 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "26m",
                     "tokens": [
                       "26m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "26 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "26000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-40",
+                    "meaning": "40 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "40m",
                     "tokens": [
                       "40m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "40 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "40000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-80",
+                    "meaning": "80 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "80m",
                     "tokens": [
                       "80m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "80 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "80000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "keep",
+                    "meaning": "Keep the image header's flash frequency",
                     "notation": "literal",
+                    "sentinel": true,
                     "syntax": "keep",
                     "tokens": [
                       "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the image header's flash frequency",
-                    "sentinel": true
+                    ]
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              },
-              {
                 "kind": "quantity",
                 "meaning": "SPI flash clock frequency",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash frequency choices and ESPTOOL_FF default"
+                      "locator": "Flash frequency choices and ESPTOOL_FF default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
                     }
-                  ]
+                  ],
+                  "status": "verified"
                 },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
                 "applicability": {
+                  "chip": {
+                    "state": "known",
+                    "values": [
+                      "ESP32-C2"
+                    ]
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "esptool"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "5.0.2"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "known",
-                    "values": [
-                      "ESP32-C2"
-                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value"
+                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "freq-15",
+                    "meaning": "15 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "15m",
                     "tokens": [
                       "15m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "15 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "15000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-20",
+                    "meaning": "20 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "20m",
                     "tokens": [
                       "20m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "20 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "20000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-30",
+                    "meaning": "30 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "30m",
                     "tokens": [
                       "30m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "30 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "30000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-60",
+                    "meaning": "60 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "60m",
                     "tokens": [
                       "60m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "60 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "60000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "keep",
+                    "meaning": "Keep the image header's flash frequency",
                     "notation": "literal",
+                    "sentinel": true,
                     "syntax": "keep",
                     "tokens": [
                       "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the image header's flash frequency",
-                    "sentinel": true
+                    ]
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              },
-              {
                 "kind": "quantity",
                 "meaning": "SPI flash clock frequency",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash frequency choices and ESPTOOL_FF default"
+                      "locator": "Flash frequency choices and ESPTOOL_FF default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
                     }
-                  ]
+                  ],
+                  "status": "verified"
                 },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
                 "applicability": {
+                  "chip": {
+                    "state": "known",
+                    "values": [
+                      "ESP32-H2"
+                    ]
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "esptool"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "5.0.2"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "known",
-                    "values": [
-                      "ESP32-H2"
-                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value"
+                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "freq-12",
+                    "meaning": "12 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "12m",
                     "tokens": [
                       "12m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "12 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "12000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-16",
+                    "meaning": "16 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "16m",
                     "tokens": [
                       "16m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "16 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "16000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-24",
+                    "meaning": "24 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "24m",
                     "tokens": [
                       "24m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "24 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "24000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-48",
+                    "meaning": "48 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "48m",
                     "tokens": [
                       "48m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "48 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "48000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "keep",
+                    "meaning": "Keep the image header's flash frequency",
                     "notation": "literal",
+                    "sentinel": true,
                     "syntax": "keep",
                     "tokens": [
                       "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the image header's flash frequency",
-                    "sentinel": true
+                    ]
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                }
-              },
-              {
                 "kind": "quantity",
                 "meaning": "SPI flash clock frequency",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst",
-                      "locator": "Target-specific SPI flash sizes, frequencies and defaults"
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py",
-                      "locator": "Flash frequency choices and ESPTOOL_FF default"
+                      "locator": "Flash frequency choices and ESPTOOL_FF default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
                     }
-                  ]
+                  ],
+                  "status": "verified"
                 },
+                "when_absent": {
+                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
                 "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "esptool"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "5.0.2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
                   "chip": {
                     "state": "known",
                     "values": [
@@ -993,326 +1062,361 @@
                       "ESP32-C5",
                       "ESP32-C61"
                     ]
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "esptool"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.0.2"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value"
+                  "reason": "Use a chip-specific literal token such as 40m, not a bare hertz value",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "freq-20",
+                    "meaning": "20 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "20m",
                     "tokens": [
                       "20m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "20 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "20000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-40",
+                    "meaning": "40 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "40m",
                     "tokens": [
                       "40m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "40 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "40000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "freq-80",
+                    "meaning": "80 MHz SPI flash clock",
                     "notation": "literal",
                     "syntax": "80m",
                     "tokens": [
                       "80m"
                     ],
-                    "case": "sensitive",
-                    "meaning": "80 MHz SPI flash clock",
                     "unit": {
                       "base": "hertz",
                       "multiplier": "80000000"
                     }
                   },
                   {
+                    "case": "sensitive",
                     "id": "keep",
+                    "meaning": "Keep the image header's flash frequency",
                     "notation": "literal",
+                    "sentinel": true,
                     "syntax": "keep",
                     "tokens": [
                       "keep"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Keep the image header's flash frequency",
-                    "sentinel": true
+                    ]
                   }
                 ],
+                "kind": "quantity",
+                "meaning": "SPI flash clock frequency",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Target-specific SPI flash sizes, frequencies and defaults",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/docs/en/esptool/flash-modes.rst"
+                    },
+                    {
+                      "locator": "Flash frequency choices and ESPTOOL_FF default",
+                      "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency"
+                  "meaning": "ESPTOOL_FF overrides the default; otherwise keep the image header's frequency",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "esptool 5.0.2: lowercase m in these literal tokens denotes MHz, not minutes or millihertz. ESP32 uses 20m/26m/40m/80m; ESP32-C2 uses 15m/20m/30m/60m; ESP32-H2 uses 12m/16m/24m/48m; other target-specific sets are documented in the flash parameter reference. keep preserves the image header; the default is keep unless ESPTOOL_FF overrides it. Hardware must support the selected clock, and the option only changes applicable bootable-image headers. Other chips/releases require their own verified table."
+          }
         },
         {
-          "flag": "--erase-all",
           "argument": "",
           "argument_optional": false,
+          "flag": "--erase-all",
           "summary": "Erase the full flash before writing"
         },
         {
-          "flag": "--encrypt",
           "argument": "",
           "argument_optional": false,
+          "flag": "--encrypt",
           "summary": "Write encrypted flash data"
         },
         {
-          "flag": "--force",
           "argument": "",
           "argument_optional": false,
+          "flag": "--force",
           "summary": "Override compatibility checks"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-z",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Compress data during transfer"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--compress",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Compress data during transfer"
         },
         {
-          "flag": "-u",
           "argument": "",
           "argument_optional": false,
+          "flag": "-u",
           "summary": "Disable transfer compression"
         },
         {
-          "flag": "--no-compress",
           "argument": "",
           "argument_optional": false,
+          "flag": "--no-compress",
           "summary": "Disable transfer compression"
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "esptool",
+    "write-flash"
+  ],
+  "description": "Options for esptool write-flash. esptool v5 or newer, hyphenated CLI; no automatic rewrite to legacy spellings. ADDRESS is a byte offset (decimal or base-prefixed, such as 0x1000); FILE is its filename. Enter complete ADDRESS FILE pairs. Numerical tables are verified only for 5.0.2.",
   "documentation": {
-    "source": "https://docs.espressif.com/projects/esptool/en/latest/esp32/esptool/basic-commands.html",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
+    "source": "https://docs.espressif.com/projects/esptool/en/latest/esp32/esptool/basic-commands.html"
   },
+  "identity": "esptool-v5",
   "positional_group": {
     "argument": "ADDRESS FILE",
     "argument_count": 2,
     "repeatable": true
   },
-  "identity": "esptool-v5",
   "positional_value_semantics": {
     "schema_version": 1,
     "variants": [
       {
-        "kind": "composite",
-        "meaning": "Repeated ADDRESS FILE pairs",
-        "review": {
-          "status": "verified",
-          "references": [
-            {
-              "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py",
-              "locator": "AnyIntType and AddrFilenamePairType"
-            }
-          ]
-        },
         "applicability": {
+          "chip": {
+            "reason": "No chip-specific interpretation is claimed",
+            "state": "not_applicable"
+          },
           "implementation": {
             "state": "known",
             "values": [
               "esptool"
             ]
           },
+          "platform": {
+            "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+            "state": "not_applicable"
+          },
           "version": {
             "state": "known",
             "values": [
               "5.0.2"
             ]
-          },
-          "platform": {
-            "state": "not_applicable",
-            "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-          },
-          "chip": {
-            "state": "not_applicable",
-            "reason": "No chip-specific interpretation is claimed"
           }
         },
         "bare": {
-          "state": "not_applicable",
-          "reason": "The pair grammar defines component meanings"
+          "reason": "The pair grammar defines component meanings",
+          "state": "not_applicable"
         },
-        "forms": [
-          {
-            "id": "pairs",
-            "notation": "expression",
-            "syntax": "ADDRESS FILE [ADDRESS FILE ...]",
-            "grammar": "Each two-token group pairs a byte address and filename; repeat complete groups"
-          }
-        ],
-        "when_absent": {
-          "state": "not_applicable",
-          "reason": "The required positional arguments have no absent-option default"
-        },
-        "when_value_omitted": {
-          "state": "not_accepted",
-          "reason": "This option requires an operand"
-        },
-        "slots": 2,
         "components": [
           {
             "id": "address",
-            "slot": 1,
             "required": true,
             "semantics": {
-              "kind": "index",
-              "meaning": "Flash address expressed as a byte offset",
-              "review": {
-                "status": "verified",
-                "references": [
-                  {
-                    "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py",
-                    "locator": "AnyIntType and AddrFilenamePairType"
-                  }
-                ]
-              },
               "applicability": {
+                "chip": {
+                  "reason": "No chip-specific interpretation is claimed",
+                  "state": "not_applicable"
+                },
                 "implementation": {
                   "state": "known",
                   "values": [
                     "esptool"
                   ]
                 },
+                "platform": {
+                  "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                  "state": "not_applicable"
+                },
                 "version": {
                   "state": "known",
                   "values": [
                     "5.0.2"
                   ]
-                },
-                "platform": {
-                  "state": "not_applicable",
-                  "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                },
-                "chip": {
-                  "state": "not_applicable",
-                  "reason": "No chip-specific interpretation is claimed"
                 }
               },
               "bare": {
-                "state": "accepted",
-                "form": "decimal"
+                "form": "decimal",
+                "state": "accepted"
               },
               "forms": [
                 {
+                  "grammar": "Integer byte address; decimal without a base prefix",
                   "id": "decimal",
                   "notation": "number",
-                  "syntax": "ADDRESS",
-                  "grammar": "Integer byte address; decimal without a base prefix"
+                  "syntax": "ADDRESS"
                 },
                 {
+                  "grammar": "Integer address with Python base-prefix syntax; prefixes do not multiply bytes",
                   "id": "based",
                   "notation": "expression",
-                  "syntax": "0xHEX | 0oOCTAL | 0bBINARY",
-                  "grammar": "Integer address with Python base-prefix syntax; prefixes do not multiply bytes"
+                  "syntax": "0xHEX | 0oOCTAL | 0bBINARY"
                 }
               ],
-              "when_absent": {
-                "state": "not_applicable",
-                "reason": "A component has no independent option-absence default"
-              },
-              "when_value_omitted": {
-                "state": "not_applicable",
-                "reason": "A component is part of a required ADDRESS FILE pair"
+              "kind": "index",
+              "meaning": "Flash address expressed as a byte offset",
+              "origin": "0",
+              "review": {
+                "references": [
+                  {
+                    "locator": "AnyIntType and AddrFilenamePairType",
+                    "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py"
+                  }
+                ],
+                "status": "verified"
               },
               "subject": "Byte positions in SPI flash",
-              "origin": "0"
-            }
+              "when_absent": {
+                "reason": "A component has no independent option-absence default",
+                "state": "not_applicable"
+              },
+              "when_value_omitted": {
+                "reason": "A component is part of a required ADDRESS FILE pair",
+                "state": "not_applicable"
+              }
+            },
+            "slot": 1
           },
           {
             "id": "file",
-            "slot": 2,
             "required": true,
             "semantics": {
-              "kind": "nonnumerical",
-              "meaning": "Binary filename paired with the preceding address",
-              "review": {
-                "status": "verified",
-                "references": [
-                  {
-                    "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py",
-                    "locator": "AnyIntType and AddrFilenamePairType"
-                  }
-                ]
-              },
               "applicability": {
+                "chip": {
+                  "reason": "No chip-specific interpretation is claimed",
+                  "state": "not_applicable"
+                },
                 "implementation": {
                   "state": "known",
                   "values": [
                     "esptool"
                   ]
                 },
+                "platform": {
+                  "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                  "state": "not_applicable"
+                },
                 "version": {
                   "state": "known",
                   "values": [
                     "5.0.2"
                   ]
-                },
-                "platform": {
-                  "state": "not_applicable",
-                  "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                },
-                "chip": {
-                  "state": "not_applicable",
-                  "reason": "No chip-specific interpretation is claimed"
                 }
               },
               "bare": {
-                "state": "not_applicable",
-                "reason": "A filename is not a scalar numerical value"
+                "reason": "A filename is not a scalar numerical value",
+                "state": "not_applicable"
               },
               "forms": [
                 {
+                  "grammar": "A filename supplied as one shell argument; the help browser does not open or execute it",
                   "id": "path",
                   "notation": "expression",
-                  "syntax": "FILE",
-                  "grammar": "A filename supplied as one shell argument; the help browser does not open or execute it"
+                  "syntax": "FILE"
                 }
               ],
+              "kind": "nonnumerical",
+              "meaning": "Binary filename paired with the preceding address",
+              "review": {
+                "references": [
+                  {
+                    "locator": "AnyIntType and AddrFilenamePairType",
+                    "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py"
+                  }
+                ],
+                "status": "verified"
+              },
               "when_absent": {
-                "state": "not_applicable",
-                "reason": "A component has no independent option-absence default"
+                "reason": "A component has no independent option-absence default",
+                "state": "not_applicable"
               },
               "when_value_omitted": {
-                "state": "not_applicable",
-                "reason": "A component is part of a required ADDRESS FILE pair"
+                "reason": "A component is part of a required ADDRESS FILE pair",
+                "state": "not_applicable"
               }
-            }
+            },
+            "slot": 2
           }
-        ]
+        ],
+        "forms": [
+          {
+            "grammar": "Each two-token group pairs a byte address and filename; repeat complete groups",
+            "id": "pairs",
+            "notation": "expression",
+            "syntax": "ADDRESS FILE [ADDRESS FILE ...]"
+          }
+        ],
+        "kind": "composite",
+        "meaning": "Repeated ADDRESS FILE pairs",
+        "review": {
+          "references": [
+            {
+              "locator": "AnyIntType and AddrFilenamePairType",
+              "source": "https://raw.githubusercontent.com/espressif/esptool/v5.0.2/esptool/cli_util.py"
+            }
+          ],
+          "status": "verified"
+        },
+        "slots": 2,
+        "when_absent": {
+          "reason": "The required positional arguments have no absent-option default",
+          "state": "not_applicable"
+        },
+        "when_value_omitted": {
+          "reason": "This option requires an operand",
+          "state": "not_accepted"
+        }
       }
     ]
-  }
+  },
+  "stop_at_positional": false
 }

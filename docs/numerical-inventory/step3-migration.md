@@ -2,6 +2,11 @@
 
 [Implementation inventory](README.md) · [Numerical contract and APIs](../numerical-value-contract.md)
 
+This account retains the Step 3 migration snapshot. The subsequent
+[maintained debt resolution](debt-resolution.md) resolves its outstanding bundled
+investigations and missing contracts, with fresh source evidence and strict
+results. The original counts below are historical.
+
 This migration corrects authored menu text and adds opt-in descriptive metadata.
 Essential numerical meaning appears in the existing `summary`, `detail`, or
 profile-description fields. The migration did not connect metadata to rendering,

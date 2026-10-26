@@ -311,8 +311,14 @@ class ValueSemanticsTests(unittest.TestCase):
         for profile in profiles:
             with self.subTest(command=profile["command"]):
                 self.assertEqual(validate_profile_semantics(profile), ())
-        self.assertTrue(any(d.code == "sem_metadata_missing" for profile in profiles
-                            for d in validate_profile_semantics(profile, mode="maintained")))
+        # Legacy compatibility must survive even after maintained profiles have
+        # complete contracts; a controlled legacy input keeps that boundary live.
+        legacy = {"command": ["legacy-contract-specimen"], "description": "Controlled legacy input",
+                  "categories": [{"name": "Values", "options": [
+                      {"flag": "--path", "argument": "FILE", "summary": "Select a filename"}]}]}
+        validate_profile(legacy, Path("synthetic-legacy.json"))
+        self.assertEqual(validate_profile_semantics(legacy), ())
+        self.assertIn("sem_metadata_missing", {d.code for d in validate_profile_semantics(legacy, mode="maintained")})
         synthetic = deepcopy(profiles[0])
         synthetic["categories"][0]["options"][0]["value_semantics"] = {"schema_version": "invalid"}
         validate_profile(synthetic, Path("synthetic.json"))  # Legacy validation does not opt in.

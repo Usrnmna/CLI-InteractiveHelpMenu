@@ -1,24 +1,139 @@
 {
-  "command": [
-    "7z",
-    "x"
-  ],
-  "description": "7-Zip extraction option subset; selecting an option never extracts data.",
   "categories": [
     {
       "name": "Extraction",
       "options": [
         {
-          "flag": "-o",
           "argument": "Directory",
           "argument_style": "attached_only",
-          "summary": "Set the output directory (attached value)."
+          "flag": "-o",
+          "summary": "Set the output directory (attached value).",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Extraction output directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path appended to -o; pathname text is not a byte count or numerical limit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the extraction command's default output directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "24.09"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ip7z/7zip/24.09/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kOutputDir, extraction output directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-t",
           "argument": "Type",
           "argument_style": "attached_only",
-          "summary": "Set the archive type (attached value)."
+          "flag": "-t",
+          "summary": "Set the archive type (attached value).",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Archive format selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Archive-handler type string, such as 7z, zip or tar, passed to the archive-type resolver; digits in a type name are not a level or size. Available handlers depend on the build; type qualifiers follow the archive resolver grammar."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Detect the archive type through the available archive handlers."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "24.09"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ip7z/7zip/24.09/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kArchiveType and options.ArcType"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
           "flag": "-y",
@@ -30,5 +145,10 @@
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "7z",
+    "x"
+  ],
+  "description": "7-Zip extraction option subset; selecting an option never extracts data."
 }

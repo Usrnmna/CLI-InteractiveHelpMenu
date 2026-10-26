@@ -156,10 +156,26 @@ A minimal driver for another program is:
 | `paths[].command` | Exact subcommand words, or `[]` for root help |
 | `paths[].help` | Fixed argument array beginning with `help`, `--help`, `-h`, or `-help`, or exactly the declared command path followed by one of those selectors; `[]` disables executable probing for that path |
 | `paths[].man` | Literal manual name in sections 1 or 8; `null` disables the manual source |
+| `paths[].manual_scope` | Optional `common_options` selector for explicitly delegated common/shared manual sections; requires `man` |
 | `paths[].stop_at_positional` | Reject insertion after the first positional argument; unknown preceding option arity is also rejected |
 | `paths[].stop_at_options` | Reject insertion after named child-argument delimiters; defaults to an empty array |
 | `paths[].option_values` | Unique literal options consuming one value before a child command; also supplies missing argument-context arity at the selected route |
 | `paths[].option_flags` | Unique literal parent boolean options; also supplies missing argument-context arity at the selected route |
+
+`manual_scope` limits only the manual source; it does not change help requests,
+command paths or insertion grammar. The exact value `common_options` selects
+explicit common/shared headings or an OPTIONS region ending with a reference
+to “these common options”. Source-specific declarations remain accessible as
+unassigned context. A declared scope without a recognized region does not
+activate arbitrary options. Other values and explicit null are rejected.
+
+The included stash-show route uses this field for its git-diff manual. Routes
+without the field retain legacy whole-manual inference and merge behavior,
+with source qualifications where identities differ. Older custom drivers are
+not modified automatically. The field establishes a documentation boundary,
+not factual verification of units or applicability to every installed release.
+The [operand and association repair account](numerical-inventory/parser-association-repairs.md)
+describes source provenance, limitations and passive verification.
 
 Every route requires at least one help or manual source. Omitted global lists
 are empty; the positional boundary defaults to false. Matching built-in routes

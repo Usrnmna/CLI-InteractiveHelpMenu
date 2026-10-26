@@ -1,64 +1,445 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--all",
+          "summary": "Include unset properties"
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--format",
+          "summary": "Set output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "gcloud resource projection/output grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Format name with optional attributes and projected resource keys/transforms; the format grammar owns embedded numeric widths or arguments. This is not a single numeric output level."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use core/format, core/default_format or the command-specific display format according to normal precedence."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/base.py: FORMAT_FLAG; resource_projector format grammar"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "gcloud resource projection/output grammar",
+                  "reference": {
+                    "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                    "locator": "lib/googlecloudsdk/calliope/base.py: FORMAT_FLAG; resource_projector format grammar"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PROJECT",
+          "argument_optional": false,
+          "flag": "--project",
+          "summary": "Select project",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Google Cloud project identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Project ID string supplied to the command/API; numeric project numbers are distinct identifiers and can be rejected where a project ID is required. This option is not a resource count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured core/project value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --project and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Google Cloud project identifier"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "argument_optional": false,
+          "flag": "--configuration",
+          "summary": "Select a named configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Named gcloud configuration",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Configuration name selecting a stored property set."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configuration selected by normal gcloud precedence."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --configuration and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Named gcloud configuration"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ACCOUNT",
+          "argument_optional": false,
+          "flag": "--account",
+          "summary": "Select account",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Google Cloud credential account",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Account string, commonly an email address, selecting stored credentials."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured core/account value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --account and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Google Cloud credential account"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--quiet",
+          "summary": "Disable interactive prompting"
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "flag": "--verbosity",
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "gcloud diagnostic verbosity",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "debug",
+                    "tokens": [
+                      "debug"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Debug and higher severity"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "info",
+                    "tokens": [
+                      "info"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Informational and higher severity"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "warning",
+                    "tokens": [
+                      "warning"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Warnings and errors"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "error",
+                    "tokens": [
+                      "error"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Errors only"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "critical",
+                    "tokens": [
+                      "critical"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Critical errors only"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress diagnostic logging"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured core/verbosity; the built-in default is warning."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core verbosity supported names; CLI verbosity registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "ordering": "debug, info, warning, error, critical, none progressively suppress lower-severity diagnostics"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "gcloud",
     "config",
     "list"
   ],
   "description": "Options for gcloud config list.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "--all",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Include unset properties"
-        },
-        {
-          "flag": "--format",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set output format"
-        },
-        {
-          "flag": "--project",
-          "argument": "PROJECT",
-          "argument_optional": false,
-          "summary": "Select project"
-        },
-        {
-          "flag": "--configuration",
-          "argument": "NAME",
-          "argument_optional": false,
-          "summary": "Select a named configuration"
-        },
-        {
-          "flag": "--account",
-          "argument": "ACCOUNT",
-          "argument_optional": false,
-          "summary": "Select account"
-        },
-        {
-          "flag": "--quiet",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Disable interactive prompting"
-        },
-        {
-          "flag": "--verbosity",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set logging detail"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://cloud.google.com/sdk/gcloud/reference/config/list",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://cloud.google.com/sdk/gcloud/reference/config/list"
+  },
+  "stop_at_positional": false
 }

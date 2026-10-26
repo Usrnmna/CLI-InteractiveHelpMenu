@@ -1,68 +1,168 @@
 {
-  "command": [
-    "journalctl"
-  ],
-  "description": "journalctl shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "UNIT",
           "flag": "--unit=",
-          "argument": "UNIT",
-          "summary": "Match a systemd unit"
-        },
-        {
-          "flag": "-u",
-          "argument": "UNIT",
           "summary": "Match a systemd unit",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "systemd unit-name pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Unit name or glob selecting journal messages for matching units and their related records; unit means a service-manager object, not a measurement unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a CLI unit-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "--unit"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "UNIT",
+          "attached": true,
+          "flag": "-u",
+          "summary": "Match a systemd unit",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "systemd unit-name pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Unit name or glob selecting journal messages for matching units and their related records; unit means a service-manager object, not a measurement unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a CLI unit-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "--unit"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
           "flag": "--follow",
-          "argument": "",
           "summary": "Follow newly appended messages"
         },
         {
+          "argument": "",
           "flag": "-f",
-          "argument": "",
           "summary": "Follow newly appended messages"
         },
         {
-          "flag": "--since=",
           "argument": "TIME",
+          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive.",
+          "flag": "--since=",
           "summary": "Select messages at or after a calendar or relative time",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "timestamp",
-                "meaning": "Journal time cutoff, at or after the specified time",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
-                      "locator": "--since, --until, --priority, --boot and --lines"
-                    },
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemd.time.html",
-                      "locator": "Parsing Timestamps"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
                     ]
                   },
                   "platform": {
@@ -71,87 +171,87 @@
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "A bare numeric string is not a universal scalar timestamp form; use an explicit documented calendar/relative/@epoch form"
+                  "reason": "A bare numeric string is not a universal scalar timestamp form; use an explicit documented calendar/relative/@epoch form",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "grammar": "Calendar form with documented omitted components; quote a value containing spaces",
                     "id": "calendar",
                     "notation": "expression",
-                    "syntax": "YYYY-MM-DD HH:MM:SS[.fraction] [ZONE]",
-                    "grammar": "Calendar form with documented omitted components; quote a value containing spaces"
+                    "syntax": "YYYY-MM-DD HH:MM:SS[.fraction] [ZONE]"
                   },
                   {
+                    "grammar": "Signed spans are relative to the current time; use documented time units rather than assume milliseconds",
                     "id": "relative",
                     "notation": "expression",
-                    "syntax": "-TIMESPAN | +TIMESPAN | now | today | yesterday | tomorrow",
-                    "grammar": "Signed spans are relative to the current time; use documented time units rather than assume milliseconds"
+                    "syntax": "-TIMESPAN | +TIMESPAN | now | today | yesterday | tomorrow"
                   },
                   {
+                    "grammar": "Seconds since the Unix epoch with an explicit @ prefix",
                     "id": "epoch",
                     "notation": "expression",
                     "syntax": "@SECONDS",
-                    "grammar": "Seconds since the Unix epoch with an explicit @ prefix",
                     "unit": {
                       "base": "second",
                       "multiplier": "1"
                     }
                   }
                 ],
+                "kind": "timestamp",
+                "meaning": "Journal time cutoff, at or after the specified time",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--since, --until, --priority, --boot and --lines",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    },
+                    {
+                      "locator": "Parsing Timestamps",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemd.time.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "time_basis": "Calendar time uses the local timezone unless one is supplied; @seconds use the Unix epoch; signed relative forms use the current time",
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "This option adds no lower time cutoff"
+                  "meaning": "This option adds no lower time cutoff",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "time_basis": "Calendar time uses the local timezone unless one is supplied; @seconds use the Unix epoch; signed relative forms use the current time"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
               }
             ]
-          },
-          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive."
+          }
         },
         {
-          "flag": "--until=",
           "argument": "TIME",
+          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive.",
+          "flag": "--until=",
           "summary": "Select messages at or before a calendar or relative time",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "timestamp",
-                "meaning": "Journal time cutoff, at or before the specified time",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
-                      "locator": "--since, --until, --priority, --boot and --lines"
-                    },
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemd.time.html",
-                      "locator": "Parsing Timestamps"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
                     ]
                   },
                   "platform": {
@@ -160,83 +260,87 @@
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "not_accepted",
-                  "reason": "A bare numeric string is not a universal scalar timestamp form; use an explicit documented calendar/relative/@epoch form"
+                  "reason": "A bare numeric string is not a universal scalar timestamp form; use an explicit documented calendar/relative/@epoch form",
+                  "state": "not_accepted"
                 },
                 "forms": [
                   {
+                    "grammar": "Calendar form with documented omitted components; quote a value containing spaces",
                     "id": "calendar",
                     "notation": "expression",
-                    "syntax": "YYYY-MM-DD HH:MM:SS[.fraction] [ZONE]",
-                    "grammar": "Calendar form with documented omitted components; quote a value containing spaces"
+                    "syntax": "YYYY-MM-DD HH:MM:SS[.fraction] [ZONE]"
                   },
                   {
+                    "grammar": "Signed spans are relative to the current time; use documented time units rather than assume milliseconds",
                     "id": "relative",
                     "notation": "expression",
-                    "syntax": "-TIMESPAN | +TIMESPAN | now | today | yesterday | tomorrow",
-                    "grammar": "Signed spans are relative to the current time; use documented time units rather than assume milliseconds"
+                    "syntax": "-TIMESPAN | +TIMESPAN | now | today | yesterday | tomorrow"
                   },
                   {
+                    "grammar": "Seconds since the Unix epoch with an explicit @ prefix",
                     "id": "epoch",
                     "notation": "expression",
                     "syntax": "@SECONDS",
-                    "grammar": "Seconds since the Unix epoch with an explicit @ prefix",
                     "unit": {
                       "base": "second",
                       "multiplier": "1"
                     }
                   }
                 ],
+                "kind": "timestamp",
+                "meaning": "Journal time cutoff, at or before the specified time",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--since, --until, --priority, --boot and --lines",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    },
+                    {
+                      "locator": "Parsing Timestamps",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemd.time.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "time_basis": "Calendar time uses the local timezone unless one is supplied; @seconds use the Unix epoch; signed relative forms use the current time",
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "This option adds no upper time cutoff"
+                  "meaning": "This option adds no upper time cutoff",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "time_basis": "Calendar time uses the local timezone unless one is supplied; @seconds use the Unix epoch; signed relative forms use the current time"
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
               }
             ]
-          },
-          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive."
+          }
         },
         {
-          "flag": "--priority=",
           "argument": "RANGE",
+          "detail": "systemd 257: emerg=0, alert=1, crit=2, err=3, warning=4, notice=5, info=6, debug=7. A single level includes that level and all numerically lower (more severe) levels. FROM..TO selects an inclusive range; the documented names may replace numbers. This is a severity scale, not a percentage.",
+          "flag": "--priority=",
           "summary": "Select severity 0-7; lower numbers are more severe",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "level",
-                "meaning": "Syslog severity threshold",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
-                      "locator": "--since, --until, --priority, --boot and --lines"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
                     ]
                   },
                   "platform": {
@@ -245,200 +349,464 @@
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "priority"
+                  "form": "priority",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
+                    "bounds": {
+                      "max": "7",
+                      "min": "0"
+                    },
+                    "grammar": "Integers 0 through 7; one level includes itself and all lower, more severe levels",
                     "id": "priority",
                     "notation": "number",
-                    "syntax": "N",
-                    "bounds": {
-                      "min": "0",
-                      "max": "7"
-                    },
-                    "grammar": "Integers 0 through 7; one level includes itself and all lower, more severe levels"
+                    "syntax": "N"
                   },
                   {
+                    "grammar": "The documented names correspond to levels 0,1,2,3,4,5,6,7 respectively",
                     "id": "names",
                     "notation": "expression",
-                    "syntax": "emerg|alert|crit|err|warning|notice|info|debug",
-                    "grammar": "The documented names correspond to levels 0,1,2,3,4,5,6,7 respectively"
+                    "syntax": "emerg|alert|crit|err|warning|notice|info|debug"
                   },
                   {
+                    "grammar": "Numeric or named priority endpoints; both endpoints are included",
                     "id": "range",
                     "notation": "expression",
-                    "syntax": "FROM..TO",
-                    "grammar": "Numeric or named priority endpoints; both endpoints are included"
+                    "syntax": "FROM..TO"
+                  }
+                ],
+                "kind": "level",
+                "meaning": "Syslog severity threshold",
+                "ordering": "Lower numerical levels mean greater severity",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--since, --until, --priority, --boot and --lines",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No priority filter is added by this option",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "--output=",
+          "summary": "Choose output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Journal output representation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "short",
+                    "tokens": [
+                      "short"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Classic syslog-style output"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "short-full",
+                    "tokens": [
+                      "short-full"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output with complete timestamp"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "short-iso",
+                    "tokens": [
+                      "short-iso"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "ISO-style timestamps"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "short-iso-precise",
+                    "tokens": [
+                      "short-iso-precise"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "ISO timestamps with microsecond precision"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "short-precise",
+                    "tokens": [
+                      "short-precise"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output with microsecond timestamps"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "short-monotonic",
+                    "tokens": [
+                      "short-monotonic"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Monotonic timestamps"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "short-unix",
+                    "tokens": [
+                      "short-unix"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Epoch-second timestamps"
+                  },
+                  {
+                    "id": "choice-8",
+                    "notation": "literal",
+                    "syntax": "verbose",
+                    "tokens": [
+                      "verbose"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "All journal fields"
+                  },
+                  {
+                    "id": "choice-9",
+                    "notation": "literal",
+                    "syntax": "export",
+                    "tokens": [
+                      "export"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Journal export serialization"
+                  },
+                  {
+                    "id": "choice-10",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON records"
+                  },
+                  {
+                    "id": "choice-11",
+                    "notation": "literal",
+                    "syntax": "json-pretty",
+                    "tokens": [
+                      "json-pretty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Indented JSON"
+                  },
+                  {
+                    "id": "choice-12",
+                    "notation": "literal",
+                    "syntax": "json-sse",
+                    "tokens": [
+                      "json-sse"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Server-sent-event JSON"
+                  },
+                  {
+                    "id": "choice-13",
+                    "notation": "literal",
+                    "syntax": "json-seq",
+                    "tokens": [
+                      "json-seq"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON text sequences"
+                  },
+                  {
+                    "id": "choice-14",
+                    "notation": "literal",
+                    "syntax": "cat",
+                    "tokens": [
+                      "cat"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Message text only"
+                  },
+                  {
+                    "id": "choice-15",
+                    "notation": "literal",
+                    "syntax": "with-unit",
+                    "tokens": [
+                      "with-unit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output including unit identity"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No priority filter is added by this option"
+                  "meaning": "Use short output."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "ordering": "Lower numerical levels mean greater severity"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "--output modes"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "systemd 257: emerg=0, alert=1, crit=2, err=3, warning=4, notice=5, info=6, debug=7. A single level includes that level and all numerically lower (more severe) levels. FROM..TO selects an inclusive range; the documented names may replace numbers. This is a severity scale, not a percentage."
+          }
         },
         {
-          "flag": "--output=",
-          "argument": "FORMAT",
-          "summary": "Choose output format"
-        },
-        {
-          "flag": "--no-pager",
           "argument": "",
+          "flag": "--no-pager",
           "summary": "Write output without a pager"
         },
         {
-          "flag": "--system",
           "argument": "",
+          "flag": "--system",
           "summary": "Read system journals"
         },
         {
-          "flag": "--user",
           "argument": "",
+          "flag": "--user",
           "summary": "Read user journals"
         },
         {
-          "flag": "--reverse",
           "argument": "",
+          "flag": "--reverse",
           "summary": "Show newest messages first"
         },
         {
-          "flag": "--directory=",
           "argument": "PATH",
-          "summary": "Read journal files from a directory"
-        },
-        {
-          "flag": "--boot=",
-          "argument": "ID",
-          "summary": "Select boot ID or ordinal; omitted ID means current boot",
-          "argument_optional": true,
+          "flag": "--directory=",
+          "summary": "Read journal files from a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "kind": "nonnumerical",
+                "meaning": "Journal source directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem directory containing journal files, rather than a time range or number of journals."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read journals from the normal system/user journal locations."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "--directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ID",
+          "argument_optional": true,
+          "detail": "systemd 257: a 32-character hexadecimal ID identifies a boot. Without an ID, 1 is the oldest boot, 2 the next; 0/-0 is the newest, -1 the preceding boot. An offset after an ID is relative to that boot. Omitting the operand selects the current boot, which can differ from newest when reading another journal directory. all removes an earlier boot restriction. Offsets count boots, not seconds.",
+          "flag": "--boot=",
+          "summary": "Select boot ID or ordinal; omitted ID means current boot",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "offset",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Positive offsets count from the oldest boot starting at 1; zero and negative offsets count from the newest boot",
+                    "id": "offset",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "32 hexadecimal boot-ID characters, optionally followed by a signed offset relative to that ID",
+                    "id": "id",
+                    "notation": "expression",
+                    "syntax": "ID[+|-OFFSET]"
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "all",
+                    "meaning": "Cancel a previous boot restriction",
+                    "notation": "literal",
+                    "syntax": "all",
+                    "tokens": [
+                      "all"
+                    ]
+                  }
+                ],
                 "kind": "identifier",
                 "meaning": "Boot selection by ID or signed ordinal offset",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
-                      "locator": "--since, --until, --priority, --boot and --lines"
+                      "locator": "--since, --until, --priority, --boot and --lines",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
                     }
-                  ]
+                  ],
+                  "status": "verified"
                 },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "accepted",
-                  "form": "offset"
-                },
-                "forms": [
-                  {
-                    "id": "offset",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Positive offsets count from the oldest boot starting at 1; zero and negative offsets count from the newest boot"
-                  },
-                  {
-                    "id": "id",
-                    "notation": "expression",
-                    "syntax": "ID[+|-OFFSET]",
-                    "grammar": "32 hexadecimal boot-ID characters, optionally followed by a signed offset relative to that ID"
-                  },
-                  {
-                    "id": "all",
-                    "notation": "literal",
-                    "syntax": "all",
-                    "tokens": [
-                      "all"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Cancel a previous boot restriction"
-                  }
-                ],
+                "subject": "Journal boot IDs or chronological boot offsets",
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Do not restrict output to a boot unless another option implies it"
+                  "meaning": "Do not restrict output to a boot unless another option implies it",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "known",
-                  "meaning": "Select the current boot, which can differ from the last boot in another journal directory"
-                },
-                "subject": "Journal boot IDs or chronological boot offsets"
+                  "meaning": "Select the current boot, which can differ from the last boot in another journal directory",
+                  "state": "known"
+                }
               }
             ]
-          },
-          "detail": "systemd 257: a 32-character hexadecimal ID identifies a boot. Without an ID, 1 is the oldest boot, 2 the next; 0/-0 is the newest, -1 the preceding boot. An offset after an ID is relative to that boot. Omitting the operand selects the current boot, which can differ from newest when reading another journal directory. all removes an earlier boot restriction. Offsets count boots, not seconds."
+          }
         },
         {
-          "flag": "--lines=",
           "argument": "LINES",
-          "summary": "Limit journal events; omitted value is 10, all removes cap",
           "argument_optional": true,
+          "detail": "systemd 257: a positive integer counts journal events from the newest end; +N counts from the oldest. all removes the cap. With no operand the value is 10. Follow and pager modes can imply their own caps.",
+          "flag": "--lines=",
+          "summary": "Limit journal events; omitted value is 10, all removes cap",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "count",
-                "meaning": "Journal events displayed",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html",
-                      "locator": "--since, --until, --priority, --boot and --lines"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
                     ]
                   },
                   "platform": {
@@ -447,58 +815,74 @@
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "events"
+                  "form": "events",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
-                    "id": "events",
-                    "notation": "number",
-                    "syntax": "N",
                     "bounds": {
                       "min": "1"
                     },
-                    "grammar": "Positive integer count of journal events"
+                    "grammar": "Positive integer count of journal events",
+                    "id": "events",
+                    "notation": "number",
+                    "syntax": "N"
                   },
                   {
+                    "case": "sensitive",
                     "id": "all",
+                    "meaning": "Disable the event-count limit",
                     "notation": "literal",
                     "syntax": "all",
                     "tokens": [
                       "all"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Disable the event-count limit"
+                    ]
                   },
                   {
+                    "grammar": "Count N events from the oldest end rather than the newest",
                     "id": "oldest",
                     "notation": "expression",
-                    "syntax": "+N",
-                    "grammar": "Count N events from the oldest end rather than the newest"
+                    "syntax": "+N"
                   }
                 ],
+                "kind": "count",
+                "meaning": "Journal events displayed",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--since, --until, --priority, --boot and --lines",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Journal events, not necessarily physical terminal lines",
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit event cap, except an implied/default cap from follow or pager modes"
+                  "meaning": "No explicit event cap, except an implied/default cap from follow or pager modes",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "known",
                   "form": "events",
+                  "state": "known",
                   "value": "10"
-                },
-                "subject": "Journal events, not necessarily physical terminal lines"
+                }
               }
             ]
-          },
-          "detail": "systemd 257: a positive integer counts journal events from the newest end; +N counts from the oldest. all removes the cap. With no operand the value is 10. Follow and pager modes can imply their own caps."
+          }
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "journalctl"
+  ],
+  "description": "journalctl shell argument reference."
 }

@@ -1,26 +1,263 @@
 {
-  "command": ["tar"],
-  "description": "Create and inspect archives using GNU tar options.",
   "categories": [
-    {"name": "Operation", "description": "Select the archive operation. Most primary operations are mutually exclusive.", "options": [
-      {"flag": "--create", "summary": "Create a new archive"},
-      {"flag": "--extract", "summary": "Extract files from an archive"},
-      {"flag": "--list", "summary": "List archive contents"},
-      {"flag": "--diff", "summary": "Compare archive members with filesystem files"}
-    ]},
-    {"name": "Paths", "description": "Choose the archive file and working directory.", "options": [
-      {"flag": "--file=", "argument": "ARCHIVE", "summary": "Specify the archive file"},
-      {"flag": "--directory=", "argument": "DIRECTORY", "summary": "Change directory during processing"},
-      {"flag": "--exclude=", "argument": "PATTERN", "summary": "Exclude matching files"}
-    ]},
-    {"name": "Compression", "description": "Select an archive compression method.", "options": [
-      {"flag": "--gzip", "summary": "Use gzip compression"},
-      {"flag": "--xz", "summary": "Use xz compression"},
-      {"flag": "--bzip2", "summary": "Use bzip2 compression"}
-    ]},
-    {"name": "Output", "description": "Control operation reporting.", "options": [
-      {"flag": "--verbose", "summary": "List processed files"},
-      {"flag": "--totals", "summary": "Print total bytes processed"}
-    ]}
-  ]
+    {
+      "description": "Select the archive operation. Most primary operations are mutually exclusive.",
+      "name": "Operation",
+      "options": [
+        {
+          "flag": "--create",
+          "summary": "Create a new archive"
+        },
+        {
+          "flag": "--extract",
+          "summary": "Extract files from an archive"
+        },
+        {
+          "flag": "--list",
+          "summary": "List archive contents"
+        },
+        {
+          "flag": "--diff",
+          "summary": "Compare archive members with filesystem files"
+        }
+      ]
+    },
+    {
+      "description": "Choose the archive file and working directory.",
+      "name": "Paths",
+      "options": [
+        {
+          "argument": "ARCHIVE",
+          "flag": "--file=",
+          "summary": "Specify the archive file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Tar archive location",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Archive filename or documented remote archive specification; - selects standard input/output according to the operation."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use TAPE or the compiled default archive location; no CLI archive override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi: --file="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "flag": "--directory=",
+          "summary": "Change directory during processing",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Tar working directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path affecting following file operands/processing in the documented order."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Retain the applicable current processing directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi: --directory="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
+          "flag": "--exclude=",
+          "summary": "Exclude matching files",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded archive member pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Wildcard pattern selecting names to exclude; matching follows tar's wildcard and anchoring options."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this CLI exclusion pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi: --exclude="
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Select an archive compression method.",
+      "name": "Compression",
+      "options": [
+        {
+          "flag": "--gzip",
+          "summary": "Use gzip compression"
+        },
+        {
+          "flag": "--xz",
+          "summary": "Use xz compression"
+        },
+        {
+          "flag": "--bzip2",
+          "summary": "Use bzip2 compression"
+        }
+      ]
+    },
+    {
+      "description": "Control operation reporting.",
+      "name": "Output",
+      "options": [
+        {
+          "flag": "--verbose",
+          "summary": "List processed files"
+        },
+        {
+          "flag": "--totals",
+          "summary": "Print total bytes processed"
+        }
+      ]
+    }
+  ],
+  "command": [
+    "tar"
+  ],
+  "description": "Create and inspect archives using GNU tar options."
 }

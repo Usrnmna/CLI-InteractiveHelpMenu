@@ -1,58 +1,39 @@
 {
-  "command": [
-    "az",
-    "account",
-    "show"
-  ],
-  "description": "Options for az account show.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "SUBSCRIPTION",
+          "argument_optional": false,
           "flag": "-s",
-          "argument": "SUBSCRIPTION",
-          "argument_optional": false,
-          "summary": "Select subscription"
-        },
-        {
-          "flag": "--subscription",
-          "argument": "SUBSCRIPTION",
-          "argument_optional": false,
-          "summary": "Select subscription"
-        },
-        {
-          "flag": "-o",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set output format"
-        },
-        {
-          "flag": "--output",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set output format"
-        },
-        {
-          "flag": "--query",
-          "argument": "QUERY",
-          "argument_optional": false,
-          "summary": "Filter output with JMESPath",
+          "summary": "Select subscription",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by JMESPath query grammar",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://learn.microsoft.com/en-us/cli/azure/query-azure-cli",
-                      "locator": "Client-side JMESPath queries"
-                    }
-                  ]
+                "kind": "identifier",
+                "meaning": "Azure subscription identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Subscription name or ID resolved by the Azure account profile; digits in an ID are not a numerical quantity."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configured subscription."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -62,76 +43,474 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/profile/__init__.py",
+                      "locator": "account show subscription alias"
+                    }
+                  ]
+                },
+                "subject": "Azure subscriptions"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SUBSCRIPTION",
+          "argument_optional": false,
+          "flag": "--subscription",
+          "summary": "Select subscription",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Azure subscription identifier",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "The Azure CLI reference uses client-side JMESPath over JSON; numerical literals can be indices, comparisons or function arguments"
+                    "grammar": "Subscription name or ID resolved by the Azure account profile; digits in an ID are not a numerical quantity."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Use the active configured subscription."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": "JMESPath query grammar",
-                  "reference": {
-                    "source": "https://learn.microsoft.com/en-us/cli/azure/query-azure-cli",
-                    "locator": "Client-side JMESPath queries"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "investigation": "Pin the Azure CLI/JMESPath release combination"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/profile/__init__.py",
+                      "locator": "account show and subscription selection"
+                    }
+                  ]
+                },
+                "subject": "Azure subscriptions"
               }
             ]
-          },
-          "detail": "The Azure CLI reference uses client-side JMESPath over JSON; numerical literals can be indices, comparisons or function arguments. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "--only-show-errors",
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "-o",
+          "summary": "Set output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Azure output serialization",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "jsonc",
+                    "tokens": [
+                      "jsonc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized JSON"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "yaml",
+                    "tokens": [
+                      "yaml"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "YAML"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "yamlc",
+                    "tokens": [
+                      "yamlc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized YAML"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "table",
+                    "tokens": [
+                      "table"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Human-readable table"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "tsv",
+                    "tokens": [
+                      "tsv"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Tab-separated values"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured output format, with JSON as the built-in default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/output.py",
+                      "locator": "OutputProducer output formats in the CLI's Knack dependency"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--output",
+          "summary": "Set output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Azure output serialization",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "jsonc",
+                    "tokens": [
+                      "jsonc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized JSON"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "yaml",
+                    "tokens": [
+                      "yaml"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "YAML"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "yamlc",
+                    "tokens": [
+                      "yamlc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized YAML"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "table",
+                    "tokens": [
+                      "table"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Human-readable table"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "tsv",
+                    "tokens": [
+                      "tsv"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Tab-separated values"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured output format, with JSON as the built-in default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/output.py",
+                      "locator": "OutputProducer output formats in the CLI's Knack dependency"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "QUERY",
+          "argument_optional": false,
+          "detail": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability. Reference scope: Azure CLI 2.71.0.",
+          "flag": "--query",
+          "summary": "Filter output with JMESPath",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "JMESPath client-side query grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not apply a CLI JMESPath projection/filter to the command result."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/query.py",
+                      "locator": "CLIQuery --query handling and jmespath.compile"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli-core/setup.py",
+                      "locator": "unbounded jmespath dependency and knack~=0.11.0; contract describes delegation, not a universal library release"
+                    },
+                    {
+                      "source": "https://jmespath.org/specification.html",
+                      "locator": "Index Expressions and JSON literal expression grammar"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "JMESPath client-side query grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/query.py",
+                    "locator": "CLIQuery --query handling and jmespath.compile"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "",
           "argument_optional": false,
+          "flag": "--only-show-errors",
           "summary": "Suppress warnings"
         },
         {
-          "flag": "--debug",
           "argument": "",
           "argument_optional": false,
+          "flag": "--debug",
           "summary": "Include debug logging"
         },
         {
-          "flag": "--verbose",
           "argument": "",
           "argument_optional": false,
+          "flag": "--verbose",
           "summary": "Increase logging detail"
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "az",
+    "account",
+    "show"
+  ],
+  "description": "Options for az account show.",
   "documentation": {
-    "source": "https://learn.microsoft.com/en-us/cli/azure/account#az-account-show",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://learn.microsoft.com/en-us/cli/azure/account#az-account-show"
+  },
+  "stop_at_positional": false
 }

@@ -111,13 +111,15 @@ def scan_record(record, collection, registry, timeout, replace):
     except (OSError, ProbeError, HelpError) as error:
         return {**record, "status": "failed", "reason": "manual_read_failed", "error": str(error),
                 "action": "Inspect the rendering error, timeout, permissions, or output limit before retrying."}
+    driver = registry.get(command[0])
+    route = driver.paths.get(tuple(command[1:])) if driver else None
+    scopes = {label: route.manual_scope} if route and route.manual_scope else {}
     try:
-        profile = build_profile(command, [(label, text)])
+        profile = build_profile(command, [(label, text)], source_scopes=scopes)
     except HelpError as error:
         return {**record, "status": "needs_adjustment", "reason": "unparsed_manual", "error": str(error),
                 "action": "The manual has no usable option declarations. Supply a curated profile or a better manual source."}
     profile["imported_from"] = {"source": label, "manual": manual}
-    driver = registry.get(command[0])
     issues = manual_review_issues(text)
     if len(command) == 1 and driver and any(driver.paths):
         issues.append({"code": "root_only", "action": "This profile covers root options. Use --scan-subcommands for driver-declared paths."})

@@ -1,76 +1,86 @@
 {
-  "command": [
-    "gcloud",
-    "storage",
-    "ls"
-  ],
-  "description": "Options for gcloud storage ls.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-r",
-          "argument": "",
-          "argument_optional": false,
           "summary": "List recursively"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--recursive",
-          "argument": "",
-          "argument_optional": false,
           "summary": "List recursively"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-l",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Include object size and time"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--long",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Include object size and time"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-a",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Include noncurrent object versions"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--all-versions",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Include noncurrent object versions"
         },
         {
-          "flag": "--full",
           "argument": "",
           "argument_optional": false,
+          "flag": "--full",
           "summary": "Show detailed object metadata"
         },
         {
-          "flag": "--readable-sizes",
           "argument": "",
           "argument_optional": false,
+          "detail": "With --long, display byte sizes using binary 1024-based KiB/MiB/GiB units; no numerical operand is accepted Reference scope: Google Cloud CLI 515.0.0.",
+          "flag": "--readable-sizes",
           "summary": "Show object sizes as KiB/MiB/GiB with --long",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "enumeration",
-                "meaning": "Format displayed object sizes using binary unit labels",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://cloud.google.com/sdk/gcloud/reference/storage/ls",
-                      "locator": "--readable-sizes uses KiB/MiB/GiB with --long"
-                    }
-                  ]
+                "meaning": "Readable object-size output mode",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "--readable-sizes",
+                    "tokens": [
+                      "--readable-sizes"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "With --long, display byte sizes using binary 1024-based KiB/MiB/GiB units; no numerical operand is accepted"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use raw byte counts in the applicable long listing."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This complete flag has no operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -80,97 +90,474 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/surface/storage/ls.py: --readable-sizes help and flag declaration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/command_lib/storage/list_util.py: 1024 bytes -> 1 KiB and readable-size formatter delegation"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/command_lib/storage/resources/shim_format_util.py: get_human_readable_byte_value binary size formatting"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--buckets",
+          "summary": "List matching buckets"
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--format",
+          "summary": "Use gsutil output style; FORMAT must be gsutil",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Legacy storage listing output style",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "selected",
+                    "id": "choice-1",
                     "notation": "literal",
-                    "syntax": "--readable-sizes",
+                    "syntax": "gsutil",
                     "tokens": [
-                      "--readable-sizes"
+                      "gsutil"
                     ],
                     "case": "sensitive",
-                    "meaning": "Format displayed object sizes using binary unit labels"
+                    "meaning": "Use gsutil-compatible listing style; other --format values do not work for this command"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Use the native gcloud storage listing style."
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
-                "investigation": "Pin the documented output formatting to supported Cloud SDK releases"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/surface/storage/ls.py: command-specific --format override"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "The gcloud storage ls reference uses KiB, MiB and GiB with --long, rather than a bare byte count. This is an output-format flag with no numerical operand. Exact Cloud SDK release applicability requires verification."
+          }
         },
         {
-          "flag": "--buckets",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "List matching buckets"
-        },
-        {
-          "flag": "--format",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Use gsutil output style; FORMAT must be gsutil"
-        },
-        {
-          "flag": "--project",
           "argument": "PROJECT",
           "argument_optional": false,
-          "summary": "Select project"
+          "flag": "--project",
+          "summary": "Select project",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Google Cloud project identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Project ID string supplied to the command/API; numeric project numbers are distinct identifiers and can be rejected where a project ID is required. This option is not a resource count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured core/project value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --project and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Google Cloud project identifier"
+              }
+            ]
+          }
         },
         {
-          "flag": "--configuration",
           "argument": "NAME",
           "argument_optional": false,
-          "summary": "Select a named configuration"
+          "flag": "--configuration",
+          "summary": "Select a named configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Named gcloud configuration",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Configuration name selecting a stored property set."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configuration selected by normal gcloud precedence."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --configuration and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Named gcloud configuration"
+              }
+            ]
+          }
         },
         {
-          "flag": "--account",
           "argument": "ACCOUNT",
           "argument_optional": false,
-          "summary": "Select account"
+          "flag": "--account",
+          "summary": "Select account",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Google Cloud credential account",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Account string, commonly an email address, selecting stored credentials."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured core/account value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/calliope/cli.py: --account and global property argument registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "subject": "Google Cloud credential account"
+              }
+            ]
+          }
         },
         {
-          "flag": "--quiet",
           "argument": "",
           "argument_optional": false,
+          "flag": "--quiet",
           "summary": "Disable interactive prompting"
         },
         {
-          "flag": "--verbosity",
           "argument": "LEVEL",
           "argument_optional": false,
-          "summary": "Set logging detail"
+          "flag": "--verbosity",
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "gcloud diagnostic verbosity",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "debug",
+                    "tokens": [
+                      "debug"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Debug and higher severity"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "info",
+                    "tokens": [
+                      "info"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Informational and higher severity"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "warning",
+                    "tokens": [
+                      "warning"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Warnings and errors"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "error",
+                    "tokens": [
+                      "error"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Errors only"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "critical",
+                    "tokens": [
+                      "critical"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Critical errors only"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress diagnostic logging"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured core/verbosity; the built-in default is warning."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "515.0.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core verbosity supported names; CLI verbosity registration"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/properties.py: core/project, core/account, named configurations and verbosity properties"
+                    }
+                  ]
+                },
+                "ordering": "debug, info, warning, error, critical, none progressively suppress lower-severity diagnostics"
+              }
+            ]
+          }
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "gcloud",
+    "storage",
+    "ls"
+  ],
+  "description": "Options for gcloud storage ls.",
   "documentation": {
-    "source": "https://cloud.google.com/sdk/gcloud/reference/storage/ls",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://cloud.google.com/sdk/gcloud/reference/storage/ls"
+  },
+  "stop_at_positional": false
 }

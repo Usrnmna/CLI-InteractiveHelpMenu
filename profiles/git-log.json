@@ -1,13 +1,8 @@
 {
-  "command": [
-    "git",
-    "log"
-  ],
-  "description": "Inspect Git commit history.",
   "categories": [
     {
-      "name": "Presentation",
       "description": "Control commit and graph formatting.",
+      "name": "Presentation",
       "options": [
         {
           "flag": "--oneline",
@@ -32,12 +27,13 @@
       ]
     },
     {
-      "name": "Filtering",
       "description": "Select the commits shown.",
+      "name": "Filtering",
       "options": [
         {
-          "flag": "--max-count=",
           "argument": "COUNT",
+          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "flag": "--max-count=",
           "summary": "Limit the number of commits",
           "value_semantics": {
             "schema_version": 1,
@@ -46,37 +42,37 @@
                 "ref": "output-count"
               }
             ]
-          },
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit."
+          }
         },
         {
+          "argument": "PATTERN",
           "flag": "--author=",
-          "argument": "PATTERN",
-          "summary": "Filter by author"
-        },
-        {
-          "flag": "--grep=",
-          "argument": "PATTERN",
-          "summary": "Filter commit messages"
-        },
-        {
-          "flag": "--since=",
-          "argument": "DATE",
-          "summary": "Filter by a Git date/time expression",
+          "summary": "Filter by author",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "timestamp",
-                "meaning": "Commit-date cutoff",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://git-scm.com/docs/git-log/2.48.0",
-                      "locator": "Commit limiting: --max-count and --since"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Author matching expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Regular expression matching author headers; multiple author patterns and selected regexp modes follow git-log rules. Numerical text is a pattern, not an author count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not restrict commits by an explicit author pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -93,39 +89,161 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/rev-list-options.txt",
+                      "locator": "--author"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
+          "flag": "--grep=",
+          "summary": "Filter commit messages",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit-message matching expression",
                 "bare": {
-                  "state": "unverified",
-                  "reason": "A plain number's interpretation must be checked against this command's exact date parser"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "date",
+                    "id": "text",
                     "notation": "expression",
-                    "syntax": "GIT-DATE/EXPIRY",
-                    "grammar": "Command-specific date/expiry syntax; relative and sentinel forms require verification"
+                    "syntax": "VALUE",
+                    "grammar": "Regular expression matching commit/stash messages; multiple patterns and selected regexp modes follow Git log rules."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No commit-date cutoff is added"
+                  "meaning": "Do not add a message-pattern restriction."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "time_basis": "Depends on the date/expiry expression and timezone",
-                "investigation": "Verify bare numbers, relative syntax, sentinels and timezone defaults in the exact date/expiry parser"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/rev-list-options.txt",
+                      "locator": "--grep"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "Git 2.48.0: --since is a date cutoff; accepted calendar and human-relative forms follow Git's date parser, not an assumed milliseconds convention. Exact numerical forms remain under investigation; no unit is invented."
+          }
+        },
+        {
+          "argument": "DATE",
+          "detail": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression. Reference scope: Git 2.48.0.",
+          "flag": "--since=",
+          "summary": "Filter by a Git date/time expression",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Commit date lower-bound expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Bare numbers use Git's calendar/epoch heuristics, not one scalar duration unit; the form documents the threshold and explicit alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a since cutoff."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
+                      "locator": "parse_date_basic, match_digit >=100000000, approxidate_careful"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/rev-list-options.txt",
+                      "locator": "--since date"
+                    }
+                  ]
+                },
+                "time_basis": "Absolute times are epoch-second instants with parsed timezone; unzoned dates/relative expressions use local wall-clock context."
+              }
+            ]
+          }
         },
         {
           "flag": "--all",
@@ -134,71 +252,76 @@
       ]
     }
   ],
+  "command": [
+    "git",
+    "log"
+  ],
+  "description": "Inspect Git commit history.",
   "value_definitions": {
     "output-count": {
-      "kind": "count",
-      "meaning": "Maximum number of commits displayed",
-      "review": {
-        "status": "verified",
-        "references": [
-          {
-            "source": "https://git-scm.com/docs/git-log/2.48.0",
-            "locator": "Commit limiting: --max-count and --since"
-          }
-        ]
-      },
       "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
         "implementation": {
           "state": "known",
           "values": [
             "Git"
           ]
         },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
         "version": {
           "state": "known",
           "values": [
             "2.48.0"
           ]
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
         }
       },
       "bare": {
-        "state": "accepted",
-        "form": "entries"
+        "form": "entries",
+        "state": "accepted"
       },
       "forms": [
         {
-          "id": "entries",
-          "notation": "number",
-          "syntax": "N",
           "bounds": {
             "min": "0"
           },
+          "grammar": "Nonnegative integer output count",
+          "id": "entries",
+          "notation": "number",
           "special_values": [
             {
-              "value": "0",
-              "meaning": "Display no selected entries"
+              "meaning": "Display no selected entries",
+              "value": "0"
             }
           ],
-          "grammar": "Nonnegative integer output count"
+          "syntax": "N"
         }
       ],
+      "kind": "count",
+      "meaning": "Maximum number of commits displayed",
+      "review": {
+        "references": [
+          {
+            "locator": "Commit limiting: --max-count and --since",
+            "source": "https://git-scm.com/docs/git-log/2.48.0"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Commits",
       "when_absent": {
-        "state": "known",
-        "meaning": "No explicit maximum output count is imposed"
+        "meaning": "No explicit maximum output count is imposed",
+        "state": "known"
       },
       "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "subject": "Commits"
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
     }
   }
 }

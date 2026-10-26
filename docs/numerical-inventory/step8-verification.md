@@ -1,5 +1,9 @@
 # Integrated numerical behavior verification
 
+This account records the Step 8 verification snapshot. The later
+[maintained debt resolution](debt-resolution.md) supplies current strict-success
+and migration evidence; native acceptance gaps recorded here remain open.
+
 [Inventory and acceptance criteria](README.md) · [Contract](../numerical-value-contract.md) · [Prospective coverage](step7-enforcement.md)
 
 ## Scope and evidence
@@ -181,7 +185,8 @@ python -B scripts/check_numerical_coverage.py --output tests/reports/numerical-i
 python -B scripts/check_numerical_coverage.py --mode strict --summary
 ```
 
-The final command currently exits 1 for the explicit migration debt. Existing
+At the Step 8 snapshot, the final command exited 1 for explicit migration debt;
+the subsequent debt-resolution follow-up now passes it. Existing
 focused contract, migration, preservation, presentation, authoring and enforcement
 tests remain discoverable through normal unittest discovery. The local Step 8
 report records the exact broader passive selections, exclusions and outcomes.

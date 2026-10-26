@@ -1,204 +1,372 @@
 {
-  "command": [
-    "pytest"
-  ],
-  "description": "Options for pytest. Core pytest options; installed plugins may add options.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
-          "flag": "-k",
           "argument": "EXPRESSION",
           "argument_optional": false,
+          "detail": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5.",
+          "flag": "-k",
           "summary": "Select tests by name expression",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by pytest name-expression grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py",
-                      "locator": "pytest_addoption and expression selection for -k"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "pytest"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "8.3.5"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "grammar": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit",
                     "id": "grammar",
                     "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit"
+                    "syntax": "VALUE"
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
                 "grammar": {
                   "name": "pytest name-expression grammar",
                   "reference": {
-                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                    "locator": "Command-line flags --durations, --durations-min and --maxfail"
+                    "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
                   }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by pytest name-expression grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
+                    },
+                    {
+                      "locator": "pytest_addoption and expression selection for -k",
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5."
+          }
         },
         {
-          "flag": "-m",
           "argument": "MARKEXPR",
           "argument_optional": false,
+          "detail": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5.",
+          "flag": "-m",
           "summary": "Select tests by marker expression",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by pytest marker-expression grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py",
-                      "locator": "pytest_addoption and expression selection for -m"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "pytest"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "8.3.5"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "grammar": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning",
                     "id": "grammar",
                     "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning"
+                    "syntax": "VALUE"
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
                 "grammar": {
                   "name": "pytest marker-expression grammar",
                   "reference": {
-                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                    "locator": "Command-line flags --durations, --durations-min and --maxfail"
+                    "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
                   }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by pytest marker-expression grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
+                    },
+                    {
+                      "locator": "pytest_addoption and expression selection for -m",
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5."
+          }
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-x",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Stop after the first failure"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--exitfirst",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Stop after the first failure"
         },
         {
-          "flag": "--maxfail",
           "argument": "NUM",
           "argument_optional": false,
+          "detail": "pytest 8.3: NUM counts failures or errors before stopping; it is not a duration. Zero leaves the maximum-failure stop limit disabled. Configuration can supply default command-line options.",
+          "flag": "--maxfail",
           "summary": "Stop after the specified failure count",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "number",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "grammar": "Nonnegative decimal integer count",
+                    "id": "number",
+                    "notation": "number",
+                    "special_values": [
+                      {
+                        "meaning": "No maximum-failure stop limit",
+                        "value": "0"
+                      }
+                    ],
+                    "syntax": "N"
+                  }
+                ],
                 "kind": "count",
                 "meaning": "Failures/errors before stopping",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail"
+                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py",
-                      "locator": "--maxfail registration and handling"
+                      "locator": "--maxfail registration and handling",
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py"
                     }
-                  ]
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Failures and errors",
+                "when_absent": {
+                  "meaning": "No maximum-failure stop limit is requested",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-q",
+          "summary": "Reduce output"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--quiet",
+          "summary": "Reduce output"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-v",
+          "summary": "Increase output detail"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--verbose",
+          "summary": "Increase output detail"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--collect-only",
+          "summary": "Collect tests without running them"
+        },
+        {
+          "argument": "STYLE",
+          "argument_optional": false,
+          "flag": "--tb",
+          "summary": "Select traceback formatting",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Traceback display style",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Automatic traceback presentation"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "long",
+                    "tokens": [
+                      "long"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Full tracebacks"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "short",
+                    "tokens": [
+                      "short"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short tracebacks"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "line",
+                    "tokens": [
+                      "line"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "One-line failures"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "native",
+                    "tokens": [
+                      "native"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Python-native tracebacks"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "no",
+                    "tokens": [
+                      "no"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "No traceback"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto unless configuration overrides it."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -215,137 +383,501 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/terminal.py",
+                      "locator": "--tb"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "METHOD",
+          "argument_optional": false,
+          "flag": "--capture",
+          "summary": "Select output capture method",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Output capture mechanism",
                 "bare": {
-                  "state": "accepted",
-                  "form": "number"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "number",
-                    "notation": "number",
-                    "syntax": "N",
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "No maximum-failure stop limit"
-                      }
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "fd",
+                    "tokens": [
+                      "fd"
                     ],
-                    "grammar": "Nonnegative decimal integer count"
+                    "case": "sensitive",
+                    "meaning": "Capture file descriptors"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "sys",
+                    "tokens": [
+                      "sys"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Capture Python sys streams"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "no",
+                    "tokens": [
+                      "no"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable capture"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "tee-sys",
+                    "tokens": [
+                      "tee-sys"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Capture Python sys streams and also display writes"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No maximum-failure stop limit is requested"
+                  "meaning": "Use fd unless configuration overrides it."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "subject": "Failures and errors"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/capture.py",
+                      "locator": "pytest_addoption capture choices"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "pytest 8.3: NUM counts failures or errors before stopping; it is not a duration. Zero leaves the maximum-failure stop limit disabled. Configuration can supply default command-line options."
+          }
         },
         {
-          "flag": "-q",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Reduce output"
-        },
-        {
-          "flag": "--quiet",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Reduce output"
-        },
-        {
-          "flag": "-v",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Increase output detail"
-        },
-        {
-          "flag": "--verbose",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Increase output detail"
-        },
-        {
-          "flag": "--collect-only",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Collect tests without running them"
-        },
-        {
-          "flag": "--tb",
-          "argument": "STYLE",
-          "argument_optional": false,
-          "summary": "Select traceback formatting"
-        },
-        {
-          "flag": "--capture",
-          "argument": "METHOD",
-          "argument_optional": false,
-          "summary": "Select output capture method"
-        },
-        {
-          "flag": "--rootdir",
           "argument": "DIR",
           "argument_optional": false,
-          "summary": "Set the root directory"
+          "flag": "--rootdir",
+          "summary": "Set the root directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "pytest root directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path establishing the test-session root; it does not itself change the process working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Determine rootdir using pytest's configuration/argument discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/__init__.py",
+                      "locator": "--rootdir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-c",
           "argument": "FILE",
           "argument_optional": false,
-          "summary": "Select a configuration file"
+          "flag": "-c",
+          "summary": "Select a configuration file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "pytest configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename selecting a supported pytest configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Discover configuration using pytest's normal search rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/__init__.py",
+                      "locator": "-c"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-p",
           "argument": "NAME",
           "argument_optional": false,
-          "summary": "Load or disable a plugin"
+          "flag": "-p",
+          "summary": "Load or disable a plugin",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "pytest plugin name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Plugin module/entry-point name; prefix no: disables a named plugin. Digits are plugin-name text."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal plugin discovery/loading without this explicit request."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/__init__.py",
+                      "locator": "-p"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--basetemp",
           "argument": "DIR",
           "argument_optional": false,
-          "summary": "Select temporary directory"
+          "flag": "--basetemp",
+          "summary": "Select temporary directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "pytest temporary base directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path used for temporary test data; pytest may clear this directory for the run, so it is not a retention-count argument."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use pytest's generated temporary-base location."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/tmpdir.py",
+                      "locator": "--basetemp"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--durations",
           "argument": "N",
           "argument_optional": false,
+          "detail": "pytest 8.3 reference: N is a count of duration records, not seconds. Zero includes all measured durations. The separate --durations-min option is a seconds threshold and can still filter the report; it defaults to 0.005 seconds in this reference.",
+          "flag": "--durations",
           "summary": "Report N slowest setup/test durations; 0 selects all",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "number",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "grammar": "Nonnegative decimal integer count",
+                    "id": "number",
+                    "notation": "number",
+                    "special_values": [
+                      {
+                        "meaning": "Report all measured durations",
+                        "value": "0"
+                      }
+                    ],
+                    "syntax": "N"
+                  }
+                ],
                 "kind": "count",
                 "meaning": "Slowest setup/test durations included in the report",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html",
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail"
+                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
+                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/runner.py",
-                      "locator": "--durations registration and handling"
+                      "locator": "--durations registration and handling",
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/runner.py"
                     }
-                  ]
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Slowest setup/test duration records",
+                "when_absent": {
+                  "meaning": "No slow-duration list is requested by this option",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATH",
+          "argument_optional": false,
+          "flag": "--junit-xml",
+          "summary": "Write an XML report",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "JUnit XML report path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Output filename for JUnit XML test results."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request a JUnit XML report through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -362,61 +894,37 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "accepted",
-                  "form": "number"
-                },
-                "forms": [
-                  {
-                    "id": "number",
-                    "notation": "number",
-                    "syntax": "N",
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "special_values": [
-                      {
-                        "value": "0",
-                        "meaning": "Report all measured durations"
-                      }
-                    ],
-                    "grammar": "Nonnegative decimal integer count"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No slow-duration list is requested by this option"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Slowest setup/test duration records"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/junitxml.py",
+                      "locator": "--junit-xml"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "pytest 8.3 reference: N is a count of duration records, not seconds. Zero includes all measured durations. The separate --durations-min option is a seconds threshold and can still filter the report; it defaults to 0.005 seconds in this reference."
-        },
-        {
-          "flag": "--junit-xml",
-          "argument": "PATH",
-          "argument_optional": false,
-          "summary": "Write an XML report"
+          }
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "pytest"
+  ],
+  "description": "Options for pytest. Core pytest options; installed plugins may add options.",
   "documentation": {
-    "source": "https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags"
+  },
+  "stop_at_positional": false
 }

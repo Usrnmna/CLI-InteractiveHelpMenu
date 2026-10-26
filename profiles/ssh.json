@@ -1,534 +1,729 @@
 {
-  "command": [
-    "ssh"
-  ],
-  "description": "ssh shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
-          "flag": "-4",
-          "bundle": true,
           "argument": "",
+          "bundle": true,
+          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
+          "flag": "-4",
           "summary": "Use IPv4 addresses",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Select IP version 4",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "OpenSSH Portable"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.9p2"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Select IP version 4",
                     "notation": "literal",
                     "syntax": "-4",
                     "tokens": [
                       "-4"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Select IP version 4"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Select IP version 4",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand."
+          }
         },
         {
-          "flag": "-6",
-          "bundle": true,
           "argument": "",
+          "bundle": true,
+          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
+          "flag": "-6",
           "summary": "Use IPv6 addresses",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Select IP version 6",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                    }
-                  ]
-                },
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "OpenSSH Portable"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.9p2"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This complete flag selects a mode and has no numerical operand"
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "case": "sensitive",
                     "id": "selected",
+                    "meaning": "Select IP version 6",
                     "notation": "literal",
                     "syntax": "-6",
                     "tokens": [
                       "-6"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Select IP version 6"
+                    ]
                   }
                 ],
+                "kind": "enumeration",
+                "meaning": "Select IP version 6",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                    }
+                  ],
+                  "status": "verified"
+                },
                 "when_absent": {
-                  "state": "known",
-                  "meaning": "Default mode and other options/configuration remain applicable"
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
                 },
                 "when_value_omitted": {
-                  "state": "not_applicable",
-                  "reason": "This fixed flag has no operand"
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand."
+          }
         },
         {
-          "flag": "-C",
-          "bundle": true,
           "argument": "",
+          "bundle": true,
+          "flag": "-C",
           "summary": "Request compression"
         },
         {
-          "flag": "-F",
           "argument": "CONFIGFILE",
-          "summary": "Read the specified SSH configuration",
-          "attached": true
-        },
-        {
-          "flag": "-i",
-          "argument": "IDENTITY_FILE",
-          "summary": "Select a private identity file",
-          "attached": true
-        },
-        {
-          "flag": "-J",
-          "argument": "DESTINATION",
-          "summary": "Connect through a jump host",
           "attached": true,
+          "flag": "-F",
+          "summary": "Read the specified SSH configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "composite",
-                "meaning": "Jump host destination list",
+                "kind": "nonnumerical",
+                "meaning": "SSH configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to an SSH client configuration file; defaults/override behavior follows OpenSSH's -F configuration rules."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal user/system SSH configuration discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
                 "review": {
                   "status": "verified",
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                      "locator": "-F"
                     }
                   ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "OpenSSH Portable"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "9.9p2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
-                },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "[USER@]HOST[:PORT][,...]",
-                    "grammar": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "slots": 1,
-                "components": [
-                  {
-                    "id": "user",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Jump-host login name",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "USER",
-                          "grammar": "Jump-host login name"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "host",
-                    "slot": 1,
-                    "required": true,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Jump-host name or bracketed IPv6 address",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "HOST",
-                          "grammar": "Jump-host name or bracketed IPv6 address"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "port",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "Jump-host TCP port",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "TCP service ports"
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements."
-        },
-        {
-          "flag": "-o",
-          "argument": "OPTION",
-          "summary": "Set an SSH configuration option",
-          "attached": true,
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "delegated",
-                "meaning": "Value interpreted by OpenSSH ssh_config key/value grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5",
-                      "locator": "Port and per-key configuration grammar"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "OpenSSH Portable"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "9.9p2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
-                },
-                "forms": [
-                  {
-                    "id": "grammar",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "grammar": {
-                  "name": "OpenSSH ssh_config key/value grammar",
-                  "reference": {
-                    "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5",
-                    "locator": "Port and per-key configuration grammar"
-                  }
                 }
               }
             ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 9.9p2."
+          }
         },
         {
-          "flag": "-q",
-          "bundle": true,
+          "argument": "IDENTITY_FILE",
+          "attached": true,
+          "flag": "-i",
+          "summary": "Select a private identity file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "SSH identity file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to an authentication private-key/identity file; digits in a filename are not key lengths."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured/default identities and authentication agents."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
+                      "locator": "-i"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DESTINATION",
+          "attached": true,
+          "detail": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements.",
+          "flag": "-J",
+          "summary": "Connect through a jump host",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "user",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Jump-host login name",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "USER"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Jump-host login name",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "host",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Jump-host name or bracketed IPv6 address",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "HOST"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Jump-host name or bracketed IPv6 address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "port",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Jump-host TCP port",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "TCP service ports",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "[USER@]HOST[:PORT][,...]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Jump host destination list",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "OPTION",
+          "attached": true,
+          "detail": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 9.9p2.",
+          "flag": "-o",
+          "summary": "Set an SSH configuration option",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "OpenSSH ssh_config key/value grammar",
+                  "reference": {
+                    "locator": "Port and per-key configuration grammar",
+                    "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by OpenSSH ssh_config key/value grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Port and per-key configuration grammar",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "",
+          "bundle": true,
+          "flag": "-q",
           "summary": "Reduce diagnostic output"
         },
         {
-          "flag": "-v",
-          "bundle": true,
           "argument": "",
+          "bundle": true,
+          "flag": "-v",
           "summary": "Display diagnostic output"
         },
         {
-          "flag": "-p",
-          "bundle": true,
           "argument": "PORT",
-          "summary": "Select the remote TCP port",
           "attached": true,
+          "bundle": true,
+          "detail": "OpenSSH Portable 9.9p2: PORT identifies a remote TCP port; it is unitless, not bytes or seconds. Matching SSH configuration applies when absent, with Port defaulting to 22. Forwarding port components have their own rules.",
+          "flag": "-p",
+          "summary": "Select the remote TCP port",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "port",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "TCP-port identifier, not a byte/rate value",
+                    "id": "port",
+                    "notation": "number",
+                    "syntax": "N"
+                  }
+                ],
                 "kind": "identifier",
                 "meaning": "Remote TCP port number",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5",
-                      "locator": "Port default 22"
+                      "locator": "Port default 22",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5"
                     }
-                  ]
+                  ],
+                  "status": "verified"
+                },
+                "subject": "TCP service ports",
+                "when_absent": {
+                  "meaning": "Use matching SSH configuration Port, whose default is 22",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "USER",
+          "attached": true,
+          "flag": "-l",
+          "summary": "Select the remote login name",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "SSH login user name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Remote account/login name string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use user selection from the destination/configuration/default login identity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -545,436 +740,1017 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "accepted",
-                  "form": "port"
-                },
-                "forms": [
-                  {
-                    "id": "port",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "TCP-port identifier, not a byte/rate value"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use matching SSH configuration Port, whose default is 22"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "TCP service ports"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
+                      "locator": "-l"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: PORT identifies a remote TCP port; it is unitless, not bytes or seconds. Matching SSH configuration applies when absent, with Port defaulting to 22. Forwarding port components have their own rules."
+          }
         },
         {
-          "flag": "-l",
-          "argument": "USER",
-          "summary": "Select the remote login name",
-          "attached": true
-        },
-        {
-          "flag": "-L",
           "argument": "ADDRESS",
-          "summary": "Configure local port forwarding",
           "attached": true,
+          "detail": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements.",
+          "flag": "-L",
+          "summary": "Configure local port forwarding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "bind",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Optional bind address; bracket IPv6",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "BIND"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Optional bind address; bracket IPv6",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "listen-port",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Listening TCP port in the TCP alternative",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Listening ports",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "host",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Destination host in a TCP-destination alternative",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "HOST"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Destination host in a TCP-destination alternative",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "destination-port",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Destination TCP port when present",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Destination ports",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "socket",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Unix socket path used instead of a TCP endpoint",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "SOCKET"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Unix socket path used instead of a TCP endpoint",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives"
+                  }
+                ],
                 "kind": "composite",
                 "meaning": "Local forwarding specification",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                     }
-                  ]
+                  ],
+                  "status": "verified"
                 },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ADDRESS",
+          "attached": true,
+          "detail": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form.",
+          "flag": "-R",
+          "summary": "Configure remote port forwarding",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "OpenSSH Portable"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "9.9p2"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
                 },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives",
-                    "grammar": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "slots": 1,
                 "components": [
                   {
                     "id": "bind",
-                    "slot": 1,
                     "required": false,
                     "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Optional bind address; bracket IPv6",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "BIND"
+                        }
+                      ],
                       "kind": "nonnumerical",
                       "meaning": "Optional bind address; bracket IPv6",
                       "review": {
-                        "status": "verified",
                         "references": [
                           {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                           }
-                        ]
+                        ],
+                        "status": "verified"
                       },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "BIND",
-                          "grammar": "Optional bind address; bracket IPv6"
-                        }
-                      ],
                       "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
                       },
                       "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
                       }
-                    }
+                    },
+                    "slot": 1
                   },
                   {
                     "id": "listen-port",
-                    "slot": 1,
                     "required": false,
                     "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "special_values": [
+                            {
+                              "meaning": "Dynamically allocate the remote listening port",
+                              "value": "0"
+                            }
+                          ],
+                          "syntax": "N"
+                        }
+                      ],
                       "kind": "identifier",
                       "meaning": "Listening TCP port in the TCP alternative",
                       "review": {
-                        "status": "verified",
                         "references": [
                           {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                           }
-                        ]
+                        ],
+                        "status": "verified"
                       },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
+                      "subject": "Listening ports",
                       "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
                       },
                       "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Listening ports"
-                    }
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
                   },
                   {
                     "id": "host",
-                    "slot": 1,
                     "required": false,
                     "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Destination host in a TCP-destination alternative",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "HOST"
+                        }
+                      ],
                       "kind": "nonnumerical",
                       "meaning": "Destination host in a TCP-destination alternative",
                       "review": {
-                        "status": "verified",
                         "references": [
                           {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                           }
-                        ]
+                        ],
+                        "status": "verified"
                       },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "HOST",
-                          "grammar": "Destination host in a TCP-destination alternative"
-                        }
-                      ],
                       "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
                       },
                       "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
                       }
-                    }
+                    },
+                    "slot": 1
                   },
                   {
                     "id": "destination-port",
-                    "slot": 1,
                     "required": false,
                     "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
                       "kind": "identifier",
                       "meaning": "Destination TCP port when present",
                       "review": {
-                        "status": "verified",
                         "references": [
                           {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                           }
-                        ]
+                        ],
+                        "status": "verified"
                       },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
+                      "subject": "Destination ports",
                       "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
                       },
                       "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Destination ports"
-                    }
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
                   },
                   {
                     "id": "socket",
-                    "slot": 1,
                     "required": false,
                     "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Unix socket path used instead of a TCP endpoint",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
                       "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
                         "implementation": {
                           "state": "known",
                           "values": [
                             "OpenSSH Portable"
                           ]
                         },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
                         "version": {
                           "state": "known",
                           "values": [
                             "9.9p2"
                           ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
                         }
                       },
                       "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
                       },
                       "forms": [
                         {
+                          "grammar": "Unix socket path used instead of a TCP endpoint",
                           "id": "text",
                           "notation": "expression",
-                          "syntax": "SOCKET",
-                          "grammar": "Unix socket path used instead of a TCP endpoint"
+                          "syntax": "SOCKET"
                         }
                       ],
+                      "kind": "nonnumerical",
+                      "meaning": "Unix socket path used instead of a TCP endpoint",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
                       "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
                       },
                       "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
                       }
-                    }
+                    },
+                    "slot": 1
                   }
-                ]
-              }
-            ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements."
-        },
-        {
-          "flag": "-R",
-          "argument": "ADDRESS",
-          "summary": "Configure remote port forwarding",
-          "attached": true,
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
+                ],
+                "forms": [
+                  {
+                    "grammar": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives"
+                  }
+                ],
                 "kind": "composite",
                 "meaning": "Remote forwarding specification",
                 "review": {
-                  "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
                     }
-                  ]
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ADDRESS",
+          "attached": true,
+          "detail": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations.",
+          "flag": "-D",
+          "summary": "Configure dynamic forwarding",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.9p2"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "bind",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Optional bind address; bracket IPv6",
+                          "id": "text",
+                          "notation": "expression",
+                          "syntax": "BIND"
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "Optional bind address; bracket IPv6",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "listen-port",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.9p2"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "integer",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Integer identifier, not a measured quantity",
+                          "id": "integer",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Listening TCP port in the TCP alternative",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Listening ports",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "[BIND:]PORT"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Dynamic local forwarding specification",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "-p, -J, -L, -R, -D, -4 and -6",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-N",
+          "summary": "Do not execute a remote command"
+        },
+        {
+          "argument": "",
+          "flag": "-T",
+          "summary": "Disable pseudo-terminal allocation"
+        },
+        {
+          "argument": "",
+          "flag": "-t",
+          "summary": "Request a pseudo-terminal"
+        },
+        {
+          "argument": "",
+          "flag": "-n",
+          "summary": "Redirect standard input from the null device"
+        },
+        {
+          "argument": "LOG_FILE",
+          "attached": true,
+          "flag": "-E",
+          "summary": "Append diagnostic output to a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "SSH diagnostic log file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename to which diagnostic logging is appended."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write diagnostics to standard error according to logging configuration."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -991,568 +1767,32 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
-                },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives",
-                    "grammar": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "slots": 1,
-                "components": [
-                  {
-                    "id": "bind",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Optional bind address; bracket IPv6",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "BIND",
-                          "grammar": "Optional bind address; bracket IPv6"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "listen-port",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "Listening TCP port in the TCP alternative",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "special_values": [
-                            {
-                              "value": "0",
-                              "meaning": "Dynamically allocate the remote listening port"
-                            }
-                          ],
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Listening ports"
-                    }
-                  },
-                  {
-                    "id": "host",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Destination host in a TCP-destination alternative",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "HOST",
-                          "grammar": "Destination host in a TCP-destination alternative"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "destination-port",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "Destination TCP port when present",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Destination ports"
-                    }
-                  },
-                  {
-                    "id": "socket",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Unix socket path used instead of a TCP endpoint",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "SOCKET",
-                          "grammar": "Unix socket path used instead of a TCP endpoint"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form."
-        },
-        {
-          "flag": "-D",
-          "argument": "ADDRESS",
-          "summary": "Configure dynamic forwarding",
-          "attached": true,
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "composite",
-                "meaning": "Dynamic local forwarding specification",
                 "review": {
                   "status": "verified",
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                      "locator": "-p, -J, -L, -R, -D, -4 and -6"
+                      "locator": "-E"
                     }
                   ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "OpenSSH Portable"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "9.9p2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
-                },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "[BIND:]PORT",
-                    "grammar": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "slots": 1,
-                "components": [
-                  {
-                    "id": "bind",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "nonnumerical",
-                      "meaning": "Optional bind address; bracket IPv6",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "This component is not a scalar numerical value"
-                      },
-                      "forms": [
-                        {
-                          "id": "text",
-                          "notation": "expression",
-                          "syntax": "BIND",
-                          "grammar": "Optional bind address; bracket IPv6"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      }
-                    }
-                  },
-                  {
-                    "id": "listen-port",
-                    "slot": 1,
-                    "required": true,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "Listening TCP port in the TCP alternative",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.1",
-                            "locator": "-p, -J, -L, -R, -D, -4 and -6"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "OpenSSH Portable"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "9.9p2"
-                          ]
-                        },
-                        "platform": {
-                          "state": "not_applicable",
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "integer"
-                      },
-                      "forms": [
-                        {
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N",
-                          "grammar": "Integer identifier, not a measured quantity"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Listening ports"
-                    }
-                  }
-                ]
+                }
               }
             ]
-          },
-          "detail": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations."
-        },
-        {
-          "flag": "-N",
-          "argument": "",
-          "summary": "Do not execute a remote command"
-        },
-        {
-          "flag": "-T",
-          "argument": "",
-          "summary": "Disable pseudo-terminal allocation"
-        },
-        {
-          "flag": "-t",
-          "argument": "",
-          "summary": "Request a pseudo-terminal"
-        },
-        {
-          "flag": "-n",
-          "argument": "",
-          "summary": "Redirect standard input from the null device"
-        },
-        {
-          "flag": "-E",
-          "argument": "LOG_FILE",
-          "summary": "Append diagnostic output to a file",
-          "attached": true
+          }
         }
       ]
     }
   ],
+  "command": [
+    "ssh"
+  ],
+  "description": "ssh shell argument reference.",
   "stop_at_positional": true
 }

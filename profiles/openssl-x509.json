@@ -1,82 +1,38 @@
 {
-  "command": [
-    "openssl",
-    "x509"
-  ],
-  "description": "openssl x509 shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "FILE",
           "flag": "-in",
-          "argument": "FILE",
-          "summary": "Read the input certificate"
-        },
-        {
-          "flag": "-out",
-          "argument": "FILE",
-          "summary": "Write the output certificate"
-        },
-        {
-          "flag": "-inform",
-          "argument": "FORMAT",
-          "summary": "Select the input format"
-        },
-        {
-          "flag": "-outform",
-          "argument": "FORMAT",
-          "summary": "Select the output format"
-        },
-        {
-          "flag": "-text",
-          "argument": "",
-          "summary": "Display certificate details"
-        },
-        {
-          "flag": "-noout",
-          "argument": "",
-          "summary": "Omit encoded certificate output"
-        },
-        {
-          "flag": "-subject",
-          "argument": "",
-          "summary": "Display the subject"
-        },
-        {
-          "flag": "-issuer",
-          "argument": "",
-          "summary": "Display the issuer"
-        },
-        {
-          "flag": "-dates",
-          "argument": "",
-          "summary": "Display validity dates"
-        },
-        {
-          "flag": "-fingerprint",
-          "argument": "",
-          "summary": "Display the fingerprint"
-        },
-        {
-          "flag": "-checkend",
-          "argument": "SECONDS",
-          "summary": "Check certificate expiry within the next N seconds",
+          "summary": "Read the input certificate",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "duration",
-                "meaning": "Certificate expiry look-ahead interval",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://docs.openssl.org/3.0/man1/openssl-x509/",
-                      "locator": "OpenSSL 3.0 reference -checkend; exact patch applicability not pinned"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Certificate input file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing the input certificate in the selected format."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read the certificate from standard input."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -86,18 +42,297 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-x509.pod.in",
+                      "locator": "-in"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-out",
+          "summary": "Write the output certificate",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Certificate output file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Output filename; output-format options determine serialization."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write to standard output."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-x509.pod.in",
+                      "locator": "-out"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-inform",
+          "summary": "Select the input format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Certificate input encoding",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "DER",
+                    "tokens": [
+                      "DER"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Binary ASN.1 DER"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "PEM",
+                    "tokens": [
+                      "PEM"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "PEM text armor"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use PEM input by default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-x509.pod.in",
+                      "locator": "-inform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-outform",
+          "summary": "Select the output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Certificate output encoding",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "DER",
+                    "tokens": [
+                      "DER"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Binary ASN.1 DER"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "PEM",
+                    "tokens": [
+                      "PEM"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "PEM text armor"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use PEM output by default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-x509.pod.in",
+                      "locator": "-outform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-text",
+          "summary": "Display certificate details"
+        },
+        {
+          "argument": "",
+          "flag": "-noout",
+          "summary": "Omit encoded certificate output"
+        },
+        {
+          "argument": "",
+          "flag": "-subject",
+          "summary": "Display the subject"
+        },
+        {
+          "argument": "",
+          "flag": "-issuer",
+          "summary": "Display the issuer"
+        },
+        {
+          "argument": "",
+          "flag": "-dates",
+          "summary": "Display validity dates"
+        },
+        {
+          "argument": "",
+          "flag": "-fingerprint",
+          "summary": "Display the fingerprint"
+        },
+        {
+          "argument": "SECONDS",
+          "detail": "Signed base-autodetected C integer in seconds, without unit suffix: decimal, 0x hexadecimal and leading-zero octal. Must fit ossl_intmax_t and time_t on the build. Negative intervals move the comparison into the past; zero checks expiry at the current instant. Very large offsets can exceed representable time and are not a portable interval. Reference scope: OpenSSL 3.0.16.",
+          "flag": "-checkend",
+          "summary": "Check certificate expiry within the next N seconds",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Certificate expiry comparison interval",
                 "bare": {
                   "state": "accepted",
                   "form": "seconds"
@@ -107,28 +342,72 @@
                     "id": "seconds",
                     "notation": "number",
                     "syntax": "N",
+                    "grammar": "Signed base-autodetected C integer in seconds, without unit suffix: decimal, 0x hexadecimal and leading-zero octal. Must fit ossl_intmax_t and time_t on the build. Negative intervals move the comparison into the past; zero checks expiry at the current instant. Very large offsets can exceed representable time and are not a portable interval.",
                     "unit": {
                       "base": "second",
                       "multiplier": "1"
                     },
-                    "grammar": "Integer seconds relative to the current time"
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Compare certificate expiry with the current instant"
+                      }
+                    ]
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "This explicit expiry check is not requested"
+                  "meaning": "Do not request the explicit checkend expiry test."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "investigation": "Verify the exact OpenSSL 3.0 patch release and accepted signed/range behavior before broadening applicability"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/x509.c",
+                      "locator": "OPT_CHECKEND intmax parsing, time_t cast check and current-time offset"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c",
+                      "locator": "opt_intmax base autodetection"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "OpenSSL 3.0 reference: SECONDS is a look-ahead interval in seconds. The command exits nonzero if the certificate expires within that interval, or zero otherwise. This is not a certificate lifetime in days. Signed/range and exact patch applicability require verification."
+          }
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "openssl",
+    "x509"
+  ],
+  "description": "openssl x509 shell argument reference."
 }

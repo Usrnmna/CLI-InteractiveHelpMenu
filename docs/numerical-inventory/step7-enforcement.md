@@ -2,6 +2,11 @@
 
 [Inventory and review](README.md) · [Numerical contract](../numerical-value-contract.md)
 
+The [maintained debt-resolution follow-up](debt-resolution.md) subsequently
+completes all current required contracts. Both modes now pass with no legacy
+debt rows or individual exceptions. The initial debt counts below describe the
+Step 7 snapshot; the checker, eligibility and exception rules remain unchanged.
+
 ## Active policy and readiness
 
 The offline checker selects the existing inventory, shared validator, formatter
@@ -47,8 +52,8 @@ unit or an incorrect description. Source-derived declarations retain their
 Step 3 investigations and qualifications. Neither a planning classification nor
 a completeness check verifies upstream facts.
 
-The default prospective gate can pass with this explicitly reported debt.
-`full_maintained_ready` remains false, and strict mode intentionally exits 1.
+At that initial snapshot, the prospective gate passed with explicitly reported
+debt, `full_maintained_ready` was false and strict mode exited 1.
 Full readiness requires resolving these exact contracts and investigations,
 removing resolved baseline rows, and passing strict validation and the other
 active gates. Production migration is outside Step 7. There is no blanket
@@ -116,13 +121,15 @@ definitions. Offsets and unrelated sibling insertions are excluded. The separate
 review hash covers planning decisions, evidence, applicability, references,
 investigation and acceptance. Refreshing census hashes cannot refresh it.
 
-This bounded baseline is necessary because additional production migration is
-outside Step 7 and prior opt-in work does not cover all maintained values. It
+This bounded baseline was introduced because additional production migration was
+outside Step 7 and the prior opt-in work did not cover all maintained values. It
 permits only exact pre-existing `sem_metadata_missing`, `sem_review_required` and
 `sem_unverified` failures. It cannot admit new requirements, structural errors,
 missing classification/review or lost presentation. It records debt rather than
 360 claims of adequate content. Existing per-entry review groups and metadata
 retain the evidence, applicability and investigations. No refresh command exists.
+Its entries list is now empty after individually checked debt removal; the
+original enrollment context and invalidation policy remain historical evidence.
 
 Individual exceptions additionally require substantive `reason`, `evidence`,
 `applicability`, `investigation` and `review_condition` strings. Evidence must be
@@ -181,6 +188,13 @@ visible and nonfatal. Review resolves a signal by explaining the source in its
 exact review group or correcting demonstrated misclassification. Arbitrary
 wording, hidden grammars and misleading factual claims can escape heuristics;
 explicit review and upstream documentation remain necessary.
+
+The subsequent [diagnostic investigation](diagnostic-investigation.md) records
+exact source-scoped dispositions for those warnings and all 3,977 external-only
+identities. The three warnings remain visible. External informational groups
+increase from ten to fourteen after justified review splits; source comparisons
+cover 63 identities within explicitly limited facts, not complete external
+contracts. No heuristic, eligibility, severity, exception or grouping rule changes.
 
 ## Contributor workflow and local integration
 

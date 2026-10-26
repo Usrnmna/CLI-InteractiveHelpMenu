@@ -233,7 +233,9 @@ class NumericalMigrationTests(unittest.TestCase):
         expiry = self.node("git-worktree-prune", "--expire")
         self.assertEqual(self.form(expiry, "never")["tokens"], self.sources["git_expiry"]["zero_cutoff_tokens"])
         self.assertEqual(self.form(expiry, "all")["tokens"], self.sources["git_expiry"]["unbounded_cutoff_tokens"])
-        self.assertEqual(expiry["bare"]["state"], "unverified")
+        self.assertEqual(expiry["bare"]["state"], "not_applicable")
+        self.assertIn("heuristics", expiry["bare"]["reason"])
+        self.assertIn("100000000", self.form(expiry, "date")["grammar"])
         tail = self.node("podman-logs", "--tail")
         self.assertIn(self.sources["podman"]["all_tail"], {item["value"] for item in tail["forms"][0]["special_values"]})
 
@@ -254,18 +256,23 @@ class NumericalMigrationTests(unittest.TestCase):
         self.assertIn("No bandwidth limit", self.explanations("rsync", "--bwlimit="))
         self.assertIn("5.0.2", self.explanations("esptool-write-flash", "--flash-size"))
 
-    def test_unresolved_content_remains_diagnostic_and_not_verified(self):
-        for case in self.evidence["unresolved_examples"]:
+    def test_source_derived_mutations_remain_diagnostic_and_not_verified(self):
+        """Retain uncertainty protection after the historical examples are resolved."""
+        for case in self.evidence["historical_unresolved_examples"]:
             name, flag = case["profile"], case["flag"]
-            option = self.option(name, flag)
-            definitions = self.profiles[name].get("value_definitions")
+            metadata = deepcopy(self.option(name, flag)["value_semantics"])
+            definitions = deepcopy(self.profiles[name].get("value_definitions", {}))
+            nodes = [definitions[node["ref"]] if "ref" in node else node for node in metadata["variants"]]
             with self.subTest(profile=name, flag=flag):
-                self.assertTrue(all(node["review"]["status"] == "source_derived" for node in self.nodes(name, option["value_semantics"])))
-                diagnostics = validate_value_semantics(option["value_semantics"], mode="maintained", definitions=definitions)
+                self.assertTrue(all(node["review"]["status"] == "verified" for node in nodes))
+                for node in nodes:
+                    node["review"]["status"] = "source_derived"
+                    node["investigation"] = "Controlled evidence-state mutation; upstream verification is withheld in this specimen"
+                diagnostics = validate_value_semantics(metadata, mode="maintained", definitions=definitions)
                 self.assertIn("sem_review_required", {d.code for d in diagnostics})
-                external = validate_value_semantics(option["value_semantics"], mode="external", definitions=definitions)
+                external = validate_value_semantics(metadata, mode="external", definitions=definitions)
                 self.assertTrue(all(d.severity == "warning" for d in external))
-                self.assertIn("Evidence: source derived", self.explanations(name, flag))
+                self.assertIn("Evidence: source derived", "\n".join(format_value_semantics(metadata, definitions=definitions)))
 
     def test_missing_units_false_review_and_overlapping_chips_are_rejected(self):
         missing = deepcopy(self.option("rsync", "--bwlimit=")["value_semantics"])
@@ -275,6 +282,7 @@ class NumericalMigrationTests(unittest.TestCase):
         self.assertIn("sem_unit_missing", {d.code for d in diagnostics})
         self.assertTrue(all(d.source == "synthetic:mutated-rsync" and d.option == "--bwlimit=" and d.pointer for d in diagnostics))
         false_review = deepcopy(self.option("gcloud-compute-instances-list", "--page-size")["value_semantics"])
+        false_review["variants"][0]["bare"] = {"state": "unverified", "reason": "Controlled missing bare-number evidence"}
         false_review["variants"][0]["review"]["status"] = "verified"
         self.assertIn("sem_false_verification", {d.code for d in validate_value_semantics(false_review)})
         chips = deepcopy(self.option("esptool-write-flash", "--flash-freq")["value_semantics"])

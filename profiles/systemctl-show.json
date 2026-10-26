@@ -1,77 +1,68 @@
 {
-  "command": [
-    "systemctl",
-    "show"
-  ],
-  "description": "systemctl show shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
-          "flag": "--user",
           "argument": "",
+          "flag": "--user",
           "summary": "Use the user service manager"
         },
         {
-          "flag": "--system",
           "argument": "",
+          "flag": "--system",
           "summary": "Use the system service manager"
         },
         {
-          "flag": "--no-pager",
           "argument": "",
+          "flag": "--no-pager",
           "summary": "Write output without a pager"
         },
         {
-          "flag": "--no-legend",
           "argument": "",
+          "flag": "--no-legend",
           "summary": "Omit column legends"
         },
         {
-          "flag": "--full",
           "argument": "",
+          "flag": "--full",
           "summary": "Display complete unit names and descriptions"
         },
         {
-          "flag": "--all",
           "argument": "",
+          "flag": "--all",
           "summary": "Include inactive units"
         },
         {
-          "flag": "--type=",
           "argument": "TYPE",
-          "summary": "Filter units by type"
-        },
-        {
-          "flag": "--state=",
-          "argument": "STATE",
-          "summary": "Filter units by state"
-        },
-        {
-          "flag": "--plain",
-          "argument": "",
-          "summary": "Use plain output"
-        },
-        {
-          "flag": "--lines=",
-          "argument": "LINES",
-          "summary": "Set status journal-line count; 0 hides journal output",
+          "flag": "--type=",
+          "summary": "Filter units by type",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "count",
-                "meaning": "Journal lines included in systemctl status output",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemctl.html",
-                      "locator": "--lines applies to status; zero disables journal output; default 10"
-                    }
-                  ]
+                "kind": "enumeration",
+                "meaning": "systemd unit types",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated unit-type names such as service, socket, target, timer, device, mount, automount, swap, path, slice and scope; help requests the supported type list."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a unit-type filter."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -87,68 +78,461 @@
                     ]
                   },
                   "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+                      "locator": "--type"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "STATE",
+          "flag": "--state=",
+          "summary": "Filter units by state",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "systemd unit state names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated load, active or substate names, such as loaded, active, inactive, failed or running; meanings and available substates depend on unit type. help requests the state-name list."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the selected subcommand's normal state filtering."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+                      "locator": "--state"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "--plain",
+          "summary": "Use plain output"
+        },
+        {
+          "argument": "LINES",
+          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows.",
+          "flag": "--lines=",
+          "summary": "Set status journal-line count; 0 hides journal output",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "platform": {
                     "state": "known",
                     "values": [
                       "Linux"
                     ]
                   },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
                   }
                 },
                 "bare": {
-                  "state": "accepted",
-                  "form": "lines"
+                  "form": "lines",
+                  "state": "accepted"
                 },
                 "forms": [
                   {
-                    "id": "lines",
-                    "notation": "number",
-                    "syntax": "N",
                     "bounds": {
                       "min": "0"
                     },
+                    "grammar": "Decimal integer journal-line count",
+                    "id": "lines",
+                    "notation": "number",
                     "special_values": [
                       {
-                        "value": "0",
-                        "meaning": "Suppress the status journal output"
+                        "meaning": "Suppress the status journal output",
+                        "value": "0"
                       }
                     ],
-                    "grammar": "Decimal integer journal-line count"
+                    "syntax": "N"
+                  }
+                ],
+                "kind": "count",
+                "meaning": "Journal lines included in systemctl status output",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--lines applies to status; zero disables journal output; default 10",
+                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemctl.html"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Recent journal lines for status output",
+                "when_absent": {
+                  "form": "lines",
+                  "state": "known",
+                  "value": "10"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "--output=",
+          "summary": "Select journal output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Status journal output representation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "short",
+                    "tokens": [
+                      "short"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Classic syslog-style output"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "short-full",
+                    "tokens": [
+                      "short-full"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output with complete timestamp"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "short-iso",
+                    "tokens": [
+                      "short-iso"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "ISO-style timestamps"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "short-iso-precise",
+                    "tokens": [
+                      "short-iso-precise"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "ISO timestamps with microsecond precision"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "short-precise",
+                    "tokens": [
+                      "short-precise"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output with microsecond timestamps"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "short-monotonic",
+                    "tokens": [
+                      "short-monotonic"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Monotonic timestamps"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "short-unix",
+                    "tokens": [
+                      "short-unix"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Epoch-second timestamps"
+                  },
+                  {
+                    "id": "choice-8",
+                    "notation": "literal",
+                    "syntax": "verbose",
+                    "tokens": [
+                      "verbose"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "All journal fields"
+                  },
+                  {
+                    "id": "choice-9",
+                    "notation": "literal",
+                    "syntax": "export",
+                    "tokens": [
+                      "export"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Journal export serialization"
+                  },
+                  {
+                    "id": "choice-10",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON records"
+                  },
+                  {
+                    "id": "choice-11",
+                    "notation": "literal",
+                    "syntax": "json-pretty",
+                    "tokens": [
+                      "json-pretty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Indented JSON"
+                  },
+                  {
+                    "id": "choice-12",
+                    "notation": "literal",
+                    "syntax": "json-sse",
+                    "tokens": [
+                      "json-sse"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Server-sent-event JSON"
+                  },
+                  {
+                    "id": "choice-13",
+                    "notation": "literal",
+                    "syntax": "json-seq",
+                    "tokens": [
+                      "json-seq"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON text sequences"
+                  },
+                  {
+                    "id": "choice-14",
+                    "notation": "literal",
+                    "syntax": "cat",
+                    "tokens": [
+                      "cat"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Message text only"
+                  },
+                  {
+                    "id": "choice-15",
+                    "notation": "literal",
+                    "syntax": "with-unit",
+                    "tokens": [
+                      "with-unit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Short output including unit identity"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "form": "lines",
-                  "value": "10"
+                  "meaning": "Use short journal output where the command displays journal lines; other output is unaffected."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "subject": "Recent journal lines for status output"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+                      "locator": "--output only affects journal output"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows."
+          }
         },
         {
-          "flag": "--output=",
-          "argument": "FORMAT",
-          "summary": "Select journal output format"
-        },
-        {
-          "flag": "--property=",
           "argument": "NAME",
-          "summary": "Select properties for show"
+          "flag": "--property=",
+          "summary": "Select properties for show",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "systemd property names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated D-Bus property names selecting show output fields; values retain each property's documented meaning."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Show the command's normal property selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+                      "locator": "--property"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--value",
           "argument": "",
+          "flag": "--value",
           "summary": "Display property values only"
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "systemctl",
+    "show"
+  ],
+  "description": "systemctl show shell argument reference."
 }

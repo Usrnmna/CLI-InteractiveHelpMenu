@@ -23,6 +23,9 @@ than asserted as permanent constants.
 | `tests/reports/numerical-inventory/inventory.json` | Regenerable local facts and joined reviews; ignored under the existing report policy |
 | [Focused tests](../../tests/test_numerical_inventory.py) | Discovery growth, source relationships, passive operation, output limits, and review integrity |
 | [Bundled migration account](step3-migration.md) | Corrected content, scoped source evidence, unresolved investigations and passive verification |
+| [Maintained debt resolution](debt-resolution.md) | Subsequent completion of the exact maintained contracts, source corrections, strict success and remaining external/native limits |
+| [Diagnostic investigation](diagnostic-investigation.md) | Exact heuristic dispositions, complete external membership tracing, bounded source comparisons and remaining parser/provenance limits |
+| [Operand and association repairs](parser-association-repairs.md) | Compound operands, nested context, declared manual scope, exact census changes and passive verification |
 
 Run from the repository root with Python 3.10 or newer:
 
@@ -62,7 +65,7 @@ rather than these recorded totals, establishes coverage after future changes:
 | 76 profiles, 96 categories | Bundled authored containers |
 | 942 option records, 463 value-bearing records | Authored records, including aliases as separate flags |
 | 28 keyword records, 6 optional-value records | Subsets of the authored option total |
-| 30 numeric fixed spellings | Parsed literal flags such as `-1`; digits alone do not establish numerical meaning |
+| 26 numeric fixed spellings | Parsed literal flags such as `-1`; four incorrect root associations were retired, and digits alone do not establish numerical meaning |
 | 3 repeated positional groups, 6 components | Positional documentation outside ordinary options |
 | 50 example driver files, 155 declared routes | Explicit JSON routes, including intermediate groups |
 | 144 built-in paths | Git/Docker roots and explicit paths |
@@ -72,9 +75,9 @@ rather than these recorded totals, establishes coverage after future changes:
 | 12 interpreter/module invocation paths | Both interpreter spellings with bounded pip/pytest paths; excluded from the 327-path total |
 | 162 primary cases, 948 flag expectations | Primary compatibility matrix; expectations are not complete option grammars |
 | 263 matrix records | Primary and supplementary lists, intentionally overlapping |
-| 170 embedded help sources, 7,591 parsed help observations | All recognized fixture/capture content, beyond sentinels |
-| 5,243 canonical option/keyword identities | Authored, parsed, arity-only, and expected identities reconciled by command and flag |
-| 356 source files, 6,159 total inventory identities | Includes routes, sources, descriptions, categories, definitions and positional groups/components |
+| 170 embedded help sources, 7,548 parsed help observations | All recognized fixture/capture content, beyond sentinels; scoped/nested source-only material remains preserved separately |
+| 5,231 canonical option/keyword identities | Authored, parsed, arity-only, and expected identities reconciled by command and flag |
+| 358 source files, 6,149 total inventory identities | Includes sources, routes, descriptions, categories, definitions and components; twelve incorrect identities retire and one passive cache-inspection owner is added by the association repairs |
 | 22 shared value definitions | Explicit semantic nodes and their separately reviewed consumers |
 
 The audit's principal profile and explicit-path counts match. Broader observation
@@ -82,14 +85,17 @@ counts are new enumeration results, not evidence of additional verified command
 support. These totals must not be added together. Fixture excerpts, synthetic
 specimens, source requests, and declared routes establish different boundaries.
 
-After source preservation, the review contains 12 `shared_documentation_preserved`
-identities, 23 `source_text_preserved` identities, 4,250 `investigate` dispositions
-and 47 `partial_migration_investigate` dispositions. There are 4,246 unresolved
-classifications, principally external observations and arity-only declarations.
-The 128 verified bundled option records and 6 positional components have scoped
-metadata dispositions. Every identity has a disposition, but this is not a
-completed semantic audit of external manuals. Named enumerations requiring
-accepted-form review and source/routing context remain separately classified.
+The review retains 12 `shared_documentation_preserved` identities, 23
+`source_text_preserved` identities and 4,215 `investigate` dispositions, with
+additional exact bounded-review and context-investigation groups described in
+the [diagnostic investigation](diagnostic-investigation.md).
+There are 4,237 unresolved classifications, principally external observations and
+arity-only declarations. Subsequent maintained debt resolution completes 351
+option/keyword contracts and nine definitions; the original 128 verified
+option records and six positional components remain separately reviewed.
+All 479 maintained option/keyword contracts, three positional groups and 22
+definitions now pass strict validation. Every identity has a disposition, but
+this is not a completed semantic audit of external manuals or installed versions.
 Step 7 added 25 `existing_declaration_enumerated` records and protected the
 relevant numerical, authoring and validation owners. The Step 1 counts of 341
 sources and 6,119 identities remain historical evidence rather than requirements.
@@ -169,7 +175,7 @@ P1/P2/P3 are planning priorities, not a runtime severity policy. The original
 include GNU byte/size suffixes, sort memory and key syntax, Git fetch counts,
 XZ thread counts, module timeouts, IP keywords, delegated configuration, and
 VLC's unresolved synthetic numeric scales. Serial settings and legacy/chip
-variants retain explicit investigation requirements. Neither a missing detail
+observations and unreviewed versions retain explicit investigation requirements. Neither a missing detail
 field nor a numeric-looking name alone establishes a unit defect.
 
 ## Acceptance and protected behavior
@@ -189,7 +195,7 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
 | AC-08 presentation | Step 5 checks formatter propagation, visible cells, supported minimum sizes, Unicode, wrapping, scrolling, scripted resize/reopen and search with fake windows; native terminal/Readline acceptance remains separate |
 | AC-09 authoring | Step 6 verifies import/edit/preview/save/reload, stale claims, explicit review, definitions and numerical inspection; native POSIX restoration/terminal acceptance remain platform limits |
-| AC-10 future checks | Step 7 checks prospective maintained completeness, exact debt validity and display/search propagation; strict readiness remains blocked by explicitly reported migration debt |
+| AC-10 future checks | Step 7 checks prospective completeness, exact debt validity and display/search propagation; the subsequent debt-resolution follow-up satisfies strict maintained readiness without changing those checks |
 
 Focused verification runs on Windows with Python 3.13. The tests use disposable
 snapshots in the existing ignored `.cache/` area and do not invoke target
@@ -240,7 +246,12 @@ generated outcomes remain under the ignored report directory.
 
 The [Step 9 configuration review and local handoff](step9-handoff.md) records
 effective ignore/attribute/editor/workflow/source-selection policies, one bounded
-private-output exclusion and fresh local verification. Prospective enforcement
-passes; strict completeness and native terminal acceptance remain separate,
-unfulfilled conditions. The handoff preserves the distinction between current
+private-output exclusion and fresh local verification. At that review,
+prospective enforcement passed; strict completeness and native acceptance
+remained unfulfilled. The handoff preserves the distinction between its
 configuration evidence and historical Steps 1–8 results.
+
+The [maintained debt-resolution follow-up](debt-resolution.md) records the later
+zero-debt strict result, source-bound corrections and unchanged enforcement.
+Historical step accounts retain their original counts and blocked/deferred
+outcomes. External-help completeness and native acceptance remain separate.

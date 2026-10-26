@@ -19,7 +19,7 @@ import sys
 TOOL_ROOT = Path(__file__).resolve().parents[1]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(TOOL_ROOT / "cli_help"))
-from discovery import clean_output, parse_help, parse_option_line
+from discovery import clean_output, parse_command_help, parse_help, parse_option_groups, parse_option_line
 from core import HelpError, validate_profile
 
 
@@ -34,6 +34,7 @@ PROTECTED_SOURCES = (
     "cli_help/presentation.py", "cli_help/authoring.py", "cli_help/manual_import.py",
     "cli_help/bulk_scan.py", "cli_help/review.py", "cli_help/review_forms.py",
     "cli_help/collection.py", "scripts/inventory_numerical_descriptions.py",
+    "cli_help/diagnostics.py",
     "scripts/check_numerical_coverage.py", "tests/run.sh", ".github/workflows/ci.yml",
 )
 CLASSIFICATIONS = {
@@ -128,6 +129,7 @@ class Inventory:
         self.bindings = defaultdict(list)
         self.counts = Counter()
         self.diagnostics = []
+        self.manual_scopes = {}
 
     def issue(self, code, location, message):
         """Record an actionable inventory problem, separate from numerical defects."""
@@ -310,7 +312,10 @@ class Inventory:
                 location = {"path": file.as_posix(), "pointer": f"/paths/{index}"}
                 self.counts["example_driver_route_records"] += 1
                 self.route(command, location, "driver_explicit", request=route.get("help", []), manual=route.get("man"),
+                           **({"manual_scope": route["manual_scope"]} if "manual_scope" in route else {}),
                            boundaries={key: route[key] for key in ("stop_at_options", "stop_at_positional") if key in route})
+                if route.get("manual_scope"):
+                    self.manual_scopes[(command, route.get("man"))] = route["manual_scope"]
                 for field in ("option_values", "option_flags"):
                     self.declarations(command, route.get(field, []), location, "parent_arity", field == "option_values")
         self.module_routes()
@@ -454,20 +459,32 @@ class Inventory:
 
     def help_text(self, text, command, location, role, context):
         """Parse only supplied text, retaining parser limits and alias observations."""
-        entries = parse_help(text, "inventory source")
+        contexts = [context, *context.get("associations", [])]
+        request = next((item[key] for item in contexts for key in ("source", "request", "argv")
+                        if isinstance(item.get(key), list)), None)
+        lookup = request[-1] if request and Path(request[0]).name == "man" else None
+        scope = self.manual_scopes.get((tuple(command or ()), lookup))
+        parsed_document = parse_command_help(text, "inventory source", command or (), request, scope=scope)
+        entries = parsed_document["options"]
+        retained = [paragraph for paragraph in parsed_document["shared"]
+                    if paragraph.get("association") == "unassigned" and
+                    (paragraph["section"].casefold() in {"interactive commands", "subcommands", "source applicability"}
+                     or paragraph["section"].startswith("Source-specific options:"))]
+        if retained:
+            context = {**context, "documentation": {"provenance": parsed_document["provenance"],
+                       "shared": retained, "diagnostics": parsed_document["diagnostics"]}}
         cleaned = clean_output(text).splitlines()
         declarations = defaultdict(list)
         for index, line in enumerate(cleaned, 1):
-            parsed = parse_option_line(line)
-            if parsed:
-                aliases = [option["flag"] for option in parsed[0]]
+            for options, _ in parse_option_groups(line):
+                aliases = [option["flag"] for option in options]
                 for flag in aliases:
                     declarations[flag.rstrip("=")].append((index, aliases))
         if not command and entries:
             self.issue("unassigned_help_source", location["path"], "Parsed options lack explicit command ownership; add a reviewed manifest association.")
-        for option in entries:
+        for option, parsed_line in zip(entries, parsed_document["option_lines"]):
             matches = declarations.get(option["flag"].rstrip("="), [])
-            line, aliases = matches[0] if matches else (None, [])
+            line, aliases = next((item for item in matches if item[0] == parsed_line), (parsed_line, []))
             source = dict(location)
             if line:
                 source["text_line" if "pointer" in location else "line"] = line

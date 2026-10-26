@@ -1,65 +1,365 @@
 {
-  "command": [
-    "openssl",
-    "dgst"
-  ],
-  "description": "openssl dgst shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
-          "flag": "-sha256",
           "argument": "",
+          "flag": "-sha256",
           "summary": "Select SHA-256"
         },
         {
-          "flag": "-sha512",
           "argument": "",
+          "flag": "-sha512",
           "summary": "Select SHA-512"
         },
         {
-          "flag": "-hex",
           "argument": "",
+          "flag": "-hex",
           "summary": "Use hexadecimal output"
         },
         {
-          "flag": "-binary",
           "argument": "",
+          "flag": "-binary",
           "summary": "Use binary output"
         },
         {
+          "argument": "FILE",
           "flag": "-out",
-          "argument": "FILE",
-          "summary": "Write the output"
+          "summary": "Write the output",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Digest/signature output file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Output filename; representation depends on digest/signature mode."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write normal command output to standard output."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-out"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "FILE",
           "flag": "-sign",
-          "argument": "FILE",
-          "summary": "Sign using a private key"
+          "summary": "Sign using a private key",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Signing private-key file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Private-key filename for signature creation; not a numeric signing level."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request signature creation through -sign."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-sign"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "FILE",
           "flag": "-verify",
-          "argument": "FILE",
-          "summary": "Verify using a public key"
+          "summary": "Verify using a public key",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Signature verification public-key file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Public-key filename; this dgst option is not s_client's numeric certificate-depth option."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request public-key verification through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-verify"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "FILE",
           "flag": "-signature",
-          "argument": "FILE",
-          "summary": "Read the signature"
+          "summary": "Read the signature",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Signature source file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing the binary signature to verify."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No signature filename is selected by this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-signature"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-hmac",
           "argument": "KEY",
-          "summary": "Compute an HMAC"
+          "flag": "-hmac",
+          "summary": "Compute an HMAC",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "HMAC key text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal HMAC key string; key digits are text, not key length or a numerical measurement."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request HMAC mode through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.16"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-hmac"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "-r",
           "argument": "",
+          "flag": "-r",
           "summary": "Use coreutils output format"
         }
       ]
     }
-  ]
+  ],
+  "command": [
+    "openssl",
+    "dgst"
+  ],
+  "description": "openssl dgst shell argument reference."
 }

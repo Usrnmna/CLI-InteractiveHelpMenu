@@ -1,111 +1,39 @@
 {
-  "command": [
-    "pio",
-    "run"
-  ],
-  "description": "Options for pio run.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "ENVIRONMENT",
+          "argument_optional": false,
           "flag": "-e",
-          "argument": "ENVIRONMENT",
-          "argument_optional": false,
-          "summary": "Select build environments"
-        },
-        {
-          "flag": "--environment",
-          "argument": "ENVIRONMENT",
-          "argument_optional": false,
-          "summary": "Select build environments"
-        },
-        {
-          "flag": "-t",
-          "argument": "TARGET",
-          "argument_optional": false,
-          "summary": "Select project targets"
-        },
-        {
-          "flag": "--target",
-          "argument": "TARGET",
-          "argument_optional": false,
-          "summary": "Select project targets"
-        },
-        {
-          "flag": "-d",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Select project directory"
-        },
-        {
-          "flag": "--project-dir",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Select project directory"
-        },
-        {
-          "flag": "-c",
-          "argument": "FILE",
-          "argument_optional": false,
-          "summary": "Select project configuration"
-        },
-        {
-          "flag": "--project-conf",
-          "argument": "FILE",
-          "argument_optional": false,
-          "summary": "Select project configuration"
-        },
-        {
-          "flag": "-j",
-          "argument": "JOBS",
-          "argument_optional": false,
-          "summary": "Set concurrent jobs",
+          "summary": "Select build environments",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "ref": "build-jobs"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name."
-        },
-        {
-          "flag": "--jobs",
-          "argument": "JOBS",
-          "argument_optional": false,
-          "summary": "Set concurrent jobs",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "build-jobs"
-              }
-            ]
-          },
-          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name."
-        },
-        {
-          "flag": "--upload-port",
-          "argument": "PORT",
-          "argument_optional": false,
-          "summary": "Select upload port",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "delegated",
-                "meaning": "Value interpreted by PlatformIO uploader endpoint grammar",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
-                      "locator": "--upload-port declaration and upload_port forwarded to the run processor"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO build environment names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Project-defined environment names; repeat to select several environments."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project's selected/default build environments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -122,146 +50,698 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-e --environment"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ENVIRONMENT",
+          "argument_optional": false,
+          "flag": "--environment",
+          "summary": "Select build environments",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO build environment names",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value"
+                    "grammar": "Project-defined environment names; repeat to select several environments."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Use the project's selected/default build environments."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": "PlatformIO uploader endpoint grammar",
-                  "reference": {
-                    "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
-                    "locator": "--upload-port declaration and upload_port forwarded to the run processor"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-e --environment"
+                    }
+                  ]
                 }
               }
             ]
-          },
-          "detail": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.1.18."
+          }
         },
         {
+          "argument": "TARGET",
+          "argument_optional": false,
+          "flag": "-t",
+          "summary": "Select project targets",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO target names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Build target names supplied to the platform builder, such as clean or upload; names are not numerical target counts."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the platform's default build target."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-t --target"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TARGET",
+          "argument_optional": false,
+          "flag": "--target",
+          "summary": "Select project targets",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PlatformIO target names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Build target names supplied to the platform builder, such as clean or upload; names are not numerical target counts."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the platform's default build target."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-t --target"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "-d",
+          "summary": "Select project directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Project working directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Existing filesystem directory containing the project."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-d --project-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--project-dir",
+          "summary": "Select project directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Project working directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Existing filesystem directory containing the project."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-d --project-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "-c",
+          "summary": "Select project configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Project configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path to the project configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal platformio.ini project configuration discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-c --project-conf"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--project-conf",
+          "summary": "Select project configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Project configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path to the project configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal platformio.ini project configuration discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
+                      "locator": "-c --project-conf"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "JOBS",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name.",
+          "flag": "-j",
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "build-jobs"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "JOBS",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name.",
+          "flag": "--jobs",
+          "summary": "Set concurrent jobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "build-jobs"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PORT",
+          "argument_optional": false,
+          "detail": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.1.18.",
+          "flag": "--upload-port",
+          "summary": "Select upload port",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PlatformIO Core"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.18"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "PlatformIO uploader endpoint grammar",
+                  "reference": {
+                    "locator": "--upload-port declaration and upload_port forwarded to the run processor",
+                    "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by PlatformIO uploader endpoint grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--upload-port declaration and upload_port forwarded to the run processor",
+                      "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-v",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Increase output detail"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--verbose",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Increase output detail"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-s",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Suppress progress output"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--silent",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Suppress progress output"
         },
         {
-          "flag": "--list-targets",
           "argument": "",
           "argument_optional": false,
+          "flag": "--list-targets",
           "summary": "List available targets"
         },
         {
-          "flag": "--disable-auto-clean",
           "argument": "",
           "argument_optional": false,
+          "flag": "--disable-auto-clean",
           "summary": "Disable automatic cleanup"
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "pio",
+    "run"
+  ],
+  "description": "Options for pio run.",
   "documentation": {
-    "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
+    "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html"
   },
+  "stop_at_positional": false,
   "value_definitions": {
     "build-jobs": {
-      "kind": "count",
-      "meaning": "Parallel build-job limit",
-      "review": {
-        "status": "verified",
-        "references": [
-          {
-            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py",
-            "locator": "--jobs and PLATFORMIO_RUN_JOBS/CPU-count default"
-          }
-        ]
-      },
       "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
         "implementation": {
           "state": "known",
           "values": [
             "PlatformIO Core"
           ]
         },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
         "version": {
           "state": "known",
           "values": [
             "6.1.18"
           ]
-        },
-        "platform": {
-          "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-        },
-        "chip": {
-          "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
         }
       },
       "bare": {
-        "state": "accepted",
-        "form": "jobs"
+        "form": "jobs",
+        "state": "accepted"
       },
       "forms": [
         {
+          "grammar": "Integer job count; special nonpositive values are not assigned an undocumented meaning",
           "id": "jobs",
           "notation": "number",
-          "syntax": "N",
-          "grammar": "Integer job count; special nonpositive values are not assigned an undocumented meaning"
+          "syntax": "N"
         }
       ],
+      "kind": "count",
+      "meaning": "Parallel build-job limit",
+      "review": {
+        "references": [
+          {
+            "locator": "--jobs and PLATFORMIO_RUN_JOBS/CPU-count default",
+            "source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/run/cli.py"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Concurrent build jobs",
       "when_absent": {
-        "state": "known",
-        "meaning": "Use PLATFORMIO_RUN_JOBS if set; otherwise the system CPU count, falling back to 1 if unavailable"
+        "meaning": "Use PLATFORMIO_RUN_JOBS if set; otherwise the system CPU count, falling back to 1 if unavailable",
+        "state": "known"
       },
       "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
-      },
-      "subject": "Concurrent build jobs"
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
     }
   }
 }

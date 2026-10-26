@@ -1,66 +1,88 @@
 {
-  "command": [
-    "git",
-    "worktree",
-    "prune"
-  ],
-  "description": "Options for git worktree prune.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-n",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Show records that would be removed"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--dry-run",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Show records that would be removed"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "-v",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Report removed records"
         },
         {
+          "argument": "",
+          "argument_optional": false,
           "flag": "--verbose",
-          "argument": "",
-          "argument_optional": false,
           "summary": "Report removed records"
         },
         {
-          "flag": "--expire",
           "argument": "TIME",
           "argument_optional": false,
+          "detail": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression. Use a zero cutoff, preventing ordinary expiry by age Use TIME_MAX as the cutoff, imposing no additional age restriction Reference scope: Git 2.48.0.",
+          "flag": "--expire",
           "summary": "Set a Git expiry date/time cutoff",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "timestamp",
-                "meaning": "Unused-worktree record expiry cutoff",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://git-scm.com/docs/git-worktree/2.48.0",
-                      "locator": "--expire for prune; command default is separate from gc.worktreePruneExpire"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/builtin/worktree.c",
-                      "locator": "expire=TIME_MAX before prune option parsing"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
-                      "locator": "parse_expiry_date: never/false map to zero; all/now map to TIME_MAX"
-                    }
-                  ]
+                "meaning": "Worktree pruning expiry cutoff",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Bare numbers use Git's calendar/epoch heuristics, not one scalar duration unit; the form documents the threshold and explicit alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "GIT-DATE/EXPIRY",
+                    "grammar": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression."
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "never",
+                    "meaning": "Use a zero cutoff, preventing ordinary expiry by age",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "never | false",
+                    "tokens": [
+                      "never",
+                      "false"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "all",
+                    "meaning": "Use TIME_MAX as the cutoff, imposing no additional age restriction",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "all | now",
+                    "tokens": [
+                      "all",
+                      "now"
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Direct worktree prune starts with TIME_MAX (all eligible missing-worktree administration); this differs from garbage-collection age defaults."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -77,71 +99,44 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "unverified",
-                  "reason": "A plain number's interpretation must be checked against this command's exact date parser"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
+                      "locator": "parse_expiry_date exact sentinel mapping and approxidate_careful"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/builtin/worktree.c",
+                      "locator": "prune expire = TIME_MAX"
+                    }
+                  ]
                 },
-                "forms": [
-                  {
-                    "id": "date",
-                    "notation": "expression",
-                    "syntax": "GIT-DATE/EXPIRY",
-                    "grammar": "Command-specific date/expiry syntax; relative and sentinel forms require verification"
-                  },
-                  {
-                    "id": "never",
-                    "notation": "literal",
-                    "syntax": "never | false",
-                    "tokens": [
-                      "never",
-                      "false"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Use a zero cutoff, preventing ordinary expiry by age",
-                    "sentinel": true
-                  },
-                  {
-                    "id": "all",
-                    "notation": "literal",
-                    "syntax": "all | now",
-                    "tokens": [
-                      "all",
-                      "now"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Use TIME_MAX as the cutoff, imposing no additional age restriction",
-                    "sentinel": true
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "The direct prune command imposes no additional age restriction (TIME_MAX)"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "time_basis": "Depends on the date/expiry expression and timezone",
-                "investigation": "Verify bare numbers, relative syntax, sentinels and timezone defaults in the exact date/expiry parser"
+                "time_basis": "Timestamp cutoff against worktree administrative metadata; relative date expressions use the current local wall clock."
               }
             ]
-          },
-          "detail": "Git 2.48.0: --expire is an expiry date/time expression. The direct prune command initializes its absent cutoff to TIME_MAX, distinct from garbage collection's age policy. The pinned expiry parser maps never/false to a zero cutoff and all/now to TIME_MAX; other eligibility checks still apply. Exact numerical forms remain under investigation; no unit is invented."
+          }
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "git",
+    "worktree",
+    "prune"
+  ],
+  "description": "Options for git worktree prune.",
   "documentation": {
-    "source": "https://git-scm.com/docs/git-worktree",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://git-scm.com/docs/git-worktree"
+  },
+  "stop_at_positional": false
 }

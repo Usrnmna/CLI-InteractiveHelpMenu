@@ -3,6 +3,12 @@
 [Implementation inventory](README.md) · [Numerical contract](../numerical-value-contract.md) ·
 [Discovery and execution boundaries](../discovery-and-safety.md)
 
+The subsequent [operand and association repairs](parser-association-repairs.md)
+retain compound operands, nested command context and explicit manual delegation.
+They advance cache generation 12 to 13 and add scope-sensitive identity while
+preserving the numerical contract and source precedence. Results below retain
+their original Step 4/8 verification scope.
+
 Discovery now retains detached source documentation, source-qualified merge
 alternatives and optional numerical metadata through cache serialization.
 Preservation does not establish the truth of an upstream numerical claim.

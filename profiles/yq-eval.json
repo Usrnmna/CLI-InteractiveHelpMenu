@@ -1,88 +1,353 @@
 {
-  "command": [
-    "yq",
-    "eval"
-  ],
-  "description": "yq eval shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "",
           "flag": "--inplace",
-          "argument": "",
           "summary": "Update input files in place"
         },
         {
+          "argument": "",
           "flag": "-i",
-          "argument": "",
           "summary": "Update input files in place"
         },
         {
+          "argument": "",
           "flag": "--null-input",
-          "argument": "",
           "summary": "Evaluate without input documents"
         },
         {
+          "argument": "",
           "flag": "-n",
-          "argument": "",
           "summary": "Evaluate without input documents"
         },
         {
-          "flag": "--exit-status",
           "argument": "",
+          "flag": "--exit-status",
           "summary": "Set failure status for null, false, or missing results"
         },
         {
-          "flag": "-e",
           "argument": "",
+          "flag": "-e",
           "summary": "Set status from the result"
         },
         {
+          "argument": "FORMAT",
           "flag": "--output-format",
-          "argument": "FORMAT",
-          "summary": "Select the output encoding"
-        },
-        {
-          "flag": "-o",
-          "argument": "FORMAT",
           "summary": "Select the output encoding",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "yq output encoding selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/format.go",
+                      "locator": "Formats, encoder/decoder availability and MatchesName"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "auto/a CLI defaults and format selection"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "FORMAT",
+          "attached": true,
+          "flag": "-o",
+          "summary": "Select the output encoding",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "yq output encoding selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/format.go",
+                      "locator": "Formats, encoder/decoder availability and MatchesName"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "auto/a CLI defaults and format selection"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
           "flag": "--input-format",
-          "argument": "FORMAT",
-          "summary": "Select the input encoding"
-        },
-        {
-          "flag": "-p",
-          "argument": "FORMAT",
           "summary": "Select the input encoding",
-          "attached": true
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "yq input encoding selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/format.go",
+                      "locator": "Formats, encoder/decoder availability and MatchesName"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "auto/a CLI defaults and format selection"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--indent",
+          "argument": "FORMAT",
+          "attached": true,
+          "flag": "-p",
+          "summary": "Select the input encoding",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "yq input encoding selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/format.go",
+                      "locator": "Formats, encoder/decoder availability and MatchesName"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "auto/a CLI defaults and format selection"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "NUMBER",
-          "summary": "Set output indentation width in spaces",
+          "detail": "Integer space count, without unit suffix. Positive values select that many spaces. YAML zero uses the pinned yaml.v3 encoder's four-space default and negative values are rejected by SetIndent. JSON and XML nonpositive values build an empty indentation string; this does not promise one-line XML or remove string/document content. The CLI sets this preference only for YAML/JSON/XML; other encoders do not acquire an indentation unit or rule from it. Reference scope: mikefarah/yq 4.44.3.",
+          "flag": "--indent",
+          "summary": "Set indentation spaces; zero depends on output encoder",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "count",
-                "meaning": "Output indentation width",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
-                      "locator": "--indent integer flag/default 2 and compact JSON note"
-                    },
-                    {
-                      "source": "https://mikefarah.gitbook.io/yq/usage/output-format",
-                      "locator": "Indent section for YAML and JSON"
-                    }
-                  ]
+                "meaning": "Encoder-specific output indentation",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer space count, without unit suffix. Positive values select that many spaces. YAML zero uses the pinned yaml.v3 encoder's four-space default and negative values are rejected by SetIndent. JSON and XML nonpositive values build an empty indentation string; this does not promise one-line XML or remove string/document content. The CLI sets this preference only for YAML/JSON/XML; other encoders do not acquire an indentation unit or rule from it.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "YAML uses four spaces; JSON/XML use no indentation spaces; this is encoder-specific"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use 2 spaces for the applicable encoder."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -99,132 +364,151 @@
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "bare": {
-                  "state": "accepted",
-                  "form": "spaces"
-                },
-                "forms": [
-                  {
-                    "id": "spaces",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer number of indentation spaces; output encoder rules affect special values"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "form": "spaces",
-                  "value": "2"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Spaces per indentation level",
-                "investigation": "Verify zero/negative behavior for every applicable output encoder; do not treat one JSON/YAML rule as universal"
-              }
-            ]
-          },
-          "detail": "mikefarah/yq v4.44.3: NUMBER is an integer indentation width in spaces, default 2. YAML sequence indentation differs at widths below 4; JSON also uses this setting. Zero is associated with compact JSON output, but zero/negative behavior across other encoders is not verified. These rules apply to mikefarah/yq rather than other programs with the same name."
-        },
-        {
-          "flag": "--prettyPrint",
-          "argument": "",
-          "summary": "Use pretty output"
-        },
-        {
-          "flag": "--unwrapScalar",
-          "argument": "",
-          "summary": "Print scalar values without wrappers"
-        },
-        {
-          "flag": "--no-colors",
-          "argument": "",
-          "summary": "Disable colored output"
-        },
-        {
-          "flag": "--expression",
-          "argument": "EXPRESSION",
-          "summary": "Supply an expression as one option value",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "delegated",
-                "meaning": "Value interpreted by mikefarah/yq expression grammar",
                 "review": {
                   "status": "verified",
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
-                      "locator": "--indent integer flag/default 2 and compact JSON note"
+                      "locator": "--indent IntVar default 2"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "configureEncoder assigns Indent only to XML/YAML/JSON preferences"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_json.go",
+                      "locator": "NewJSONEncoder positive-space loop"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_xml.go",
+                      "locator": "NewXMLEncoder positive-space loop"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_yaml.go",
+                      "locator": "YamlEncoder passes preference to yaml.Encoder.SetIndent"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/go.mod",
+                      "locator": "yaml.v3 v3.0.1 dependency"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/yaml.go",
+                      "locator": "SetIndent rejects negative values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/encode.go",
+                      "locator": "encoder.init maps zero to 4"
                     }
                   ]
                 },
+                "subject": "Spaces per indentation level in YAML, JSON or XML output"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "--prettyPrint",
+          "summary": "Use pretty output"
+        },
+        {
+          "argument": "",
+          "flag": "--unwrapScalar",
+          "summary": "Print scalar values without wrappers"
+        },
+        {
+          "argument": "",
+          "flag": "--no-colors",
+          "summary": "Disable colored output"
+        },
+        {
+          "argument": "EXPRESSION",
+          "detail": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 4.44.3.",
+          "flag": "--expression",
+          "summary": "Supply an expression as one option value",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
                 "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
                   "implementation": {
                     "state": "known",
                     "values": [
                       "mikefarah/yq"
                     ]
                   },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
                   "version": {
                     "state": "known",
                     "values": [
                       "4.44.3"
                     ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
                   }
                 },
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
                 },
                 "forms": [
                   {
+                    "grammar": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning",
                     "id": "grammar",
                     "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning"
+                    "syntax": "VALUE"
                   }
                 ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
                 "grammar": {
                   "name": "mikefarah/yq expression grammar",
                   "reference": {
-                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
-                    "locator": "--indent integer flag/default 2 and compact JSON note"
+                    "locator": "--indent integer flag/default 2 and compact JSON note",
+                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go"
                   }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by mikefarah/yq expression grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--indent integer flag/default 2 and compact JSON note",
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]
-          },
-          "detail": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 4.44.3."
+          }
         }
       ]
     }
   ],
-  "stop_at_positional": true,
-  "identity": "mikefarah-yq-v4"
+  "command": [
+    "yq",
+    "eval"
+  ],
+  "description": "yq eval shell argument reference.",
+  "identity": "mikefarah-yq-v4",
+  "stop_at_positional": true
 }

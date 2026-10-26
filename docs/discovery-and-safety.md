@@ -189,7 +189,7 @@ queried before this argument-position check; only the fixed help route is used.
 Generated profiles are stored under `$XDG_CACHE_HOME/cli-interactive-help`, or
 `~/.cache/cli-interactive-help` when `XDG_CACHE_HOME` is unset. The default lifetime
 is 24 hours. The cache key includes the full command path, fixed help route,
-manual name, selected executable path and file identity, manual renderer
+manual name, an explicitly declared manual scope, selected executable path and file identity, manual renderer
 identity, discovery mode, timeout, and `MANPATH`.
 Executable changes invalidate the lookup. Manual-page changes are picked up at
 expiration or explicit refresh. Failed or missing sources are recorded in the
@@ -197,12 +197,22 @@ profile; a successful partial profile is cached to avoid repeated probes.
 Parser-schema changes invalidate older entries. The cache TTL accepts integer
 seconds from 0 through 604800; its default is 86400.
 
-Generation revision 12 preserves shared documentation, optional numerical
-metadata, definition references and source applicability. Cache reads and writes
+Generation revision 13 retains the shared documentation, optional numerical
+metadata, definition references and source applicability preserved by revision 12,
+and invalidates older compound-operand and manual-association results. Cache reads and writes
 structurally check supplied numerical metadata; legacy profiles and incomplete
 but structurally valid semantics remain accepted. Numerical completeness is not
 required for browsing. Old cache files are left intact and become misses through
 the existing identity/version mechanism. No additional target probe is introduced.
+
+The optional driver `manual_scope: "common_options"` limits a borrowed manual
+to explicitly common/shared declarations. Source-specific options and nested
+interactive-command sections remain accessible as unassigned documentation.
+Requested command, source lookup, manual title and available request argv remain
+separate provenance facts. Unscoped routes preserve legacy inferred behavior;
+the field does not verify every source claim or installed version. The
+[operand and association repair account](numerical-inventory/parser-association-repairs.md)
+describes the generic boundaries, retained uncertainty and offline verification.
 
 Merged numerical metadata must belong to a source with the selected operand
 count, even when a scalar contract would pass structural validation for another

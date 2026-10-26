@@ -1,69 +1,249 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--watch",
+          "summary": "Restart on file changes"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--hot",
+          "summary": "Enable hot reloading"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--bun",
+          "summary": "Use Bun for Node.js scripts"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--silent",
+          "summary": "Suppress the script command"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--if-present",
+          "summary": "Succeed when the script does not exist"
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--cwd",
+          "summary": "Set working directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Working directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path resolved against the current working directory before entry-point resolution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Retain the process working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.2.5/src/cli.zig",
+                      "locator": "--cwd"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--env-file",
+          "summary": "Load an environment file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Environment file path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a file containing environment assignments; file contents have variable-specific meanings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit env-file override; normal environment/configuration loading remains applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.2.5/src/cli.zig",
+                      "locator": "--env-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "MODULE",
+          "argument_optional": false,
+          "flag": "--preload",
+          "summary": "Preload a module",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Preloaded module specifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Module/path specifier imported before the entry module by Bun; not a numerical module count."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI preload module is appended; configuration preloads remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.2.5/src/cli.zig",
+                      "locator": "--preload"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "bun",
     "run"
   ],
   "description": "Options for bun run.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "--watch",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Restart on file changes"
-        },
-        {
-          "flag": "--hot",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Enable hot reloading"
-        },
-        {
-          "flag": "--bun",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Use Bun for Node.js scripts"
-        },
-        {
-          "flag": "--silent",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Suppress the script command"
-        },
-        {
-          "flag": "--if-present",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Succeed when the script does not exist"
-        },
-        {
-          "flag": "--cwd",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Set working directory"
-        },
-        {
-          "flag": "--env-file",
-          "argument": "FILE",
-          "argument_optional": false,
-          "summary": "Load an environment file"
-        },
-        {
-          "flag": "--preload",
-          "argument": "MODULE",
-          "argument_optional": false,
-          "summary": "Preload a module"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": true,
   "documentation": {
-    "source": "https://bun.sh/docs/runtime",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://bun.sh/docs/runtime"
+  },
+  "stop_at_positional": true
 }

@@ -29,7 +29,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 12
+CACHE_VERSION = 13
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -172,7 +172,53 @@ def clean_output(text: str) -> str:
     return "".join(char for char in text if char.isprintable() or char in "\n\t")
 
 
-def parse_option_line(line: str) -> tuple[list[dict], str] | None:
+def placeholder_prefix(text: str) -> tuple[str, bool] | None:
+    """Read one balanced placeholder token and its whole-operand optionality.
+
+    Adjacent fragments such as <number>[<unit>] belong to one operand. Spaces
+    inside brackets are retained; top-level spaces end the token. This reads
+    documentation syntax only and never interprets a value or its units.
+    """
+    if not text.startswith(("<", "[")):
+        return None
+    closing = []
+    first_close = None
+    required_fragment = False
+    for index, char in enumerate(text):
+        if char.isspace() and not closing:
+            break
+        if char == "," and not closing:
+            break
+        if not closing and (text.startswith("...", index) or char == "…"):
+            # Top-level repetition cannot establish a fixed operand count;
+            # an ellipsis inside a placeholder can describe one list value.
+            return None
+        if not closing and char != "[":
+            required_fragment = True
+        if char in "<[":
+            closing.append(">" if char == "<" else "]")
+        elif char in ">]":
+            if not closing or closing.pop() != char:
+                return None
+            if not closing and first_close is None:
+                first_close = index
+    else:
+        index = len(text)
+    if closing or first_close is None:
+        return None
+    token = text[:index]
+    if token.startswith("[") and required_fragment and not re.fullmatch(r"\[[^\[\]]+\][A-Z][A-Z0-9_/-]*", token):
+        # A free-form optional prefix followed by literal text is not enough
+        # to establish a new operand grammar. Retain existing uppercase forms.
+        return None
+    if token.startswith("[") and token.count("[") > 1 and "<" not in token and not token.startswith("[="):
+        # Nested free-form syntax can describe optional content inside a
+        # required value. It does not establish whole-operand optionality.
+        return None
+    return token, text.startswith("[") and not required_fragment
+
+
+def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
     """Recognize option declarations, aliases, and common argument placeholders.
 
     Only a line beginning with a literal flag is eligible. Descriptions and
@@ -241,10 +287,10 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
         optional = False
         argument_count = 1
         if tail.startswith("[=") and "]" in tail:
-            argument, _, remainder = tail[2:].partition("]")
-            argument = "[=" + argument + "]"
-            optional = True
-            tail = remainder.strip()
+            value = placeholder_prefix(tail)
+            if value:
+                argument, optional = value
+                tail = tail[len(argument):].strip()
         elif tail.startswith("="):
             value = re.match(r"=([^\s,]+)", tail)
             if value:
@@ -260,12 +306,27 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
             # jq consumes both a variable name and a value/file. Treat only
             # explicit paired metavariables as two values, not multiword prose.
             pair = re.match(r"(?:name|NAME|<name>)\s+(?:value|VALUE|<value>|file|FILE|<file>)(?=$|\s)", tail)
+            placeholder = placeholder_prefix(tail)
             value = ARGUMENT_PATTERN.match(tail)
             if pair:
                 argument, tail, argument_count = pair.group(), tail[pair.end():].strip(), 2
             elif re.fullmatch(r"'[^'\n]+'|\"[^\"\n]+\"", tail):
                 # Terraform documents -var with a quoted key=value example.
                 argument, tail = tail, ""
+            elif placeholder:
+                argument, optional = placeholder
+                tail = tail[len(argument):].strip()
+                # Separate explicit angle placeholders are separate operands;
+                # optional fragments joined to a token never increase arity.
+                if argument.startswith("<"):
+                    while tail.startswith("<"):
+                        following = placeholder_prefix(tail)
+                        if not following:
+                            break
+                        token, _ = following
+                        argument += " " + token
+                        argument_count += 1
+                        tail = tail[len(token):].strip()
             elif value:
                 argument = value.group(1)
                 optional = argument.startswith("[") and argument.endswith("]")
@@ -296,6 +357,31 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     return options, summary
 
 
+def parse_option_groups(line: str) -> list[tuple[list[dict], str]]:
+    """Keep repeated short/long declaration pairs separate from their neighbors.
+
+    A row like '-1 --first, -2 --second' explicitly contains two pairs. Ordinary
+    comma/pipe aliases keep their existing interpretation. No option name or
+    numerical meaning is used to identify the pairs.
+    """
+    stripped = line.strip()
+    columns = re.split(r"\s{2,}|\t+", stripped, maxsplit=1)
+    pairs = re.split(r",\s*(?=-[A-Za-z0-9]\s+--[A-Za-z0-9])", columns[0])
+    if len(pairs) > 1 and all(re.fullmatch(r"-[A-Za-z0-9]\s+--[A-Za-z0-9][A-Za-z0-9_-]*", pair) for pair in pairs):
+        summary = columns[1] if len(columns) > 1 else ""
+        return [parsed for pair in pairs if (parsed := _parse_option_group(pair + ("  " + summary if summary else "")))]
+    parsed = _parse_option_group(line)
+    return [parsed] if parsed else []
+
+
+def parse_option_line(line: str) -> tuple[list[dict], str] | None:
+    """Return the compatible flat declaration view without discarding pairs."""
+    groups = parse_option_groups(line)
+    if not groups:
+        return None
+    return [option for options, _ in groups for option in options], groups[0][1]
+
+
 def parse_help_document(text: str, source: str) -> dict:
     """Extract option text and separately owned shared paragraphs without probes.
 
@@ -319,6 +405,12 @@ def parse_help_document(text: str, source: str) -> dict:
     shared_start = 0
     shared_section = source_heading
     shared_seen = False
+    context_lines = []
+    context_start = 0
+    context_section = ""
+    context_mode = False
+    option_lines = []
+    active_line = 0
 
     def finish():
         """Freeze the current declaration with its original inline explanation."""
@@ -329,6 +421,7 @@ def parse_help_document(text: str, source: str) -> dict:
         for option in active_options:
             entries.append({**option, "summary": summary, "detail": paragraphs + f"\nSource: {source}",
                             "category": active_heading})
+            option_lines.append(active_line + 1)
 
     def finish_shared():
         """Retain one source paragraph; resolve its targets after all declarations."""
@@ -336,6 +429,14 @@ def parse_help_document(text: str, source: str) -> dict:
             shared.append({"source": source, "line": shared_start + 1,
                            "section": shared_section, "text": "\n".join(shared_lines).strip()})
             shared_lines.clear()
+
+    def finish_context():
+        """Retain a nested command section without assigning its flags to root."""
+        if context_lines:
+            shared.append({"source": source, "line": context_start + 1,
+                           "section": context_section, "text": "\n".join(context_lines).strip(),
+                           "options": [], "association": "unassigned"})
+            context_lines.clear()
 
     lines = clean_output(text).splitlines()
     # Manual declarations often place a lowercase metavariable on its own
@@ -353,6 +454,12 @@ def parse_help_document(text: str, source: str) -> dict:
         is_heading = bool(line) and indentation <= 3 and len(line) <= 72 and not line.startswith("-") and (
             line.endswith(":") or line.isupper() and any(char.isalpha() for char in line)
         )
+        if context_mode and is_heading:
+            finish_context()
+            context_mode = False
+        if context_mode:
+            context_lines.append(line)
+            continue
         if shared_lines and is_heading and line.rstrip(":").lower().endswith("options"):
             finish_shared()
             shared_seen = False
@@ -385,19 +492,26 @@ def parse_help_document(text: str, source: str) -> dict:
             description = []
             heading = line.rstrip(":").strip().title()
             source_heading = line.rstrip(":").strip()
+            if heading.lower() in {"interactive commands", "subcommands"}:
+                context_mode = True
+                context_start = line_index
+                context_section = source_heading
+                context_lines.append(line)
             skip_section = heading.lower() in ("example", "examples", "usage", "synopsis", "see also")
             previous_blank = False
             continue
         if skip_section:
             continue
-        parsed = parse_option_line(raw)
+        groups = parse_option_groups(raw)
+        parsed = ([option for options, _ in groups for option in options], groups[0][1]) if groups else None
         if parsed is None and heading.lower().endswith("options"):
             parsed = parse_bracketed_options(line)
         if parsed:
             finish()
             active_options, summary = parsed
             shared_seen = False
-            aliases.append([option["flag"] for option in active_options])
+            aliases.extend([[option["flag"] for option in options] for options, _ in groups]
+                           if groups else [[option["flag"] for option in active_options]])
             declaration_indent = indentation
             if (indentation >= 4 and next_indents[line_index] > indentation
                     and re.fullmatch(r"[a-z][a-z0-9_-]*", summary)
@@ -406,17 +520,23 @@ def parse_help_document(text: str, source: str) -> dict:
                     option["argument"] = summary
                 summary = ""
             active_heading = heading
+            active_line = line_index
             description = [summary] if summary else []
         elif active_options:
             description.append(line)
         previous_blank = not line
     finish()
     finish_shared()
+    finish_context()
     arguments = {}
     for entry in entries:
         for name in re.findall(r"\b[A-Z][A-Z0-9_]+\b", entry.get("argument", "")):
             arguments.setdefault(name, set()).add(entry["flag"])
     for paragraph in shared:
+        if paragraph.get("association") == "unassigned":
+            # Nested sections retain literal root-flag mentions as context;
+            # those mentions do not establish an option association.
+            continue
         intro = re.match(r"^(?:The\s+)?([A-Z][A-Z0-9_]+)(?:\s+argument)?\s+(?:is|are|may|can|must)\b", paragraph["text"])
         if intro and intro[1] in arguments:
             targets = set(arguments[intro[1]])
@@ -435,12 +555,135 @@ def parse_help_document(text: str, source: str) -> dict:
             if entry["flag"] in targets:
                 entry["detail"] += (f"\n\nShared documentation ({paragraph['section']}):\n" + paragraph["text"]
                                     + f"\nSource: {source} (line {paragraph['line']})")
-    return {"options": entries, "shared": shared}
+    return {"options": entries, "shared": shared, "option_lines": option_lines}
 
 
 def parse_help(text: str, source: str) -> list[dict]:
     """Return the legacy option-list view of a passively parsed help document."""
     return parse_help_document(text, source)["options"]
+
+
+def manual_origin(text: str, source: str, command, request=None) -> dict:
+    """Keep a rendered manual's identity separate from the requested command.
+
+    Header names and explicit lookup labels are evidence, not executable routes.
+    Missing request argv is left absent rather than reconstructed from a label.
+    """
+    first_lines = clean_output(text).splitlines()[:6]
+    title = next((match[1] for line in first_lines if (match := re.match(
+        r"^\s*([A-Za-z0-9_.+-]+)\([0-9][A-Za-z0-9]*\)", line))), None)
+    lookup = re.fullmatch(r"man ([A-Za-z0-9_.+-]+)", source)
+    origin = {"requested_command": list(command), "source_label": source}
+    if request is not None:
+        origin["source_request"] = list(request)
+    if lookup:
+        origin["manual_lookup"] = lookup[1]
+    elif request and Path(request[0]).name == "man" and "-l" not in request and re.fullmatch(r"[A-Za-z0-9_.+-]+", request[-1]):
+        origin["manual_lookup"] = request[-1]
+    manual = title or origin.get("manual_lookup")
+    if manual:
+        origin["source_manual"] = manual
+        requested = "-".join(command).casefold()
+        subject = manual.casefold()
+        origin["foreign_manual"] = bool(command) and not (requested == subject or requested.startswith(subject + "-"))
+        if origin.get("manual_lookup"):
+            lookup_subject = origin["manual_lookup"].casefold()
+            origin["scope_mismatch"] = bool(command) and not (
+                requested == lookup_subject or requested.startswith(lookup_subject + "-"))
+    return origin
+
+
+def associate_document(parsed: dict, text: str, source: str, command, request=None, *, scope=None) -> dict:
+    """Qualify borrowed manuals and retain source-specific declarations inactive.
+
+    Explicit common/shared-option headings establish a bounded shared section.
+    A closing reference to 'these common options' also establishes the preceding
+    OPTIONS section's boundary in formatted manuals. No command names, option
+    allowlists, summaries or guessed numerical meanings select the shared set.
+    Selection requires an explicit scope; unscoped routes retain legacy inference.
+    """
+    result = deepcopy(parsed)
+    origin = manual_origin(text, source, command, request)
+    if scope not in (None, "common_options"):
+        raise HelpError("Unsupported manual documentation scope.", "invalid_manual_scope")
+    if scope is not None:
+        origin["manual_scope"] = scope
+    result["provenance"] = origin
+    result["diagnostics"] = []
+    if not origin.get("scope_mismatch") and scope is None:
+        if origin.get("foreign_manual"):
+            result["diagnostics"].append({"code": "manual_title_review", "source": source,
+                "command": list(command), "option": "<shared>",
+                "message": ("The rendered manual title differs from the requested command. "
+                            "The supplied import or matching lookup is retained; canonical-name equivalence and applicability require review.")})
+        return result
+    lines = clean_output(text).splitlines()
+    manual = origin.get("source_manual", origin.get("manual_lookup", source))
+    cleaned = "\n".join(lines)
+    closure_lines = {cleaned.count("\n", 0, match.start()) + 1
+                     for match in re.finditer(r"\bthese\s+common\s+options\b", cleaned, re.I)}
+    shared_lines = set()
+    section_start = None
+    common_section = False
+    for index, raw in enumerate(lines):
+        line = raw.strip()
+        indentation = len(raw) - len(raw.lstrip())
+        heading = line.rstrip(":").casefold()
+        is_heading = bool(line) and indentation <= 3 and len(line) <= 72 and not line.startswith("-") and (
+            line.endswith(":") or line.isupper() and any(char.isalpha() for char in line))
+        if is_heading:
+            section_start = index if heading.endswith("options") else None
+            common_section = bool(re.fullmatch(r"(?:common|shared)(?: [a-z-]+)* options", heading))
+        if common_section:
+            shared_lines.add(index + 1)
+        if section_start is not None and index + 1 in closure_lines:
+            shared_lines.update(range(section_start + 1, index + 1))
+            section_start = None
+            common_section = False
+    if scope != "common_options":
+        # Some explicit routes intentionally borrow a whole manual. The lookup
+        # alone does not declare which sections should replace that behavior.
+        # Retain the legacy inferred view with an accessible source qualification.
+        message = (f"The requested command {' '.join(command)} uses manual {manual} "
+                   "without a declared delegation scope. Existing declarations remain inferred; "
+                   "their applicability is unverified and requires command-specific source review.")
+        result["shared"].append({"source": source, "line": 1, "section": "Source applicability",
+                                 "text": message, "options": [], "association": "unassigned"})
+        result["diagnostics"].append({"code": "manual_source_scope_unverified", "source": source,
+                                      "command": list(command), "option": "<shared>", "message": message})
+        return result
+    selected, selected_lines = [], []
+    rejected_lines = set()
+    for option, line in zip(result["options"], result["option_lines"]):
+        if line in shared_lines:
+            selected.append(option)
+            selected_lines.append(line)
+        else:
+            rejected_lines.add(line)
+    all_lines = sorted(set(result["option_lines"]))
+    categories = {line: option["category"] for option, line in zip(result["options"], result["option_lines"])}
+    for line in sorted(rejected_lines):
+        end = next((at - 1 for at in all_lines if at > line), len(lines))
+        result["shared"].append({"source": source, "line": line,
+            "section": f"Source-specific options: {manual} ({categories[line]})",
+            "text": "\n".join(lines[line - 1:end]).strip(), "options": [], "association": "unassigned"})
+    flags = {option["flag"] for option in selected}
+    for paragraph in result["shared"]:
+        paragraph["options"] = [flag for flag in paragraph.get("options", []) if flag in flags]
+        if not paragraph["options"]:
+            paragraph["association"] = "unassigned"
+    result["options"], result["option_lines"] = selected, selected_lines
+    result["diagnostics"].append({"code": "manual_source_scope", "source": source,
+        "command": list(command), "option": "<shared>",
+        "message": (f"The source manual {manual} is associated with the requested command "
+                    f"{' '.join(command)}. Only its declared common/shared option section is active; "
+                    "other declarations remain unassigned source documentation. The lookup does not verify every option's applicability.")})
+    return result
+
+
+def parse_command_help(text: str, source: str, command, request=None, *, scope=None) -> dict:
+    """Apply the same source-ownership boundary to runtime and passive census."""
+    return associate_document(parse_help_document(text, source), text, source, command, request, scope=scope)
 
 
 def parse_bracketed_options(line: str) -> tuple[list[dict], str] | None:
@@ -753,29 +996,58 @@ def merge_profiles(profiles: list[dict]) -> dict:
     return result
 
 
-def build_profile(command: str | list[str], sources: list[tuple[str, str]]) -> dict:
+def build_profile(command: str | list[str], sources: list[tuple[str, str]], *, source_requests=None, source_scopes=None) -> dict:
     """Build and merge passive source profiles, retaining detached documentation."""
     command = [command] if isinstance(command, str) else list(command)
     profiles = []
+    unassigned_sources = []
     for source, text in sources:
-        parsed = parse_help_document(text, source)
+        request = (source_requests or {}).get(source)
+        parsed = associate_document(parse_help_document(text, source), text, source, command, request,
+                                    scope=(source_scopes or {}).get(source))
         categories = {}
         for original in parsed["options"]:
             entry = dict(original)
             category = entry.pop("category")
             categories.setdefault(category, []).append(entry)
-        if not categories:
-            continue
-        notes = []
+        notes = list(parsed["diagnostics"])
         for paragraph in parsed["shared"]:
+            if paragraph["section"].casefold() in {"interactive commands", "subcommands"}:
+                _preservation_note(notes, "nested_command_documentation", source, command, "<shared>",
+                                   "Nested command documentation is retained as unassigned context, not root option declarations.", line=paragraph["line"])
             if paragraph["association"] == "unassigned" and re.match(r"^(?:The\s+)?[A-Z][A-Z0-9_]+(?:\s+argument)?\s+(?:is|are|may|can|must)\b|^(?:The units|Units|Binary prefixes)\b", paragraph["text"]):
                 _preservation_note(notes, "shared_documentation_unassigned", source, command, "<shared>",
                                    "A detached definition has no explicit declared option or metavariable target; its text is retained as shared documentation.", line=paragraph["line"])
+        # The existing details view exposes unassigned source context. Keep
+        # association qualifications reachable there even without a warning UI.
+        qualifications = [note["message"] for note in notes if note["code"].startswith("manual_")]
+        for message in reversed(qualifications):
+            if not any(paragraph["text"] == message for paragraph in parsed["shared"]):
+                parsed["shared"].insert(0, {"source": source, "line": 1, "section": "Source applicability",
+                                            "text": message, "options": [], "association": "unassigned"})
+        documentation = {"source": source, "provenance": parsed["provenance"],
+                         "shared": parsed["shared"], "diagnostics": notes}
+        if not categories:
+            if documentation["shared"] or notes:
+                unassigned_sources.append({"source": source, "documentation": documentation})
+            continue
         profiles.append({"command": command, "description": f"Discovered help for {' '.join(command)}; arguments and categories are inferred.",
                          "categories": [{"name": name, "description": "Automatically extracted command documentation.", "options": options}
                                         for name, options in categories.items()],
-                         "documentation": {"source": source, "shared": parsed["shared"], "diagnostics": notes}})
-    return merge_profiles(profiles)
+                         "documentation": documentation})
+    if not profiles and unassigned_sources:
+        raise HelpError("No applicable root option declarations were established from the supplied manual. "
+                        "Its source identity or section scope differs from the requested command; supply matching help or a curated profile.",
+                        "help_source_scope")
+    result = merge_profiles(profiles)
+    for record in unassigned_sources:
+        document = record["documentation"]
+        result["documentation"]["sources"].append(record)
+        result["documentation"]["shared"].extend(document["shared"])
+        result["documentation"]["diagnostics"].extend(document["diagnostics"])
+        result.setdefault("discovery", {}).setdefault("warnings", []).extend(
+            f"{note['code']}: {note['message']}" for note in document["diagnostics"])
+    return result
 
 
 def executable_identity(path: str) -> dict:
@@ -901,12 +1173,14 @@ def module_fingerprint(executable, module, interpreter_options, timeout):
 
 
 def cache_identity(command_path, executable, help_arguments, manual_name, manual, settings,
-                   module=None, interpreter_options=()):
+                   module=None, interpreter_options=(), manual_scope=None):
     """Build filesystem-derived lookup identity without invoking any program."""
     identity = {"version": CACHE_VERSION, "command": list(command_path), "executable": executable_identity(executable),
                 "help_arguments": list(help_arguments), "manual_name": manual_name,
                 "mode": settings.mode, "manual": executable_identity(manual) if manual else None,
                 "manpath": os.environ.get("MANPATH", ""), "timeout": settings.timeout}
+    if manual_scope is not None:
+        identity["manual_scope"] = manual_scope
     if module is not None:
         identity.update({"module": module, "interpreter_options": list(interpreter_options),
                          "home_identity": hashlib.sha256(os.environ.get("HOME", "").encode()).hexdigest()})
@@ -956,6 +1230,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     if settings.mode == "off":
         raise HelpError("No static profile matches and automatic discovery is disabled.", "discovery_disabled")
     name = Path(command).name
+    manual_scope = None
     if not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", name) or name in (".", ".."):
         raise HelpError("Discovery requires a literal executable name.")
     if module is not None:
@@ -968,6 +1243,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         try:
             route = help_route(name, tuple(subcommands), driver_registry)
             help_arguments, manual_name = list(route.arguments), route.manual
+            manual_scope = route.manual_scope
         except ValueError as error:
             raise HelpError(str(error)) from error
     command_path = [module or name, *subcommands]
@@ -988,7 +1264,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     manual = shutil.which("man")
     manual = os.path.abspath(manual) if manual else None
     identity = cache_identity(command_path, executable, help_arguments, manual_name, manual, settings,
-                              module, interpreter_options)
+                              module, interpreter_options, manual_scope)
     freshness_warning = None
     cache_verified = True
     if module is not None and settings.mode == "auto":
@@ -1009,6 +1285,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         if profile is not None:
             return profile
     sources = []
+    source_requests = {}
     warnings = []
     if freshness_warning:
         warnings.append(freshness_warning)
@@ -1033,13 +1310,15 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
                 output = run_probe(argv, settings.timeout)
             if parse_help(output, label):
                 sources.append((label, output))
+                source_requests[label] = list(argv)
             else:
                 warnings.append(f"No option declarations were parsed from {label}.")
         except ProbeError as error:
             probe_failed = True
             warnings.append(f"{label}: {error}")
     try:
-        profile = build_profile(command_path, sources)
+        scopes = {f"man {manual_name}": manual_scope} if manual_scope is not None else {}
+        profile = build_profile(command_path, sources, source_requests=source_requests, source_scopes=scopes)
     except HelpError as error:
         explanation = " ".join(warnings)
         error_type = ProbeError if probe_failed else HelpError

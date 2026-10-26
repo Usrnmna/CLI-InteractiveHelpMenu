@@ -177,6 +177,8 @@ class ManualCollection:
                 previous["option_values"] = sorted(route.option_values)
             if route and route.option_flags:
                 previous["option_flags"] = sorted(route.option_flags)
+            if route and route.manual_scope:
+                previous["manual_scope"] = route.manual_scope
         routes = [route for route in document["paths"] if route["command"] != command[1:]]
         routes.append({**previous, "command": command[1:], "help": [], "man": manual})
         document = {**document, "paths": routes}
@@ -215,7 +217,14 @@ def import_manual(command: list[str], output_dir: Path, manual: str | None = Non
                   timeout: float = 2.0, replace=False) -> dict:
     """Convert one manual and preserve existing entries unless replacement is explicit."""
     text, label, manual = read_manual(command, manual, text_file, man_file, timeout)
+    # Preserve validation before any collection directory or lock is created.
+    # An existing declared scope is reapplied under the collection lock.
     profile = build_profile(command, [(label, text)])
-    profile["imported_from"] = {"source": label, "manual": manual}
     with ManualCollection(output_dir) as collection:
+        document = collection.drivers.get(command[0], (None, {}))[1]
+        route = next((item for item in document.get("paths", []) if item["command"] == command[1:]), {})
+        scopes = {label: route["manual_scope"]} if route.get("manual_scope") else {}
+        if scopes:
+            profile = build_profile(command, [(label, text)], source_scopes=scopes)
+        profile["imported_from"] = {"source": label, "manual": manual}
         return collection.save(profile, manual, replace)

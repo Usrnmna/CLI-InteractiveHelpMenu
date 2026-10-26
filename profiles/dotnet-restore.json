@@ -1,105 +1,833 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "SOURCE",
+          "argument_optional": false,
+          "flag": "-s",
+          "summary": "Select a package source",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "NuGet package source",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Package feed URI or filesystem source path, not a number of package sources."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use NuGet sources from the applicable configuration."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "-s --source"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SOURCE",
+          "argument_optional": false,
+          "flag": "--source",
+          "summary": "Select a package source",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "NuGet package source",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Package feed URI or filesystem source path, not a number of package sources."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use NuGet sources from the applicable configuration."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "-s --source"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--packages",
+          "summary": "Set package directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "NuGet package directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path overriding the package restore directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured/default NuGet package location."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "--packages"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--configfile",
+          "summary": "Select NuGet configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "NuGet configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path to the NuGet configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal NuGet configuration-file discovery."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "--configfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--disable-parallel",
+          "summary": "Disable concurrent restores"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--ignore-failed-sources",
+          "summary": "Continue past unavailable sources"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-cache",
+          "summary": "Disable package caching"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--force",
+          "summary": "Resolve dependencies again"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--locked-mode",
+          "summary": "Require an unchanged lockfile"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--use-lock-file",
+          "summary": "Write a dependency lockfile"
+        },
+        {
+          "argument": "RUNTIME",
+          "argument_optional": false,
+          "flag": "-r",
+          "summary": "Select runtime identifier",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Runtime identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "RuntimeOption and RuntimeArgFunc"
+                    }
+                  ]
+                },
+                "subject": ".NET runtime identifiers"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "RUNTIME",
+          "argument_optional": false,
+          "flag": "--runtime",
+          "summary": "Select runtime identifier",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Runtime identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "RuntimeOption and RuntimeArgFunc"
+                    }
+                  ]
+                },
+                "subject": ".NET runtime identifiers"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "flag": "-v",
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "MSBuild logging verbosity and CLR enum codes",
+                "bare": {
+                  "state": "accepted",
+                  "form": "enum-code"
+                },
+                "forms": [
+                  {
+                    "id": "enum-code",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Signed decimal CLR enum code: 0=quiet, 1=q, 2=minimal, 3=m, 4=normal, 5=n, 6=detailed, 7=d, 8=diagnostic, 9=diag. The CLI enum converter admits other representable int values, but undefined codes are forwarded as numeric text and are not documented MSBuild verbosity levels; downstream validation can reject them. Prefer named levels.",
+                    "bounds": {
+                      "min": "-2147483648",
+                      "max": "2147483647"
+                    }
+                  },
+                  {
+                    "id": "name-0",
+                    "notation": "literal",
+                    "syntax": "quiet",
+                    "tokens": [
+                      "quiet"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-1",
+                    "notation": "literal",
+                    "syntax": "q",
+                    "tokens": [
+                      "q"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-2",
+                    "notation": "literal",
+                    "syntax": "minimal",
+                    "tokens": [
+                      "minimal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-3",
+                    "notation": "literal",
+                    "syntax": "m",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-4",
+                    "notation": "literal",
+                    "syntax": "normal",
+                    "tokens": [
+                      "normal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-5",
+                    "notation": "literal",
+                    "syntax": "n",
+                    "tokens": [
+                      "n"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-6",
+                    "notation": "literal",
+                    "syntax": "detailed",
+                    "tokens": [
+                      "detailed"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-7",
+                    "notation": "literal",
+                    "syntax": "d",
+                    "tokens": [
+                      "d"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-8",
+                    "notation": "literal",
+                    "syntax": "diagnostic",
+                    "tokens": [
+                      "diagnostic"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-9",
+                    "notation": "literal",
+                    "syntax": "diag",
+                    "tokens": [
+                      "diag"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "enum-names",
+                    "notation": "expression",
+                    "syntax": "NAME[,NAME...]",
+                    "grammar": "The CLR enum parser can combine comma-separated named constants by bitwise OR; the result follows the enum-code mapping or is forwarded numerically. This parser behavior is not a portable way to choose a logging level; use one documented name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default logging verbosity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "VerbosityOptions implicit integer values and ForwardAsSingle enum name"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/eng/Version.Details.xml",
+                      "locator": "System.CommandLine 2.0.0-beta4.24324.3 at commit 803d8598f98fb4efd94604b32627ee9407f246db"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/command-line-api/803d8598f98fb4efd94604b32627ee9407f246db/src/System.CommandLine/Binding/ArgumentConverter.cs",
+                      "locator": "ConvertToken Enum.TryParse(ignoreCase:true) / Enum.Parse"
+                    },
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/api/system.enum.tryparse?view=net-9.0",
+                      "locator": "Enum.TryParse numeric/name parsing and comma-separated names"
+                    }
+                  ]
+                },
+                "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "flag": "--verbosity",
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "MSBuild logging verbosity and CLR enum codes",
+                "bare": {
+                  "state": "accepted",
+                  "form": "enum-code"
+                },
+                "forms": [
+                  {
+                    "id": "enum-code",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Signed decimal CLR enum code: 0=quiet, 1=q, 2=minimal, 3=m, 4=normal, 5=n, 6=detailed, 7=d, 8=diagnostic, 9=diag. The CLI enum converter admits other representable int values, but undefined codes are forwarded as numeric text and are not documented MSBuild verbosity levels; downstream validation can reject them. Prefer named levels.",
+                    "bounds": {
+                      "min": "-2147483648",
+                      "max": "2147483647"
+                    }
+                  },
+                  {
+                    "id": "name-0",
+                    "notation": "literal",
+                    "syntax": "quiet",
+                    "tokens": [
+                      "quiet"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-1",
+                    "notation": "literal",
+                    "syntax": "q",
+                    "tokens": [
+                      "q"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-2",
+                    "notation": "literal",
+                    "syntax": "minimal",
+                    "tokens": [
+                      "minimal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-3",
+                    "notation": "literal",
+                    "syntax": "m",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-4",
+                    "notation": "literal",
+                    "syntax": "normal",
+                    "tokens": [
+                      "normal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-5",
+                    "notation": "literal",
+                    "syntax": "n",
+                    "tokens": [
+                      "n"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-6",
+                    "notation": "literal",
+                    "syntax": "detailed",
+                    "tokens": [
+                      "detailed"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-7",
+                    "notation": "literal",
+                    "syntax": "d",
+                    "tokens": [
+                      "d"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-8",
+                    "notation": "literal",
+                    "syntax": "diagnostic",
+                    "tokens": [
+                      "diagnostic"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-9",
+                    "notation": "literal",
+                    "syntax": "diag",
+                    "tokens": [
+                      "diag"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "enum-names",
+                    "notation": "expression",
+                    "syntax": "NAME[,NAME...]",
+                    "grammar": "The CLR enum parser can combine comma-separated named constants by bitwise OR; the result follows the enum-code mapping or is forwarded numerically. This parser behavior is not a portable way to choose a logging level; use one documented name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default logging verbosity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "VerbosityOptions implicit integer values and ForwardAsSingle enum name"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/eng/Version.Details.xml",
+                      "locator": "System.CommandLine 2.0.0-beta4.24324.3 at commit 803d8598f98fb4efd94604b32627ee9407f246db"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/command-line-api/803d8598f98fb4efd94604b32627ee9407f246db/src/System.CommandLine/Binding/ArgumentConverter.cs",
+                      "locator": "ConvertToken Enum.TryParse(ignoreCase:true) / Enum.Parse"
+                    },
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/api/system.enum.tryparse?view=net-9.0",
+                      "locator": "Enum.TryParse numeric/name parsing and comma-separated names"
+                    }
+                  ]
+                },
+                "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "dotnet",
     "restore"
   ],
   "description": "Options for dotnet restore.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "-s",
-          "argument": "SOURCE",
-          "argument_optional": false,
-          "summary": "Select a package source"
-        },
-        {
-          "flag": "--source",
-          "argument": "SOURCE",
-          "argument_optional": false,
-          "summary": "Select a package source"
-        },
-        {
-          "flag": "--packages",
-          "argument": "DIRECTORY",
-          "argument_optional": false,
-          "summary": "Set package directory"
-        },
-        {
-          "flag": "--configfile",
-          "argument": "FILE",
-          "argument_optional": false,
-          "summary": "Select NuGet configuration"
-        },
-        {
-          "flag": "--disable-parallel",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Disable concurrent restores"
-        },
-        {
-          "flag": "--ignore-failed-sources",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Continue past unavailable sources"
-        },
-        {
-          "flag": "--no-cache",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Disable package caching"
-        },
-        {
-          "flag": "--force",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Resolve dependencies again"
-        },
-        {
-          "flag": "--locked-mode",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Require an unchanged lockfile"
-        },
-        {
-          "flag": "--use-lock-file",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Write a dependency lockfile"
-        },
-        {
-          "flag": "-r",
-          "argument": "RUNTIME",
-          "argument_optional": false,
-          "summary": "Select runtime identifier"
-        },
-        {
-          "flag": "--runtime",
-          "argument": "RUNTIME",
-          "argument_optional": false,
-          "summary": "Select runtime identifier"
-        },
-        {
-          "flag": "-v",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set logging detail"
-        },
-        {
-          "flag": "--verbosity",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set logging detail"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+  },
+  "stop_at_positional": false
 }

@@ -1,0 +1,167 @@
+{
+  "format_version": 1,
+  "scope": "Manually reviewed expectations from pinned authoritative sources for the maintained-debt follow-up. These are source-level facts, not results from installed programs, devices or native terminals. Per-entry production metadata owns complete provenance and applicability.",
+  "cases": {
+    "openssl_verify": {
+      "version": "3.0.16",
+      "minimum": "1",
+      "zero_rejected": true,
+      "subject": "Intermediate CA certificates",
+      "excluded_certificates": ["leaf", "trust anchor"],
+      "references": [
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/s_client.c", "locator": "verify option uses valtype p"},
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c", "locator": "opt_int/opt_long; p rejects ival <= 0"},
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-verification-options.pod", "locator": "verify_depth excludes leaf and trust anchor"}
+      ]
+    },
+    "openssl_checkend": {
+      "version": "3.0.16",
+      "base": "second",
+      "multiplier": "1",
+      "signed": true,
+      "base_autodetection": true,
+      "range_qualification": "ossl_intmax_t and time_t",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/x509.c", "locator": "OPT_CHECKEND conversion and time_t round-trip check"},
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c", "locator": "opt_intmax base 0"}
+      ]
+    },
+    "sftp": {
+      "version": "9.9p2",
+      "fallback_buffer_bytes": "32768",
+      "fallback_requests": "64",
+      "version_zero_buffer_cap_bytes": "20480",
+      "legacy_parser": "strtol",
+      "legacy_zero_rejected": true,
+      "negative_or_large_inputs": "unsigned conversion can wrap or truncate; -X bounds are separate",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/sftp.c", "locator": "main cases B/R versus case X"},
+        {"source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/sftp-client.c", "locator": "sftp_init fallback values, limits negotiation and v0 clamp"}
+      ]
+    },
+    "arduino_jobs": {
+      "version": "1.2.2",
+      "minimum_parser_value": "-2147483648",
+      "maximum_parser_value": "2147483647",
+      "zero": "Use available CPU cores",
+      "negative": "No workers start; compilation can stall when work is queued",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.2.2/internal/cli/compile/compile.go", "locator": "jobs Int32VarP default 0"},
+        {"source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.2.2/internal/arduino/builder/compilation.go", "locator": "compileFiles b.jobs == 0, NumCPU and i < b.jobs worker loop"}
+      ]
+    },
+    "ansible": {
+      "version": "2.18.6",
+      "fork_minimum": "1",
+      "fork_default": "5",
+      "host_index_origin": "0",
+      "host_range_end": "inclusive",
+      "host_negative": "Single negative indices; range bounds are nonnegative",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/__init__.py", "locator": "validate_conflicts rejects forks < 1"},
+        {"source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/config/base.yml", "locator": "DEFAULT_FORKS"},
+        {"source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/inventory/manager.py", "locator": "_split_subscript/_apply_subscript"}
+      ]
+    },
+    "gcloud": {
+      "version": "515.0.0",
+      "minimum_count": "1",
+      "unlimited_token": "unlimited",
+      "unlimited_case": "sensitive",
+      "zero_rejected": true,
+      "readable_bytes_per_KiB": "1024",
+      "upper_count_bound": "SDK Python sys.maxsize",
+      "references": [
+        {"source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz", "locator": "lib/googlecloudsdk/calliope/base.py LIMIT_FLAG/PAGE_SIZE_FLAG; arg_parsers.py _BoundedType"},
+        {"source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-515.0.0-linux-x86_64.tar.gz", "locator": "lib/surface/storage/ls.py and lib/googlecloudsdk/command_lib/storage/list_util.py"}
+      ]
+    },
+    "psql": {
+      "version": "17.4",
+      "port_minimum": "1",
+      "port_maximum": "65535",
+      "port_list": "One shared port or one port per host; empty entries use the default",
+      "variable_forms": ["NAME=VALUE", "NAME", "NAME="],
+      "references": [
+        {"source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/src/interfaces/libpq/fe-connect.c", "locator": "host/port list matching; thisport range validation"},
+        {"source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml", "locator": "port, command, dbname and variable options"}
+      ]
+    },
+    "platformio": {
+      "version": "6.1.18",
+      "digit_only_device_index": false,
+      "pattern_matching": "First matching enumerated device; ordering is not a stable index",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/monitor/command.py", "locator": "--port string and initial_port forwarding"},
+        {"source": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/device/finder.py", "locator": "SerialPortFinder.find and match_serial_port"}
+      ]
+    },
+    "git_date": {
+      "version": "2.48.0",
+      "epoch_heuristic_threshold": "100000000",
+      "compact_calendar_date": "YYYYmmDD",
+      "zero_cutoff_tokens": ["never", "false"],
+      "maximum_cutoff_tokens": ["all", "now"],
+      "direct_prune_default": "TIME_MAX",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c", "locator": "match_digit, parse_expiry_date and approxidate_careful"},
+        {"source": "https://raw.githubusercontent.com/git/git/v2.48.0/builtin/worktree.c", "locator": "prune expire = TIME_MAX"}
+      ]
+    },
+    "yq_indent": {
+      "version": "4.44.3",
+      "default": "2",
+      "subject": "Spaces per indentation level",
+      "yaml_zero": "4",
+      "yaml_negative": "SetIndent rejects negative spaces",
+      "json_xml_nonpositive": "Empty indentation string; not a universal single-line-output guarantee",
+      "cli_assigned_encoders": ["XML", "YAML", "JSON"],
+      "references": [
+        {"source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go", "locator": "--indent default 2"},
+        {"source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go", "locator": "Indent assignments to three encoder preferences"},
+        {"source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/go.mod", "locator": "yaml.v3 v3.0.1"},
+        {"source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/yaml.go", "locator": "Encoder.SetIndent"},
+        {"source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/encode.go", "locator": "encoder.init zero becomes 4"},
+        {"source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_json.go", "locator": "NewJSONEncoder indentation loop"},
+        {"source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_xml.go", "locator": "NewXMLEncoder indentation loop"}
+      ]
+    },
+    "ruff": {
+      "version": "0.11.13",
+      "extension_languages": ["python", "pyi", "ipynb"],
+      "rejected_language_alias": "py",
+      "default_output": "full",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_linter/src/settings/types.rs", "locator": "Language::from_str, ExtensionPair::from_str and OutputFormat"}
+      ]
+    },
+    "dotnet": {
+      "version": "9.0.200",
+      "configuration_kind": "identifier",
+      "framework_kind": "identifier",
+      "runtime_kind": "identifier",
+      "filter_property": "VSTestTestCaseFilter",
+      "verbosity_order": ["quiet", "minimal", "normal", "detailed", "diagnostic"],
+      "verbosity_numeric_names": ["quiet", "q", "minimal", "m", "normal", "n", "detailed", "d", "diagnostic", "diag"],
+      "enum_dependency_version": "2.0.0-beta4.24324.3",
+      "enum_dependency_commit": "803d8598f98fb4efd94604b32627ee9407f246db",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs", "locator": "string property forwarding and VerbosityOptions enum"},
+        {"source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/eng/Version.Details.xml", "locator": "System.CommandLine dependency source revision"},
+        {"source": "https://raw.githubusercontent.com/dotnet/command-line-api/803d8598f98fb4efd94604b32627ee9407f246db/src/System.CommandLine/Binding/ArgumentConverter.cs", "locator": "Enum.TryParse and Enum.Parse conversion"},
+        {"source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs", "locator": "FilterOption forwarding"}
+      ]
+    },
+    "azure_query": {
+      "version": "2.71.0",
+      "query_kind": "delegated",
+      "library_release_claim": "No single JMESPath library release is asserted; the pinned CLI delegates parsing to its installed library",
+      "index_origin": "0",
+      "references": [
+        {"source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli-core/setup.py", "locator": "jmespath dependency and knack~=0.11.0"},
+        {"source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/query.py", "locator": "jmespath.compile delegation"},
+        {"source": "https://jmespath.org/specification.html", "locator": "Index Expressions"}
+      ]
+    }
+  }
+}

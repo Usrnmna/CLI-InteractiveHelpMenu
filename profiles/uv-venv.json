@@ -1,69 +1,57 @@
 {
-  "command": [
-    "uv",
-    "venv"
-  ],
-  "description": "Options for uv venv.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
-          "flag": "--seed",
           "argument": "",
           "argument_optional": false,
+          "flag": "--seed",
           "summary": "Install seed packages"
         },
         {
-          "flag": "--clear",
           "argument": "",
           "argument_optional": false,
+          "flag": "--clear",
           "summary": "Remove existing environment contents"
         },
         {
-          "flag": "--system-site-packages",
           "argument": "",
           "argument_optional": false,
+          "flag": "--system-site-packages",
           "summary": "Expose system packages"
         },
         {
-          "flag": "--prompt",
           "argument": "PROMPT",
           "argument_optional": false,
-          "summary": "Set shell prompt text"
-        },
-        {
-          "flag": "--relocatable",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Make the environment relocatable"
-        },
-        {
-          "flag": "--allow-existing",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Allow an existing directory"
-        },
-        {
-          "flag": "--python",
-          "argument": "PYTHON",
-          "argument_optional": false,
-          "summary": "Select a Python interpreter",
+          "flag": "--prompt",
+          "summary": "Set shell prompt text",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "Value interpreted by uv Python request grammar",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://docs.astral.sh/uv/concepts/python-versions/",
-                      "locator": "Python request formats: versions, constraints, implementations, names and paths"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Virtual-environment prompt label",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Prompt string; . requests the current-directory name where documented."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the virtual-environment directory name as the prompt label."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -73,82 +61,279 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv-venv --prompt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--relocatable",
+          "summary": "Make the environment relocatable"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--allow-existing",
+          "summary": "Allow an existing directory"
+        },
+        {
+          "argument": "PYTHON",
+          "argument_optional": false,
+          "detail": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy. Reference scope: uv 0.6.14.",
+          "flag": "--python",
+          "summary": "Select a Python interpreter",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "uv Python interpreter request grammar",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "The documented request can be a Python version, version constraint, implementation name, executable name/path or installation directory; a value such as 3.12 is a version selector, not a measured decimal quantity"
+                    "grammar": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Use command-specific project/environment/Python discovery without an explicit CLI interpreter request."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": "uv Python request grammar",
-                  "reference": {
-                    "source": "https://docs.astral.sh/uv/concepts/python-versions/",
-                    "locator": "Python request formats: versions, constraints, implementations, names and paths"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "investigation": "Pin the request alternatives and default interpreter selection to supported uv releases"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+                      "locator": "Requesting Python versions and request forms"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-python/src/discovery.rs",
+                      "locator": "PythonRequest parsing/discovery boundary"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "uv Python interpreter request grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+                    "locator": "Requesting Python versions and request forms"
+                  }
+                }
               }
             ]
-          },
-          "detail": "The documented request can be a Python version, version constraint, implementation name, executable name/path or installation directory; a value such as 3.12 is a version selector, not a measured decimal quantity. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "--offline",
           "argument": "",
           "argument_optional": false,
+          "flag": "--offline",
           "summary": "Disable network access"
         },
         {
-          "flag": "--no-cache",
           "argument": "",
           "argument_optional": false,
+          "flag": "--no-cache",
           "summary": "Disable caching"
         },
         {
-          "flag": "--directory",
           "argument": "DIRECTORY",
           "argument_optional": false,
-          "summary": "Change working directory"
+          "flag": "--directory",
+          "summary": "Change working directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "uv working directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path to change into before running the command; relative argument paths follow this working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Retain the current working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "--directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--project",
           "argument": "PROJECT",
           "argument_optional": false,
-          "summary": "Select project directory"
+          "flag": "--project",
+          "summary": "Select project directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "uv project discovery directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path used to discover the project/configuration; it does not itself change the working directory like --directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Discover the project from the normal current-directory context."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "--project"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "uv",
+    "venv"
+  ],
+  "description": "Options for uv venv.",
   "documentation": {
-    "source": "https://docs.astral.sh/uv/reference/cli/",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://docs.astral.sh/uv/reference/cli/"
+  },
+  "stop_at_positional": false
 }

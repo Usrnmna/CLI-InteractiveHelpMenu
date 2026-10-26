@@ -1,196 +1,1247 @@
 {
-  "command": [
-    "dotnet",
-    "test"
-  ],
-  "description": "Options for dotnet test. VSTest command syntax. Microsoft.Testing.Platform mode has different options and requires installed help review.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "CONFIGURATION",
+          "argument_optional": false,
           "flag": "-c",
-          "argument": "CONFIGURATION",
-          "argument_optional": false,
-          "summary": "Select build configuration"
+          "summary": "Select build configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "MSBuild configuration name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command/SDK/project Configuration default; no explicit CLI Configuration override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "ConfigurationOption forwarding to Configuration property"
+                    }
+                  ]
+                },
+                "subject": "MSBuild configurations"
+              }
+            ]
+          }
         },
         {
+          "argument": "CONFIGURATION",
+          "argument_optional": false,
           "flag": "--configuration",
-          "argument": "CONFIGURATION",
-          "argument_optional": false,
-          "summary": "Select build configuration"
+          "summary": "Select build configuration",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "MSBuild configuration name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command/SDK/project Configuration default; no explicit CLI Configuration override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "ConfigurationOption forwarding to Configuration property"
+                    }
+                  ]
+                },
+                "subject": "MSBuild configurations"
+              }
+            ]
+          }
         },
         {
+          "argument": "FRAMEWORK",
+          "argument_optional": false,
           "flag": "-f",
-          "argument": "FRAMEWORK",
-          "argument_optional": false,
-          "summary": "Select target framework"
+          "summary": "Select target framework",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Target framework identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project's target-framework selection; commands requiring disambiguation can require an explicit framework."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "FrameworkOption forwarding"
+                    }
+                  ]
+                },
+                "subject": "Target framework monikers"
+              }
+            ]
+          }
         },
         {
+          "argument": "FRAMEWORK",
+          "argument_optional": false,
           "flag": "--framework",
-          "argument": "FRAMEWORK",
-          "argument_optional": false,
-          "summary": "Select target framework"
+          "summary": "Select target framework",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Target framework identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project's target-framework selection; commands requiring disambiguation can require an explicit framework."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "FrameworkOption forwarding"
+                    }
+                  ]
+                },
+                "subject": "Target framework monikers"
+              }
+            ]
+          }
         },
         {
+          "argument": "RUNTIME",
+          "argument_optional": false,
           "flag": "-r",
-          "argument": "RUNTIME",
-          "argument_optional": false,
-          "summary": "Select runtime identifier"
+          "summary": "Select runtime identifier",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Runtime identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "RuntimeOption and RuntimeArgFunc"
+                    }
+                  ]
+                },
+                "subject": ".NET runtime identifiers"
+              }
+            ]
+          }
         },
         {
+          "argument": "RUNTIME",
+          "argument_optional": false,
           "flag": "--runtime",
-          "argument": "RUNTIME",
-          "argument_optional": false,
-          "summary": "Select runtime identifier"
+          "summary": "Select runtime identifier",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Runtime identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "RuntimeOption and RuntimeArgFunc"
+                    }
+                  ]
+                },
+                "subject": ".NET runtime identifiers"
+              }
+            ]
+          }
         },
         {
+          "argument": "OUTPUT",
+          "argument_optional": false,
           "flag": "-o",
-          "argument": "OUTPUT",
-          "argument_optional": false,
-          "summary": "Set output directory"
+          "summary": "Set output directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "SDK output directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the SDK/project's normal command-specific output directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
+                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
+          "argument": "OUTPUT",
+          "argument_optional": false,
           "flag": "--output",
-          "argument": "OUTPUT",
-          "argument_optional": false,
-          "summary": "Set output directory"
+          "summary": "Set output directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "SDK output directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the SDK/project's normal command-specific output directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
+                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--no-restore",
           "argument": "",
           "argument_optional": false,
+          "flag": "--no-restore",
           "summary": "Skip package restore"
         },
         {
+          "argument": "LEVEL",
+          "argument_optional": false,
           "flag": "-v",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set logging detail"
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "MSBuild logging verbosity and CLR enum codes",
+                "bare": {
+                  "state": "accepted",
+                  "form": "enum-code"
+                },
+                "forms": [
+                  {
+                    "id": "enum-code",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Signed decimal CLR enum code: 0=quiet, 1=q, 2=minimal, 3=m, 4=normal, 5=n, 6=detailed, 7=d, 8=diagnostic, 9=diag. The CLI enum converter admits other representable int values, but undefined codes are forwarded as numeric text and are not documented MSBuild verbosity levels; downstream validation can reject them. Prefer named levels.",
+                    "bounds": {
+                      "min": "-2147483648",
+                      "max": "2147483647"
+                    }
+                  },
+                  {
+                    "id": "name-0",
+                    "notation": "literal",
+                    "syntax": "quiet",
+                    "tokens": [
+                      "quiet"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-1",
+                    "notation": "literal",
+                    "syntax": "q",
+                    "tokens": [
+                      "q"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-2",
+                    "notation": "literal",
+                    "syntax": "minimal",
+                    "tokens": [
+                      "minimal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-3",
+                    "notation": "literal",
+                    "syntax": "m",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-4",
+                    "notation": "literal",
+                    "syntax": "normal",
+                    "tokens": [
+                      "normal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-5",
+                    "notation": "literal",
+                    "syntax": "n",
+                    "tokens": [
+                      "n"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-6",
+                    "notation": "literal",
+                    "syntax": "detailed",
+                    "tokens": [
+                      "detailed"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-7",
+                    "notation": "literal",
+                    "syntax": "d",
+                    "tokens": [
+                      "d"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-8",
+                    "notation": "literal",
+                    "syntax": "diagnostic",
+                    "tokens": [
+                      "diagnostic"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-9",
+                    "notation": "literal",
+                    "syntax": "diag",
+                    "tokens": [
+                      "diag"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "enum-names",
+                    "notation": "expression",
+                    "syntax": "NAME[,NAME...]",
+                    "grammar": "The CLR enum parser can combine comma-separated named constants by bitwise OR; the result follows the enum-code mapping or is forwarded numerically. This parser behavior is not a portable way to choose a logging level; use one documented name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default logging verbosity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "VerbosityOptions implicit integer values and ForwardAsSingle enum name"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/eng/Version.Details.xml",
+                      "locator": "System.CommandLine 2.0.0-beta4.24324.3 at commit 803d8598f98fb4efd94604b32627ee9407f246db"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/command-line-api/803d8598f98fb4efd94604b32627ee9407f246db/src/System.CommandLine/Binding/ArgumentConverter.cs",
+                      "locator": "ConvertToken Enum.TryParse(ignoreCase:true) / Enum.Parse"
+                    },
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/api/system.enum.tryparse?view=net-9.0",
+                      "locator": "Enum.TryParse numeric/name parsing and comma-separated names"
+                    }
+                  ]
+                },
+                "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
+              }
+            ]
+          }
         },
         {
+          "argument": "LEVEL",
+          "argument_optional": false,
           "flag": "--verbosity",
-          "argument": "LEVEL",
-          "argument_optional": false,
-          "summary": "Set logging detail"
+          "summary": "Set logging detail",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "MSBuild logging verbosity and CLR enum codes",
+                "bare": {
+                  "state": "accepted",
+                  "form": "enum-code"
+                },
+                "forms": [
+                  {
+                    "id": "enum-code",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Signed decimal CLR enum code: 0=quiet, 1=q, 2=minimal, 3=m, 4=normal, 5=n, 6=detailed, 7=d, 8=diagnostic, 9=diag. The CLI enum converter admits other representable int values, but undefined codes are forwarded as numeric text and are not documented MSBuild verbosity levels; downstream validation can reject them. Prefer named levels.",
+                    "bounds": {
+                      "min": "-2147483648",
+                      "max": "2147483647"
+                    }
+                  },
+                  {
+                    "id": "name-0",
+                    "notation": "literal",
+                    "syntax": "quiet",
+                    "tokens": [
+                      "quiet"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-1",
+                    "notation": "literal",
+                    "syntax": "q",
+                    "tokens": [
+                      "q"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select quiet logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-2",
+                    "notation": "literal",
+                    "syntax": "minimal",
+                    "tokens": [
+                      "minimal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-3",
+                    "notation": "literal",
+                    "syntax": "m",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select minimal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-4",
+                    "notation": "literal",
+                    "syntax": "normal",
+                    "tokens": [
+                      "normal"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-5",
+                    "notation": "literal",
+                    "syntax": "n",
+                    "tokens": [
+                      "n"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select normal logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-6",
+                    "notation": "literal",
+                    "syntax": "detailed",
+                    "tokens": [
+                      "detailed"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-7",
+                    "notation": "literal",
+                    "syntax": "d",
+                    "tokens": [
+                      "d"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select detailed logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-8",
+                    "notation": "literal",
+                    "syntax": "diagnostic",
+                    "tokens": [
+                      "diagnostic"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "name-9",
+                    "notation": "literal",
+                    "syntax": "diag",
+                    "tokens": [
+                      "diag"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Select diagnostic logging verbosity (case insensitive)"
+                  },
+                  {
+                    "id": "enum-names",
+                    "notation": "expression",
+                    "syntax": "NAME[,NAME...]",
+                    "grammar": "The CLR enum parser can combine comma-separated named constants by bitwise OR; the result follows the enum-code mapping or is forwarded numerically. This parser behavior is not a portable way to choose a logging level; use one documented name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command's default logging verbosity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "VerbosityOptions implicit integer values and ForwardAsSingle enum name"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/eng/Version.Details.xml",
+                      "locator": "System.CommandLine 2.0.0-beta4.24324.3 at commit 803d8598f98fb4efd94604b32627ee9407f246db"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/command-line-api/803d8598f98fb4efd94604b32627ee9407f246db/src/System.CommandLine/Binding/ArgumentConverter.cs",
+                      "locator": "ConvertToken Enum.TryParse(ignoreCase:true) / Enum.Parse"
+                    },
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/api/system.enum.tryparse?view=net-9.0",
+                      "locator": "Enum.TryParse numeric/name parsing and comma-separated names"
+                    }
+                  ]
+                },
+                "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
+              }
+            ]
+          }
         },
         {
-          "flag": "--nologo",
           "argument": "",
           "argument_optional": false,
+          "flag": "--nologo",
           "summary": "Suppress the startup banner"
         },
         {
-          "flag": "--no-build",
           "argument": "",
           "argument_optional": false,
+          "flag": "--no-build",
           "summary": "Skip compilation"
         },
         {
-          "flag": "--filter",
           "argument": "EXPRESSION",
           "argument_optional": false,
+          "detail": "The pinned SDK forwards the expression as MSBuild VSTestTestCaseFilter. The selected test adapter defines properties; VSTest expressions use property/operator/value clauses, =, !=, ~ or !~, and &/| grouping. Property values are names or adapter-defined values, without one numerical unit. Alternative project/test-runner integrations retain their own interpretation of the forwarded property. Reference scope: .NET SDK 9.0.200.",
+          "flag": "--filter",
           "summary": "Filter test cases",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "delegated",
-                "meaning": "Value interpreted by .NET test-runner filter grammar",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details",
-                      "locator": "Test-runner filter grammar; exact SDK/test-runner coverage is unpinned"
-                    }
-                  ]
+                "meaning": "VSTest test-case filter grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "The pinned SDK forwards the expression as MSBuild VSTestTestCaseFilter. The selected test adapter defines properties; VSTest expressions use property/operator/value clauses, =, !=, ~ or !~, and &/| grouping. Property values are names or adapter-defined values, without one numerical unit. Alternative project/test-runner integrations retain their own interpretation of the forwarded property."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add a CLI test-case filter; project/runner configuration remains applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
                     "state": "known",
                     "values": [
-                      ".NET CLI"
+                      ".NET SDK"
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "FilterOption forwarding to VSTestTestCaseFilter"
+                    },
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=dotnet-test-with-vstest#filter-option-details",
+                      "locator": "Filter option details and adapter-specific properties; pinned SDK forwarding is the applicability boundary"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "VSTest test-case filter grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                    "locator": "FilterOption forwarding to VSTestTestCaseFilter"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LOGGER",
+          "argument_optional": false,
+          "flag": "--logger",
+          "summary": "Select a test logger",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "VSTest logger specification",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "The selected test runner interprets filter expressions and their property-specific values; there is no global unit"
+                    "grammar": "Logger name or URI with optional semicolon-separated logger parameters; parameter values follow that logger's grammar, without one universal unit."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Use default test logging without additional CLI logger specifications."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": ".NET test-runner filter grammar",
-                  "reference": {
-                    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details",
-                    "locator": "Test-runner filter grammar; exact SDK/test-runner coverage is unpinned"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "investigation": "Verify exact SDK/test-runner applicability and filtering grammar"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "--logger"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "VSTest logger specification",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                    "locator": "--logger"
+                  }
+                }
               }
             ]
-          },
-          "detail": "The selected test runner interprets filter expressions and their property-specific values; there is no global unit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "--logger",
-          "argument": "LOGGER",
-          "argument_optional": false,
-          "summary": "Select a test logger"
-        },
-        {
-          "flag": "--results-directory",
           "argument": "DIRECTORY",
           "argument_optional": false,
-          "summary": "Set results directory"
+          "flag": "--results-directory",
+          "summary": "Set results directory",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Test-results directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem directory path forwarded as the VSTest results directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the test runner/project's default results directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "--results-directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--collect",
           "argument": "COLLECTOR",
           "argument_optional": false,
-          "summary": "Enable a data collector"
+          "flag": "--collect",
+          "summary": "Enable a data collector",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Test data collector specification",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Collector friendly name, optionally followed by collector configuration; the selected collector owns configuration-value meanings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request an additional CLI data collector."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "--collect"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Test data collector specification",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                    "locator": "--collect"
+                  }
+                }
+              }
+            ]
+          }
         },
         {
-          "flag": "--list-tests",
           "argument": "",
           "argument_optional": false,
+          "flag": "--list-tests",
           "summary": "List discovered tests"
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "dotnet",
+    "test"
+  ],
+  "description": "Options for dotnet test. VSTest command syntax. Microsoft.Testing.Platform mode has different options and requires installed help review.",
   "documentation": {
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+  },
+  "stop_at_positional": false
 }

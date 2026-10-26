@@ -1,604 +1,725 @@
 {
+  "categories": [
+    {
+      "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
+      "options": [
+        {
+          "argument": "",
+          "flag": "show",
+          "kind": "keyword",
+          "summary": "Display the selected objects"
+        },
+        {
+          "argument": "IFNAME",
+          "flag": "dev",
+          "kind": "keyword",
+          "summary": "Select the network interface",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Network interface name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Interface/device name from the network namespace; digits in a name do not imply an interface index or numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this device-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
+                      "locator": "dev"
+                    }
+                  ]
+                },
+                "subject": "Network interfaces"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TABLE",
+          "detail": "iproute2 6.13.0: the numeric form identifies routing tables, not a count, percentage or measurement. Alternatives include named tables and documented main/default/local/all selectors. Name mappings are configuration-dependent.",
+          "flag": "table",
+          "kind": "keyword",
+          "summary": "Select the routing table",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "id",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "named tables and documented main/default/local/all selectors",
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Routing tables selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Routing tables",
+                "when_absent": {
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PROTOCOL",
+          "detail": "iproute2 6.13.0: the numeric form identifies routing-protocol ids, not a count, percentage or measurement. Alternatives include protocol names from routing-protocol mappings. Name mappings are configuration-dependent.",
+          "flag": "proto",
+          "kind": "keyword",
+          "summary": "Select a routing protocol",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "id",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "protocol names from routing-protocol mappings",
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Routing-protocol IDs selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Routing-protocol IDs",
+                "when_absent": {
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SCOPE",
+          "detail": "iproute2 6.13.0: the numeric form identifies route-scope ids, not a count, percentage or measurement. Alternatives include scope names such as global, link and host. Name mappings are configuration-dependent.",
+          "flag": "scope",
+          "kind": "keyword",
+          "summary": "Select the route scope",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "id",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "scope names such as global, link and host",
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Route-scope IDs selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Route-scope IDs",
+                "when_absent": {
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TYPE",
+          "flag": "type",
+          "kind": "keyword",
+          "summary": "Select the route type",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Route type selector",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Route type name, such as unicast, local, broadcast, multicast, throw, unreachable, prohibit or blackhole; names map to routing dispositions, not a scale or ordered priority."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the route command's normal type selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
+                      "locator": "Route types"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PREFIX",
+          "detail": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+          "flag": "to",
+          "kind": "keyword",
+          "summary": "Select the destination prefix",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "address",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "Address grammar defines its representation",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Network address, not a scalar quantity",
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Network addresses",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "bits",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "bounds": {
+                            "max": "128",
+                            "min": "0"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128",
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Leading network-address bits",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ADDRESS",
+          "detail": "iproute2 6.13.0: identifies next-hop addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters.",
+          "flag": "via",
+          "kind": "keyword",
+          "summary": "Select the next hop address",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Address/prefix grammar, not a bare scalar",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "Address/prefix selector; prefix lengths count leading network bits, IPv4 0-32 and IPv6 0-128",
+                    "id": "address",
+                    "notation": "expression",
+                    "syntax": "[FAMILY] ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Next-hop addresses/prefixes",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Next-hop addresses/prefixes",
+                "when_absent": {
+                  "meaning": "No explicit via selector is added",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ADDRESS",
+          "detail": "iproute2 6.13.0: identifies preferred-source addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters.",
+          "flag": "src",
+          "kind": "keyword",
+          "summary": "Select the preferred source address",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Address/prefix grammar, not a bare scalar",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "Address/prefix selector; prefix lengths count leading network bits, IPv4 0-32 and IPv6 0-128",
+                    "id": "address",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Preferred-source addresses/prefixes",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Preferred-source addresses/prefixes",
+                "when_absent": {
+                  "meaning": "No explicit src selector is added",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
   "command": [
     "ip",
     "route"
   ],
   "description": "ip route listing and filter argument reference.",
-  "stop_at_positional": true,
-  "categories": [
-    {
-      "name": "Arguments",
-      "description": "Literal command arguments; values are entered separately.",
-      "options": [
-        {
-          "flag": "show",
-          "argument": "",
-          "summary": "Display the selected objects",
-          "kind": "keyword"
-        },
-        {
-          "flag": "dev",
-          "argument": "IFNAME",
-          "summary": "Select the network interface",
-          "kind": "keyword"
-        },
-        {
-          "flag": "table",
-          "argument": "TABLE",
-          "summary": "Select the routing table",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "identifier",
-                "meaning": "Routing tables selector",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "accepted",
-                  "form": "id"
-                },
-                "forms": [
-                  {
-                    "id": "id",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer identifier, not a quantity or severity rank"
-                  },
-                  {
-                    "id": "name",
-                    "notation": "expression",
-                    "syntax": "NAME",
-                    "grammar": "named tables and documented main/default/local/all selectors"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit selector is added; normal command selection defaults apply"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Routing tables"
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: the numeric form identifies routing tables, not a count, percentage or measurement. Alternatives include named tables and documented main/default/local/all selectors. Name mappings are configuration-dependent."
-        },
-        {
-          "flag": "proto",
-          "argument": "PROTOCOL",
-          "summary": "Select a routing protocol",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "identifier",
-                "meaning": "Routing-protocol IDs selector",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "accepted",
-                  "form": "id"
-                },
-                "forms": [
-                  {
-                    "id": "id",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer identifier, not a quantity or severity rank"
-                  },
-                  {
-                    "id": "name",
-                    "notation": "expression",
-                    "syntax": "NAME",
-                    "grammar": "protocol names from routing-protocol mappings"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit selector is added; normal command selection defaults apply"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Routing-protocol IDs"
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: the numeric form identifies routing-protocol ids, not a count, percentage or measurement. Alternatives include protocol names from routing-protocol mappings. Name mappings are configuration-dependent."
-        },
-        {
-          "flag": "scope",
-          "argument": "SCOPE",
-          "summary": "Select the route scope",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "identifier",
-                "meaning": "Route-scope IDs selector",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "accepted",
-                  "form": "id"
-                },
-                "forms": [
-                  {
-                    "id": "id",
-                    "notation": "number",
-                    "syntax": "N",
-                    "grammar": "Integer identifier, not a quantity or severity rank"
-                  },
-                  {
-                    "id": "name",
-                    "notation": "expression",
-                    "syntax": "NAME",
-                    "grammar": "scope names such as global, link and host"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit selector is added; normal command selection defaults apply"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Route-scope IDs"
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: the numeric form identifies route-scope ids, not a count, percentage or measurement. Alternatives include scope names such as global, link and host. Name mappings are configuration-dependent."
-        },
-        {
-          "flag": "type",
-          "argument": "TYPE",
-          "summary": "Select the route type",
-          "kind": "keyword"
-        },
-        {
-          "flag": "to",
-          "argument": "PREFIX",
-          "summary": "Select the destination prefix",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "composite",
-                "meaning": "Network prefix selector",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives"
-                },
-                "forms": [
-                  {
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "ADDRESS[/PREFIXLEN]",
-                    "grammar": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Command defaults and configuration apply without this explicit value"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "slots": 1,
-                "components": [
-                  {
-                    "id": "address",
-                    "slot": 1,
-                    "required": true,
-                    "semantics": {
-                      "kind": "identifier",
-                      "meaning": "IPv4/IPv6 network address",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
-                            "locator": "Address selectors, numeric scope IDs and PREFIX"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "iproute2"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "6.13.0"
-                          ]
-                        },
-                        "platform": {
-                          "state": "known",
-                          "values": [
-                            "Linux"
-                          ]
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "not_applicable",
-                        "reason": "Address grammar defines its representation"
-                      },
-                      "forms": [
-                        {
-                          "id": "address",
-                          "notation": "expression",
-                          "syntax": "ADDRESS",
-                          "grammar": "Network address, not a scalar quantity"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Network addresses"
-                    }
-                  },
-                  {
-                    "id": "prefix-bits",
-                    "slot": 1,
-                    "required": false,
-                    "semantics": {
-                      "kind": "count",
-                      "meaning": "Leading network-prefix bits",
-                      "review": {
-                        "status": "verified",
-                        "references": [
-                          {
-                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
-                            "locator": "Address selectors, numeric scope IDs and PREFIX"
-                          }
-                        ]
-                      },
-                      "applicability": {
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "iproute2"
-                          ]
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "6.13.0"
-                          ]
-                        },
-                        "platform": {
-                          "state": "known",
-                          "values": [
-                            "Linux"
-                          ]
-                        },
-                        "chip": {
-                          "state": "not_applicable",
-                          "reason": "No chip-specific interpretation is claimed"
-                        }
-                      },
-                      "bare": {
-                        "state": "accepted",
-                        "form": "bits"
-                      },
-                      "forms": [
-                        {
-                          "id": "bits",
-                          "notation": "number",
-                          "syntax": "N",
-                          "bounds": {
-                            "min": "0",
-                            "max": "128"
-                          },
-                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128"
-                        }
-                      ],
-                      "when_absent": {
-                        "state": "not_applicable",
-                        "reason": "The component has no independent option-absence default"
-                      },
-                      "when_value_omitted": {
-                        "state": "not_applicable",
-                        "reason": "The enclosing grammar determines component presence"
-                      },
-                      "subject": "Leading network-address bits"
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior."
-        },
-        {
-          "flag": "via",
-          "argument": "ADDRESS",
-          "summary": "Select the next hop address",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "identifier",
-                "meaning": "Next-hop addresses/prefixes",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Address/prefix grammar, not a bare scalar"
-                },
-                "forms": [
-                  {
-                    "id": "address",
-                    "notation": "expression",
-                    "syntax": "[FAMILY] ADDRESS[/PREFIXLEN]",
-                    "grammar": "Address/prefix selector; prefix lengths count leading network bits, IPv4 0-32 and IPv6 0-128"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit via selector is added"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Next-hop addresses/prefixes"
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: identifies next-hop addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters."
-        },
-        {
-          "flag": "src",
-          "argument": "ADDRESS",
-          "summary": "Select the preferred source address",
-          "kind": "keyword",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "identifier",
-                "meaning": "Preferred-source addresses/prefixes",
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
-                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX"
-                    }
-                  ]
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "iproute2"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "6.13.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
-                  }
-                },
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "Address/prefix grammar, not a bare scalar"
-                },
-                "forms": [
-                  {
-                    "id": "address",
-                    "notation": "expression",
-                    "syntax": "ADDRESS[/PREFIXLEN]",
-                    "grammar": "Address/prefix selector; prefix lengths count leading network bits, IPv4 0-32 and IPv6 0-128"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "No explicit src selector is added"
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Preferred-source addresses/prefixes"
-              }
-            ]
-          },
-          "detail": "iproute2 6.13.0: identifies preferred-source addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters."
-        }
-      ]
-    }
-  ]
+  "stop_at_positional": true
 }

@@ -1,16 +1,13 @@
 {
-  "command": [
-    "ansible-playbook"
-  ],
-  "description": "ansible-playbook shell argument reference.",
   "categories": [
     {
-      "name": "Arguments",
       "description": "Literal command arguments; values are entered separately.",
+      "name": "Arguments",
       "options": [
         {
+          "argument": "INVENTORY",
+          "detail": "Inventory file/directory/plugin source or a comma-separated inline host list; the host_list plugin recognizes comma-containing non-path input. Plugins own their source-specific grammar. A numeric host name is not a host-count limit. Reference scope: ansible-core 2.18.6.",
           "flag": "--inventory",
-          "argument": "INVENTORY",
           "summary": "Select an inventory path or host list",
           "value_semantics": {
             "schema_version": 1,
@@ -19,14 +16,14 @@
                 "ref": "inventory-source"
               }
             ]
-          },
-          "detail": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
+          "argument": "INVENTORY",
+          "attached": true,
+          "detail": "Inventory file/directory/plugin source or a comma-separated inline host list; the host_list plugin recognizes comma-containing non-path input. Plugins own their source-specific grammar. A numeric host name is not a host-count limit. Reference scope: ansible-core 2.18.6.",
           "flag": "-i",
-          "argument": "INVENTORY",
           "summary": "Select an inventory path or host list",
-          "attached": true,
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -34,132 +31,37 @@
                 "ref": "inventory-source"
               }
             ]
-          },
-          "detail": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
+          "argument": "PATTERN",
           "flag": "--limit",
-          "argument": "PATTERN",
-          "summary": "Limit hosts"
-        },
-        {
-          "flag": "-l",
-          "argument": "PATTERN",
           "summary": "Limit hosts",
-          "attached": true
-        },
-        {
-          "flag": "--extra-vars",
-          "argument": "EXTRA_VARS",
-          "summary": "Set extra variables",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "ref": "extra-variables"
-              }
-            ]
-          },
-          "detail": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
-        },
-        {
-          "flag": "-e",
-          "argument": "EXTRA_VARS",
-          "summary": "Set extra variables",
-          "attached": true,
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "ref": "extra-variables"
-              }
-            ]
-          },
-          "detail": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
-        },
-        {
-          "flag": "--check",
-          "argument": "",
-          "summary": "Predict changes without applying tasks"
-        },
-        {
-          "flag": "-C",
-          "argument": "",
-          "summary": "Enable check mode"
-        },
-        {
-          "flag": "--diff",
-          "argument": "",
-          "summary": "Display file differences"
-        },
-        {
-          "flag": "-D",
-          "argument": "",
-          "summary": "Display file differences"
-        },
-        {
-          "flag": "--tags",
-          "argument": "TAGS",
-          "summary": "Select task tags"
-        },
-        {
-          "flag": "--skip-tags",
-          "argument": "TAGS",
-          "summary": "Exclude task tags"
-        },
-        {
-          "flag": "--list-hosts",
-          "argument": "",
-          "summary": "List targeted hosts"
-        },
-        {
-          "flag": "--list-tasks",
-          "argument": "",
-          "summary": "List selected tasks"
-        },
-        {
-          "flag": "--syntax-check",
-          "argument": "",
-          "summary": "Check playbook syntax"
-        },
-        {
-          "flag": "--user",
-          "argument": "REMOTE_USER",
-          "summary": "Select the remote login user"
-        },
-        {
-          "flag": "--private-key",
-          "argument": "FILE",
-          "summary": "Select an SSH private key"
-        },
-        {
-          "flag": "--become",
-          "argument": "",
-          "summary": "Enable privilege escalation"
-        },
-        {
-          "flag": "--become-user",
-          "argument": "USER",
-          "summary": "Select the privilege escalation user"
-        },
-        {
-          "flag": "--forks",
-          "argument": "FORKS",
-          "summary": "Set worker count",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "count",
-                "meaning": "Parallel worker-process limit",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
-                      "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
-                    }
-                  ]
+                "kind": "delegated",
+                "meaning": "Ansible inventory host-pattern grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Host names/groups and Ansible pattern operators select hosts, not a maximum count. Group positions are zero-based. A single negative index counts from the end; inclusive start:end ranges use nonnegative bounds, with an optional open end. Inventory enumeration determines ordering."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply the configured host subset or the play's inventory pattern without an additional CLI limit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -169,68 +71,688 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "add_inventory_options --limit; inventory manager pattern evaluation"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/inventory/manager.py",
+                      "locator": "_split_subscript/_apply_subscript inclusive zero-based host subscripts"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Ansible inventory host-pattern grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                    "locator": "add_inventory_options --limit; inventory manager pattern evaluation"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PATTERN",
+          "attached": true,
+          "flag": "-l",
+          "summary": "Limit hosts",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Ansible inventory host-pattern grammar",
                 "bare": {
-                  "state": "accepted",
-                  "form": "workers"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "workers",
-                    "notation": "number",
-                    "syntax": "N",
-                    "bounds": {
-                      "min": "1"
-                    },
-                    "grammar": "Integer process count"
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Host names/groups and Ansible pattern operators select hosts, not a maximum count. Group positions are zero-based. A single negative index counts from the end; inclusive start:end ranges use nonnegative bounds, with an optional open end. Inventory enumeration determines ordering."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use configured forks; the documented default is 5"
+                  "meaning": "Apply the configured host subset or the play's inventory pattern without an additional CLI limit."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "subject": "Parallel Ansible worker processes",
-                "investigation": "Bind the documented 2.18-series semantics to a supported exact ansible-core release and verify bounds/configuration overrides"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "add_inventory_options --limit; inventory manager pattern evaluation"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/inventory/manager.py",
+                      "locator": "_split_subscript/_apply_subscript inclusive zero-based host subscripts"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Ansible inventory host-pattern grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                    "locator": "add_inventory_options --limit; inventory manager pattern evaluation"
+                  }
+                }
               }
             ]
-          },
-          "detail": "The ansible-core 2.18 reference describes a count of parallel processes, default 5 unless configured. This is not a duration or thread-memory size. Exact release/bounds applicability remains under review."
+          }
         },
         {
-          "flag": "--vault-password-file",
+          "argument": "EXTRA_VARS",
+          "detail": "Repeated key=value strings, JSON/YAML mappings or @filename; the loader requires a mapping. Variable names and the selected task/plugin own each value's numerical interpretation; key=value strings are not globally rescaled. Reference scope: ansible-core 2.18.6.",
+          "flag": "--extra-vars",
+          "summary": "Set extra variables",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "extra-variables"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "EXTRA_VARS",
+          "attached": true,
+          "detail": "Repeated key=value strings, JSON/YAML mappings or @filename; the loader requires a mapping. Variable names and the selected task/plugin own each value's numerical interpretation; key=value strings are not globally rescaled. Reference scope: ansible-core 2.18.6.",
+          "flag": "-e",
+          "summary": "Set extra variables",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "extra-variables"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "--check",
+          "summary": "Predict changes without applying tasks"
+        },
+        {
+          "argument": "",
+          "flag": "-C",
+          "summary": "Enable check mode"
+        },
+        {
+          "argument": "",
+          "flag": "--diff",
+          "summary": "Display file differences"
+        },
+        {
+          "argument": "",
+          "flag": "-D",
+          "summary": "Display file differences"
+        },
+        {
+          "argument": "TAGS",
+          "flag": "--tags",
+          "summary": "Select task tags",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Task tag names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated tag names and Ansible reserved selectors such as all, tagged and untagged; numbers are literal tag text."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured run tags; without a restriction the ordinary task-tag rules apply."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--tags"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TAGS",
+          "flag": "--skip-tags",
+          "summary": "Exclude task tags",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded task tag names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated task-tag names excluded from execution; not a task-count limit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured skip tags; the CLI supplies no additional exclusions."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--skip-tags"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "--list-hosts",
+          "summary": "List targeted hosts"
+        },
+        {
+          "argument": "",
+          "flag": "--list-tasks",
+          "summary": "List selected tasks"
+        },
+        {
+          "argument": "",
+          "flag": "--syntax-check",
+          "summary": "Check playbook syntax"
+        },
+        {
+          "argument": "REMOTE_USER",
+          "flag": "--user",
+          "summary": "Select the remote login user",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Remote login user name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Connection-plugin login user string; no physical unit or numerical user-count meaning."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured connection/login-user precedence."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--user"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "FILE",
-          "summary": "Select a vault password file"
+          "flag": "--private-key",
+          "summary": "Select an SSH private key",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Private-key file path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path to a connection authentication key; interpreted by the connection plugin."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured connection authentication/key selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--private-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "--become",
+          "summary": "Enable privilege escalation"
+        },
+        {
+          "argument": "USER",
+          "flag": "--become-user",
+          "summary": "Select the privilege escalation user",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Privilege-escalation user name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "User string supplied to the selected become plugin; not a numerical priority."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured privilege-escalation user; the built-in default is root."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--become-user"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORKS",
+          "detail": "Integer process count at least 1; zero and negatives are rejected. Actual concurrency can be lower when fewer hosts/tasks are available. Reference scope: ansible-core 2.18.6.",
+          "flag": "--forks",
+          "summary": "Set parallel worker count; at least 1, default 5",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Parallel worker-process limit",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer process count at least 1; zero and negatives are rejected. Actual concurrency can be lower when fewer hosts/tasks are available.",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured DEFAULT_FORKS, whose built-in value is 5."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "add_fork_options"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/__init__.py",
+                      "locator": "validate_conflicts requires forks >= 1"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/config/base.yml",
+                      "locator": "DEFAULT_FORKS"
+                    }
+                  ]
+                },
+                "subject": "Concurrent Ansible worker processes"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "--vault-password-file",
+          "summary": "Select a vault password file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Vault password source path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a vault-password file or executable password client as supported by Ansible; the help browser does not run it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI vault-password file is appended; other vault-password sources remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--vault-password-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
   ],
+  "command": [
+    "ansible-playbook"
+  ],
+  "description": "ansible-playbook shell argument reference.",
   "value_definitions": {
     "extra-variables": {
       "kind": "delegated",
-      "meaning": "Value interpreted by Ansible extra-variable grammar",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
-            "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
-          }
-        ]
+      "meaning": "Ansible extra-variable grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Repeated key=value strings, JSON/YAML mappings or @filename; the loader requires a mapping. Variable names and the selected task/plugin own each value's numerical interpretation; key=value strings are not globally rescaled."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No CLI extra-variable mapping is added; other variable sources remain applicable."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
       },
       "applicability": {
         "implementation": {
@@ -240,58 +762,63 @@
           ]
         },
         "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+          "state": "known",
+          "values": [
+            "2.18.6"
+          ]
         },
         "platform": {
           "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
         },
         "chip": {
           "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
         }
       },
-      "bare": {
-        "state": "not_applicable",
-        "reason": "The owning grammar determines any numerical interpretation"
-      },
-      "forms": [
-        {
-          "id": "grammar",
-          "notation": "expression",
-          "syntax": "VALUE",
-          "grammar": "The ansible-core 2.18 reference accepts key=value, YAML/JSON, or @filename; values are interpreted by variables/tasks"
-        }
-      ],
-      "when_absent": {
-        "state": "known",
-        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-      },
-      "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/utils/vars.py",
+            "locator": "load_extra_vars mapping validation"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "add_inventory_options/add_runtask_options"
+          }
+        ]
       },
       "grammar": {
         "name": "Ansible extra-variable grammar",
         "reference": {
-          "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
-          "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+          "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/utils/vars.py",
+          "locator": "load_extra_vars mapping validation"
         }
-      },
-      "investigation": "Verify inventory plugin and exact ansible-core release-specific grammar/defaults"
+      }
     },
     "inventory-source": {
       "kind": "delegated",
-      "meaning": "Value interpreted by Ansible inventory-source grammar",
-      "review": {
-        "status": "source_derived",
-        "references": [
-          {
-            "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
-            "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
-          }
-        ]
+      "meaning": "Ansible inventory source grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Inventory file/directory/plugin source or a comma-separated inline host list; the host_list plugin recognizes comma-containing non-path input. Plugins own their source-specific grammar. A numeric host name is not a host-count limit."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use configured inventory sources; the built-in inventory path is /etc/ansible/hosts."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
       },
       "applicability": {
         "implementation": {
@@ -301,46 +828,44 @@
           ]
         },
         "version": {
-          "state": "unverified",
-          "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+          "state": "known",
+          "values": [
+            "2.18.6"
+          ]
         },
         "platform": {
           "state": "not_applicable",
-          "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
         },
         "chip": {
           "state": "not_applicable",
-          "reason": "No chip-specific interpretation is claimed"
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
         }
       },
-      "bare": {
-        "state": "not_applicable",
-        "reason": "The owning grammar determines any numerical interpretation"
-      },
-      "forms": [
-        {
-          "id": "grammar",
-          "notation": "expression",
-          "syntax": "VALUE",
-          "grammar": "The ansible-core 2.18 reference accepts inventory paths or comma-separated host lists; it is not a universal numeric host-count parameter"
-        }
-      ],
-      "when_absent": {
-        "state": "known",
-        "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
-      },
-      "when_value_omitted": {
-        "state": "not_accepted",
-        "reason": "This option requires an operand"
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/plugins/inventory/host_list.py",
+            "locator": "host_list verify_file and parse; CLI inventory append"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "add_inventory_options/add_runtask_options"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/config/base.yml",
+            "locator": "DEFAULT_HOST_LIST"
+          }
+        ]
       },
       "grammar": {
-        "name": "Ansible inventory-source grammar",
+        "name": "Ansible inventory source grammar",
         "reference": {
-          "source": "https://docs.ansible.com/ansible-core/2.18/cli/ansible-playbook.html",
-          "locator": "--forks, --inventory and --extra-vars in the 2.18 documentation series"
+          "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/plugins/inventory/host_list.py",
+          "locator": "host_list verify_file and parse; CLI inventory append"
         }
-      },
-      "investigation": "Verify inventory plugin and exact ansible-core release-specific grammar/defaults"
+      }
     }
   }
 }

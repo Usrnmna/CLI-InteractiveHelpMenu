@@ -1,88 +1,270 @@
 {
+  "categories": [
+    {
+      "description": "Selected documented options for this command path.",
+      "name": "Options",
+      "options": [
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-f",
+          "summary": "Allow a normally refused worktree"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--force",
+          "summary": "Allow a normally refused worktree"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--detach",
+          "summary": "Detach the new HEAD"
+        },
+        {
+          "argument": "BRANCH",
+          "argument_optional": false,
+          "flag": "-b",
+          "summary": "Create a new branch",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "New branch reference name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Git branch name; -b creates a new branch, whereas -B may reset an existing branch. Digits are reference-name characters, not indexes."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the explicit commit/branch or normal worktree branch selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-worktree.txt",
+                      "locator": "add -b/-B"
+                    }
+                  ]
+                },
+                "subject": "Git branch references"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "BRANCH",
+          "argument_optional": false,
+          "flag": "-B",
+          "summary": "Create or reset a branch",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "New branch reference name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Git branch name; -b creates a new branch, whereas -B may reset an existing branch. Digits are reference-name characters, not indexes."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the explicit commit/branch or normal worktree branch selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-worktree.txt",
+                      "locator": "add -b/-B"
+                    }
+                  ]
+                },
+                "subject": "Git branch references"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--checkout",
+          "summary": "Populate the new working tree"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-checkout",
+          "summary": "Skip initial checkout"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--lock",
+          "summary": "Lock the new working tree"
+        },
+        {
+          "argument": "REASON",
+          "argument_optional": false,
+          "flag": "--reason",
+          "summary": "Describe why the worktree is locked",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Worktree lock reason",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Free-text explanation used with --lock."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No explicit lock explanation is supplied by this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-worktree.txt",
+                      "locator": "--reason"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-q",
+          "summary": "Suppress progress messages"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--quiet",
+          "summary": "Suppress progress messages"
+        }
+      ]
+    }
+  ],
   "command": [
     "git",
     "worktree",
     "add"
   ],
   "description": "Options for git worktree add.",
-  "categories": [
-    {
-      "name": "Options",
-      "description": "Selected documented options for this command path.",
-      "options": [
-        {
-          "flag": "-f",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Allow a normally refused worktree"
-        },
-        {
-          "flag": "--force",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Allow a normally refused worktree"
-        },
-        {
-          "flag": "--detach",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Detach the new HEAD"
-        },
-        {
-          "flag": "-b",
-          "argument": "BRANCH",
-          "argument_optional": false,
-          "summary": "Create a new branch"
-        },
-        {
-          "flag": "-B",
-          "argument": "BRANCH",
-          "argument_optional": false,
-          "summary": "Create or reset a branch"
-        },
-        {
-          "flag": "--checkout",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Populate the new working tree"
-        },
-        {
-          "flag": "--no-checkout",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Skip initial checkout"
-        },
-        {
-          "flag": "--lock",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Lock the new working tree"
-        },
-        {
-          "flag": "--reason",
-          "argument": "REASON",
-          "argument_optional": false,
-          "summary": "Describe why the worktree is locked"
-        },
-        {
-          "flag": "-q",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Suppress progress messages"
-        },
-        {
-          "flag": "--quiet",
-          "argument": "",
-          "argument_optional": false,
-          "summary": "Suppress progress messages"
-        }
-      ]
-    }
-  ],
-  "stop_at_positional": false,
   "documentation": {
-    "source": "https://git-scm.com/docs/git-worktree",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://git-scm.com/docs/git-worktree"
+  },
+  "stop_at_positional": false
 }

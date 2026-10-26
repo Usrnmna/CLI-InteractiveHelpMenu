@@ -1,65 +1,39 @@
 {
-  "command": [
-    "az",
-    "storage",
-    "blob",
-    "list"
-  ],
-  "description": "Options for az storage blob list.",
   "categories": [
     {
-      "name": "Options",
       "description": "Selected documented options for this command path.",
+      "name": "Options",
       "options": [
         {
+          "argument": "CONTAINER",
+          "argument_optional": false,
           "flag": "-c",
-          "argument": "CONTAINER",
-          "argument_optional": false,
-          "summary": "Select a storage container"
-        },
-        {
-          "flag": "--container-name",
-          "argument": "CONTAINER",
-          "argument_optional": false,
-          "summary": "Select a storage container"
-        },
-        {
-          "flag": "--account-name",
-          "argument": "ACCOUNT",
-          "argument_optional": false,
-          "summary": "Set storage account"
-        },
-        {
-          "flag": "--auth-mode",
-          "argument": "MODE",
-          "argument_optional": false,
-          "summary": "Select authentication mode"
-        },
-        {
-          "flag": "--prefix",
-          "argument": "PREFIX",
-          "argument_optional": false,
-          "summary": "Restrict blob names by prefix"
-        },
-        {
-          "flag": "--num-results",
-          "argument": "NUM",
-          "argument_optional": false,
-          "summary": "Limit returned blobs",
+          "summary": "Select a storage container",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "count",
-                "meaning": "Blobs returned by a listing request",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-lts#az-storage-blob-list",
-                      "locator": "LTS reference: --num-results; SDK release is not pinned"
-                    }
-                  ]
+                "kind": "nonnumerical",
+                "meaning": "Blob container name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Storage container name, not a container-count limit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No container supplied by this option; the listing requires a container resolved by its command arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -69,31 +43,333 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list -c --container-name"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "CONTAINER",
+          "argument_optional": false,
+          "flag": "--container-name",
+          "summary": "Select a storage container",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Blob container name",
                 "bare": {
-                  "state": "accepted",
-                  "form": "blobs"
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "blobs",
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Storage container name, not a container-count limit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No container supplied by this option; the listing requires a container resolved by its command arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list -c --container-name"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ACCOUNT",
+          "argument_optional": false,
+          "flag": "--account-name",
+          "summary": "Set storage account",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Storage account name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Azure Storage account name, with credentials and endpoint resolution handled by the storage client."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured/environment storage-account resolution."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list --account-name"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "MODE",
+          "argument_optional": false,
+          "flag": "--auth-mode",
+          "summary": "Select authentication mode",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Storage authentication mode",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "key",
+                    "tokens": [
+                      "key"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use storage account key credentials"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "login",
+                    "tokens": [
+                      "login"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use the logged-in Azure identity"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured storage auth mode; the built-in mode is key."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage authentication-mode registration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PREFIX",
+          "argument_optional": false,
+          "flag": "--prefix",
+          "summary": "Restrict blob names by prefix",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Blob name prefix",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal string restricting results to blob names beginning with this prefix."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI name-prefix restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list --prefix"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NUM",
+          "argument_optional": false,
+          "detail": "Decimal integer count or literal *. The service's per-page maxresults must be positive and returns at most 5000 per page; partition boundaries can return fewer with a continuation marker. The CLI converts ordinary input with int(), while service/SDK paging handles requests; * removes the overall result limit rather than assigning a byte size. Request all entries through continuation handling Reference scope: Azure CLI 2.71.0.",
+          "flag": "--num-results",
+          "summary": "Limit returned blobs",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Requested blob listing count",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
                     "notation": "number",
                     "syntax": "N",
-                    "bounds": {
-                      "min": "1"
-                    },
-                    "grammar": "Integer blob count; the service can return fewer, including at a partition boundary"
+                    "grammar": "Decimal integer count or literal *. The service's per-page maxresults must be positive and returns at most 5000 per page; partition boundaries can return fewer with a continuation marker. The CLI converts ordinary input with int(), while service/SDK paging handles requests; * removes the overall result limit rather than assigning a byte size."
                   },
                   {
                     "id": "all",
@@ -102,74 +378,17 @@
                     "tokens": [
                       "*"
                     ],
-                    "case": "sensitive",
-                    "meaning": "Request all results through continuation handling"
+                    "case": "not_applicable",
+                    "meaning": "Request all entries through continuation handling"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "The LTS reference documents 5000; the service may return a continuation token"
+                  "meaning": "Request up to 5000 entries through the configured listing API."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
-                },
-                "subject": "Blob entries",
-                "investigation": "Bind the moving Azure CLI LTS documentation and pagination behavior to supported exact CLI/storage API versions"
-              }
-            ]
-          },
-          "detail": "Azure CLI LTS reference: NUM counts blobs, default 5000; the service may return fewer and a continuation token. The literal * requests all results. This is not a byte size. Exact CLI/storage API applicability remains under review."
-        },
-        {
-          "flag": "--marker",
-          "argument": "MARKER",
-          "argument_optional": false,
-          "summary": "Continue from a listing marker"
-        },
-        {
-          "flag": "--include",
-          "argument": "VALUES",
-          "argument_optional": false,
-          "summary": "Include additional blob details"
-        },
-        {
-          "flag": "--delimiter",
-          "argument": "DELIMITER",
-          "argument_optional": false,
-          "summary": "Group blob names by delimiter"
-        },
-        {
-          "flag": "-o",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set output format"
-        },
-        {
-          "flag": "--output",
-          "argument": "FORMAT",
-          "argument_optional": false,
-          "summary": "Set output format"
-        },
-        {
-          "flag": "--query",
-          "argument": "QUERY",
-          "argument_optional": false,
-          "summary": "Filter output with JMESPath",
-          "value_semantics": {
-            "schema_version": 1,
-            "variants": [
-              {
-                "kind": "delegated",
-                "meaning": "Value interpreted by JMESPath query grammar",
-                "review": {
-                  "status": "source_derived",
-                  "references": [
-                    {
-                      "source": "https://learn.microsoft.com/en-us/cli/azure/query-azure-cli",
-                      "locator": "Client-side JMESPath queries"
-                    }
-                  ]
+                  "reason": "The option requires its operand"
                 },
                 "applicability": {
                   "implementation": {
@@ -179,82 +398,677 @@
                     ]
                   },
                   "version": {
-                    "state": "unverified",
-                    "reason": "The reference does not identify a bounded implementation release; verify the installed release before extending applicability"
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
                   },
                   "platform": {
                     "state": "not_applicable",
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted"
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed"
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "num_results_type default 5000 and service-page description"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_validators.py",
+                      "locator": "validate_storage_data_plane_list int conversion and * -> None"
+                    }
+                  ]
+                },
+                "subject": "Blob entries returned by the listing"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "MARKER",
+          "argument_optional": false,
+          "flag": "--marker",
+          "summary": "Continue from a listing marker",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Opaque continuation marker",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "The owning grammar determines any numerical interpretation"
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
                 },
                 "forms": [
                   {
-                    "id": "grammar",
+                    "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "The Azure CLI reference uses client-side JMESPath over JSON; numerical literals can be indices, comparisons or function arguments"
+                    "grammar": "Continuation token returned by an earlier listing; it is not a record index or byte offset."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable"
+                  "meaning": "Start the listing without an explicit continuation marker."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "This option requires an operand"
+                  "reason": "The option requires its operand"
                 },
-                "grammar": {
-                  "name": "JMESPath query grammar",
-                  "reference": {
-                    "source": "https://learn.microsoft.com/en-us/cli/azure/query-azure-cli",
-                    "locator": "Client-side JMESPath queries"
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
                   }
                 },
-                "investigation": "Pin the Azure CLI/JMESPath release combination"
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list --marker"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "detail": "The Azure CLI reference uses client-side JMESPath over JSON; numerical literals can be indices, comparisons or function arguments. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: unversioned documentation; exact release applicability requires verification."
+          }
         },
         {
-          "flag": "--subscription",
+          "argument": "VALUES",
+          "argument_optional": false,
+          "flag": "--include",
+          "summary": "Include additional blob details",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Blob listing dataset selectors",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "One or more dataset selector letters accepted by the storage include validator; selectors request metadata, snapshots, versions or other supported datasets and can be combined. They are not numerical counts; availability depends on the storage API."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request additional include datasets."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list include and validate_included_datasets_validator"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DELIMITER",
+          "argument_optional": false,
+          "flag": "--delimiter",
+          "summary": "Group blob names by delimiter",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Blob grouping delimiter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A character or string used to group matching names into BlobPrefix entries; not a numerical grouping width."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add delimiter-based grouping."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage blob list --delimiter"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "-o",
+          "summary": "Set output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Azure output serialization",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "jsonc",
+                    "tokens": [
+                      "jsonc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized JSON"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "yaml",
+                    "tokens": [
+                      "yaml"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "YAML"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "yamlc",
+                    "tokens": [
+                      "yamlc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized YAML"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "table",
+                    "tokens": [
+                      "table"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Human-readable table"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "tsv",
+                    "tokens": [
+                      "tsv"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Tab-separated values"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured output format, with JSON as the built-in default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/output.py",
+                      "locator": "OutputProducer output formats in the CLI's Knack dependency"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--output",
+          "summary": "Set output format",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Azure output serialization",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "jsonc",
+                    "tokens": [
+                      "jsonc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized JSON"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "yaml",
+                    "tokens": [
+                      "yaml"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "YAML"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "yamlc",
+                    "tokens": [
+                      "yamlc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Colorized YAML"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "table",
+                    "tokens": [
+                      "table"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Human-readable table"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "tsv",
+                    "tokens": [
+                      "tsv"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Tab-separated values"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured output format, with JSON as the built-in default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/output.py",
+                      "locator": "OutputProducer output formats in the CLI's Knack dependency"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "QUERY",
+          "argument_optional": false,
+          "detail": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability. Reference scope: Azure CLI 2.71.0.",
+          "flag": "--query",
+          "summary": "Filter output with JMESPath",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "JMESPath client-side query grammar",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not apply a CLI JMESPath projection/filter to the command result."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/query.py",
+                      "locator": "CLIQuery --query handling and jmespath.compile"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli-core/setup.py",
+                      "locator": "unbounded jmespath dependency and knack~=0.11.0; contract describes delegation, not a universal library release"
+                    },
+                    {
+                      "source": "https://jmespath.org/specification.html",
+                      "locator": "Index Expressions and JSON literal expression grammar"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "JMESPath client-side query grammar",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/microsoft/knack/v0.11.0/knack/query.py",
+                    "locator": "CLIQuery --query handling and jmespath.compile"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
           "argument": "SUBSCRIPTION",
           "argument_optional": false,
-          "summary": "Select subscription"
+          "flag": "--subscription",
+          "summary": "Select subscription",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Azure subscription identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Subscription name or ID resolved by the Azure account profile; digits in an ID are not a numerical quantity."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configured subscription."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/profile/__init__.py",
+                      "locator": "account show and subscription selection"
+                    }
+                  ]
+                },
+                "subject": "Azure subscriptions"
+              }
+            ]
+          }
         },
         {
-          "flag": "--only-show-errors",
           "argument": "",
           "argument_optional": false,
+          "flag": "--only-show-errors",
           "summary": "Suppress warnings"
         },
         {
-          "flag": "--debug",
           "argument": "",
           "argument_optional": false,
+          "flag": "--debug",
           "summary": "Include debug logging"
         },
         {
-          "flag": "--verbose",
           "argument": "",
           "argument_optional": false,
+          "flag": "--verbose",
           "summary": "Increase logging detail"
         }
       ]
     }
   ],
-  "stop_at_positional": false,
+  "command": [
+    "az",
+    "storage",
+    "blob",
+    "list"
+  ],
+  "description": "Options for az storage blob list.",
   "documentation": {
-    "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+    "kind": "curated subset; not an installed-version guarantee",
     "reviewed": "2026-10-23",
-    "kind": "curated subset; not an installed-version guarantee"
-  }
+    "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list"
+  },
+  "stop_at_positional": false
 }

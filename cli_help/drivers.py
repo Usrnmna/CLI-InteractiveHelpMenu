@@ -23,6 +23,7 @@ class HelpRoute:
     option_values: frozenset[str] = frozenset()
     option_flags: frozenset[str] = frozenset()
     source: str | None = None
+    manual_scope: str | None = None
 
 
 @dataclass
@@ -64,7 +65,7 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         raise ValueError("A driver requires at least one help path.")
     paths = {}
     for route in routes:
-        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "stop_at_positional", "stop_at_options", "option_values", "option_flags"}:
+        if not isinstance(route, dict) or set(route) - {"command", "help", "man", "manual_scope", "stop_at_positional", "stop_at_options", "option_values", "option_flags"}:
             raise ValueError("Unknown driver route field.")
         words = route.get("command")
         if not isinstance(words, list) or any(not isinstance(word, str) or not WORD.fullmatch(word) for word in words):
@@ -81,6 +82,9 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         manual = route.get("man")
         if manual is not None and (not isinstance(manual, str) or not WORD.fullmatch(manual)):
             raise ValueError("Driver man must be a literal manual name or null.")
+        manual_scope = route.get("manual_scope")
+        if "manual_scope" in route and (manual_scope != "common_options" or not manual):
+            raise ValueError("manual_scope requires a manual and the supported common_options value.")
         if not arguments and not manual:
             raise ValueError("A driver route requires a help invocation or manual name.")
         stop = route.get("stop_at_positional", False)
@@ -103,7 +107,7 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
             raise ValueError("A parent option cannot have conflicting argument arity.")
         if not words and any(parent_options.values()):
             raise ValueError("Executable root options require global_values/global_flags, not parent option lists.")
-        paths[path] = HelpRoute(tuple(arguments), manual, stop, tuple(boundaries), **parent_options)
+        paths[path] = HelpRoute(tuple(arguments), manual, stop, tuple(boundaries), manual_scope=manual_scope, **parent_options)
     return name, Driver(paths, **globals_by_kind)
 
 
