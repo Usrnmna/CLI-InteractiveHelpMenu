@@ -2,6 +2,11 @@
 
 [Implementation inventory](README.md) · [Numerical contract](../numerical-value-contract.md) · [Review controls](../review.md)
 
+The subsequent [native/POSIX verification](native-posix-verification.md) supplies
+real read-only preview, terminal restoration and ext4 process/filesystem evidence,
+with separate 9p results and limits. The verification section below retains the
+original Step 6 passive scope and platform exclusions.
+
 ## Scope and inspected paths
 
 Step 6 preserves numerical declarations through existing help-content authoring.

@@ -8,6 +8,10 @@ documentation and explicit alias-pair extraction. The included stash-show route
 now declares the bounded common-option portion of its borrowed manual.
 Numerical validation, completeness policy and production metadata are unchanged.
 
+The subsequent [native/POSIX verification](native-posix-verification.md) adds
+scoped Ubuntu terminal, Readline and filesystem evidence. The results and
+platform exclusions below remain those of the passive parser-repair snapshot.
+
 The starting revision is `06b1347de65b89f1565c3acaad3f646e69694b41`, with the
 earlier debt-resolution and diagnostic-investigation changes already present
 locally. Those changes remain preserved. The revision and index remain unchanged;

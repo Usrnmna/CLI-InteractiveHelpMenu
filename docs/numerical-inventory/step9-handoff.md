@@ -5,6 +5,8 @@
 This account retains the Step 9 configuration-review snapshot. The subsequent
 [maintained debt resolution](debt-resolution.md) completes its recorded strict
 debt without reopening configuration or supplying native acceptance evidence.
+The later [native/POSIX verification](native-posix-verification.md) supplies
+scoped Ubuntu terminal and filesystem evidence with explicit remaining limits.
 
 Step 9 is complete within the final configuration-review and local-handoff scope.
 The only source-policy correction excludes checkout-local installed application

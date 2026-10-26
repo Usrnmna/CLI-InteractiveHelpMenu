@@ -2,7 +2,10 @@
 
 This account records the Step 8 verification snapshot. The later
 [maintained debt resolution](debt-resolution.md) supplies current strict-success
-and migration evidence; native acceptance gaps recorded here remain open.
+and migration evidence. The subsequent
+[native/POSIX follow-up](native-posix-verification.md) supplies scoped Ubuntu
+PTY/Readline and filesystem results. This account retains its original passive
+results, exclusions and blocked native checks.
 
 [Inventory and acceptance criteria](README.md) · [Contract](../numerical-value-contract.md) · [Prospective coverage](step7-enforcement.md)
 

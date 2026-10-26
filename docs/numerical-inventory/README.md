@@ -26,6 +26,7 @@ than asserted as permanent constants.
 | [Maintained debt resolution](debt-resolution.md) | Subsequent completion of the exact maintained contracts, source corrections, strict success and remaining external/native limits |
 | [Diagnostic investigation](diagnostic-investigation.md) | Exact heuristic dispositions, complete external membership tracing, bounded source comparisons and remaining parser/provenance limits |
 | [Operand and association repairs](parser-association-repairs.md) | Compound operands, nested context, declared manual scope, exact census changes and passive verification |
+| [Native terminal and POSIX verification](native-posix-verification.md) | Actual Ubuntu PTY/Readline, rendered cells, ext4 and separately qualified 9p locking/save/recovery evidence |
 
 Run from the repository root with Python 3.10 or newer:
 
@@ -190,19 +191,23 @@ prevents Step 1 checks from being represented as completed runtime fixes.
 | S1-03 reconciliation | Reject missing, stale, duplicate, conflicting and orphaned review assignments |
 | S1-04 passive determinism | Block process/network entry points, inspect hostile snapshot declarations without execution, compare input hashes and repeat output |
 | S1-05 explicit output | Default to stdout and reject input, annotation and unrelated-file replacement |
-| AC-01 to AC-03 protected runtime | Step 3 compares protected declarations and passive buffer/cursor behavior; integrated navigation and runtime verification remain deferred |
+| AC-01 to AC-03 protected runtime | Protected declarations remain unchanged; the native follow-up checks actual Ubuntu PTY navigation, buffers, cursors, cancellation and pending-command non-execution |
 | AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
 | AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
-| AC-08 presentation | Step 5 checks formatter propagation, visible cells, supported minimum sizes, Unicode, wrapping, scrolling, scripted resize/reopen and search with fake windows; native terminal/Readline acceptance remains separate |
-| AC-09 authoring | Step 6 verifies import/edit/preview/save/reload, stale claims, explicit review, definitions and numerical inspection; native POSIX restoration/terminal acceptance remain platform limits |
+| AC-08 presentation | Step 5 supplies fake-window checks; the native follow-up adds real curses/tmux cells, Readline, numerical search/details, minimum sizes, Unicode, scrolling and resize/reopen within its stated environment |
+| AC-09 authoring | Step 6 supplies lifecycle checks; the native follow-up adds real read-only preview and POSIX locking/save/recovery on ext4, with separate 9p evidence and an unestablished 9p permission-denial case |
 | AC-10 future checks | Step 7 checks prospective completeness, exact debt validity and display/search propagation; the subsequent debt-resolution follow-up satisfies strict maintained readiness without changing those checks |
 
-Focused verification runs on Windows with Python 3.13. The tests use disposable
+Earlier passive verification runs on Windows with Python 3.13. Those tests use disposable
 snapshots in the existing ignored `.cache/` area and do not invoke target
 executables, manual renderers, shell workloads, or network operations. The full
 Linux/WSL suite and terminal/live-help checks are outside this Step 1 proof.
 There is no claim of hosted CI, physical-device behavior, or installed-version
 validation.
+
+The [native follow-up](native-posix-verification.md) supplies the later scoped
+Ubuntu results. It does not establish a full target-enabled Linux suite,
+human visual acceptance, installed-target behavior or hosted CI.
 
 ## Handoff boundary
 

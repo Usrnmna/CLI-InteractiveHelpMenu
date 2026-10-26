@@ -101,3 +101,10 @@ repair are excluded. A backup requiring deletion reports `restore_requires_remov
 and is retained for explicit manual handling. Other guidance uses existing
 [review drafts and save validation](review.md), or a separately chosen manual
 import. A fully atomic multi-file store would require architectural approval.
+
+The [native/POSIX verification account](numerical-inventory/native-posix-verification.md)
+records real process contention, interruption and recovery on ext4 and a
+Windows-mounted 9p filesystem. Permission-denied saves are established on ext4;
+the tested 9p mount does not enforce the same `chmod` denial. These scoped results
+do not establish Windows ACL behavior, power-loss durability or automatic
+stale-lock removal.

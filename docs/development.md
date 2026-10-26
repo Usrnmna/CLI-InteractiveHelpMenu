@@ -77,6 +77,13 @@ packages require neither:
 bash tests/run.sh
 ```
 
+The [native terminal and POSIX verification guide](numerical-inventory/native-posix-verification.md)
+describes a narrower offline selection with inert buffers and disposable
+collections. It separates ext4 from Windows-mounted 9p evidence and records
+the remaining permission and visual-acceptance limits. The full runner also
+contains target/process and package fixtures; inspect its selection before use
+under restricted execution requirements.
+
 The [complete expansion validation report](compatibility-expansion-validation.md)
 records its dated matrix, full-suite results, live versions, missing dependencies,
 and the distinction between deterministic edits and live documentation evidence.

@@ -38,12 +38,9 @@ class ScreenState:
 class TmuxShell:
     """Own a private tmux socket and shell; never attach to an existing server."""
 
-    def __init__(self, folder, runtime=None):
+    def __init__(self, folder, runtime=None, profile_directory=None):
         self.folder = Path(folder)
         runtime = Path(runtime) if runtime is not None else ROOT
-        # Ubuntu's system bashrc otherwise prints a first-login sudo hint into
-        # this fresh test home, shifting the expected initial prompt row.
-        (self.folder / ".hushlogin").touch()
         self.socket = self.folder / "tmux.sock"
         self.buffer_file = self.folder / "buffer"
         self.executed = self.folder / "executed"
@@ -51,6 +48,8 @@ class TmuxShell:
         config.write_text("set -g status off\nset -g history-limit 10000\n"
                           "set -g default-terminal tmux-256color\n")
         self.command = ["tmux", "-S", str(self.socket), "-f", str(config)]
+        self.environment = {"PATH": "/usr/bin:/bin", "HOME": str(self.folder),
+                            "LC_ALL": "C.UTF-8", "TERM": "tmux-256color"}
         rcfile = self.folder / "bashrc"
         rcfile.write_text(
             f"PS1={shlex.quote(PROMPT)}; PS2='> '; set +o history\n"
@@ -59,15 +58,22 @@ class TmuxShell:
             + "_screen_snapshot() { printf '%s\\0%s\\0' \"$READLINE_POINT\" \"$READLINE_LINE\" > "
             + shlex.quote(str(self.buffer_file)) + "; }\n"
             + "bind -x '\"\\C-x\\C-g\":_screen_snapshot'\n"
+            + "printf '\\033[H\\033[2J'\n"
         )
-        shell = shlex.join([
+        environment = [
             "env", "-i", "PATH=/usr/bin:/bin", "TERM=tmux-256color", "LC_ALL=C.UTF-8",
             "HOME=" + str(self.folder), "INPUTRC=/dev/null", "CLI_HELP_DISCOVERY=off",
             "CLI_HELP_PYTHON=" + sys.executable, "PYTHONDONTWRITEBYTECODE=1",
-            "/bin/bash", "--noprofile", "--rcfile", str(rcfile), "-i",
-        ])
+        ]
+        if profile_directory is not None:
+            environment.append("CLI_HELP_PROFILES=" + str(profile_directory))
+        # --norc also suppresses the system interactive startup file. Bootstrap
+        # only the inspected test rcfile, before any pending input is supplied.
+        shell = shlex.join(environment + ["/bin/bash", "--noprofile", "--norc", "-i"])
         try:
             self.tmux("new-session", "-d", "-s", "screen-test", "-x", "100", "-y", "24", shell)
+            self.text("source " + shlex.quote(str(rcfile)))
+            self.keys("Enter")
             self.wait_for(lambda state: state.cells[0] == PROMPT.rstrip())
         except BaseException:
             self.close()
@@ -76,7 +82,7 @@ class TmuxShell:
     def tmux(self, *arguments, check=True):
         """Run one bounded command against this test's private server."""
         return subprocess.run(self.command + list(arguments), check=check,
-                              capture_output=True, text=True, timeout=5).stdout
+                              capture_output=True, text=True, timeout=5, env=self.environment).stdout
 
     def close(self):
         """Stop the private server without accepting any pending command."""
