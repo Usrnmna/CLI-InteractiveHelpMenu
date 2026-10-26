@@ -166,6 +166,34 @@ class TerminalTestCase(unittest.TestCase):
 
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
+class OptionsLayoutTests(TerminalTestCase):
+    def test_bundled_descriptions_survive_resize_and_literal_insertion(self):
+        """Check actual cells with static profiles and leave each command pending."""
+        shell = self.start()
+        cases = (("rsync --ex", "Exclude", "rsync --exclude="),
+                 ("ls --co", "Control", "ls --color="),
+                 ("grep --reg", "Specify", "grep --regexp="),
+                 ("tar --fi", "Specify", "tar --file="))
+        for pending, summary_start, inserted in cases:
+            with self.subTest(command=pending.split()[0]):
+                shell.keys("C-u")
+                shell.text(pending)
+                shell.open_menu()
+                for columns, rows in ((60, 16), (100, 24), (160, 32), (60, 16)):
+                    state = shell.resize(columns, rows)
+                    self.assertIn("OPTIONS", state.cells[3])
+                    self.assertIn(summary_start, state.cells[4])
+                    self.assertNotIn("(scoped)", state.cells[4])
+                shell.cancel()
+                self.assertEqual(shell.read_buffer(), (pending, len(pending)))
+                shell.open_menu()
+                shell.cancel("Enter")
+                self.assertEqual(shell.read_buffer(), (inserted, len(inserted)))
+                self.assertFalse(shell.executed.exists())
+                shell.resize(100, 24)
+
+
+@unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class ScreenTests(TerminalTestCase):
     def test_top_and_bottom_cancellation_restore_cells_cursor_and_history(self):
         for bottom in (False, True):

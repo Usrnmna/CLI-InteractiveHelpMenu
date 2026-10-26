@@ -60,6 +60,14 @@ without creating a configuration collection. Generated JSON remains editable.
 
 ## Updates and interrupted writes
 
+Parser updates can invalidate automatic-discovery caches, but imported profiles
+remain persistent, editable files and are not regenerated automatically. To
+review a parser correction without overwriting authored content, repeat the
+import into a separate `--output-dir`, preferably using the same saved
+`--man-text` source. Compare the generated profile and driver with the active
+collection, then apply selected corrections or explicitly replace the entry
+after review. Changing the parser does not require bulk replacement of a collection.
+
 Importing another subcommand merges its route into the same program driver.
 Unrelated routes and global-option declarations are preserved. To update an
 existing matching profile/route, repeat the command with `--replace`; this resets

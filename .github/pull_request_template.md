@@ -16,7 +16,14 @@ guides for focused checks; unrelated checks need not be listed. -->
 <!-- For numerical-inventory changes, report the reconciliation command/result,
 independent coverage counts, changed review identities, and remaining unresolved
 semantics. A successful inventory check does not establish numerical correctness.
+For maintained numerical changes, include prospective and strict coverage
+results separately, with debt/exception status and applicable source evidence.
 Keep complete generated inventories and raw help local; share summaries only. -->
+
+<!-- For documentation/media changes, identify current source provenance,
+rendered/encoded inspection and local link checks. Real UI captures need inert
+buffers, controlled discovery and non-execution evidence. Keep raw recordings
+and machine-specific capture reports in ignored locations. -->
 
 ## Limits and compatibility
 

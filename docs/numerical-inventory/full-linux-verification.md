@@ -2,20 +2,30 @@
 
 ## Current result
 
-The unmodified `tests/run.sh` completes successfully on local Ubuntu 24.04.5
+GitHub Actions [workflow run 47](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/40275630519)
+completed successfully for commit
+`d97ac6f8d7433e2c3a3707cda0842cf2fc2db68c` on `main`. The push-triggered
+`Linux tests and documentation` workflow completed on 2026-10-26 UTC. Both
+`Linux tests (Python 3.10)` and `Linux tests (Python 3.12)` jobs, including their
+`Run full Linux test suite` steps, report `success`. These run, job and step
+statuses were confirmed through read-only GitHub API inspection. Hosted
+interpreter patch versions, test counts and skip counts are not inferred from
+the separate local results below.
+
+The earlier unmodified `tests/run.sh` completed successfully on local Ubuntu 24.04.5
 WSL2 with Python 3.12.3: 929 tests run in 311.801 seconds, with no failures or
 errors and one existing Windows-only skip. The preceding expansion-development
 and parser-association selection passes all 39 tests without skips. No test is
 excluded from the full discovery, and no additional mocks or skips are introduced
-for this execution.
+for that execution. These are retained local results, not tests rerun for this
+documentation update.
 
-Python 3.10 execution remains blocked. It is absent from the bounded interpreter
-locations checked in the usable distribution. The Windows launcher lists only
-Python 3.13. The separate `Ubuntu` registration cannot attach its missing virtual
-disk (`Wsl/Service/CreateInstance/MountVhd/HCS/ERROR_FILE_NOT_FOUND`); its Python
-version is unknown. No interpreter, dependency, distribution or disk is installed,
-repaired or reconstructed. Python 3.12 success does not establish Python 3.10
-compatibility or hosted GitHub success.
+No local Python 3.10 full-suite result is established. The isolated setup was
+interrupted before any interpreter, dependency or source archive was installed
+or downloaded, and its generated remnants have been removed. Hosted Python
+3.10 success closes the hosted matrix gap; it does not create local WSL evidence.
+The earlier missing-interpreter and missing-disk findings remain historical
+environment observations, rather than unresolved hosted failures.
 
 This follow-up extends the execution boundary of the earlier
 [expansion-response correction](parser-association-repairs.md#expansion-test-response-correction)
@@ -24,11 +34,14 @@ restricted selections remain historical evidence.
 
 ## Baseline and environment
 
-The starting and ending revision is
+For the earlier local run, the starting and ending revision was
 `21453cb2d1adb949ffb3bdaa08caedb6f7aa03dd`. The pre-existing expansion-test correction
 and its two documentation changes are preserved. The Git index retains its
 starting hash. This follow-up adds verification documentation and ignored local
-evidence; no production or maintained test repair is necessary.
+evidence; no production or maintained test repair was necessary. The subsequent
+commit and successful hosted run above are separate evidence. This documentation
+update starts from that committed revision and remains local, unstaged and
+uncommitted.
 
 The tested environment uses Linux x86-64, the WSL2 5.15.153.1 kernel, glibc 2.39,
 Bash 5.2.21, tmux 3.4, GCC 13.3.0 and `C.UTF-8`. Existing standard-library curses,
@@ -87,11 +100,24 @@ different environment.
 
 ## Version-specific acceptance
 
+### Hosted GitHub Actions
+
 | Criterion | Python 3.12 | Python 3.10 |
 | --- | --- | --- |
-| Actual requested interpreter | `/usr/bin/python3.12`, version 3.12.3 | Unavailable in checked locations |
-| Expansion-development plus parser-association modules | 39 passed; no skips | Blocked |
-| Unmodified `tests/run.sh` | Exit 0; 929 tests, 928 passed and one existing skip | Blocked |
+| Workflow run 47 at the recorded commit | Job completed successfully | Job completed successfully |
+| `Run full Linux test suite` step | Success | Success |
+| Exact patch version, test count and skips | Not extracted from hosted logs for this update | Not extracted from hosted logs for this update |
+
+Hosted evidence is scoped to the recorded commit and workflow environment.
+It does not establish results for later uncommitted changes or other machines.
+
+### Earlier local WSL execution
+
+| Criterion | Python 3.12 | Python 3.10 |
+| --- | --- | --- |
+| Actual requested interpreter | `/usr/bin/python3.12`, version 3.12.3 | No local setup retained |
+| Expansion-development plus parser-association modules | 39 passed; no skips | Not run locally |
+| Unmodified `tests/run.sh` | Exit 0; 929 tests, 928 passed and one existing skip | Not run locally |
 | Child interpreter selection | Inspected argv/shebang/PATH/adapter relationships resolve to 3.12.3 | Not established |
 | Native PTY/tmux and ext4 lifecycle tests | Included in full discovery and executed | Not established |
 
@@ -116,6 +142,10 @@ exceptions. Three heuristic warnings and fourteen external informational groups
 remain distinct from maintained completeness. Final reconciliation and both
 coverage modes also pass with unchanged counts; the reports record fresh outcomes
 rather than inferred historical results.
+
+Those numerical counts belong to the recorded local verification. The hosted
+jobs independently report successful inventory-reconciliation and numerical
+coverage steps; their counts are not reconstructed from job status alone.
 
 The inventory retains 76 profiles, 96 categories and 942 profile option/keyword
 records. The coverage view separates those into 914 option and 28 keyword records;
@@ -175,14 +205,31 @@ reports; reproducible source references remain repository-relative.
 ## Remaining limits
 
 The Python 3.12 full local Linux-suite gap is closed within this environment.
-The combined Python 3.10/3.12 acceptance criterion remains incomplete until an
-actual existing or separately authorized Python 3.10 Linux environment runs the
-same full suite. No repair of the unavailable distribution is implied.
+The hosted Python 3.10/3.12 matrix gap is closed for the recorded successful run.
+A full local Python 3.10 run remains unperformed; a two-version local acceptance
+claim would still require it. No repair of the unavailable distribution is implied.
 
-Local WSL results do not establish hosted CI, native bare-metal Linux, every
+The local WSL evidence alone does not establish hosted CI; that result is supplied
+by the separately linked GitHub run. Neither evidence source establishes native
+bare-metal Linux operation, every
 Bash/Readline release, human visual/font acceptance, Windows ACL behavior,
 9p permission denial, installed-target compatibility, arbitrary package
 installations, power-loss durability or factual completeness of external help.
 No production defect, runtime change, weakened assertion, exception or new skip
-is introduced. All changes remain local, unstaged and uncommitted; no hosted
-workflow or online GitHub operation is performed.
+is introduced by this documentation update. Its changes remain local, unstaged
+and uncommitted. GitHub access for this update is read-only; no workflow is
+triggered and no online resource is modified.
+
+## Removed local Python 3.10 setup
+
+Cleanup removed `.cache/python310-verification/` and its three generated files:
+`baseline.py`, `baseline.json` and `preexisting.patch`. It also removed the three
+`python310-baseline-{inventory,prospective,strict}.json` reports from the ignored
+numerical-inventory report directory. These filenames describe deleted setup
+remnants and are not available reproduction evidence.
+
+No private Python 3.10 interpreter, virtual environment, downloaded source or
+active setup process remained in the inspected WSL task locations. No Python
+installation or system configuration was changed. Existing Python installations,
+earlier `full-linux-*` verification evidence and preserved release artifacts were
+retained. The cleanup left the Git revision and index unchanged.

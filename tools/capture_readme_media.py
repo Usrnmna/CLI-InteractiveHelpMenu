@@ -5,6 +5,7 @@ Pillow and pyte are documentation-only dependencies. No runtime UI is mocked;
 the renderer receives the application's PTY output, including curses controls.
 """
 
+import argparse
 import codecs
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -38,7 +39,7 @@ RSYNC_PREFIX = "rsync --archive --compress --human-readable --itemize-changes --
 RSYNC_PATHS = '"/srv/project files/" "/mnt/backup/project files/"'
 LS_PREFIX = "ls --all --human-readable "
 MEDIA_NAMES = ("help-browser.png", "option-inserted.png", "option-insertion.gif",
-               "ls-browser.png", "guided-review.png")
+               "ls-browser.png", "guided-review.png", "numerical-guidance.png")
 BACKGROUND, FOREGROUND = "#101923", "#e4edf5"
 COLORS = {"black": "#101923", "red": "#ef798a", "green": "#7fceaa",
           "brown": "#e6c07b", "blue": "#7eaaff", "magenta": "#c792ea",
@@ -215,7 +216,7 @@ class Demonstration:
         self.frames = []
         self.scenes = []
 
-    def frame(self, terminal, command, caption, duration, required=(), absent=()):
+    def frame(self, terminal, command, caption, duration, required=(), absent=(), absent_options=()):
         """Check visible cells before rendering; retain scene evidence locally."""
         text = "\n".join(terminal.screen.display)
         # Readline wraps long pending commands without inserting a newline.
@@ -226,10 +227,22 @@ class Demonstration:
         for unexpected in absent:
             if unexpected in text:
                 raise RuntimeError(f"Scene {caption!r} unexpectedly contains {unexpected!r}:\n{text}")
+        if absent_options:
+            # Source explanations can legitimately mention other flags. Check
+            # scrolled-away rows only in the option pane, not in the details.
+            rows = terminal.screen.display
+            header = next(i for i, row in enumerate(rows) if "CATEGORIES" in row and "OPTIONS" in row)
+            column = rows[header].index("OPTIONS")
+            footer = next(i for i in range(header + 1, len(rows)) if rows[i].startswith("Category "))
+            options = "\n".join(row[column:] for row in rows[header + 1:footer])
+            for unexpected in absent_options:
+                if unexpected in options:
+                    raise RuntimeError(f"Scene {caption!r} retains an unexpected option row: {unexpected!r}")
         picture = render(terminal.screen, f"CLI Interactive Help Menu | {command}", caption)
         self.frames.append(picture)
         self.scenes.append({"command": command, "caption": caption, "duration_ms": duration,
                             "required": list(required), "absent": list(absent),
+                            "absent_options": list(absent_options),
                             "event_count": len(terminal.events),
                             "screen": terminal.screen.display})
         return picture
@@ -268,13 +281,17 @@ def capture_rsync(folder, demonstration):
               required=("Category 9/9", "Recovery (3)", "--partial", "--backup-dir="),
               absent=("Transfer (4)",))
         terminal.send("hhhh\tj")
-        frame("Left x4, Tab, Down | Network: --bwlimit= requires RATE", 2300,
-              required=("OPTIONS *", "Category 5/9", "Option 2/4", "Argument required: RATE"))
+        frame("Network | Bare rates use 1024 bytes/second; scoped to rsync 3.4.1", 2800,
+              required=("OPTIONS *", "Category 5/9", "Option 2/4", "1024 bytes/second", "3.4.1")
+              ).save(OUTPUT / "numerical-guidance.png")
+        terminal.send("/bytes/second\n")
+        frame("Search bytes/second | Find displayed numerical meaning", 2200,
+              required=("Filter: bytes/second", "--bwlimit=", "1024 bytes/second"))
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=")
         terminal.send("5000 ")
         terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=5000 ")
-        frame("Enter inserts --bwlimit= | Type its value: 5000", 1800,
+        frame("Enter inserts --bwlimit= | Type 5000 (KiB/s in rsync 3.4.1)", 1800,
               required=("--bwlimit=5000",))
         terminal.send("\x1bh", "Interactive help")
         terminal.send("/exclude")
@@ -322,9 +339,13 @@ def capture_ls(folder, demonstration):
               required=("Option 8/12", "--size", "Display (12)", "Traversal (3)"),
               absent=("> --all",))
         terminal.send("\x1bOF")
-        frame("End | Reach option 12/12 and inspect its required argument", 1800,
-              required=("Option 12/12", "--hide=", "Argument required: PATTERN"),
-              absent=("--almost-all",)).save(OUTPUT / "ls-browser.png")
+        frame("End | Inspect the selected option's pattern meaning", 1800,
+              required=("Option 12/12", "--hide=PATTERN", "Hidden-name wildcard pattern"),
+              absent_options=("--almost-all",))
+        terminal.send("]" * 16)
+        frame("] | Scroll complete details to the literal argument declaration", 2200,
+              required=("Option 12/12", "Argument required: PATTERN")
+              ).save(OUTPUT / "ls-browser.png")
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(LS_PREFIX + "--hide=")
         final_line = LS_PREFIX + "--hide='*.tmp' \"/srv/project files/\" "
@@ -389,9 +410,19 @@ def source_fingerprints():
 
 def main():
     """Write public media and local capture evidence; temporary drafts are removed."""
+    global OUTPUT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=OUTPUT,
+                        help="Destination for the named public images and animation")
+    parser.add_argument("--evidence", type=Path, default=ROOT / "tests/reports/readme-media",
+                        help="Private destination for raw terminal output and capture assertions")
+    args = parser.parse_args()
+    OUTPUT = args.output.resolve()
+    evidence = args.evidence.resolve()
+    if OUTPUT == evidence:
+        parser.error("Public media and private evidence require separate destinations")
     sources = source_fingerprints()
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    evidence = ROOT / "tests/reports/readme-media"
     evidence.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="cli-help-media-") as temporary:
         folder = Path(temporary)

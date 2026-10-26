@@ -18,6 +18,7 @@ flowchart TD
     H -->|Discovery enabled and no static match| Q[Bounded documentation discovery]
     Q -->|Validated profile| U[Curses help browser]
     H -->|Static profile matched| U
+    N[Optional value metadata and preserved source notes] -->|Shared display and search text| U
     U -->|Selected literal option| E[Calculate buffer edit]
     E -->|NUL-delimited response| R[Return to Readline; redraw if resized]
     U -->|Cancel without an edit| R
@@ -62,6 +63,8 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/discovery.py](../cli_help/discovery.py) | Bounded help/man probes, parsing, merging, and cache |
 | [cli_help/diagnostics.py](../cli_help/diagnostics.py), [cli_help/errors.py](../cli_help/errors.py) | Passive configuration/context reports, bounded cache inspection, and safe reason-coded errors |
 | [cli_help/ui.py](../cli_help/ui.py) | Curses drawing, navigation, search, browser bindings |
+| [cli_help/value_semantics.py](../cli_help/value_semantics.py), [cli_help/presentation.py](../cli_help/presentation.py) | Shared numerical contract validation, pure explanation formatting and accessible list/details/search text |
+| [cli_help/authoring.py](../cli_help/authoring.py) | Numerical metadata preservation and review of potentially stale declarations across authoring workflows |
 | [cli_help/main.py](../cli_help/main.py) | Terminal attachment and Bash response protocol |
 | [profiles/](../profiles/) | Editable command documentation |
 | [config/keys.example.json](../config/keys.example.json) | Complete browser key configuration example |
@@ -327,15 +330,16 @@ A separate inventory step runs
 the runtime smoke checks. It rejects missing, stale, duplicate, conflicting and
 orphaned review assignments. The retained JSON contains aggregate counts and
 diagnostic totals; the complete inventory and raw-help excerpts stay local.
-This is Step 1 reconciliation, not validation of numerical units or implementation
-of the proposed production numerical contract. See the
-[inventory guide](numerical-inventory/README.md) for definitions and limits.
+This checks review integrity rather than factual numerical accuracy. The
+[inventory guide](numerical-inventory/README.md) defines enumeration limits;
+the [numerical contract](numerical-value-contract.md) defines the validation APIs.
 
 The early numerical coverage step and `tests/run.sh` also run
 `python3 -B scripts/check_numerical_coverage.py --summary`. It uses the shared
 contract and actual presentation helpers, rejects deficient maintained additions
 and invalid deferrals, and reports exact unchanged migration debt. Strict
-readiness is a separate mode and is not yet satisfied. The
+readiness is a separate mode, satisfied by the subsequent
+[maintained debt resolution](numerical-inventory/debt-resolution.md). The
 [coverage policy and contributor workflow](numerical-inventory/step7-enforcement.md)
 defines eligibility, diagnostics, exceptions and external-help limits. The named
 `tests/reports/ci/numerical-coverage.json` report is retained even on failure; no
@@ -545,8 +549,10 @@ tmux is available. A skipped terminal suite is unverified evidence, not a pass.
 
 The [full Linux-suite verification account](numerical-inventory/full-linux-verification.md)
 records the inspected process boundaries, disposable-environment procedure,
-actual Python 3.12 result and remaining Python 3.10 gap. Local results do not
-establish hosted-CI success.
+earlier local Python 3.12 result and separately confirmed successful hosted
+Python 3.10/3.12 jobs. The interrupted local Python 3.10 setup was removed;
+no local Python 3.10 full-suite result is claimed. Hosted results are scoped to
+the linked run and commit, rather than inferred from local execution.
 
 For focused investigation:
 

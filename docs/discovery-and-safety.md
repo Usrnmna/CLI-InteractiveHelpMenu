@@ -15,8 +15,10 @@ flowchart TD
     M -->|Matching cache in man or auto| B
     M -->|man: cache miss or refresh| A[Manual lookup only]
     M -->|auto: cache miss or refresh| H[Applicable fixed help and manual sources]
-    A --> V[Validate extracted options]
-    H --> V
+    A --> S[Preserve source identity and section scope]
+    H --> S
+    S --> V[Validate applicable root declarations]
+    S --> N[Retain nested or unassigned source context]
     V -->|Usable options| B
     V -->|No usable options| E
 ```
@@ -83,6 +85,25 @@ structured FFmpeg argument placeholders are retained when a separate description
 column identifies the declaration. Concrete colon selectors such as `-c:v`
 are supported. Unsupported joined syntax, such as GCC `-Wl,<options>`, and
 selector placeholders are omitted rather than truncated into a different flag. CR, CRLF, and LF help output is normalized.
+
+Terminal sequences are removed before individual control characters are filtered.
+The scanner handles ESC and Unicode C1 forms of CSI, OSC, DCS, SOS, PM and APC,
+plus ESC character-set designators and single controls. ST terminates control
+strings; BEL also terminates OSC, and CAN/SUB cancel strings. The sequence shapes
+follow the [xterm control reference](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html).
+Ordinary Unicode, bracketed text, newlines and parsing tabs remain available.
+The display layer uses the same sequence filter as a secondary defense; profile
+validation continues to reject control characters in supplied profiles.
+
+Malformed sequences have conservative recovery rules. Incomplete CSI/ESC syntax
+is consumed only through its recognized parameters or intermediates. A control
+string without a terminator before a line boundary, another ESC/C1 control or
+end of input loses its introducer but retains ambiguous payload text. This can
+leave literal payload fragments visible, but prevents damaged formatting from
+discarding later option declarations. Scanning is linear in input length and
+does not buffer pending payloads. This is not terminal emulation: cursor motion,
+alternate character sets and screen rewriting are not reconstructed. Sequences
+that are syntactically valid are removed even when their origin is ambiguous.
 
 Additional supported formats include Wget's aligned aliases, pnpm's explicit
 `--[no-]` shorthand, kubectl defaults, AWS parenthesized value types, jq name/value
@@ -265,8 +286,16 @@ configuration without running discovery.
 
 Cache writes are atomic. Expired, malformed, oversized, or schema-invalid cache
 entries are ignored. Unavailable cache storage does not prevent discovery.
-Cache schema 10 also invalidates earlier parsed metadata after corrections for
-required placeholders with optional prefixes and unsupported numeric ranges.
+The cache generation invalidates obsolete interpreted documentation after parser
+changes, including compound operands, nested sections and manual-scope association.
+Generation 15 also invalidates entries parsed with incomplete terminal-sequence
+sanitization. Regeneration occurs only through the existing permitted discovery
+path. Imported and curated profile files are not rewritten; captured sources can
+be re-imported to a separate file and reviewed using the
+[manual import workflow](manual-import.md).
+Requested command, actual manual and any explicit scope remain distinct cache
+identity inputs. See [parser and source-association guarantees](numerical-inventory/parser-association-repairs.md)
+for the corrected cases and limits.
 Quoted example fragments and numeric preset-table rows are excluded from
 declarations so they cannot override real optional-value metadata.
 Numeric-range rejection occurs before alignment columns are split, including

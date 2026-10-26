@@ -16,6 +16,8 @@ class ValueText:
 
     compact: str = ""
     lines: tuple[str, ...] = ()
+    list_hint: str = ""
+    notice: str = ""
 
 
 @dataclass(frozen=True)
@@ -25,6 +27,8 @@ class OptionText:
     compact: str
     details: tuple[str, ...]
     searchable: str
+    list_hint: str = ""
+    notice: str = ""
 
 
 def option_label(option):
@@ -59,9 +63,10 @@ def value_text(profile, entry, *, positional=False):
         return ValueText("Value guidance unavailable; review needed.", (
             "Value guidance unavailable: numerical documentation could not be interpreted safely.",
             "Consult the original description and source documentation; units have not been inferred.",
-        ))
+        ), notice="[review]")
     # Multiple scopes stay explicit even when the first explanation is clipped.
     compact = lines[0]
+    list_hint = ""
     if compact.startswith(("Value:", "Value (")):
         heading, _, body = compact.partition(": ")
         qualifier = heading.removeprefix("Value").strip()
@@ -69,10 +74,18 @@ def value_text(profile, entry, *, positional=False):
         # rule, every qualification and the complete unshortened meaning.
         body = "bare: " + body[len("bare numbers: "):] if body.startswith("bare numbers: ") else body
         compact = (qualifier + " " if qualifier else "") + body
+        # Only value interpretation adds information worth a second list phrase.
+        # Keep its entire qualification and meaning; the renderer may omit the
+        # hint when it cannot fit, but must never truncate it into a partial rule.
+        if body.startswith(("bare: ", "ordinary bare numbers not accepted")):
+            list_hint = compact
+    notice = "[unverified]" if ("not verified" in compact or any(
+        line.startswith("Evidence: ") and line != "Evidence: verified." for line in lines)) else ""
     if any(line.startswith("Value variant 2") for line in lines):
         compact = "Value varies by applicability; see details."
         lines = ("Value varies by applicability; all documented alternatives follow. No target match is assumed.",) + lines
-    return ValueText(compact, tuple(lines))
+        list_hint, notice = "", "[varies]"
+    return ValueText(compact, tuple(lines), list_hint, notice)
 
 
 def _source_notes(profile, option):
@@ -120,6 +133,20 @@ def _source_notes(profile, option):
     return tuple(selected), tuple(contextual), needs_review
 
 
+def description_blocks(summary, detail):
+    """Omit a separate summary only when detail already opens with it exactly.
+
+    A match must cover the entire detail or end at an LF/CR line boundary.
+    No whitespace or case normalization is performed. Returning the original
+    detail intact preserves blank lines, attribution and later repetitions.
+    """
+    if not detail:
+        return (summary,)
+    if summary and (detail == summary or detail.startswith((summary + "\n", summary + "\r"))):
+        return (detail,)
+    return (summary, detail)
+
+
 def option_text(profile, category, option, *, positional=None):
     """Build accessible details and substring search text from one explanation.
 
@@ -136,9 +163,7 @@ def option_text(profile, category, option, *, positional=None):
     # Review warnings precede ordinary prose even if active metadata is absent.
     lines.extend(notes)
     lines.append("Option: " + option_label(option))
-    lines.append(option["summary"])
-    if option.get("detail"):
-        lines.append(option["detail"])
+    lines.extend(description_blocks(option["summary"], option.get("detail", "")))
     if option.get("argument"):
         label = "Optional argument: " if option.get("argument_optional") else "Argument required: "
         if option.get("argument_style") == "attached_only":
@@ -158,6 +183,8 @@ def option_text(profile, category, option, *, positional=None):
         lines.append(category["description"])
     lines.extend(contextual)
     compact = numerical.compact
+    list_hint, notice = numerical.list_hint, numerical.notice
     if needs_review:
         compact = "Source review needed; " + (compact or "see details.")
-    return OptionText(compact, tuple(lines), " ".join(searchable).casefold())
+        list_hint, notice = "", "[review]"
+    return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice)

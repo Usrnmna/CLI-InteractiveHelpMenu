@@ -48,7 +48,7 @@ contents. Dated reviews retain the results and limitations of their own runs.
 | Read-only consistency checks and explicit snapshot-bound backup restoration | [Collection inspection and recovery](collection-recovery.md) |
 
 ```mermaid
-flowchart LR
+flowchart TD
     M[Single manual or text file] --> I[Manual import]
     C[Installed command inventory] --> S[Bulk manual scan]
     I --> P[Profiles and driver routes]
@@ -69,28 +69,44 @@ Generated documentation remains subject to review of option coverage and argumen
 requirements. The [profile and driver reference](profiles-and-drivers.md)
 defines both formats.
 
+## Numerical guidance and verification
+
+| Question | Maintained explanation |
+| --- | --- |
+| Where are units, accepted forms and qualifications visible? | [Browser controls and value guidance](usage.md#browser-controls) |
+| How is numerical meaning represented and validated? | [Numerical value contract and APIs](numerical-value-contract.md) |
+| How does source documentation survive parsing and caching? | [Preservation rules](numerical-inventory/step4-preservation.md) and [parser/source-association repairs](numerical-inventory/parser-association-repairs.md) |
+| How are metadata and review status retained during edits? | [Authoring rules](numerical-inventory/step6-authoring.md) |
+| How are deficient additions detected? | [Coverage policy and contributor workflow](numerical-inventory/step7-enforcement.md) |
+| What is complete, and what remains uncertain? | [Maintained debt resolution](numerical-inventory/debt-resolution.md) and [external diagnostic investigation](numerical-inventory/diagnostic-investigation.md) |
+| Which native, local and hosted checks actually ran? | [Native/POSIX evidence](numerical-inventory/native-posix-verification.md) and [local/hosted Python verification](numerical-inventory/full-linux-verification.md) |
+
+Strict maintained completeness does not establish every external numerical fact.
+The hosted Python 3.10/3.12 results, earlier local Python 3.12 run and unperformed
+local Python 3.10 run remain separate evidence in the linked verification account.
+
 ## Development and evidence
 
-- [Numerical description implementation inventory](numerical-inventory/README.md)
-  records Step 1 enumeration, review dispositions, and later acceptance criteria.
-- [Numerical value contract and opt-in APIs](numerical-value-contract.md)
-  defines Step 2 metadata, validation policies, diagnostics, and explanation formatting.
-- [Bundled numerical description migration](numerical-inventory/step3-migration.md)
-  records Step 3 corrections, source applicability, remaining investigations and focused checks.
-- [Numerical documentation preservation](numerical-inventory/step4-preservation.md)
-  defines Step 4 shared-source association, merge ownership, diagnostics and cache guarantees.
-- [Numerical presentation and search](numerical-inventory/step5-presentation.md)
-  explains Step 5 compact guidance, complete details, search and scoped layout verification.
-- [Numerical metadata through authoring](numerical-inventory/step6-authoring.md)
-  records Step 6 import/edit/preview/save preservation, stale-data review and inspection boundaries.
-- [Automatic numerical coverage and contributor workflow](numerical-inventory/step7-enforcement.md)
-  defines Step 7 prospective gates, exact migration debt, diagnostics and strict-readiness limits.
-- [Integrated numerical behavior verification](numerical-inventory/step8-verification.md)
-  maps acceptance criteria to passive evidence, the scalar-arity repair and unresolved native/migration limits.
-- [Final numerical-work configuration review and local handoff](numerical-inventory/step9-handoff.md)
-  records effective repository policies, the focused source-selection correction, current debt and verification limits.
-- [Maintained numerical contract debt resolution](numerical-inventory/debt-resolution.md)
-  records the later strict-completeness migration, source corrections, unchanged checks and remaining external/native limits.
+Implementation accounts retain their original outcomes. Later corrections and
+verification supersede only the findings explicitly identified in those accounts.
+Current behavior belongs in operating/reference guides; dated counts and blocked
+checks are not promises about an arbitrary checkout.
+
+<details>
+<summary>Numerical implementation history and acceptance criteria</summary>
+
+- [Step 1: inventory and acceptance criteria](numerical-inventory/README.md)
+- [Step 2: numerical contract](numerical-value-contract.md)
+- [Step 3: description migration](numerical-inventory/step3-migration.md)
+- [Step 4: preservation](numerical-inventory/step4-preservation.md)
+- [Step 5: presentation and search](numerical-inventory/step5-presentation.md)
+- [Step 6: authoring](numerical-inventory/step6-authoring.md)
+- [Step 7: enforcement](numerical-inventory/step7-enforcement.md)
+- [Step 8: integrated verification](numerical-inventory/step8-verification.md)
+- [Step 9: repository configuration and handoff](numerical-inventory/step9-handoff.md)
+
+</details>
+
 - [Contribution guide](../.github/CONTRIBUTING.md) summarizes issue reports,
   pull requests, focused validation, and generated-file handling.
 - [Review fixes and added command paths](review-fixes-2026-10-23.md) records

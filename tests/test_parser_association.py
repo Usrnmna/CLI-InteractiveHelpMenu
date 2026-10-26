@@ -96,6 +96,76 @@ class ParserAssociationTests(unittest.TestCase):
             self.assertIn("suffix is documented", options(profile)[flag]["detail"])
         self.assertFalse(options(profile)["--quiet"]["argument"])
 
+    def test_captured_aws_exclusion_description_preserves_its_opening(self):
+        """Spacing inside the captured prose must not discard its opening words."""
+        captured = json.loads(self.capture("captured.json"))["aws s3 sync"]["text"]
+        profile = discovery.build_profile(["aws", "s3", "sync"], [("captured help", captured)])
+        option = options(profile)["--exclude"]
+        self.assertEqual(option["argument"], "(string)")
+        self.assertEqual(" ".join(option["summary"].split()),
+                         "Exclude all files or objects from the command that")
+        self.assertIn("matches the specified pattern.", option["detail"])
+        self.assertIn("Exclude all files or objects from the", option["detail"])
+
+    def test_description_spacing_preserves_aliases_values_and_continuations(self):
+        """Prose spacing cannot change explicit operands or lose description text."""
+        cases = [
+            ("--select (string)", ["--select"], "(string)", False),
+            ("-s, --select FILE", ["-s", "--select"], "FILE", False),
+            ("--select[=WHEN]", ["--select"], "[=WHEN]", True),
+            ("--select <left> <right>", ["--select"], "<left> <right>", False),
+        ]
+        for declaration, flags, argument, optional in cases:
+            for boundary in (" ", "  ", "\t"):
+                for spacing in (" ", "  ", "\t"):
+                    with self.subTest(declaration=declaration, boundary=boundary, spacing=spacing):
+                        text = ("Options:\n  " + declaration + boundary + "Select records from the"
+                                + spacing + "source.\n      Preserve the continuation.\n"
+                                "  --quiet  Suppress progress.\n")
+                        parsed = options(discovery.build_profile("specimen", [("fixture", text)]))
+                        self.assertEqual(set(parsed), {*flags, "--quiet"})
+                        for flag in flags:
+                            option = parsed[flag]
+                            self.assertEqual(option["argument"], argument)
+                            self.assertEqual(option["argument_optional"], optional)
+                            self.assertEqual(option.get("argument_count", 1), 2 if "<right>" in argument else 1)
+                            self.assertEqual(" ".join(option["summary"].split()), "Select records from the source.")
+                            self.assertIn("Preserve the continuation.", option["detail"])
+
+    def test_option_mentions_in_prose_are_preserved_without_becoming_aliases(self):
+        """A flag reference, including one after a comma, remains description text."""
+        for prose in ("Use --verbose for details.", "Use --verbose or --quiet for output.",
+                      "For more detail, --verbose is available.",
+                      "Use normal output or --quiet for silence.", "Use normal output | --quiet for silence."):
+            for boundary in (" ", "  ", "\t"):
+                with self.subTest(prose=prose, boundary=boundary):
+                    declaration = "  -s, --select FILE" + boundary + prose + "  Keep this sentence."
+                    entries, summary = discovery.parse_option_line(declaration)
+                    self.assertEqual([o["flag"] for o in entries], ["-s", "--select"])
+                    self.assertTrue(all(o["argument"] == "FILE" for o in entries))
+                    self.assertEqual(" ".join(summary.split()), prose + " Keep this sentence.")
+
+    def test_unrecognized_tail_remains_prose_not_an_inferred_argument(self):
+        """An unrecognized tail is preserved instead of discarded at alignment."""
+        entries, summary = discovery.parse_option_line("  --quiet Suppress progress  while copying.")
+        self.assertEqual(entries, [{"flag": "--quiet", "argument": "", "argument_optional": False}])
+        self.assertEqual(" ".join(summary.split()), "Suppress progress while copying.")
+        entries, summary = discovery.parse_option_line("  --select FILE suppress progress  while copying.")
+        self.assertEqual(entries[0]["argument"], "FILE")
+        self.assertEqual(" ".join(summary.split()), "suppress progress while copying.")
+
+    def test_pre_description_repair_cache_is_rejected_and_new_text_roundtrips(self):
+        """Old parsed descriptions cannot be reused under the repaired parser identity."""
+        profile = discovery.build_profile("specimen", [("fixture", "--select FILE Select the  source.")])
+        old_identity = {"command": ["specimen"], "version": 13}
+        identity = {"command": ["specimen"], "version": discovery.CACHE_VERSION}
+        path = self.folder / "description-cache.json"
+        discovery.write_cache(path, old_identity, profile)
+        self.assertIsNone(discovery.read_cache(path, identity, 60))
+        discovery.write_cache(path, identity, profile)
+        loaded = discovery.read_cache(path, identity, 60)
+        self.assertEqual(" ".join(options(loaded)["--select"]["summary"].split()), "Select the source.")
+
     def test_podman_capture_recovers_required_memory_operands_and_literal_edits(self):
         path = ROOT / "tests/fixtures/help/followup-systems/podman-run.txt"
         original = path.read_bytes()

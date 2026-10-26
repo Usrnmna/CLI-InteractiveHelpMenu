@@ -21,7 +21,7 @@ The new [integration tests](../../tests/test_numerical_integration.py) exercise
 these actual owners in sequence:
 
 ```mermaid
-flowchart LR
+flowchart TD
     C[Maintained capture] --> P[Help parsing]
     P --> M[Source merge]
     Q[Scoped authored metadata] --> M

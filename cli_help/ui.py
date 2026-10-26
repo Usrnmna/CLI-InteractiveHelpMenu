@@ -8,6 +8,7 @@ import unicodedata
 
 from core import HelpError, read_json
 from presentation import option_label, option_text, value_text
+from terminal_text import strip_terminal_sequences
 
 
 DEFAULT_KEYS = {
@@ -111,8 +112,8 @@ class Browser:
 
 
 def display_text(value: str) -> str:
-    """Suppress control characters and unsupported surrogate code points in display."""
-    return "".join(char if char.isprintable() else " " for char in value)
+    """Strip terminal sequences before suppressing other controls and surrogates."""
+    return "".join(char if char.isprintable() else " " for char in strip_terminal_sequences(value))
 
 
 def cell_width(character):
@@ -185,6 +186,35 @@ def write(screen, row, column, text, width, attribute=0):
         pass
 
 
+def option_label_width(category, budget):
+    """Reserve a stable declaration column and at least half the row for prose.
+
+    Measure the whole category so scrolling and filtering cannot shift columns.
+    The marker and two-cell gap use four cells outside the declaration budget.
+    """
+    longest = max(sum(cell_width(c) for c in display_text(option_label(option)))
+                  for option in category["options"])
+    return min(longest, 40, (budget - 4) // 2)
+
+
+def option_row(option, view, budget, label_width, selected=False):
+    """Align a literal declaration with its summary within a terminal-cell budget.
+
+    Review notices precede the summary. A value hint is appended only if the
+    complete summary and qualified hint fit; all omitted text remains in details.
+    """
+    label = ellipsize_cells(option_label(option), label_width)
+    padding = " " * (label_width - sum(cell_width(c) for c in label))
+    description_width = budget - label_width - 4
+    description = (view.notice + " " if view.notice else "") + option["summary"]
+    if view.list_hint:
+        with_hint = description + " | " + view.list_hint
+        if sum(cell_width(c) for c in display_text(with_hint)) <= description_width:
+            description = with_hint
+    return (("> " if selected else "  ") + label + padding + "  "
+            + ellipsize_cells(description, description_width))
+
+
 def draw(screen, browser: Browser, keys, searching=False, preview=False):
     """Render scroll windows around the selected category and option."""
     height, width = screen.getmaxyx()
@@ -209,18 +239,13 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
         text = marker + categories[index]["name"] + f" ({len(browser.options(index))})"
         write(screen, row, 0, text, category_width - 1, curses.A_REVERSE if index == browser.category else 0)
     options = browser.options()
+    budget = width - category_width - 1
+    label_width = option_label_width(categories[browser.category], budget)
     first_option = max(0, browser.selected - rows + 1)
     for row, index in enumerate(range(first_option, min(len(options), first_option + rows)), 4):
         option = options[index]
-        label = option_label(option)
-        compact = browser.text(option).compact
-        budget = width - category_width - 1
-        if compact:
-            # Long placeholders cannot consume all space before value guidance.
-            label = ellipsize_cells(label, max(10, (budget - 2) // 3))
-        text = ("> " if index == browser.selected else "  ") + label + "  "
-        text += (compact + "  " if compact else "") + option["summary"]
-        write(screen, row, category_width, ellipsize_cells(text, budget), budget,
+        text = option_row(option, browser.text(option), budget, label_width, index == browser.selected)
+        write(screen, row, category_width, text, budget,
               curses.A_REVERSE if index == browser.selected else 0)
     if not options:
         write(screen, 4, category_width, "No matches. Clear the filter or change category.", width - category_width - 1)

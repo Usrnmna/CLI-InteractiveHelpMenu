@@ -55,8 +55,9 @@ python3 -B -m unittest discover -s tests -p test_numerical_inventory.py -v
 The [inventory guide](../docs/numerical-inventory/README.md) defines source
 coverage, counting rules, review identities, and unresolved work. New or changed
 entries require review before their annotations or fingerprints are updated.
-Reconciliation checks annotation integrity; it does not establish correct units
-or implement the proposed production numerical contract. Record reviewed and
+Reconciliation checks annotation integrity; it does not establish correct units.
+The implemented [numerical contract](../docs/numerical-value-contract.md) supplies
+the separate structural and completeness APIs. Record reviewed and
 unresolved coverage separately. A complete local inventory can contain source
 paths and raw-help excerpts; share the summary rather than the full report.
 
@@ -73,8 +74,11 @@ defines classification, metadata, provenance, display/search propagation and
 exact exceptions. New and relevant changed content cannot inherit legacy debt.
 Inspect full diagnostics without `--summary`; resolve heuristic disagreements
 through source review rather than guessed units. Current prospective success
-does not establish full maintained completeness: strict mode reports the exact
-remaining migration debt. Raw external captures need explicit census review,
+does not by itself establish full maintained completeness. Run strict mode
+separately with `python3 -B scripts/check_numerical_coverage.py --mode strict --summary`.
+The [debt-resolution account](../docs/numerical-inventory/debt-resolution.md)
+records the zero-debt maintained baseline; preserve it without adding exemptions.
+Raw external captures need explicit census review,
 not fabricated verified contracts. Runtime legacy loading remains compatible.
 
 For changes crossing numerical parsing, cache, authoring or presentation owners,

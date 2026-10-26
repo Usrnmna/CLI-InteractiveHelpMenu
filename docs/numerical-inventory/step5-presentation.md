@@ -28,11 +28,16 @@ is inferred. The metadata contract and validation policies are unchanged.
 
 - The compact lead comes from the first formatted line. Only the predictable
   `Value` label is removed and `bare numbers:` becomes `bare:`. Evidence and
-  scope markers remain. The full meaning is retained until the list renderer
-  applies an explicit cell-budget ellipsis.
+  scope markers remain. A list hint is eligible only when this lead explains
+  bare-number interpretation; nonnumerical meaning is not repeated in the row.
+  Eligible hints are displayed in full or omitted, never partially clipped.
 - Complete details retain the formatter lines, original summary/detail, complete
   literal declaration and argument guidance, command-wide repeated arguments,
   source review notes, category context and unassigned source context.
+  A separate summary is omitted when the detail begins with that exact summary
+  followed by an LF/CR line ending, or equals the summary entirely. The original
+  detail block remains intact. Whitespace, case and near-matches are not
+  normalized; later repetitions and source attributions remain visible.
 - Search retains the original joined flag/summary/detail text, including legacy
   cross-field substring matches, and adds the displayed declaration, argument
   placeholder, numerical explanations and relevant source qualifications.
@@ -46,9 +51,19 @@ in profiles. Modifying a profile in place during an open modal is not supported.
 ## Visible and accessible information
 
 Active numerical guidance starts the selected details before category context
-or long summaries. The list reserves space for guidance by abbreviating long
-declarations when necessary. The complete flag and placeholder remain accessible
-in details, and insertion continues to use the original option object.
+or long summaries. List rows use aligned declaration and description columns.
+The declaration column uses the longest declaration in the category, capped at
+40 cells and half the available content width. Filtering and scrolling within
+that category do not change the column position. The summary takes precedence;
+a qualified value hint is appended only when both fit in full. The complete flag
+and placeholder remain accessible in details, and insertion continues to use
+the original option object.
+
+Short notices remain visible when value hints do not fit: `[review]` identifies
+invalid guidance or source claims requiring review, `[unverified]` identifies
+value evidence that is not verified, and `[varies]` identifies multiple
+applicability variants. Detailed evidence and scope qualifications remain in the
+selected details. Search includes those explanations regardless of row width.
 
 Representative presentation from the already reviewed rsync 3.4.1 metadata is:
 
@@ -63,16 +78,16 @@ not imply an accepted literal `/second` suffix. Its factual evidence remains the
 [reviewed semantic fixture](../../tests/fixtures/value-semantics/migration-evidence.json).
 No new upstream behavior is verified by displaying those declarations.
 
-Multiple applicability variants use a compact indication that meaning varies by
-applicability. Details retain every variant with its qualifications. Single
-scoped variants also remain explicitly scoped; the browser does not treat them
+Multiple applicability variants use the `[varies]` notice in list rows.
+Details retain every variant with its qualifications. Displayed value hints for
+single scoped variants also remain explicitly scoped; the browser does not treat them
 as universal facts about the installed program. Source-derived, synthetic,
 unresolved and partial declarations retain their evidence labels and specific
 investigation requirements. Counts, indices, identifiers, levels, expressions,
 composites and delegated grammars use their existing formatter explanations;
 physical units are not invented for them.
 
-List clipping uses an ellipsis measured in terminal cells. Selected details wrap
+Declaration and summary clipping use an ellipsis measured in terminal cells. Selected details wrap
 with the existing Unicode utilities. A `Details start-end/total` line identifies
 the visible range and the configured detail-scroll keys when more content exists.
 The existing `[` and `]` controls reach the complete explanation. Not every

@@ -353,17 +353,100 @@ class NumericalPresentationTests(unittest.TestCase):
         self.assertNotIn("Long category context", visible)
         self.assertNotIn("A lengthy explanation", visible)
 
-    def test_long_placeholder_leaves_room_for_value_guidance_and_full_label_is_reachable(self):
+    def test_long_placeholder_leaves_room_for_summary_and_full_details(self):
         profile = specimen(synthetic_node("duration"), argument="LONG_PLACEHOLDER_" * 12)
         browser = Browser(profile)
         screen = CellScreen(24, 140)
         draw(screen, browser, load_keys(None))
         row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
-        self.assertIn("seconds", row)
+        self.assertIn("A synthetic selectable value", row)
         self.assertIn("…", row)
         details, _ = self.all_details(browser)
+        self.assertIn("seconds", details)
         self.assertIn("LONG_PLACEHOLDER_", details)
         self.assertIn(first_option(profile)["argument"], " ".join(browser.text(first_option(profile)).details))
+
+    def test_option_descriptions_align_and_keep_the_same_column_when_scrolling(self):
+        """Declaration length and selection cannot move the summary column."""
+        profile = {"command": ["layout"], "description": "Layout specimen", "categories": [{
+            "name": "Options", "options": [
+                {"flag": flag, "summary": "Summary " + str(index)}
+                for index, flag in enumerate(("-a", "--longer-name", "--third", "--last-option"))]}]}
+        for width in (60, 100, 160):
+            browser = Browser(profile)
+            screen = CellScreen(16, width)
+            columns = []
+            for selected in (0, 3):
+                browser.selected = selected
+                draw(screen, browser, load_keys(None))
+                rows = [v for (r, c, _a), v in screen.cells.items() if 4 <= r < 7 and c > 0]
+                columns.extend(v.index("Summary") for v in rows)
+            self.assertEqual(len(set(columns)), 1, (width, columns))
+
+    def test_bundled_rows_prioritize_summaries_without_repeating_nonnumerical_guidance(self):
+        cases = (("rsync", "--exclude="), ("ls", "--color="),
+                 ("grep", "--regexp="), ("tar", "--file="))
+        for name, flag in cases:
+            for width in (60, 100, 160):
+                with self.subTest(name=name, width=width):
+                    browser, option, view = self.view(name, flag)
+                    screen = CellScreen(16, width)
+                    draw(screen, browser, load_keys(None))
+                    row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+                    self.assertIn(option["summary"].split()[0], row)
+                    self.assertNotIn("(scoped)", row)
+                    self.assertIn(option["summary"], "\n".join(view.details))
+                    browser.set_query("scoped")
+                    self.assertIn(option, browser.options())
+
+    def test_value_hint_is_complete_or_absent_and_summary_remains_visible(self):
+        """Units and scope must never appear as a truncated fragment in a row."""
+        for width in (60, 100, 240):
+            browser, option, view = self.view("rsync", "--bwlimit=")
+            screen = CellScreen(16, width)
+            draw(screen, browser, load_keys(None))
+            row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+            self.assertIn("Limit bandwidth", row)
+            if "bare:" in row:
+                self.assertIn(view.compact, row)
+                self.assertIn(option["summary"], row)
+            else:
+                self.assertNotIn("(scoped)", row)
+            if width == 240:
+                self.assertIn("1024 bytes/second", row)
+
+    def test_review_and_uncertainty_notices_survive_narrow_rows(self):
+        """Hidden value hints cannot hide review requirements or uncertainty."""
+        profiles = [specimen(value_semantics=[]), specimen(synthetic_node("duration"))]
+        reviewed = specimen()
+        reviewed["documentation"] = {"diagnostics": [{"option": "--value", "message": "Conflicting sources."}]}
+        profiles.append(reviewed)
+        for profile, notice in zip(profiles, ("[review]", "[unverified]", "[review]")):
+            screen = CellScreen(16, 60)
+            browser = Browser(profile)
+            draw(screen, browser, load_keys(None))
+            row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+            self.assertIn(notice, row)
+            self.assertNotIn("bare:", row)
+
+    def test_unicode_declarations_align_in_cells_and_empty_results_clear_rows(self):
+        """Wide and combining characters use cells; a new filter erases old rows."""
+        profile = {"command": ["layout"], "description": "Layout specimen", "categories": [{
+            "name": "Options", "options": [
+                {"flag": "--wide", "argument": "界界", "summary": "Summary wide"},
+                {"flag": "--accent", "argument": "e\u0301", "summary": "Summary accent"}]}]}
+        browser = Browser(profile)
+        for width in (60, 100, 160, 60):
+            screen = CellScreen(16, width)
+            draw(screen, browser, load_keys(None))
+            rows = [v for (r, c, _a), v in screen.cells.items() if 4 <= r <= 5 and c > 0]
+            columns = [sum(cell_width(c) for c in row[:row.index("Summary")]) for row in rows]
+            self.assertEqual(columns[0], columns[1])
+            browser.set_query("no-such-option")
+            draw(screen, browser, load_keys(None))
+            self.assertIn("No matches", screen.text())
+            self.assertNotIn("Summary wide", screen.text())
+            browser.set_query("")
 
     def test_all_details_are_reachable_at_minimum_size_with_scroll_indicator(self):
         browser, _option, view = self.view("rsync", "--bwlimit=")

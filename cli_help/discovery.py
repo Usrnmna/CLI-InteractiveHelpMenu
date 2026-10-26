@@ -23,13 +23,14 @@ import time
 from core import HelpError, validate_profile
 from command_paths import help_route
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
+from terminal_text import strip_terminal_sequences
 from value_semantics import ValueContext, validate_profile_semantics, validate_value_semantics
 
 
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 13
+CACHE_VERSION = 15
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -39,7 +40,6 @@ ARGUMENT_PATTERN = re.compile(
     r"^(<[^<>]+>|\[[^\[\]]+\][A-Z][A-Z0-9_/-]*|\[[^\[\]]+\]|\{[^{}]+\}|#[0-9]+|"
     + PARENTHESIZED_TYPE + r"|[A-Z][A-Z0-9_-]*(?:=[A-Z][A-Z0-9_-]*)?)(?=$|[\s,])"
 )
-ANSI_PATTERN = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]")
 
 
 @dataclass(frozen=True)
@@ -157,7 +157,7 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
 
 def clean_output(text: str) -> str:
     """Remove ANSI styling, manual-page overstrikes, and terminal control codes."""
-    text = ANSI_PATTERN.sub("", text).replace("\r\n", "\n").replace("\r", "\n")
+    text = strip_terminal_sequences(text).replace("\r\n", "\n").replace("\r", "\n")
     # A stack processes long overstrike runs in one pass. Repeated regex
     # substitution can take quadratic time on a bounded but hostile response.
     characters = []
@@ -272,16 +272,19 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
         return None
     options = []
     for index, match in enumerate(matches):
-        # Subsequent matches must be part of an alias declaration, not prose.
-        if index and not re.search(r"(?:[,|]|\bor)\s*$", signature[matches[index - 1].end():match.start()]):
-            break
         stop = matches[index + 1].start() if index + 1 < len(matches) else len(signature)
         raw_tail = signature[match.end():stop]
+        separator = re.search(r"\s*(?:[,|]|\bor)\s*$", raw_tail) if stop < len(signature) else None
+        if stop < len(signature) and separator is None:
+            # A flag mention without an alias separator belongs to the prose.
+            # Keep the entire remainder rather than stopping at that mention.
+            stop = len(signature)
+            raw_tail = signature[match.end():]
         # Commas may separate aliases, but joined payloads such as GCC's
         # -Wl,<options> cannot be represented by the literal insertion grammar.
         if raw_tail.startswith(",") and not re.fullmatch(r",\s*", raw_tail):
             return None
-        tail = re.sub(r"(?:[,|]|\bor)\s*$", "", raw_tail.strip()).strip()
+        tail = (raw_tail[:separator.start()] if separator else raw_tail).strip()
         flag = match.group(1)
         argument = ""
         optional = False
@@ -339,12 +342,19 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
                 # A separate declaration column can contain lowercase types,
                 # multiword FFmpeg placeholders, or structured metadata syntax.
                 argument, tail = tail, ""
-        if tail and index == len(matches) - 1 and not summary:
-            summary = tail
+        if tail:
+            if separator:
+                # Prose before a comma/or/pipe does not declare another alias.
+                tail += separator.group() + signature[stop:]
+            # Alignment whitespace can occur inside prose. Retain the text left
+            # after explicit operands, even when a later column was found.
+            summary = tail + (" " + summary if summary else "")
         option = {"flag": flag, "argument": argument, "argument_optional": optional}
         if argument_count != 1:
             option["argument_count"] = argument_count
         options.append(option)
+        if tail or stop == len(signature):
+            break
     # Shared argument syntax usually appears only after the last alias.
     argument_owner = next((option for option in reversed(options) if option["argument"]), None)
     if argument_owner:

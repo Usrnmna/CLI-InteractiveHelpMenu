@@ -107,9 +107,13 @@ Each category displays its matching count.
 When a new search has no matches in the current category, the first matching
 category is selected automatically.
 
-Options with numerical metadata show compact value guidance in the list and at
-the beginning of selected details. Scoped or unresolved guidance retains its
-qualifications. An ellipsis marks clipped list text; the `Details start-end/total`
+Option rows align declarations and summaries within each category. Complete,
+qualified value hints are appended only when the summary and hint both fit;
+nonnumerical meaning is not repeated before the summary. `[review]`,
+`[unverified]`, and `[varies]` indicate source review, unverified value evidence,
+and differing applicability variants. Full guidance remains at the beginning of
+selected details and remains searchable even when omitted from the list.
+An ellipsis marks clipped declarations or summaries; the `Details start-end/total`
 line and `[` / `]` controls provide access to the complete explanation and literal
 declaration. See [numerical presentation and search](numerical-inventory/step5-presentation.md)
 for source conflicts, applicability, legacy behavior and verification limits.

@@ -98,9 +98,9 @@ missing required metadata.
 
 | Identity and source | Source-reviewed disposition |
 | --- | --- |
-| `option|fd|--print0`, `profiles/fd.json`, `/categories/0/options/18` | NUL bytes describe output separation, not numerical input. fd 9.0.0 declares `null_separator` as a boolean |
-| `option|fdfind|--print0`, `profiles/fdfind.json`, `/categories/0/options/18` | The same bounded declaration is consistent with the recorded fdfind 9.0.0 capture; other installed aliases/releases are not inferred |
-| `option|tar|--totals`, `profiles/tar.json`, `/categories/3/options/1` | The maintained bare form requests byte totals. The official GNU tar 1.35.90 manual also describes an optional signal form; that larger grammar is not added to the existing no-value declaration |
+| `option\|fd\|--print0`, `profiles/fd.json`, `/categories/0/options/18` | NUL bytes describe output separation, not numerical input. fd 9.0.0 declares `null_separator` as a boolean |
+| `option\|fdfind\|--print0`, `profiles/fdfind.json`, `/categories/0/options/18` | The same bounded declaration is consistent with the recorded fdfind 9.0.0 capture; other installed aliases/releases are not inferred |
+| `option\|tar\|--totals`, `profiles/tar.json`, `/categories/3/options/1` | The maintained bare form requests byte totals. The official GNU tar 1.35.90 manual also describes an optional signal form; that larger grammar is not added to the existing no-value declaration |
 
 The [fd 9.0.0 declaration](https://raw.githubusercontent.com/sharkdp/fd/v9.0.0/src/cli.rs)
 and [GNU tar option summary](https://www.gnu.org/software/tar/manual/html_node/Option-Summary.html)

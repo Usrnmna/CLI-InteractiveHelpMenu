@@ -179,6 +179,9 @@ records an unmodified 929-test Python 3.12 run, including inspected disposable
 process, lifecycle and archive fixtures. It extends this account's earlier
 restricted selection without establishing Python 3.10, real installed-target,
 9p permission-denial or hosted-CI results.
+The same account now separately records successful hosted Python 3.10 and 3.12
+jobs at a specific commit and the removed, uncompleted local Python 3.10 setup.
+Those hosted results do not extend this native WSL/filesystem matrix.
 
 The native PTY/Readline and ext4 acceptance gaps are closed within this matrix.
 The 9p permission-denial case remains unestablished. Human visual/font acceptance,

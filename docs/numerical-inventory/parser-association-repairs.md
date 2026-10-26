@@ -311,4 +311,6 @@ numerical policy, debt allowance or individual exception is changed.
 The later [full Linux-suite verification](full-linux-verification.md) separately
 establishes the unmodified Python 3.12 runner result after inspection of its
 synthetic process and disposable lifecycle boundaries. It preserves the focused
-correction above; Python 3.10 and hosted-CI results remain unestablished.
+correction above. That account also records the subsequent successful GitHub
+Python 3.10 and 3.12 jobs with their run and commit identity. Local Python 3.10
+verification remains unperformed, and the interrupted setup remnants are removed.

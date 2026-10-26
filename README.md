@@ -13,9 +13,9 @@ whose flags and argument syntax are difficult to remember.
 [Get started](#get-started) · [Browser controls](#using-the-browser) ·
 [Compatibility](#compatibility-and-execution-boundaries) · [All guides](docs/README.md)
 
-![Captured Bash session: browse rsync categories, insert options and values, cancel without changing the pending line, then scroll ls options and insert a filename filter. Neither pending command is executed.](docs/assets/option-insertion.gif)
+![Actual Bash UI: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
 
-The 31-second demonstration uses real terminal output with static profiles and
+The 36-second demonstration uses real terminal output with static profiles and
 discovery disabled. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
@@ -27,6 +27,8 @@ discovery disabled. [Static browser view](docs/assets/help-browser.png) ·
   and argument placeholders in a keyboard-controlled terminal browser.
 - **Literal option insertion:** replace a partial flag, preserve surrounding
   input, and return to editing. Cancellation retains the original line and cursor.
+- **Value guidance:** see units, scale, counted subjects and accepted forms in
+  details; search their displayed meaning without converting the typed value.
 - **Several help sources:** bundled and custom profiles, installed help output,
   local manuals, and explicit drivers for supported subcommand paths.
 - **Editable help collections:** import a manual, scan installed commands, and
@@ -106,12 +108,29 @@ See [installation, custom paths, updates, and removal](docs/installation.md) for
 | Tab | Switch between category and option panes |
 | `/`, then Enter | Apply a search; press Enter again to insert a selected option |
 | Ctrl-U | Clear the filter |
+| `[` / `]` | Scroll the selected option's complete details |
 | Escape or Ctrl-C | Cancel and retain the original line and cursor |
 
 Options requiring values display an argument placeholder. After insertion, type
 the value at the prompt; attached forms leave the cursor next to the flag.
 The [complete controls and configuration guide](docs/usage.md#browser-controls)
 covers description scrolling, alternate keys, Vi keymaps, and terminal resizing.
+
+### Understand the value before inserting it
+
+![Actual rsync bandwidth details: bare numbers mean 1024 bytes/second, with applicability explicitly scoped to rsync 3.4.1.](docs/assets/numerical-guidance.png)
+
+The bundled rsync guidance distinguishes bare bandwidth values from accepted
+suffixes and states the documented version. Search `bytes/second` to find that
+meaning, then use `[` / `]` to inspect accepted forms and special values. Display
+units are explanations, not necessarily accepted literal suffixes. The browser
+does not convert or validate the pending value or assume that a documented
+version matches an installed program.
+
+[Value display and search](docs/usage.md#browser-controls) explains everyday use;
+the [numerical contract](docs/numerical-value-contract.md) specifies authoring,
+applicability and evidence requirements. Legacy custom profiles remain usable
+without numerical metadata. External help can remain incomplete or uncertain.
 
 ```mermaid
 flowchart TD
@@ -129,6 +148,9 @@ Curated profiles cover subsets of Linux utilities, development tools, containers
 cloud CLIs, and embedded tooling. Ordinary static profiles work without installed
 targets; vendor/version-guarded profiles require identity verification.
 Generated help is inferred and can omit options or misidentify value requirements.
+Compound placeholders and nested manual sections retain their documented context;
+borrowed manuals require explicit applicable sections rather than becoming a
+blanket source of options. See [source ownership and parser limits](docs/discovery-and-safety.md#profile-selection).
 
 The [command compatibility matrix](docs/compatibility.md) lists maintained paths,
 version constraints, verification limits, and **explicit activation instructions
