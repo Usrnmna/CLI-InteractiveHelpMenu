@@ -7,6 +7,7 @@ migration evidence and the actual browser's draw/search construction.
 
 from contextlib import ExitStack, redirect_stdout
 from copy import deepcopy
+from dataclasses import replace
 import importlib.util
 import io
 import json
@@ -129,6 +130,34 @@ class NumericalCoverageTests(unittest.TestCase):
         self.assertTrue(report["full_maintained_ready"])
         self.assertEqual(report["remaining_debt"], [])
         self.assertIn("display_search_propagation", report["active_gates"])
+
+    def test_concise_details_and_original_evidence_have_separate_obligations(self):
+        """Check fixed value facts independently of the display formatter."""
+        option = self.profile["categories"][0]["options"][0]
+        view = Browser(self.profile).text(option)
+        details = " ".join(view.details)
+        for phrase in ("bare numbers: seconds", "Applicability unconfirmed", "Input N"):
+            self.assertIn(phrase, details)
+        for phrase in ("Evidence: verified.", "https://example.invalid/coverage-specimen/manual"):
+            self.assertNotIn(phrase, details)
+            self.assertIn(phrase.casefold(), view.searchable)
+        self.assertTrue(self.check()["passed"], self.check()["diagnostics"])
+
+    def test_partial_loss_of_value_rules_qualifications_or_search_evidence_fails(self):
+        """A populated pane or search corpus cannot hide one missing obligation."""
+        original = coverage.presentation.option_text
+        for prefix in ("Value", "Applicability unconfirmed", "Input N"):
+            def omit(*args, **kwargs):
+                view = original(*args, **kwargs)
+                return replace(view, details=tuple(line for line in view.details if not line.startswith(prefix)))
+            with self.subTest(prefix=prefix), patch.object(coverage.presentation, "option_text", side_effect=omit):
+                self.assertIn("coverage_details_missing", self.codes(self.check()))
+        def omit_reference(*args, **kwargs):
+            view = original(*args, **kwargs)
+            return replace(view, searchable=view.searchable.replace(
+                "https://example.invalid/coverage-specimen/manual", ""))
+        with patch.object(coverage.presentation, "option_text", side_effect=omit_reference):
+            self.assertIn("coverage_search_missing", self.codes(self.check()))
 
     def test_new_profile_category_required_optional_fixed_and_keyword_are_discovered(self):
         original = deepcopy(self.profile)
@@ -389,10 +418,13 @@ class NumericalCoverageTests(unittest.TestCase):
         browser = Browser(profile, "--bwlimit")
         view = browser.text(option)
         # Independent reference expectations, not reconstructed formatter output.
-        for expected in (evidence["bare_bytes_per_second"] + " bytes/second", "'K'", "'KB'", evidence["version"]):
+        for expected in (evidence["bare_bytes_per_second"] + " bytes/second", "'K'", "'KB'"):
             self.assertIn(expected, " ".join(view.details))
             browser.set_query(expected)
             self.assertIn(option, browser.options())
+        self.assertNotIn(evidence["version"], " ".join(view.details))
+        browser.set_query(evidence["version"])
+        self.assertIn(option, browser.options())
         browser.set_query("--bwlimit")
         screen = FakeScreen(24, 160)
         draw(screen, browser, load_keys(None))

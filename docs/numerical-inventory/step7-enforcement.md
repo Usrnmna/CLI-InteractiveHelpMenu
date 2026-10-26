@@ -35,7 +35,7 @@ interpretation modules come from the trusted tool checkout, not that snapshot.
 | Supplied structure | Optional metadata and definitions in every bundled profile | Shared structural errors fail, independently of debt allowances |
 | Maintained prospective | Value-bearing options, optional values, numerical fixed flags, numerically classified keywords/flags, positional groups and shared definitions | Completeness errors fail except unchanged exact legacy debt or an explicitly justified exception |
 | Maintained strict | The same records, with no debt suppression | Every completeness error fails; readiness is reported separately |
-| Propagation | Every structurally valid supplied active contract, including references and positional guidance | Missing formatter obligations or placeholders in actual details/search construction fail |
+| Propagation | Every structurally valid supplied active contract, including references and positional guidance | Missing concise value rules or applicability qualifications in details, or original formatter text or placeholders in search, fail |
 | External uncertainty | Raw captures, parsed observations, synthetic reference inputs and matrix evidence | Explicit census/review required; no fabricated complete contract or runtime browsing block |
 | Secondary heuristics | Nonnumerical dispositions with suspicious placeholders, prose or structured kinds | Visible review warnings; no automatic reclassification or inferred units |
 
@@ -164,10 +164,13 @@ and scale; counts require subjects, indices origins and delegated values their
 grammar. Literal tokens do not imply conventional scale. Structural and
 completeness modes remain distinct.
 
-The checker compares formatter obligations with actual shared presentation,
-not persisted explanation copies. Independent reference tests verify rsync's
-byte rate, suffix spellings and version scope through browser details, search
-and fake-window drawing. Deliberate omission of details/search content fails.
+The checker compares concise value rules and applicability qualifications with
+actual shared details, and the complete original formatter text with search.
+References, release identifiers and audit context remain searchable. Independent
+reference tests verify rsync's byte rate and suffix spellings through browser
+details, search and fake-window drawing, with version scope retained in search.
+Deliberate omission of individual value rules, qualifications or searchable
+references fails.
 Positional meaning is checked through existing option-details paths. Existing
 presentation tests cover wrapping, scrolling and qualified alternatives; native
 terminal behavior remains a separate verification boundary.

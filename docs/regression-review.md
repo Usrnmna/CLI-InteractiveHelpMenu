@@ -9,7 +9,7 @@ Verified on 2026-10-26 against the current working tree. The review identified a
 - Per-path offline audit: **358 tests passed** (also included in the full Linux total; not additive).
 - Preflight: **12 checks passed**, covering six Bash syntax checks, bundled and configured-driver validation, inventory reconciliation, strict numerical preservation and exact command/driver listings.
 - [Machine-readable coverage and tested-file hashes](regression-coverage.json).
-- Local detailed evidence: [Linux test outcomes](../tests/reports/current-regression/linux-suite.json), [Linux log](../tests/reports/current-regression/linux-suite.log), [Windows log](../tests/reports/current-regression/windows-portable.log), [per-path details](../tests/reports/current-regression/inventory.json), [preflight](../tests/reports/current-regression/preflight.json). These logs are local ignored artifacts; the matrix and outcome snapshot above are maintained files.
+- Local detailed evidence under `tests/reports/current-regression/`: `linux-suite.json` (Linux test outcomes), `linux-suite.log` (Linux log), `windows-portable.log` (Windows log), `inventory.json` (per-path details), and `preflight.json` (preflight). These logs are local ignored artifacts and are absent from fresh checkouts; the matrix and outcome snapshot above are maintained files.
 
 ## Inventory and boundaries
 

@@ -165,7 +165,7 @@ def heuristic_signals(record, classification):
 
 
 def propagation_diagnostics(record):
-    """Check actual shared details/search construction against formatter obligations.
+    """Check concise details and original search text against their obligations.
 
     Independent semantic expectations and omission mutations in the tests also
     exercise the browser draw/search paths. This invariant alone does not prove
@@ -177,6 +177,7 @@ def propagation_diagnostics(record):
     try:
         expected = format_value_semantics(record["metadata"], context=context,
                                            definitions=profile.get("value_definitions"), presentation=True)
+        expected_details = presentation.concise_value_lines(expected)
         if record["kind"] == "positional_group":
             # Command-wide positional text is displayed/searchable with each option.
             views = [presentation.option_text(profile, c, o) for c in profile["categories"] for o in c["options"]]
@@ -190,12 +191,12 @@ def propagation_diagnostics(record):
         diagnostics.append(diagnostic("coverage_details_missing", "propagation",
                                       "Provide an accessible existing details path for positional meaning.", record))
     for view in views:
-        if any(line not in view.details for line in expected):
+        if any(line not in view.details for line in expected_details):
             diagnostics.append(diagnostic("coverage_details_missing", "propagation",
-                                          "Restore the complete formatted meaning and qualifications in accessible details.", record))
+                                          "Restore the concise value rules and applicability qualifications in accessible details.", record))
         if any(line.casefold() not in view.searchable for line in expected):
             diagnostics.append(diagnostic("coverage_search_missing", "propagation",
-                                          "Include displayed numerical meaning and qualifications in the shared search text.", record))
+                                          "Include the original numerical meaning, qualifications and evidence in the shared search text.", record))
         placeholder = record["option"].get("argument", "")
         if placeholder and placeholder.casefold() not in view.searchable:
             diagnostics.append(diagnostic("coverage_placeholder_missing", "propagation",
