@@ -52,6 +52,44 @@ class ParserAssociationTests(unittest.TestCase):
     def capture(self, name):
         return (ROOT / "tests/fixtures/help" / name).read_text(encoding="utf-8")
 
+    def test_comma_choices_keep_complete_operands_and_following_aliases(self):
+        text = "Options:\n  --lfnf={all,none}, --last-failed-no-failures={all,none}  Choose a policy"
+        parsed = options(discovery.build_profile("specimen", [("fixture", text)]))
+        self.assertEqual(set(parsed), {"--lfnf=", "--last-failed-no-failures="})
+        for option in parsed.values():
+            self.assertEqual(option["argument"], "{all,none}")
+            self.assertEqual(option["summary"], "Choose a policy")
+        for operand in ("<first,second>", "[first,second]", "{first,second}"):
+            parsed = options(discovery.build_profile("specimen", [("fixture",
+                f"--first={operand}, --second={operand}  Retained description")]))
+            self.assertEqual(set(parsed), {"--first=", "--second="})
+            self.assertTrue(all(o["argument"] == operand for o in parsed.values()))
+
+    def test_shared_equals_alias_retains_psql_variable_declaration(self):
+        profile = discovery.build_profile("psql", [("fixture", self.capture("followup-systems/psql.txt"))])
+        parsed = options(profile)
+        for flag in ("-v", "--set=", "--variable="):
+            self.assertIn(flag, parsed)
+            self.assertEqual(parsed[flag]["argument"], "NAME=VALUE")
+            self.assertNotIn("--variable=", parsed[flag]["summary"])
+
+    def test_mirrored_lowercase_operands_and_quoted_alias_annotations_survive(self):
+        parsed = options(discovery.build_profile("sed", [("fixture", self.capture("workflow-sed.txt"))]))
+        for flag, argument in (("-e", "script"), ("--expression=", "script"),
+                               ("-f", "script-file"), ("--file=", "script-file")):
+            self.assertEqual(parsed[flag]["argument"], argument)
+        parsed = options(discovery.build_profile("psql", [("fixture", self.capture("followup-systems/psql.txt"))]))
+        for flag in ("-1", "--single-transaction"):
+            self.assertEqual(parsed[flag]["argument"], "")
+            self.assertIn('("one")', parsed[flag]["detail"])
+            self.assertIn("execute as a single transaction", parsed[flag]["detail"])
+
+    def test_trailing_declaration_comma_is_not_description_prose(self):
+        parsed = options(discovery.build_profile("specimen", [("fixture",
+            "Options:\n  --first, --second,\n      Retained continuation description")]))
+        self.assertEqual(set(parsed), {"--first", "--second"})
+        self.assertTrue(all(o["summary"] == "Retained continuation description" for o in parsed.values()))
+
     def borrowed(self, marker="COMMON OPTIONS"):
         """Use unrelated names and flags to rule out target-specific selection."""
         return ("REFERENCE-ENGINE(1)\n\nNAME\n  reference-engine - describe an engine\n\n" + marker + "\n"

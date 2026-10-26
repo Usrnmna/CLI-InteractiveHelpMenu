@@ -88,6 +88,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "scratch/runtime/.cli-help-install.json", "scratch/.cli-help-rc-session", "scratch/.lycheecache",
             "tests/reports/numerical-inventory/inventory.json", "tests/reports/ci/numerical-inventory-summary.json",
             "cli-help-inventory-session/profiles/private.json", "scratch/cli-help-inventory-session/help.txt",
+            "cli-help-description-screen-session/profiles/captured.json",
+            "scratch/cli-help-sanitized-screen-session/tmux.sock", "cli-help-replay-session/input.fifo",
         ], True)
 
     def test_source_fixtures_templates_and_public_assets_remain_visible(self):
@@ -112,6 +114,10 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "releases/v0.1.2-alpha/cli-help-v0.1.2-alpha-linux-x86_64.checksum",
             "scripts/inventory_numerical_descriptions.py", "tests/test_numerical_inventory.py",
             "docs/numerical-inventory/README.md", "docs/numerical-inventory/review.json", "docs/cli-help-inventory.md",
+            "tools/capture_readme_media.py", "tools/requirements-media.txt",
+            "docs/assets/help-browser.png", "docs/assets/ls-browser.png", "docs/assets/numerical-guidance.png",
+            "docs/assets/option-inserted.png", "docs/assets/guided-review.png",
+            "docs/cli-help-description-screen.md", "docs/cli-help-sanitized-screen.md", "docs/cli-help-replay.md",
         ], False)
 
     def test_native_artifacts_are_binary_and_maintained_text_keeps_lf(self):
@@ -119,7 +125,7 @@ class RepositoryIgnoreTests(unittest.TestCase):
         binaries = ["cli-help", "scratch/runtime/cli-help", "cli-help-v0.1.2-alpha-linux-x86_64",
                     "dist/candidate/cli-help-v0.1.2-alpha-linux-x86_64",
                     "releases/v0.1.1-alpha/cli-help-v0.1.1-alpha-linux-x86_64",
-                    "docs/assets/option-insertion.gif", "candidate.run", "candidate.tar.gz"]
+                    "docs/assets/option-insertion.gif", "docs/assets/help-browser.png", "candidate.run", "candidate.tar.gz"]
         for name in binaries:
             with self.subTest(path=name):
                 output = subprocess.check_output(["git", "-C", str(self.folder), "check-attr", "-z",
@@ -147,7 +153,9 @@ class RepositoryIgnoreTests(unittest.TestCase):
     def test_inventory_sessions_are_excluded_from_release_sources(self):
         """Keep release selection aligned with Git without requiring a Linux build."""
         policy = release_source_policy()
-        for name in ("docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt"):
+        for name in ("docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt",
+                     "tests/cli-help-description-screen-session/private.json",
+                     "tools/cli-help-sanitized-screen-session/tmux.sock", "docs/cli-help-replay-session/raw.cast"):
             with self.subTest(path=name):
                 self.assertTrue(policy.excluded_source(Path(name)))
         for name in ("docs/numerical-inventory/review.json", "docs/cli-help-inventory.md",

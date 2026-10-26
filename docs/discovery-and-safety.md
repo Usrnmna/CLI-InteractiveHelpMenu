@@ -12,11 +12,12 @@ flowchart TD
     P -->|Yes| B[Browse help]
     P -->|No| M{Discovery mode}
     M -->|off| E[Diagnostic; pending command retained]
-    M -->|Matching cache in man or auto| B
+    M -->|Valid fresh matching cache in man or auto| B
     M -->|man: cache miss or refresh| A[Manual lookup only]
     M -->|auto: cache miss or refresh| H[Applicable fixed help and manual sources]
-    A --> S[Preserve source identity and section scope]
-    H --> S
+    A --> T[Strip complete terminal sequences and parse descriptions]
+    H --> T
+    T --> S[Preserve source identity and section scope]
     S --> V[Validate applicable root declarations]
     S --> N[Retain nested or unassigned source context]
     V -->|Usable options| B
@@ -289,7 +290,8 @@ entries are ignored. Unavailable cache storage does not prevent discovery.
 The cache generation invalidates obsolete interpreted documentation after parser
 changes, including compound operands, nested sections and manual-scope association.
 Generation 15 also invalidates entries parsed with incomplete terminal-sequence
-sanitization. Regeneration occurs only through the existing permitted discovery
+sanitization. Generation 16 additionally invalidates incomplete comma-containing
+operands and shared equals aliases. Regeneration occurs only through the existing permitted discovery
 path. Imported and curated profile files are not rewritten; captured sources can
 be re-imported to a separate file and reviewed using the
 [manual import workflow](manual-import.md).

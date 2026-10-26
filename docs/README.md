@@ -20,6 +20,10 @@ The operating guides describe the current working tree. The
 Neither an equal version string nor a dated review establishes current checkout
 contents. Dated reviews retain the results and limitations of their own runs.
 
+The [visual and configuration audit](media-and-configuration-review.md) maps the
+documentation media and diagrams to source behavior, capture evidence, and
+repository policy checks.
+
 ## Browser use
 
 | Topic | Guide |
@@ -58,7 +62,7 @@ flowchart TD
     P --> V
     V -->|Explicit save with backups| P
     P --> Ck[Read-only consistency inspection]
-    Ck -->|Explicit backup and snapshot choice| V
+    Ck -->|Explicit backup and snapshot choice: restore files| P
     P -->|Inspect generated content| A[Export profile and driver directories]
     A --> K[Validate with --check then browse in Bash]
 ```
@@ -70,6 +74,10 @@ requirements. The [profile and driver reference](profiles-and-drivers.md)
 defines both formats.
 
 ## Numerical guidance and verification
+
+The [option-description regression review](regression-review.md) records the
+current command-path and function coverage, terminal checks, parser repairs,
+skips, and remaining gaps after the four display fixes.
 
 | Question | Maintained explanation |
 | --- | --- |

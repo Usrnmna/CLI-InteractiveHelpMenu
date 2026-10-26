@@ -120,6 +120,8 @@ class ReleaseInventoryTests(unittest.TestCase):
             "tools/.config/gcloud/credentials.db", "tools/.config/gh/hosts.yml",
             "tests/.config/cli-help/profiles/private.json", "tools/.config/containers/auth.json",
             "docs/cli-help-inventory-session/private.json", "tools/cli-help-ignore-session/temporary.txt",
+            "tests/cli-help-description-screen-session/private.json",
+            "docs/cli-help-sanitized-screen-session/private.md", "tools/cli-help-replay-session/raw.cast",
             "tools/.local/share/containers/storage/private", "tests/htmlcov/index.html", "docs/.DS_Store",
         }
         public = {"cli_help/added_module.py", "tests/fixtures/help/captured.txt", "docs/assets/example.gif",

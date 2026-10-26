@@ -1,13 +1,14 @@
 # Terminal demonstration media
 
-[Project overview](../../README.md) · [Development guide](../development.md)
+[Project overview](../../README.md) · [Development guide](../development.md) ·
+[Visual and configuration coverage](../media-and-configuration-review.md)
 
 These images render captured output from actual Linux Bash and Python terminal
 sessions. Terminal cells, colors, search results, and form prompts come from the
 application. The title bars and numbered captions are presentation annotations.
 The guided-review image shows the lower viewport containing the form, omitting
 earlier report output.
-The assets were regenerated from the `0.1.2-alpha` working tree on 2026-10-25
+The assets were regenerated from the `0.1.2-alpha` working tree on 2026-10-26
 (America/Los_Angeles). They illustrate the captured checkout, rather than proving
 the contents or behavior of a downloaded release package. Source hashes and
 runtime details are recorded in local capture evidence.
@@ -15,7 +16,7 @@ runtime details are recorded in local capture evidence.
 | Asset | Content |
 | --- | --- |
 | [Option insertion GIF](option-insertion.gif) | A 35.7-second loop with 19 checked states: browse categories, search numerical meaning, insert rsync options, then scroll ls options and complete details |
-| [Help browser](help-browser.png) | Unfiltered rsync browser showing the first seven of nine categories |
+| [Help browser](help-browser.png) | Unfiltered rsync browser showing aligned declarations/descriptions and the first seven of nine categories |
 | [Assembled rsync command](option-inserted.png) | Completed command with valued options and quoted paths, preserved after reopening help and cancelling |
 | [Scrolled ls browser](ls-browser.png) | The twelfth Display option, `--hide=`, with its required argument and the preceding scrolled options |
 | [Numerical guidance](numerical-guidance.png) | Actual bandwidth details: bare values use 1024 bytes/second, qualified to rsync 3.4.1; special values and source scope remain visible |
@@ -94,7 +95,7 @@ dependencies:
 
 Select fresh destinations to preserve earlier captures. Candidate images should
 replace public assets only after inspection; retain byte-identical assets. The
-2026-10-25 run used the existing environment without installing dependencies and
+2026-10-26 run used the existing environment without installing dependencies and
 ran inside an unprivileged, offline WSL network namespace.
 The root ignore rules also exclude `cli-help-media-*` temporary session folders
 when `TMPDIR` points at the checkout root. Public GIFs and PNGs remain trackable.
@@ -115,15 +116,17 @@ for the sequences used by curses. The handling follows the
 Application output and list ordering are retained; captions and title bars are
 the only presentation annotations.
 
-Validation on 2026-10-25 independently replayed the refreshed rsync and ls output
+Validation on 2026-10-26 independently replayed the refreshed rsync and ls output
 through tmux 3.4: all 19 captured screens matched its visible cells. The capture
 checks also confirmed exact pending buffers and cursors, cancellation preservation,
 absence of target-execution markers, and unchanged review collection contents.
 This evidence covers the recorded 100×24 xterm interactions on Bash 5.2.21 and
 Python 3.12.3 under Ubuntu 24.04/WSL; other terminal environments remain unverified.
-Fresh evidence is retained in `tests/reports/docs-media-current/capture-final/`.
+Fresh evidence is retained in `tests/reports/docs-media-2026-10-26/capture/`.
 Earlier raw recordings and verification reports remain separate historical
-evidence. The assembled-command PNG is byte-identical and was retained.
+evidence. The assembled-command and guided-review PNGs are byte-identical and
+were retained. The browser, scrolled ls view, numerical view, and GIF now show
+the aligned OPTIONS rows introduced by the current presentation implementation.
 
 The capture harness now asserts the displayed numerical lead and scrolls to
 later argument text. Its earlier assumption that the literal argument label

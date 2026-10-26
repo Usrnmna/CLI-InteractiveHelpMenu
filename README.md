@@ -13,7 +13,7 @@ whose flags and argument syntax are difficult to remember.
 [Get started](#get-started) · [Browser controls](#using-the-browser) ·
 [Compatibility](#compatibility-and-execution-boundaries) · [All guides](docs/README.md)
 
-![Actual Bash UI: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
+![Actual Bash UI with aligned option descriptions: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
 
 The 36-second demonstration uses real terminal output with static profiles and
 discovery disabled. [Static browser view](docs/assets/help-browser.png) ·
@@ -119,6 +119,8 @@ covers description scrolling, alternate keys, Vi keymaps, and terminal resizing.
 ### Understand the value before inserting it
 
 ![Actual rsync bandwidth details: bare numbers mean 1024 bytes/second, with applicability explicitly scoped to rsync 3.4.1.](docs/assets/numerical-guidance.png)
+
+[Open the full-size numerical guidance view](docs/assets/numerical-guidance.png)
 
 The bundled rsync guidance distinguishes bare bandwidth values from accepted
 suffixes and states the documented version. Search `bytes/second` to find that

@@ -126,7 +126,7 @@ class TerminalSanitizationTests(unittest.TestCase):
         parent.mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="cli-help-sanitizer-cache-", dir=parent) as folder:
             path = Path(folder) / "cache.json"
-            old_identity = {"command": ["specimen"], "version": 14}
+            old_identity = {"command": ["specimen"], "version": 15}
             current = {"command": ["specimen"], "version": discovery.CACHE_VERSION}
             discovery.write_cache(path, old_identity, profile)
             self.assertIsNone(discovery.read_cache(path, current, 60))

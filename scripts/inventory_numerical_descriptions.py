@@ -31,7 +31,7 @@ PROTECTED_SOURCES = (
     "cli_help/core.py", "cli_help/discovery.py", "cli_help/drivers.py",
     "cli_help/arguments.py", "cli_help/ui.py", "cli_help/main.py",
     "bash/interactive-help.bash", "cli_help/value_semantics.py",
-    "cli_help/presentation.py", "cli_help/authoring.py", "cli_help/manual_import.py",
+    "cli_help/presentation.py", "cli_help/terminal_text.py", "cli_help/authoring.py", "cli_help/manual_import.py",
     "cli_help/bulk_scan.py", "cli_help/review.py", "cli_help/review_forms.py",
     "cli_help/collection.py", "scripts/inventory_numerical_descriptions.py",
     "cli_help/diagnostics.py",

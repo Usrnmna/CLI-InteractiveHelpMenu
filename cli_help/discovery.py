@@ -30,7 +30,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 15
+CACHE_VERSION = 16
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -285,6 +285,9 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
         if raw_tail.startswith(",") and not re.fullmatch(r",\s*", raw_tail):
             return None
         tail = (raw_tail[:separator.start()] if separator else raw_tail).strip()
+        if tail == ",":
+            # A wrapped declaration list can end with its alias delimiter.
+            tail = ""
         flag = match.group(1)
         argument = ""
         optional = False
@@ -295,8 +298,21 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
                 argument, optional = value
                 tail = tail[len(argument):].strip()
         elif tail.startswith("="):
-            value = re.match(r"=([^\s,]+)", tail)
-            if value:
+            # Commas inside explicit placeholders are value syntax, not alias
+            # separators. Read balanced angle/square tokens before plain values.
+            placeholder = placeholder_prefix(tail[1:])
+            value = re.match(r"=(\{[^{}\n]+\}|[^\s,]+)", tail)
+            if placeholder:
+                payload = placeholder[0]
+                flag += "="
+                argument = payload
+                tail = tail[len(payload) + 1:].strip()
+            elif tail == "=" and separator:
+                # A declaration such as --set=, --variable=NAME=VALUE shares
+                # the final operand while retaining each alias's equals form.
+                flag += "="
+                tail = ""
+            elif value:
                 payload = value.group(1)
                 # A quoted example wrapping into prose must not replace a real
                 # optional declaration with an inferred required fragment.
@@ -334,6 +350,16 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
                 argument = value.group(1)
                 optional = argument.startswith("[") and argument.endswith("]")
                 tail = tail[value.end():].strip()
+            elif separator and re.fullmatch(r"[a-z][A-Za-z0-9_-]*", tail) and re.match(
+                    r"(?:=|\s+)" + re.escape(tail) + r"(?=$|[\s,])", signature[matches[index + 1].end():]):
+                # A repeated literal operand on the following alias establishes
+                # lowercase syntax, e.g. -e script, --expression=script.
+                argument, tail = tail, ""
+            elif separator and re.fullmatch(r'\("[^"\n]+"\)', tail):
+                # Quoted parenthetical labels describe the spelling rather than
+                # a value: -1 ("one"), --single-transaction. Retain the label.
+                summary = tail + (" " + summary if summary else "")
+                tail = ""
             elif ":" in flag and re.fullmatch(r"[a-z][a-z0-9_-]*", tail):
                 # FFmpeg's concrete stream-selector declarations use lowercase
                 # codec metavariables even without a separate description.
@@ -357,6 +383,8 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
             break
     # Shared argument syntax usually appears only after the last alias.
     argument_owner = next((option for option in reversed(options) if option["argument"]), None)
+    if not argument_owner and any(option["flag"].endswith("=") for option in options):
+        return None
     if argument_owner:
         for option in options:
             if not option["argument"]:

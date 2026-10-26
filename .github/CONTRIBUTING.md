@@ -118,6 +118,12 @@ checkout-local generated collections. Maintained help fixtures and public
 documentation media remain trackable. The
 [media guide](../docs/assets/README.md) explains actual terminal capture and
 regeneration; screenshots and recordings should reflect observed behavior.
+Inspect changed assets in rendered documentation, including complete GIF playback
+and a narrow viewport. Keep an asset inventory with source/workflow mappings,
+current versus historical status, regeneration commands, and verification limits.
+When a test adds a temporary-directory prefix, keep `.gitignore`, the link-scan
+exclusions in `lychee.toml`, and release selection in `scripts/build_release.py`
+consistent. Check both excluded temporary content and retained public media.
 
 Numerical inventory facts belong in `tests/reports/numerical-inventory/`.
 The guide and `docs/numerical-inventory/review.json` are maintained inputs and
