@@ -155,6 +155,13 @@ The retained local guarded runner is
 `.cache/native-posix-followup/run_native.py`. The fresh ext4 selection uses
 `--label final-ext4 --selection full`; the separate mounted-filesystem selection
 uses `--label mounted-filesystem --selection posix --filesystem 9p`.
+These labels identify the recorded earlier runs. Later selections require fresh
+labels to preserve those historical reports.
+The later [expansion-test response correction](parser-association-repairs.md#expansion-test-response-correction)
+adds the complete expansion module to that guarded selection. The 251-test result
+above remains the earlier native snapshot. The new `--selection expansion`
+entry point selects the complete expansion and parser-association modules;
+current follow-up reports remain distinct from these historical native results.
 Evidence under `tests/reports/numerical-inventory/` includes:
 
 - `native-baseline-{inventory,prospective,strict}.json` and final counterparts.
@@ -166,6 +173,12 @@ Evidence under `tests/reports/numerical-inventory/` includes:
   coverage, encoding, links and unchanged index/revision evidence.
 
 ## Remaining limits
+
+The subsequent [full Linux-suite verification](full-linux-verification.md)
+records an unmodified 929-test Python 3.12 run, including inspected disposable
+process, lifecycle and archive fixtures. It extends this account's earlier
+restricted selection without establishing Python 3.10, real installed-target,
+9p permission-denial or hosted-CI results.
 
 The native PTY/Readline and ext4 acceptance gaps are closed within this matrix.
 The 9p permission-denial case remains unestablished. Human visual/font acceptance,

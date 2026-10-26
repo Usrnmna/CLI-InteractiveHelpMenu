@@ -542,6 +542,12 @@ support, other terminals, or every Bash/Readline release.
 
 Run `bash tests/run.sh` for the complete gate, including the rendered tests when
 tmux is available. A skipped terminal suite is unverified evidence, not a pass.
+
+The [full Linux-suite verification account](numerical-inventory/full-linux-verification.md)
+records the inspected process boundaries, disposable-environment procedure,
+actual Python 3.12 result and remaining Python 3.10 gap. Local results do not
+establish hosted-CI success.
+
 For focused investigation:
 
 ```bash

@@ -1,6 +1,7 @@
 """Check development CLI route contracts, editing boundaries and fixed probes."""
 
 import json
+from dataclasses import replace
 from pathlib import Path
 import sys
 import unittest
@@ -77,6 +78,34 @@ def options(profile):
 
 def specimen(case):
     return (FIXTURES / case["fixture"]).read_text(encoding="utf-8")
+
+
+def probe_response(case, route, argv, captures=None):
+    """Return help or a source-matched scoped manual without executing argv.
+
+    Both mocked lookups resolve to sys.executable. The fixed renderer argument
+    prefix distinguishes the manual request; argv[0] must match that deliberate
+    mock identity. Captured argv uses the literal renderer name instead.
+    """
+    if not argv or argv[0] != sys.executable:
+        raise AssertionError(f"{case['command']}: probe must use the configured mocked executable path")
+    is_manual = argv[1:2] == ["-P"] or "--no-hyphenation" in argv
+    if not is_manual:
+        return specimen(case)
+    arguments = ["-P", "/bin/cat", "--no-hyphenation", "--no-justification", "-s", "1:8", "--", route.manual]
+    if not route.manual or argv[1:] != arguments:
+        raise AssertionError(f"{case['command']}: manual request must match the route's fixed renderer arguments")
+    if route.manual_scope is None:
+        return specimen(case)
+    capture = (CAPTURES if captures is None else captures).get(case["command"], {})
+    if (not isinstance(capture, dict) or capture.get("returncode") != 0
+            or not isinstance(capture.get("text"), str) or not capture["text"].strip()):
+        raise AssertionError(f"{case['command']}: missing successful scoped manual capture; supply its recorded request and text")
+    source = capture.get("source")
+    if (not isinstance(source, list) or not source or not isinstance(source[0], str)
+            or Path(source[0]).name != "man" or source[1:] != arguments):
+        raise AssertionError(f"{case['command']}: captured manual source must match man and the route's fixed request for {route.manual}")
+    return capture["text"]
 
 
 def profile_for(case):
@@ -265,7 +294,7 @@ class DevelopmentExpansionTests(unittest.TestCase):
                     return "4.9.4"
                 if words[0] in ("esptool", "esptool.py") and argv[1:] == ["--help"]:
                     return "esptool v5.1.0" if words[1] == "write-flash" else "esptool.py v4.8.1"
-                return specimen(case)
+                return probe_response(case, route, argv)
 
             def lookup(executable, **kwargs):
                 return sys.executable
@@ -292,7 +321,8 @@ class DevelopmentExpansionTests(unittest.TestCase):
             for mode in ("man", "off"):
                 with self.subTest(command=case["command"], mode=mode), \
                         patch("discovery.shutil.which", return_value=sys.executable), \
-                        patch("discovery.run_probe", return_value=specimen(case)) as probe:
+                        patch("discovery.run_probe", side_effect=lambda argv, *args, **kwargs:
+                              probe_response(case, route, argv)) as probe:
                     callback = lambda executable, **kwargs: discover(executable, Settings(mode=mode, cache_ttl=0),
                         driver_registry=REGISTRY, **kwargs)
                     line = case["command"] + " --"
@@ -309,6 +339,61 @@ class DevelopmentExpansionTests(unittest.TestCase):
                         discover(words[0], Settings(mode=mode, cache_ttl=0), subcommands=tuple(words[1:]),
                                  driver_registry=REGISTRY)
                         self.assertTrue(all("--no-hyphenation" in call.args[0] for call in probe.call_args_list))
+
+    def test_probe_responses_distinguish_help_from_scoped_and_unscoped_manuals(self):
+        case = next(case for case in CASES if case["command"] == "git stash show")
+        route = help_route("git", ("stash", "show"), REGISTRY)
+        request = [sys.executable, *CAPTURES[case["command"]]["source"][1:]]
+        self.assertEqual(probe_response(case, route, request), CAPTURES[case["command"]]["text"])
+        self.assertEqual(probe_response(case, route, [sys.executable, "--help"]), specimen(case))
+        self.assertEqual(probe_response(case, replace(route, manual_scope=None), request), specimen(case))
+        # Selection depends on recorded source ownership, not Git-specific names.
+        other = {**case, "command": "specimen view"}
+        other_route = replace(route, manual="specimen-reference")
+        other_request = [*request[:-1], other_route.manual]
+        text = "COMMON OPTIONS\n  --format  A synthetic formatting flag\n"
+        recorded = {other["command"]: {"source": ["man", *other_request[1:]], "returncode": 0, "text": text}}
+        self.assertEqual(probe_response(other, other_route, other_request, recorded), text)
+
+    def test_scoped_manual_response_rejects_missing_or_mismatched_capture_requests(self):
+        case = next(case for case in CASES if case["command"] == "git stash show")
+        route = help_route("git", ("stash", "show"), REGISTRY)
+        capture = CAPTURES[case["command"]]
+        request = [sys.executable, *capture["source"][1:]]
+        with self.assertRaisesRegex(AssertionError, "missing successful scoped manual capture"):
+            probe_response(case, route, request, {})
+        for source in (["git", *request[1:]], ["man", *request[1:-1], "other-manual"],
+                       ["man", *request[1:5], "8", *request[6:]], None):
+            with self.subTest(source=source), self.assertRaisesRegex(AssertionError, "captured manual source must match"):
+                probe_response(case, route, request, {case["command"]: {**capture, "source": source}})
+        with self.assertRaisesRegex(AssertionError, "fixed renderer arguments"):
+            probe_response(case, route, [*request[:-1], "other-manual"])
+        with self.assertRaisesRegex(AssertionError, "mocked executable path"):
+            probe_response(case, route, ["unmatched-renderer", *request[1:]])
+
+    def test_scoped_route_discovery_preserves_formatting_and_excludes_specific_selectors(self):
+        case = next(case for case in CASES if case["command"] == "git stash show")
+        words = case["command"].split()
+        route = help_route(words[0], tuple(words[1:]), REGISTRY)
+        request = [sys.executable, *CAPTURES[case["command"]]["source"][1:]]
+        for mode in ("auto", "man"):
+            settings = Settings(mode=mode, cache_ttl=0)
+            with self.subTest(mode=mode), patch("discovery.shutil.which", return_value=sys.executable), \
+                    patch("discovery.run_probe", side_effect=lambda argv, *args, **kwargs:
+                          probe_response(case, route, argv)) as probe:
+                profile = discover(words[0], settings, subcommands=tuple(words[1:]),
+                                   driver_registry=REGISTRY)
+                self.assertTrue({"--stat", "--name-status"} <= options(profile).keys())
+                self.assertTrue({"-1", "--base", "-2", "--ours", "-3", "--theirs"}.isdisjoint(options(profile)))
+                origin = profile["documentation"]["sources"][0]["documentation"]["provenance"]
+                self.assertEqual(origin["requested_command"], words)
+                self.assertEqual(origin["manual_lookup"], route.manual)
+                probe.assert_called_once_with(request, settings.timeout)
+        # The inadequate specimen must remain rejected through actual discovery.
+        with patch("discovery.shutil.which", return_value=sys.executable), \
+                patch("discovery.run_probe", return_value=specimen(case)), \
+                self.assertRaisesRegex(HelpError, "No applicable root option declarations"):
+            discover(words[0], Settings(mode="man", cache_ttl=0), subcommands=tuple(words[1:]), driver_registry=REGISTRY)
 
     def test_real_yarn_major_versions_keep_distinct_option_sets_and_arity(self):
         expected = {("classic", "install"): {"--frozen-lockfile", "--production", "--ignore-scripts"},

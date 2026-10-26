@@ -229,3 +229,86 @@ numerical semantics. Native terminals, installed targets, POSIX recovery,
 hardware, package lifecycle and hosted CI are not established by these tests.
 No numerical migration, command-specific enrichment, probing expansion,
 repository-configuration overhaul, staging, commit, push or publication occurs.
+
+## Expansion-test response correction
+
+The subsequent correction starts from a clean checkout at
+`21453cb2d1adb949ffb3bdaa08caedb6f7aa03dd`. The two expansion tests for fixed
+probe arguments and manual/disabled modes reproduce the reported stash-show
+errors before editing. Both return the hand-authored `Options:` specimen as
+the mocked git-diff manual. That specimen has no recognized common-option region,
+so the declared route correctly rejects it. The earlier 251-test native selection
+does not include this expansion module and supplies no result for these cases.
+
+`probe_response` in
+[the expansion tests](../../tests/test_expansion_development.py) now separates
+executable help from fixed manual requests. Both mocked executable lookups still
+resolve to `sys.executable`; the fixed renderer prefix identifies the manual
+request. Its complete arguments must match the selected route. For scoped
+manuals, the capture key locates a candidate, while the recorded `man` source,
+full fixed argument tail, successful status and nonempty text establish whether
+that candidate is usable. The recorded renderer name is deliberately distinct
+from the mocked executable path. Missing or mismatched captures produce an
+actionable assertion rather than a synthetic fallback.
+
+Executable-help responses, unscoped manual specimens and the existing
+pytest/Yarn/esptool identity responses retain their previous purposes. The
+original synthetic specimen and raw captures remain byte-identical. No common
+heading is fabricated and no production parser or route is changed.
+
+New regression cases check help/manual separation, a generic unrelated source,
+missing/mismatched capture requests and actual auto/man discovery through the
+scoped stash-show route. Formatting options remain active, stage selectors remain
+excluded, and the inadequate specimen still fails closed through discovery.
+Existing pending-value, fixed-request and disabled-mode assertions remain intact.
+
+The ignored local runner `.cache/native-posix-followup/run_native.py` now includes
+the complete expansion-development module in its guarded `full` selection.
+Its new `expansion` selection runs that module with the parser-association module.
+The selection name `full` refers to this guarded subset, not the general Linux
+suite. Normal CI discovery already includes the module; CI definitions and the
+Python matrix are unchanged.
+
+Focused reproduction on an existing suitable Linux/WSL environment:
+
+```bash
+python3 -B -m unittest discover -s tests -p test_expansion_development.py -v
+python3 -B -m unittest discover -s tests -p test_parser_association.py -v
+python3 -B scripts/inventory_numerical_descriptions.py --check --summary
+python3 -B scripts/check_numerical_coverage.py --summary
+python3 -B scripts/check_numerical_coverage.py --mode strict --summary
+```
+
+The complete focused selection passes 39 tests on Python 3.12.3 in Ubuntu 24.04
+WSL and on Windows Python 3.13.0, with no skips. Windows-only inherited directory
+permissions are confined to selected test cache paths; no production permission
+changes occur. Exact focused and expanded regression selections are retained in
+the ignored reports rather than inferred from prior test counts.
+The expanded guarded Python 3.12 selection passes 268 tests across fifteen
+modules with no skips. This is the inspected local subset, not a full Linux
+suite or hosted-workflow result.
+
+Python 3.10 is unavailable in the checked Windows launcher and common local
+interpreter locations. The separately registered `Ubuntu` distribution cannot
+start because its virtual disk is missing; its interpreter version is unknown.
+No environment is repaired, installed or provisioned for this correction.
+
+The unmodified full Linux suite is not run on either requested version under
+this scope. It includes target/help-renderer process fixtures, a Bash test that
+deliberately submits the pending line, editor fixtures and installation/release
+tests. Those boundaries remain excluded rather than broadly mocked or reported
+as full-suite passes. Python 3.10 and hosted-CI success remain unestablished.
+
+Fresh evidence under `tests/reports/numerical-inventory/` uses the
+`expansion-response-baseline-*`, `expansion-response-focused-313.json`,
+`native-expansion-response-focused-312-tests.json`,
+`native-expansion-response-regression-312-tests.json` and
+`expansion-response-verification.json` names. Current reconciliation, coverage
+and protected-file comparisons belong to those reports. Earlier native and
+association reports remain historical evidence. No inventory annotation,
+numerical policy, debt allowance or individual exception is changed.
+
+The later [full Linux-suite verification](full-linux-verification.md) separately
+establishes the unmodified Python 3.12 runner result after inspection of its
+synthetic process and disposable lifecycle boundaries. It preserves the focused
+correction above; Python 3.10 and hosted-CI results remain unestablished.
