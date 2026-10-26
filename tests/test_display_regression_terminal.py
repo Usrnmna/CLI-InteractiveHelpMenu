@@ -9,6 +9,7 @@ import unittest
 from test_discovery import ROOT
 from discovery import build_profile
 from core import validate_profile
+from presentation import description_blocks
 from test_terminal_screen import TMUX_AVAILABLE, TmuxShell
 
 
@@ -37,7 +38,7 @@ class CapturedDescriptionScreenTests(unittest.TestCase):
                 category = next(c for c in profile["categories"] if any(o["flag"] == flag for o in c["options"]))
                 option = next(o for o in category["options"] if o["flag"] == flag)
                 self.assertTrue(option["summary"].startswith(opening))
-                expected[command] = option["summary"]
+                expected[command] = description_blocks(option["summary"], option.get("detail", ""))[0]
                 # Isolate selection while retaining the real captured declaration,
                 # description, continuation paragraphs and source attribution.
                 selected = deepcopy(profile)
@@ -62,13 +63,8 @@ class CapturedDescriptionScreenTests(unittest.TestCase):
                             if width == 160:
                                 start = 5 + max(3, (height - 9) // 2)
                                 details = "\n".join(state.cells[start:height - 3])
-                                if command == "aws s3 cp":
-                                    # This full capture merges usage/examples before
-                                    # the description. Later repetitions remain
-                                    # deliberate evidence, not opening duplicates.
-                                    self.assertIn(expected[command], details)
-                                else:
-                                    self.assertEqual(details.count(expected[command]), 1)
+                                self.assertEqual(details.count(expected[command]), 1)
+                                self.assertNotIn("Source:", details)
                         shell.cancel()
                         self.assertEqual(shell.read_buffer(), (pending, len(pending)))
                         shell.open_menu()

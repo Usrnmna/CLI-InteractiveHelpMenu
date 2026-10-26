@@ -25,7 +25,7 @@ import presentation
 import ui
 from core import find_context, insert_option
 from discovery import build_profile, merge_profiles
-from presentation import option_label
+from presentation import concise_value_lines, option_label
 from test_functional_matrix import BrowserLoop, FakeScreen
 from test_value_semantics import contract, synthetic_node
 from ui import Browser, cell_width, draw, ellipsize_cells, load_keys, run_browser, wrap_cells
@@ -129,8 +129,9 @@ class NumericalPresentationTests(unittest.TestCase):
                                                       definitions=profile.get("value_definitions"), presentation=True)
                     with self.subTest(command=profile["command"], flag=option["flag"]):
                         self.assertNotIn("could not be interpreted", " ".join(view.details))
-                        for line in expected:
+                        for line in concise_value_lines(expected):
                             self.assertIn(line, view.details)
+                        for line in expected:
                             self.assertIn(line.casefold(), view.searchable)
             self.assertEqual(profile, before)
         self.assertGreater(selected, 0)  # Scope grows with explicit metadata, not historical totals.
@@ -143,8 +144,8 @@ class NumericalPresentationTests(unittest.TestCase):
             field = "bare_bytes_per_second" if source == "rsync" else "bare_bits_per_second"
             self.assertIn(self.evidence[source][field] + " " + unit, view.compact)
             self.assertIn("scoped", view.compact)
-            self.assertIn(self.evidence[source]["version"], " ".join(view.details))
-            self.assertIn("not established", " ".join(view.details))
+            self.assertNotIn(self.evidence[source]["version"], " ".join(view.details))
+            self.assertIn("Applicability unconfirmed", " ".join(view.details))
             browser.set_query(unit)
             self.assertIn(option, browser.options())
 
@@ -159,7 +160,7 @@ class NumericalPresentationTests(unittest.TestCase):
         for query in ("negative", "disables", "omitted", "Nms"):
             browser.set_query(query)
             self.assertIn(option, browser.options())
-        self.assertIn(self.evidence["go_test"]["version"], " ".join(view.details))
+        self.assertNotIn(self.evidence["go_test"]["version"], " ".join(view.details))
 
     def test_reference_binary_decimal_and_literal_token_meanings(self):
         _, _, view = self.view("rsync", "--bwlimit=")
@@ -269,7 +270,7 @@ class NumericalPresentationTests(unittest.TestCase):
         self.assertIn("Value variant 1", " ".join(view.details))
         self.assertIn("Value variant 2", " ".join(view.details))
         self.assertIn("0.001 seconds", " ".join(view.details))
-        self.assertIn("No target match is assumed", view.details[0])
+        self.assertIn("No target match is assumed", " ".join(view.details))
         for query in ("version: 1", "version: 2", "0.001 seconds"):
             browser.set_query(query)
             self.assertEqual(browser.options(), [first_option(profile)])
@@ -288,9 +289,9 @@ class NumericalPresentationTests(unittest.TestCase):
             self.assertEqual(formatter.call_count, 1)
         view = browser.text(first_option(profile))
         self.assertIn("Source review", view.compact)
-        self.assertIn("Source review", view.details[0])
-        self.assertIn("not applied as value guidance", " ".join(view.details))
-        self.assertIn("Numerical source: selected source", view.details)
+        self.assertIn("Conflicting or incomplete", view.details[0])
+        self.assertNotIn("Numerical source: selected source", view.details)
+        self.assertIn("numerical source: selected source", view.searchable)
         browser.set_query("INACTIVE_SCALE_CLAIM")
         self.assertEqual(browser.options(), [])
         self.assertNotIn("internal_code", " ".join(view.details))
@@ -308,7 +309,7 @@ class NumericalPresentationTests(unittest.TestCase):
             browser.set_query(query)
             self.assertEqual(len(browser.options()), 1)
             self.assertIn(query, text)
-        self.assertIn("Source:", text)
+        self.assertNotIn("Source:", text)
 
     def test_assigned_shared_prose_is_searchable_unassigned_context_is_not_associated(self):
         profile = build_profile("tool", [("synthetic help", "Options:\n  --size SIZE  Buffer amount\n\n"
@@ -320,8 +321,7 @@ class NumericalPresentationTests(unittest.TestCase):
         self.assertIn(option, browser.options())
         browser.set_query("unresolved-special-context")
         self.assertEqual(browser.options(), [])
-        self.assertIn("unresolved-special-context", " ".join(browser.text(option).details))
-        self.assertIn("relationship to this option is unverified", " ".join(browser.text(option).details))
+        self.assertNotIn("unresolved-special-context", " ".join(browser.text(option).details))
 
     def test_shared_references_and_positional_components_reach_details_and_search(self):
         profile = json.loads((ROOT / "tests/fixtures/value-semantics/synthetic-profile.json").read_text(encoding="utf-8"))
@@ -335,8 +335,9 @@ class NumericalPresentationTests(unittest.TestCase):
             view = browser.text(option)
             expected = format_value_semantics(profile["positional_value_semantics"],
                                               definitions=profile.get("value_definitions"), presentation=True)
-            for line in expected:
+            for line in concise_value_lines(expected):
                 self.assertIn(line, view.details, name)
+            for line in expected:
                 self.assertIn(line.casefold(), view.searchable, name)
             browser.set_query("Repeated value group (command-wide)")
             self.assertTrue(browser.options())
@@ -454,8 +455,8 @@ class NumericalPresentationTests(unittest.TestCase):
         self.assertIn("Details", screen.text())
         self.assertIn("scroll", screen.text())
         self.assertIn("No bandwidth limit", text)
-        self.assertIn("Reference:", text)
-        self.assertIn("3.4.1", text)
+        self.assertNotIn("Reference:", text)
+        self.assertNotIn("3.4.1", text)
         # Compare the actual wrapped lines, including complete suffix rules.
         actual = text.replace(" ", "")
         for paragraph in view.details:

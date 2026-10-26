@@ -206,7 +206,7 @@ def option_row(option, view, budget, label_width, selected=False):
     label = ellipsize_cells(option_label(option), label_width)
     padding = " " * (label_width - sum(cell_width(c) for c in label))
     description_width = budget - label_width - 4
-    description = (view.notice + " " if view.notice else "") + option["summary"]
+    description = (view.notice + " " if view.notice else "") + view.summary
     if view.list_hint:
         with_hint = description + " | " + view.list_hint
         if sum(cell_width(c) for c in display_text(with_hint)) <= description_width:

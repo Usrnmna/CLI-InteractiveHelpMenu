@@ -101,8 +101,9 @@ source /absolute/path/to/CLI-InteractiveHelpMenu/bash/interactive-help.bash
 During search entry, Enter applies the filter, Escape restores the previous
 filter, Backspace removes a character, and Ctrl-U clears it. A second Enter is
 required to select an option after applying a search. Filtering matches option
-names, summaries, descriptions, argument placeholders and displayed numerical
+names, original summaries and descriptions, argument placeholders, and numerical
 explanations, including units, scales, accepted forms and source qualifications.
+Source evidence remains searchable even when omitted from the concise display.
 Each category displays its matching count.
 When a new search has no matches in the current category, the first matching
 category is selected automatically.
@@ -111,8 +112,10 @@ Option rows align declarations and summaries within each category. Complete,
 qualified value hints are appended only when the summary and hint both fit;
 nonnumerical meaning is not repeated before the summary. `[review]`,
 `[unverified]`, and `[varies]` indicate source review, unverified value evidence,
-and differing applicability variants. Full guidance remains at the beginning of
-selected details and remains searchable even when omitted from the list.
+and differing applicability variants. Selected details show essential behavior,
+value formats, choices, units and constraints. Dates, release annotations, source
+references, examples, repeated prose and insertion instructions are omitted.
+Target restrictions and uncertainty warnings remain when needed for correct use.
 An ellipsis marks clipped declarations or summaries; the `Details start-end/total`
 line and `[` / `]` controls provide access to the complete explanation and literal
 declaration. See [numerical presentation and search](numerical-inventory/step5-presentation.md)

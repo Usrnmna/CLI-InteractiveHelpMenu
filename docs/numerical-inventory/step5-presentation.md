@@ -31,13 +31,14 @@ is inferred. The metadata contract and validation policies are unchanged.
   scope markers remain. A list hint is eligible only when this lead explains
   bare-number interpretation; nonnumerical meaning is not repeated in the row.
   Eligible hints are displayed in full or omitted, never partially clipped.
-- Complete details retain the formatter lines, original summary/detail, complete
-  literal declaration and argument guidance, command-wide repeated arguments,
-  source review notes, category context and unassigned source context.
-  A separate summary is omitted when the detail begins with that exact summary
-  followed by an LF/CR line ending, or equals the summary entirely. The original
-  detail block remains intact. Whitespace, case and near-matches are not
-  normalized; later repetitions and source attributions remain visible.
+- Selected details retain the literal declaration, concise purpose and value
+  rules, required/optional arity, and command-wide repeated-value formats.
+  Recognizable source labels, dates, release annotations, examples, insertion
+  instructions and unrelated category context are omitted. Wrapped paragraphs
+  are joined and repeated sentences are shown once. Unknown prose is retained
+  conservatively so unfamiliar constraints are not discarded by a length limit.
+  Duplicate special-value meanings are grouped within each applicability scope;
+  forms belonging to different variants or components remain separate.
 - Search retains the original joined flag/summary/detail text, including legacy
   cross-field substring matches, and adds the displayed declaration, argument
   placeholder, numerical explanations and relevant source qualifications.
@@ -50,8 +51,8 @@ in profiles. Modifying a profile in place during an open modal is not supported.
 
 ## Visible and accessible information
 
-Active numerical guidance starts the selected details before category context
-or long summaries. List rows use aligned declaration and description columns.
+Active numerical guidance starts the selected details before option descriptions.
+Category context is omitted from selected option details. List rows use aligned declaration and description columns.
 The declaration column uses the longest declaration in the category, capped at
 40 cells and half the available content width. Filtering and scrolling within
 that category do not change the column position. The summary takes precedence;
@@ -62,8 +63,9 @@ the original option object.
 Short notices remain visible when value hints do not fit: `[review]` identifies
 invalid guidance or source claims requiring review, `[unverified]` identifies
 value evidence that is not verified, and `[varies]` identifies multiple
-applicability variants. Detailed evidence and scope qualifications remain in the
-selected details. Search includes those explanations regardless of row width.
+applicability variants. A concise applicability warning and platform/chip
+restrictions remain in selected details. Detailed evidence and release
+qualifications remain in stored metadata and search, regardless of row width.
 
 Representative presentation from the already reviewed rsync 3.4.1 metadata is:
 
@@ -71,19 +73,19 @@ Representative presentation from the already reviewed rsync 3.4.1 metadata is:
 (scoped) bare: 1024 bytes/second; Maximum socket transfer rate.
 ```
 
-The complete explanation identifies the exact implementation/version, accepted
-suffixes, decimal/binary scales and zero-value behavior. This display unit does
+The selected explanation identifies accepted suffixes, decimal/binary scales
+and zero-value behavior. Exact release identifiers are omitted from display. This display unit does
 not imply an accepted literal `/second` suffix. Its factual evidence remains the
 [Step 3 migration sources](step3-migration.md) and
 [reviewed semantic fixture](../../tests/fixtures/value-semantics/migration-evidence.json).
 No new upstream behavior is verified by displaying those declarations.
 
 Multiple applicability variants use the `[varies]` notice in list rows.
-Details retain every variant with its qualifications. Displayed value hints for
+Details retain every variant with its target restrictions and an applicability warning. Displayed value hints for
 single scoped variants also remain explicitly scoped; the browser does not treat them
 as universal facts about the installed program. Source-derived, synthetic,
-unresolved and partial declarations retain their evidence labels and specific
-investigation requirements. Counts, indices, identifiers, levels, expressions,
+unresolved and partial declarations retain an uncertainty warning; detailed
+evidence labels and investigation requirements remain searchable. Counts, indices, identifiers, levels, expressions,
 composites and delegated grammars use their existing formatter explanations;
 physical units are not invented for them.
 
@@ -100,26 +102,24 @@ Case-insensitive substring matching, category selection, result order and keyboa
 controls remain unchanged. Units, exact multipliers, accepted tokens, counted
 subjects, index origins, level ordering, special values, argument placeholders,
 reference qualifiers and command-wide positional explanations are searchable.
-Searchable value text is also available in selected details. Search never parses
+Selected details contain concise value guidance; search also retains the original
+source text and formatter evidence for compatibility. Search never parses
 an operand, evaluates an expression or runs an example.
 
 Assigned shared explanations preserved in existing option detail remain
-searchable. Unassigned shared prose is accessible under an explicit warning that
-its relationship to the option is unverified; it does not make every option match
-that prose. No association is inferred by the presentation layer.
+searchable. Unassigned shared prose is omitted from option details and does not
+make every option match that prose. No association is inferred by the presentation layer.
 
-Step 4 semantic ownership and relevant source diagnostics are shown as source
-notes. Competing or incomplete claims produce an early review indication. Existing
-source-labeled conflicting prose stays distinguishable and searchable. Inactive
-or invalid structured alternatives are identified by source, but are not formatted
-into active advice or searched as raw metadata. Detailed inactive declarations
-remain in the preserved source data for later review. Presentation does not
-resolve factual conflicts or promote an evidence status.
+Semantic ownership and source diagnostics remain in stored documentation and
+search. Competing or incomplete claims produce a concise warning before value
+rules. Inactive structured alternatives are never formatted into active advice
+or searched as raw metadata. Presentation does not resolve factual conflicts or
+promote an evidence status.
 
 Malformed optional metadata or a formatter failure produces nonfatal guidance
 that numerical documentation could not be interpreted safely. Original summary,
-detail and argument text remain accessible and searchable. Legacy profiles with
-no metadata keep their prose without a completeness gate. Internal diagnostic
+detail and argument text remain searchable; the display uses the same prose
+simplification as profiles without metadata. No completeness gate is added. Internal diagnostic
 codes, raw metadata and schema structures are not shown as value instructions.
 
 ## Verification and reconciliation

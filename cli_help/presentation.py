@@ -6,29 +6,162 @@ profiles, perform I/O or inspect a pending command.
 """
 
 from dataclasses import dataclass
+import re
 
 from value_semantics import ValueContext, ValueSemanticsError, format_value_semantics
 
 
 @dataclass(frozen=True)
 class ValueText:
-    """A compact lead and the complete, unwrapped explanation it comes from."""
+    """A compact lead, concise rules and original formatter text for search."""
 
     compact: str = ""
     lines: tuple[str, ...] = ()
     list_hint: str = ""
     notice: str = ""
+    searchable_lines: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
 class OptionText:
-    """Derived display text; searchable content is a subset of accessible details."""
+    """Concise display text with original documentation retained for search."""
 
     compact: str
     details: tuple[str, ...]
     searchable: str
     list_hint: str = ""
     notice: str = ""
+    summary: str = ""
+
+
+# These patterns remove documentation scaffolding, not arbitrary sentences or
+# text after a fixed length. Unrecognized prose stays intact so constraints are
+# not silently lost when imported help uses an unfamiliar wording.
+_METADATA_LINE = re.compile(
+    r"^(?:Source|Reference|Evidence|Investigation|Source qualification|"
+    r"Reference scope|Numerical source|Shared documentation|Updated|Last updated|Release date|"
+    r"Version|Copyright)\s*[:(]", re.I)
+_BACKGROUND = re.compile(
+    r"^(?:See\b|Refer to\b|For (?:more|further)\b|For example\b|Examples?\s*:|"
+    r"Added in\b|Introduced in\b|Since version\b|New in\b|"
+    r"Internally\b|Implemented (?:using|with)\b|Implementation (?:details?|notes?)\b|"
+    r"(?:Last )?[Uu]pdated (?:on|in)\b|Released on\b|"
+    r"Selecting this option\b|The cursor remains\b|Enter and quote\b|Combine with\b|"
+    r"Other releases require verification\b)", re.I)
+_RELEASE_HEADING = re.compile(
+    r"(?:^|(?<=; )|(?<=\. ))(?:[\w./-]+\s+){1,3}v?\d+(?:\.\d+){1,3}(?:[a-z]\d*)?"
+    r"(?:\s+\([^)]*\))?(?: reference)?:\s*")
+
+
+def concise_description(text):
+    """Remove recognizable provenance and examples; preserve operational prose.
+
+    Wrapped help paragraphs are joined before sentence deduplication. Decimal
+    values, paths, protocol versions and date *formats* are not date metadata.
+    Nothing is evaluated, and the supplied source string is never modified.
+    """
+    paragraphs, current = [], []
+    in_code = False
+    in_examples = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
+        if re.match(r"^(?:Examples?|Usage|Output)\s*:", line, re.I):
+            if current:
+                paragraphs.append(" ".join(current))
+                current = []
+            in_examples = True
+            continue
+        if not line or _METADATA_LINE.match(line):
+            if current:
+                paragraphs.append(" ".join(current))
+                current = []
+            if _METADATA_LINE.match(line):
+                in_examples = False
+            continue
+        if in_examples and re.match(r"^(?:Requires?|Must|Only|Cannot|Allowed|Valid|Range|Default)\b", line):
+            in_examples = False
+        if in_examples or line.startswith(("$ ", "> ", "https://", "http://")):
+            continue
+        # Strip a release annotation without discarding the rule after it.
+        line = re.sub(r"^(?:[\w.-]+\s+){0,3}v?\d+(?:\.\d+){1,3}(?:[a-z]\d*)?:\s*", "", line)
+        line = _RELEASE_HEADING.sub("", line)
+        line = re.sub(r"\s*\((?:added|introduced|since|version)\s+[^)]*\)", "", line, flags=re.I)
+        line = re.sub(r"\bReference scope:.*$", "", line, flags=re.I)
+        line = re.sub(r"\s+in [A-Za-z][\w-]* v?\d+(?:\.\d+){1,3}\b", "", line)
+        line = re.sub(r"\s+v?\d+(?:\.\d+){1,3}(?= (?:date grammar|defaults|reference)\b)", "", line)
+        line = re.sub(r"Releases before \d+(?:\.\d+)+ have ", "Other targets may have ", line)
+        line = re.sub(r"\s+such as \d+[a-z]+(?:\d+[a-z]+)*", "", line)
+        current.append(line)
+    if current:
+        paragraphs.append(" ".join(current))
+    sentences, seen = [], set()
+    for paragraph in paragraphs:
+        for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z])", paragraph):
+            sentence = re.sub(r"\.{2}$", ".", sentence.strip())
+            if not sentence or _BACKGROUND.match(sentence) or sentence == "Documented option":
+                continue
+            key = sentence.rstrip(".")
+            if key not in seen:
+                seen.add(key)
+                sentences.append(sentence)
+    return tuple(sentences)
+
+
+def concise_value_lines(lines):
+    """Keep value rules from the shared formatter, omitting audit scaffolding.
+
+    Target-dependent alternatives remain separate, with an applicability warning
+    and any platform/chip restrictions. Release identifiers stay in search only.
+    Required arity is shown once by option_text; optional omission behavior stays.
+    """
+    result, seen = [], set()
+    specials = {}
+
+    def flush_specials():
+        """Group identical sentinel meanings only within their value scope."""
+        for (magnitude, meaning), syntaxes in specials.items():
+            meaning = " ".join(concise_description(meaning))
+            result.append(f"{magnitude} ({', '.join(syntaxes)}): {meaning}")
+        specials.clear()
+
+    for line in lines:
+        if line.startswith(("Value variant ", "Component ")):
+            flush_specials()
+            # Repeated forms in different variants are not redundant: each set
+            # belongs to its own applicability or positional component.
+            seen.clear()
+        if line.startswith(("Evidence:", "Investigation:", "Reference:", "Source qualification:",
+                            "Subject:", "Option absent:", "Operand omitted: not accepted",
+                            "Bare-number rule: not applicable")):
+            continue
+        special = re.fullmatch(r"Special input (.*), magnitude (.*?): (.*)", line)
+        if special:
+            syntax, magnitude, meaning = special.groups()
+            specials.setdefault((magnitude, meaning), []).append(syntax)
+            continue
+        if line.startswith("Applies to:"):
+            restrictions = re.findall(r"(?:platform|chip): [^;.]+", line)
+            restrictions = [item for item in restrictions if "not verified" not in item]
+            line = "Applicability unconfirmed" + ("; " + "; ".join(restrictions) if restrictions else "") + "."
+        if line.startswith("Delegated grammar:"):
+            line = line.split(";", 1)[0] + "."
+        line = line.removeprefix("Input VALUE; ")
+        line = re.sub(r"^(Input (\S+)); accepted tokens '\2'", r"\1", line)
+        if line.startswith(("Value", "Component")):
+            line = line.replace("; scoped)", ")").replace(" (scoped)", "")
+            line = re.sub(r" \((?:source derived|unresolved|synthetic|not documented)\)(?=:)",
+                          " (unverified)", line)
+        for sentence in concise_description(line):
+            if sentence not in seen:
+                seen.add(sentence)
+                result.append(sentence)
+    flush_specials()
+    return tuple(result)
 
 
 def option_label(option):
@@ -61,8 +194,7 @@ def value_text(profile, entry, *, positional=False):
                                        definitions=profile.get("value_definitions"), presentation=True)
     except (ValueSemanticsError, ValueError, TypeError, KeyError, AttributeError, RecursionError):
         return ValueText("Value guidance unavailable; review needed.", (
-            "Value guidance unavailable: numerical documentation could not be interpreted safely.",
-            "Consult the original description and source documentation; units have not been inferred.",
+            "Value guidance unavailable; units have not been inferred.",
         ), notice="[review]")
     # Multiple scopes stay explicit even when the first explanation is clipped.
     compact = lines[0]
@@ -85,20 +217,15 @@ def value_text(profile, entry, *, positional=False):
         compact = "Value varies by applicability; see details."
         lines = ("Value varies by applicability; all documented alternatives follow. No target match is assumed.",) + lines
         list_hint, notice = "", "[varies]"
-    return ValueText(compact, tuple(lines), list_hint, notice)
+    return ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines))
 
 
 def _source_notes(profile, option):
-    """Expose relevant preserved review evidence without activating alternatives.
-
-    Unassigned shared documentation is explicitly command context and is not an
-    option search term. Inactive structured declarations remain inactive; their
-    source ownership is visible, while raw metadata is never presented as advice.
-    """
+    """Retain associated review evidence for search without activating alternatives."""
     document = profile.get("documentation")
     if not isinstance(document, dict):
-        return (), (), False
-    selected, contextual = [], []
+        return (), False
+    selected = []
     needs_review = False
     identity = option["flag"].rstrip("=")
     owners = document.get("semantic_sources", {})
@@ -124,67 +251,56 @@ def _source_notes(profile, option):
             source = item.get("source") if isinstance(item.get("source"), str) else "an unspecified source"
             selected.append("Unselected numerical declaration from " + source
                             + "; retained for review, not applied as value guidance.")
-    shared = document.get("shared")
-    for item in shared if isinstance(shared, list) else ():
-        if isinstance(item, dict) and not item.get("options") and isinstance(item.get("text"), str):
-            source = item.get("source") if isinstance(item.get("source"), str) else "unspecified source"
-            contextual.extend(("Unassigned source documentation (relationship to this option is unverified):",
-                               source + ": " + item["text"]))
-    return tuple(selected), tuple(contextual), needs_review
+    return tuple(selected), needs_review
 
 
 def description_blocks(summary, detail):
-    """Omit a separate summary only when detail already opens with it exactly.
-
-    A match must cover the entire detail or end at an LF/CR line boundary.
-    No whitespace or case normalization is performed. Returning the original
-    detail intact preserves blank lines, attribution and later repetitions.
-    """
-    if not detail:
-        return (summary,)
-    if summary and (detail == summary or detail.startswith((summary + "\n", summary + "\r"))):
-        return (detail,)
-    return (summary, detail)
+    """Join wrapped descriptions and remove repeated summary/detail prose."""
+    summary = " ".join(concise_description(summary))
+    detail = " ".join(concise_description(detail))
+    if summary and detail.startswith(summary) and (
+            len(detail) == len(summary) or detail[len(summary)] in " .;:,!?"):
+        return concise_description(detail)
+    return concise_description(summary + "\n\n" + detail)
 
 
 def option_text(profile, category, option, *, positional=None):
-    """Build accessible details and substring search text from one explanation.
-
-    Profile-wide repeated-argument guidance is labeled and searchable wherever it
-    is accessible. Unassigned source prose remains accessible context without
-    making every option match claims that have no established association.
-    """
+    """Build concise details without changing stored evidence or legacy search."""
     numerical = value_text(profile, option)
     positional = value_text(profile, profile, positional=True) if positional is None else positional
-    notes, contextual, needs_review = _source_notes(profile, option)
+    notes, needs_review = _source_notes(profile, option)
     lines = list(numerical.lines)
     if needs_review:
-        lines.insert(0, "Source review needed; competing or incomplete claims remain unselected. Consult the source notes below.")
+        lines.insert(0, "Conflicting or incomplete value guidance; verify before use.")
     # Review warnings precede ordinary prose even if active metadata is absent.
-    lines.extend(notes)
     lines.append("Option: " + option_label(option))
-    lines.extend(description_blocks(option["summary"], option.get("detail", "")))
+    description = description_blocks(option["summary"], option.get("detail", ""))
+    # A grammar copied verbatim into both metadata and prose is shown once.
+    value_clauses = {clause.rstrip(".") for line in numerical.lines
+                     for clause in line.split("; ")}
+    for sentence in description:
+        key = sentence.rstrip(".")
+        if key not in value_clauses:
+            lines.append(sentence)
     if option.get("argument"):
         label = "Optional argument: " if option.get("argument_optional") else "Argument required: "
         if option.get("argument_style") == "attached_only":
             label = "Optional attached argument: " if option.get("argument_optional") else "Attached argument required: "
-        lines.append(label + option["argument"] + ". Enter its value after insertion.")
-    # Only explicitly displayed option/argument/value text enters search.
+        lines.append(label.rstrip(": ") + ".")
+    # Raw text and formatter evidence remain searchable for compatibility.
     legacy = option["flag"] + " " + option["summary"] + " " + option.get("detail", "")
-    searchable = [legacy, *lines]
+    searchable = [legacy, option.get("argument", ""), *notes, *numerical.searchable_lines, *lines]
     if profile.get("positional_group"):
         group = profile["positional_group"]
-        repeated = ("Repeated value group (command-wide): " + group["argument"]
-                    + ". Enter each complete group manually; placeholders are never inserted.")
+        repeated = "Repeated value group (command-wide): " + group["argument"] + "."
         group_lines = (repeated, *positional.lines)
         lines.extend(group_lines)
         searchable.extend(group_lines)
-    if category.get("description"):
-        lines.append(category["description"])
-    lines.extend(contextual)
+        searchable.extend(positional.searchable_lines)
     compact = numerical.compact
     list_hint, notice = numerical.list_hint, numerical.notice
     if needs_review:
         compact = "Source review needed; " + (compact or "see details.")
         list_hint, notice = "", "[review]"
-    return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice)
+    summary = next(iter(concise_description(option["summary"])), "")
+    return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice, summary)

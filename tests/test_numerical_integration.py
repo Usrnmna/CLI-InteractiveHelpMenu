@@ -33,6 +33,7 @@ from manual_import import ManualCollection, atomic_json
 from review import ReviewSession, preview_profile
 from test_functional_matrix import BrowserLoop, FakeScreen
 from ui import Browser, draw, load_keys
+from presentation import concise_value_lines
 from value_semantics import format_value_semantics, validate_profile_semantics
 from test_value_semantics import contract, expression_form, synthetic_node
 
@@ -169,14 +170,14 @@ class NumericalIntegrationTests(unittest.TestCase):
         browser = Browser(loaded, "--bwlimit")
         view = browser.text(selected)
         evidence = json.loads((ROOT / "tests/fixtures/value-semantics/migration-evidence.json").read_text(encoding="utf-8"))["sources"]["rsync"]
-        for token in (evidence["bare_bytes_per_second"] + " bytes/second", evidence["version"], "'KB'", "No bandwidth limit", "RATE"):
+        for token in (evidence["bare_bytes_per_second"] + " bytes/second", "'KB'", "No bandwidth limit", "RATE"):
             self.assertIn(token, " ".join(view.details))
             browser.set_query(token)
             self.assertIn(selected, browser.options())
         browser.set_query("--bwlimit")
         for height, width in ((16, 60), (30, 140), (16, 60)):
             content, screen = self.reachable_details(browser, height, width)
-            self.assertIn("Reference:", content)
+            self.assertNotIn("Reference:", content)
             self.assertIn("No bandwidth limit", content)
             self.assertIn("Details", screen.text())
         self.assert_literal_edit(loaded, selected)
@@ -220,8 +221,8 @@ class NumericalIntegrationTests(unittest.TestCase):
         browser = Browser(loaded, "INACTIVE_SCALE_CLAIM")
         self.assertEqual(browser.options(), [])
         details = " ".join(browser.text(entries(loaded)["--delay"]).details)
-        self.assertIn("Source review", details)
-        self.assertIn("competing synthetic source", details)
+        self.assertIn("Conflicting or incomplete", details)
+        self.assertNotIn("competing synthetic source", details)
         self.assertNotIn("INACTIVE_SCALE_CLAIM", details)
 
     def test_identity_and_arity_conflicts_are_not_activated_by_authoring_roundtrip(self):
@@ -273,7 +274,7 @@ class NumericalIntegrationTests(unittest.TestCase):
         selected = entries(loaded)["--flash-size"]
         browser = Browser(loaded)
         details = " ".join(browser.text(selected).details)
-        for token in ("ADDRESS FILE", "4194304 bytes", "ESP32", "Matching to an installed target is not established"):
+        for token in ("ADDRESS FILE", "4194304 bytes", "ESP32", "Applicability unconfirmed"):
             self.assertIn(token, details)
             browser.set_query(token)
             self.assertIn(selected, browser.options())
@@ -345,8 +346,9 @@ class NumericalIntegrationTests(unittest.TestCase):
                 with self.subTest(command=original["command"], flag=option["flag"]):
                     current = entries(loaded)[option["flag"]]
                     self.assertEqual(definition_text(loaded, current), definition_text(original, option))
-                    for line in definition_text(original, option):
+                    for line in concise_value_lines(definition_text(original, option)):
                         self.assertIn(line, browser.text(current).details)
+                    for line in definition_text(original, option):
                         self.assertIn(line.casefold(), browser.text(current).searchable)
                     self.assert_literal_edit(loaded, current)
         self.assertGreater(selected_profiles, 0)  # Enumeration grows with actual optional fields.
@@ -365,7 +367,7 @@ class NumericalIntegrationTests(unittest.TestCase):
         selected = entries(loaded)["--delay"]
         self.assertIn("varies by applicability", browser.text(selected).compact)
         details = " ".join(browser.text(selected).details)
-        for token in ("No target match is assumed", "version: 1", "version: 2", "0.001 seconds"):
+        for token in ("No target match is assumed", "Value variant 1", "Value variant 2", "0.001 seconds"):
             self.assertIn(token, details)
         self.assertEqual(validate_profile_semantics(loaded, alias_groups=[("--delay", "-d")]), ())
 
@@ -378,8 +380,7 @@ class NumericalIntegrationTests(unittest.TestCase):
         selected = entries(loaded)["--output"]
         self.assertNotIn("value_semantics", selected)
         details = " ".join(browser.text(selected).details)
-        self.assertIn("UNASSIGNED_SCALE", details)
-        self.assertIn("relationship to this option is unverified", details)
+        self.assertNotIn("UNASSIGNED_SCALE", details)
 
     def test_mocked_discovery_cache_hit_and_revision_invalidation_feed_authoring(self):
         target = self.root / "capture-specimen"

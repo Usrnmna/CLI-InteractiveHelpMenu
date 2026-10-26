@@ -231,7 +231,7 @@ class ParserAssociationTests(unittest.TestCase):
         self.assertTrue(any("ls [-1afhlnrSt]" in p["text"] and not p["options"] for p in shared))
         selected = options(profile)["-l"]
         view = presentation.option_text(profile, profile["categories"][0], selected)
-        self.assertIn("single columnar", "\n".join(view.details))
+        self.assertNotIn("single columnar", "\n".join(view.details))
         self.assertNotIn("single columnar", view.searchable)
         context = Context("sftp ", 5, 5, 5, "", profile)
         with self.assertRaisesRegex(HelpError, "absent"):
@@ -272,7 +272,7 @@ class ParserAssociationTests(unittest.TestCase):
         self.assertTrue(source["scope_mismatch"])
         category = next(c for c in profile["categories"] if options(profile)["--stat"] in c["options"])
         view = presentation.option_text(profile, category, options(profile)["--stat"])
-        self.assertIn("Only its declared common/shared option section is active", "\n".join(view.details))
+        self.assertNotIn("Only its declared common/shared option section is active", "\n".join(view.details))
         retained = "\n".join(p["text"] for p in profile["documentation"]["shared"] if not p["options"])
         self.assertIn("-1 --base, -2 --ours, -3 --theirs", retained)
         self.assertIn("Can be used only when comparing the working tree", " ".join(retained.split()))

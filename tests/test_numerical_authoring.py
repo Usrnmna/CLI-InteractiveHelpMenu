@@ -120,7 +120,7 @@ class NumericalAuthoringTests(unittest.TestCase):
         self.assertTrue(profile["documentation"]["alternatives"])
         view = Browser(profile).text(option(profile))
         self.assertIn("Source review", view.compact)
-        self.assertIn("requires review", " ".join(view.details))
+        self.assertIn("verify before use", " ".join(view.details))
 
     def test_lossless_moves_reordering_and_blank_fields_preserve_all_metadata(self):
         profile = deepcopy(self.synthetic)
