@@ -262,6 +262,9 @@ For local reproduction, see [isolated local debugging](development.md#isolated-l
 
 ### Third-party command validation
 
+The [rsync option audit](rsync-option-audit.md) maps the bundled menu to the
+upstream manual and both Ubuntu LTS man pages.
+
 The [complete expansion validation](compatibility-expansion-validation.md) records
 the earlier 129-route inventory, deterministic evidence, live versions, skips, and
 limits. The following reports describe older snapshots.

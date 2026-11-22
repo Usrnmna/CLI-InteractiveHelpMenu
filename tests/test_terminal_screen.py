@@ -167,6 +167,30 @@ class TerminalTestCase(unittest.TestCase):
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class OptionsLayoutTests(TerminalTestCase):
+    def test_rsync_preview_and_deletion_guidance_is_readable(self):
+        """Read the actual Details pane, including the last page at minimum size."""
+        shell = self.start()
+        cases = (("--dry-run", "Preview changes without writing files",
+                  "Use --itemize-changes to list proposed changes.", "real run."),
+                 ("--delete", "Delete destination files absent from the source",
+                  "Sender I/O errors stop deletions unless --ignore-errors is set.",
+                  "Preview with --dry-run and --itemize-changes."))
+        for flag, summary, guidance, last_line in cases:
+            with self.subTest(flag=flag):
+                pending = "rsync " + flag
+                shell.keys("C-u")
+                shell.text(pending)
+                shell.open_menu()
+                wide = shell.resize(120, 40)
+                self.assertIn(summary, wide.cells[4])
+                self.assertIn(guidance, wide.cells)
+                shell.resize(60, 16)
+                shell.keys(*(["]"] * 24))
+                shell.wait_for(lambda state: last_line in " ".join(state.cells[:-3]))
+                shell.cancel()
+                self.assertEqual(shell.read_buffer(), (pending, len(pending)))
+                self.assertFalse(shell.executed.exists())
+
     def test_bundled_descriptions_survive_resize_and_literal_insertion(self):
         """Check actual cells with static profiles and leave each command pending."""
         shell = self.start()

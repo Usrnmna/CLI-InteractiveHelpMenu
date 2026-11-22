@@ -114,8 +114,9 @@ class DescriptionPresentationTests(unittest.TestCase):
         browser = Browser(profile, "--archive")
         option = browser.options()[0]
         view = browser.text(option)
-        self.assertIn("Enable archive mode", view.details)
-        self.assertIn("ACLs, extended attributes, and hard links require separate options.", view.details)
+        self.assertIn("Copy a tree with its metadata", view.details)
+        self.assertIn("With --files-from, add -r to recurse.", view.details)
+        self.assertIn("Hard links (-H), ACLs (-A), extended attributes (-X)", " ".join(view.details))
 
     def test_browser_draws_one_opening_description(self):
         profile = self.profile("Pass custom header(s) to server", "Pass custom header(s) to server\nSource: fixture")
@@ -159,11 +160,12 @@ specimen --sample yaml
         self.assertEqual(" ".join(concise_description(text)), text)
         self.assertEqual(concise_description("Use a. Use A."), ("Use a.", "Use A."))
 
-    def test_no_value_flag_omits_argument_instructions_and_suggestions(self):
+    def test_no_value_flag_keeps_operational_guidance_without_argument_instructions(self):
         profile = json.loads((ROOT / "profiles/rsync.json").read_text(encoding="utf-8"))
         browser = Browser(profile, "--dry-run")
         view = browser.text(browser.options()[0])
-        self.assertEqual(view.details, ("Option: --dry-run", "Show a trial run without changing files"))
+        self.assertIn("Use --itemize-changes to list proposed changes.", view.details)
+        self.assertFalse(any("argument" in line.lower() for line in view.details))
 
     def test_required_optional_attached_and_multiple_values_keep_arity(self):
         for fields, label in (({}, "Argument required."),

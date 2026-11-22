@@ -5,21 +5,24 @@
       "name": "Transfer",
       "options": [
         {
-          "detail": "Equivalent to -rlptgoD. Preserves common file attributes and recurses into directories. ACLs, extended attributes, and hard links require separate options.",
+          "detail": "Archive mode (-a) uses -rlptgoD for recursion, symlinks, permissions, modification times, group, owner, devices and special files. With --files-from, add -r to recurse. Hard links (-H), ACLs (-A), extended attributes (-X), access times (-U) and creation times (-N) are separate.",
           "flag": "--archive",
-          "summary": "Enable archive mode"
+          "summary": "Copy a tree with its metadata"
         },
         {
+          "detail": "Use --dirs to copy directory entries without descending into them.",
           "flag": "--recursive",
-          "summary": "Recurse into directories"
+          "summary": "Copy directory trees"
         },
         {
+          "detail": "For regular files, equal modification times still permit an update when sizes differ. Directories, symlinks and type changes bypass the newer-file check. An interrupted --inplace update can leave a newer partial file that a retry skips.",
           "flag": "--update",
-          "summary": "Skip files newer at the destination"
+          "summary": "Skip newer destination files"
         },
         {
+          "detail": "Existing directories are still traversed. This transfer rule does not protect destination-only files from deletion.",
           "flag": "--ignore-existing",
-          "summary": "Skip destination files that already exist"
+          "summary": "Skip files already at the destination"
         }
       ]
     },
@@ -28,13 +31,14 @@
       "name": "Preview",
       "options": [
         {
-          "detail": "Combine with --itemize-changes to inspect planned updates. Selecting this option only inserts text into the shell buffer.",
+          "detail": "Use --itemize-changes to list proposed changes. No file data is sent. Progress and transfer statistics cannot predict a real run.",
           "flag": "--dry-run",
-          "summary": "Show a trial run without changing files"
+          "summary": "Preview changes without writing files"
         },
         {
+          "detail": "The first two characters identify the update and file type. The remaining characters mark changed attributes. Repeat -i to list unchanged items too (receiver 2.6.7 or later).",
           "flag": "--itemize-changes",
-          "summary": "Summarize changes for each file"
+          "summary": "List file and attribute changes"
         }
       ]
     },
@@ -44,9 +48,9 @@
       "options": [
         {
           "argument": "PATTERN",
-          "detail": "The cursor remains after the equals sign. Enter and quote the pattern as required by Bash.",
+          "detail": "The first matching rule wins. An excluded directory is skipped with its contents. Excluded paths are normally protected from deletion. Quote wildcards so rsync receives the pattern.",
           "flag": "--exclude=",
-          "summary": "Exclude matching paths",
+          "summary": "Exclude paths matching a pattern",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -110,8 +114,9 @@
         },
         {
           "argument": "PATTERN",
+          "detail": "Put specific includes before a broader exclusion. Include parent directories too if an exclusion would prevent rsync from descending into them.",
           "flag": "--include=",
-          "summary": "Include matching paths",
+          "summary": "Include paths matching a pattern",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -175,8 +180,9 @@
         },
         {
           "argument": "FILE",
+          "detail": "Use one pattern per line by default. Unprefixed patterns exclude. Blank lines and lines starting with # or ; are ignored. A leading \"+ \" adds an include, \"- \" adds an exclude, and a line containing only ! clears earlier rules.",
           "flag": "--exclude-from=",
-          "summary": "Read exclusion patterns from a file",
+          "summary": "Read filter patterns from a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -245,17 +251,19 @@
       "name": "Output",
       "options": [
         {
+          "detail": "Repeat -v to see skipped files and additional detail.",
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "List transfers and a final summary"
         },
         {
+          "detail": "The rate and time estimate refer to the current file and can fluctuate. Use --info=progress2 for progress across the transfer.",
           "flag": "--progress",
-          "summary": "Show transfer progress"
+          "summary": "Show progress for each file"
         },
         {
-          "detail": "rsync 3.4.1 defaults to level 1 (digit grouping). One occurrence selects level 2 using powers of 1000; a second selects level 3 using powers of 1024. Printed K/M/G/T/P letters do not by themselves identify the scale. The flag takes no number and does not change --bwlimit input units. Releases before 3.1.0 have different starting levels.",
+          "detail": "Sizes normally use grouped digits. Use --no-human-readable for plain digits. In rsync 3.2.7 and 3.4.1, the unit letter alone does not distinguish the two scales. Rsync 3.5.2 marks binary sizes with an i, as in Mi. A lone -h displays help.",
           "flag": "--human-readable",
-          "summary": "Scale printed numbers by 1000; repeat for 1024",
+          "summary": "Scale sizes by 1000, twice for 1024",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -322,12 +330,14 @@
           }
         },
         {
+          "detail": "Compare literal data with matched data to see how much file content rsync sent and how much it reused.",
           "flag": "--stats",
-          "summary": "Show transfer statistics"
+          "summary": "Show transfer totals"
         },
         {
+          "detail": "Errors are still reported.",
           "flag": "--quiet",
-          "summary": "Suppress non-error messages"
+          "summary": "Suppress informational output"
         }
       ]
     },
@@ -336,14 +346,15 @@
       "name": "Network",
       "options": [
         {
+          "detail": "The peers choose a mutually supported method. Use --compress-choice to request a particular algorithm.",
           "flag": "--compress",
-          "summary": "Compress file data during transfer"
+          "summary": "Compress file data in transit"
         },
         {
           "argument": "RATE",
-          "detail": "rsync 3.4.1: a bare rate uses 1024 bytes/second; fractions are allowed. Single-letter K/M/G/T/P and KiB/MiB/GiB/TiB/PiB use powers of 1024; KB/MB/GB/TB/PB use powers of 1000; B means bytes. Suffix letters are case-insensitive. The size grammar also allows a trailing +1 or -1 byte offset. Rates are rounded to KiB/second granularity; a nonzero limit cannot be smaller than 1024 bytes/second. Zero disables the limit. Do not append a literal /s suffix.",
+          "detail": "The limit applies to the average socket rate, so short bursts can exceed it. Rates round to the nearest KiB/s. The smallest nonzero limit is 1 KiB/s. Use a size suffix without a trailing /s.",
           "flag": "--bwlimit=",
-          "summary": "Limit bandwidth in KiB/s when unsuffixed; 0 is unlimited",
+          "summary": "Limit bandwidth (bare rate in KiB/s)",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -691,9 +702,9 @@
         },
         {
           "argument": "SECONDS",
-          "detail": "rsync 3.4.1: the value is an integer count of seconds without a unit suffix. No transferred data for this interval causes exit. The default is 0, meaning no I/O timeout; this is not the connection-establishment timeout.",
+          "detail": "Use whole seconds without a suffix. The default is 0 (no timeout). For the initial connection to a daemon, use --contimeout.",
           "flag": "--timeout=",
-          "summary": "Set I/O inactivity timeout in seconds; 0 disables",
+          "summary": "Exit after an I/O stall (seconds)",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -770,9 +781,9 @@
         },
         {
           "argument": "COMMAND",
-          "detail": "The command is entered manually as an option value. It is not invoked by the help browser. rsync 3.4.1: a remote-shell command and its arguments; shell words and any nested numerical options retain their owning command's rules. Any numerical subvalues follow the owning grammar's rules. Reference scope: 3.4.1.",
+          "detail": "SSH is the usual default. Pass the program and any arguments as one value, for example --rsh=\"ssh -p 2222\". RSYNC_RSH supplies the default command when set.",
           "flag": "--rsh=",
-          "summary": "Specify the remote shell command",
+          "summary": "Choose the remote shell",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -848,21 +859,24 @@
       "name": "Attributes",
       "options": [
         {
+          "detail": "Implies --perms. The sending and receiving filesystems must support compatible ACLs.",
           "flag": "--acls",
-          "summary": "Preserve ACLs"
+          "summary": "Preserve access control lists"
         },
         {
+          "detail": "On systems with namespaces, ordinary users normally copy only user.* attributes. A superuser normally copies all except system.*.",
           "flag": "--xattrs",
           "summary": "Preserve extended attributes"
         },
         {
+          "detail": "Only links between files in the transfer set can be detected. Extra hard links already at the destination can remain.",
           "flag": "--hard-links",
-          "summary": "Preserve hard links"
+          "summary": "Recreate source hard links"
         },
         {
-          "detail": "rsync 3.4.1: UID/GID numbers are account identifiers, not quantities. This flag takes no number and disables normal name-based user/group mapping.",
+          "detail": "Ownership uses the source IDs directly, even when account names map to different IDs at the destination. UID and GID 0 already bypass name mapping.",
           "flag": "--numeric-ids",
-          "summary": "Transfer numeric user and group identifiers",
+          "summary": "Keep numeric user and group IDs",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -931,17 +945,18 @@
       ]
     },
     {
-      "description": "Deletion options affect destination data when the command is subsequently executed.",
+      "description": "Control which destination-only files are removed and when.",
       "name": "Deletion",
       "options": [
         {
-          "detail": "Review the source and destination carefully. A dry run can show proposed deletions before execution.",
+          "detail": "Only directories whose contents are copied with -r, -a or --dirs are checked for extraneous files. Pass the directory itself. A shell-expanded dir/* selects individual entries. Ordinary exclusions protect files unless --delete-excluded is set. Sender I/O errors stop deletions unless --ignore-errors is set. Preview with --dry-run and --itemize-changes.",
           "flag": "--delete",
-          "summary": "Delete extraneous destination files"
+          "summary": "Delete destination files absent from the source"
         },
         {
+          "detail": "Implies --delete. Newly transferred per-directory filter files apply before deletion. Rsync builds the full file list in memory.",
           "flag": "--delete-after",
-          "summary": "Delete extraneous files after transfer"
+          "summary": "Delete destination-only files after transfer"
         }
       ]
     },
@@ -950,12 +965,14 @@
       "name": "Comparison",
       "options": [
         {
+          "detail": "Normally rsync compares size and modification time. With -c, different sizes still trigger transfer. The sender reads file contents during its scan. The receiver reads same-size files to compare checksums. Transferred data is verified independently.",
           "flag": "--checksum",
-          "summary": "Compare checksums instead of modification time and size"
+          "summary": "Check contents of same-size files"
         },
         {
+          "detail": "Modification times are ignored for the transfer decision. Equal-length files can have different contents and still be skipped.",
           "flag": "--size-only",
-          "summary": "Use file size to decide whether an update is needed"
+          "summary": "Skip file data when sizes match"
         }
       ]
     },
@@ -964,17 +981,20 @@
       "name": "Recovery",
       "options": [
         {
+          "detail": "Rsync normally removes the unfinished file. Retaining it can reduce the data sent on a later attempt.",
           "flag": "--partial",
-          "summary": "Keep partially transferred files"
+          "summary": "Keep interrupted transfers for reuse"
         },
         {
+          "detail": "Old destination files are renamed before the update. By default they stay beside the original path with a ~ suffix. Use --suffix to change the ending or specify a separate backup directory.",
           "flag": "--backup",
-          "summary": "Keep backups of replaced destination files"
+          "summary": "Back up replaced or deleted files"
         },
         {
           "argument": "DIRECTORY",
+          "detail": "Implies --backup. Relative paths start at the destination directory. Backups keep their original names unless --suffix is set. A receiving daemon confines backups to its module.",
           "flag": "--backup-dir=",
-          "summary": "Store backups in a separate directory",
+          "summary": "Collect backups in one directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1042,5 +1062,5 @@
   "command": [
     "rsync"
   ],
-  "description": "Copy and synchronize files locally or over a remote transport."
+  "description": "Synchronize files locally, over a remote shell, or with an rsync daemon."
 }
