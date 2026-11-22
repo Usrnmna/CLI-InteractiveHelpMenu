@@ -87,11 +87,11 @@ skips, and remaining gaps after the four display fixes.
 | How are metadata and review status retained during edits? | [Authoring rules](numerical-inventory/step6-authoring.md) |
 | How are deficient additions detected? | [Coverage policy and contributor workflow](numerical-inventory/step7-enforcement.md) |
 | What is complete, and what remains uncertain? | [Maintained debt resolution](numerical-inventory/debt-resolution.md) and [external diagnostic investigation](numerical-inventory/diagnostic-investigation.md) |
-| Which native, local and hosted checks actually ran? | [Native/POSIX evidence](numerical-inventory/native-posix-verification.md) and [local/hosted Python verification](numerical-inventory/full-linux-verification.md) |
+| Which native, local and hosted checks actually ran? | [Native/POSIX evidence](numerical-inventory/native-posix-verification.md) and [Ubuntu and Python test results](compatibility.md#ubuntu-and-python-test-results) |
 
 Strict maintained completeness does not establish every external numerical fact.
-The hosted Python 3.10/3.12 results, earlier local Python 3.12 run and unperformed
-local Python 3.10 run remain separate evidence in the linked verification account.
+The [October verification account](numerical-inventory/full-linux-verification.md)
+retains the earlier WSL and hosted results.
 
 ## Development and evidence
 

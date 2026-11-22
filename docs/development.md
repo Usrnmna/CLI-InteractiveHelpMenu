@@ -448,7 +448,7 @@ are described in the [GitHub update guide](github-updates.md#maintainer-interfac
 
 ## Recorded validation
 
-Functional validation uses Ubuntu 24.04 under WSL with Bash 5.2.21 and
+Earlier functional validation used Ubuntu 24.04 under WSL with Bash 5.2.21 and
 Python 3.12.3. The full suite covers real Bash pseudoterminal interactions,
 discovery, drivers, manual import, bulk scans, review forms, installation,
 updates, conflict review, native release packaging, and verified release updates.
@@ -460,8 +460,8 @@ the dated live results and remaining limits. Docker CLI and Compose help were
 checked using extracted Ubuntu packages; the tests required no running Docker
 daemon. A real Bash test also verifies AWS suffix-help routing, cancellation,
 and insertion with instrumented executables that record any action dispatch.
-The CI matrix additionally runs Python 3.10; local Python 3.12 results do not
-establish a GitHub CI result or compatibility with every supported version.
+The [Ubuntu and Python test results](compatibility.md#ubuntu-and-python-test-results)
+record the local and hosted full-suite outcomes for each matrix entry.
 
 ## Extended tests and live compatibility reports
 
@@ -593,12 +593,9 @@ support, other terminals, or every Bash/Readline release.
 Run `bash tests/run.sh` for the complete gate, including the rendered tests when
 tmux is available. A skipped terminal suite is unverified evidence, not a pass.
 
-The [full Linux-suite verification account](numerical-inventory/full-linux-verification.md)
-records the inspected process boundaries, disposable-environment procedure,
-earlier local Python 3.12 result and separately confirmed successful hosted
-Python 3.10/3.12 jobs. The interrupted local Python 3.10 setup was removed;
-no local Python 3.10 full-suite result is claimed. Hosted results are scoped to
-the linked run and commit, rather than inferred from local execution.
+The [October Linux-suite verification account](numerical-inventory/full-linux-verification.md)
+records the WSL process boundaries, disposable-environment procedure and hosted
+results for that revision.
 
 For focused investigation:
 

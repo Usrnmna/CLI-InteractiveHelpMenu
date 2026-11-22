@@ -242,6 +242,26 @@ the process limits are not a sandbox. See
 
 ## Recorded validation
 
+### Ubuntu and Python test results
+
+The full Linux suite (`bash tests/run.sh`) passed locally and on GitHub Actions
+for all three combinations below. The local runs tested the working tree with
+the vi keybinding regression test fix. On November 21, 2026 (Pacific time),
+GitHub Actions ran the same suite after that fix reached `main` in commit
+[`b0c88c8`](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/commit/b0c88c8f0c2275c6eb0bcc57f973844467c743be).
+
+| Ubuntu | Python | Local sandbox and versions | GitHub Actions full-suite step |
+| --- | --- | --- | --- |
+| 24.04 | 3.10 | Rootless Podman · Ubuntu 24.04.5 · Python 3.10.20 | [Passed on ubuntu-24.04](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/44994019434/job/137121060893) |
+| 24.04 | 3.12 | Rootless Podman · Ubuntu 24.04.5 · Python 3.12.3 | [Passed on ubuntu-24.04](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/44994019434/job/137121061094) |
+| 26.04 | 3.14 | Bubblewrap · Ubuntu 26.04.1 · Python 3.14.4 | [Passed on ubuntu-26.04](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/44994019434/job/137121061037) |
+
+Each local run passed 1,326 tests and skipped one Windows-only probe test.
+The hosted results link to the individual jobs in [workflow run 71](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/44994019434).
+For local reproduction, see [isolated local debugging](development.md#isolated-local-debugging).
+
+### Third-party command validation
+
 The [complete expansion validation](compatibility-expansion-validation.md) records
 the earlier 129-route inventory, deterministic evidence, live versions, skips, and
 limits. The following reports describe older snapshots.

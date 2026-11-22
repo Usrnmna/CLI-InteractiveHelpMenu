@@ -1,6 +1,10 @@
 # Python-version and full Linux-suite verification
 
-## Current result
+The [November Ubuntu and Python test results](../compatibility.md#ubuntu-and-python-test-results)
+record subsequent local and hosted verification. The sections below describe
+the October 2026 runs.
+
+## October 2026 result
 
 GitHub Actions [workflow run 47](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/40275630519)
 completed successfully for commit
@@ -20,7 +24,7 @@ excluded from the full discovery, and no additional mocks or skips are introduce
 for that execution. These are retained local results, not tests rerun for this
 documentation update.
 
-No local Python 3.10 full-suite result is established. The isolated setup was
+The October WSL run covered Python 3.12 only. The isolated Python 3.10 setup was
 interrupted before any interpreter, dependency or source archive was installed
 or downloaded, and its generated remnants have been removed. Hosted Python
 3.10 success closes the hosted matrix gap; it does not create local WSL evidence.
@@ -206,8 +210,7 @@ reports; reproducible source references remain repository-relative.
 
 The Python 3.12 full local Linux-suite gap is closed within this environment.
 The hosted Python 3.10/3.12 matrix gap is closed for the recorded successful run.
-A full local Python 3.10 run remains unperformed; a two-version local acceptance
-claim would still require it. No repair of the unavailable distribution is implied.
+The October WSL verification did not complete a local Python 3.10 run.
 
 The local WSL evidence alone does not establish hosted CI; that result is supplied
 by the separately linked GitHub run. Neither evidence source establishes native

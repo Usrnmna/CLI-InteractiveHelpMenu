@@ -68,8 +68,8 @@ The browser displays and searches supplied numerical explanations. Authoring sav
 boundaries structurally validate supplied metadata and flag potentially stale
 declarations; legacy profiles remain accepted without it. Repository coverage
 checks explicitly select a separate completeness policy. The
-[current verification account](numerical-inventory/full-linux-verification.md)
-distinguishes retained local results from hosted Python 3.10/3.12 evidence.
+[Ubuntu and Python test results](compatibility.md#ubuntu-and-python-test-results)
+record local and hosted full-suite outcomes for the supported matrix.
 The [coverage policy](numerical-inventory/step7-enforcement.md) governs maintained
 content; [debt resolution](numerical-inventory/debt-resolution.md) records the
 completed migration without asserting complete external-help coverage.
