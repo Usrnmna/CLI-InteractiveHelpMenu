@@ -95,6 +95,9 @@ retains the earlier WSL and hosted results.
 
 ## Development and evidence
 
+The [project roadmap](../ROADMAP.md) tracks the command-help audit, its next
+batch, completion criteria and links to verified results.
+
 Implementation accounts retain their original outcomes. Later corrections and
 verification supersede only the findings explicitly identified in those accounts.
 Current behavior belongs in operating/reference guides; dated counts and blocked

@@ -218,6 +218,7 @@ covers custom destinations and existing shell sessions after removal.
 | Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
 | Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.1.2-alpha notes](docs/release-notes-v0.1.2-alpha.md) |
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
+| Find the next command audit and track remaining development work | [Project roadmap](ROADMAP.md) |
 
 The [documentation index](docs/README.md) links all operating guides and dated
 validation reports. [Terminal media capture](docs/assets/README.md) describes the
