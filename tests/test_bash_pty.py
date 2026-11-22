@@ -162,13 +162,19 @@ class BashIntegrationTests(unittest.TestCase):
         # there, then return to insertion mode to inspect the pending buffer.
         session.send(b"\x1b0xi")
         self.assertEqual(session.read_buffer(), ("sync --archive ", 0))
-        session.send(b"\x03")
-        session.expect(b"__HELP_TEST_PROMPT__")
+        # vi's 0C replaces the whole line and leaves Readline in insert mode.
+        # A prompt redraw alone cannot confirm that the pending line is empty.
+        session.send(b"\x1b0C")
+        self.assertEqual(session.read_buffer(), ("", 0))
         bindings = Path(self.temp.name, "bindings")
-        session.send("cli_help_unbind; { bind -m emacs-standard -s; bind -m vi-insert -s; bind -m vi-insert -X; } > " + shlex.quote(str(bindings)) + "; echo __UNBOUND__\n")
-        session.expect(b"\r__UNBOUND__\r\n")
-        self.assertNotIn('\\e[988~', bindings.read_text())
-        self.assertNotIn('\\e[989~', bindings.read_text())
+        session.send("cli_help_unbind && { bind -m emacs-standard -s; bind -m vi-insert -s; "
+                     "bind -m vi-insert -X; } > " + shlex.quote(str(bindings))
+                     + " && printf '__%s__\\n' UNBOUND\n")
+        session.expect(b"__UNBOUND__")
+        remaining = bindings.read_text()
+        self.assertIn("_snapshot", remaining)
+        self.assertNotIn('\\e[988~', remaining)
+        self.assertNotIn('\\e[989~', remaining)
 
     def test_meta_map_binding_dispatches_from_the_root_map(self):
         session = self.start()
