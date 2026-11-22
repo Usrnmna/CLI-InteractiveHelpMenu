@@ -200,9 +200,10 @@ Supported maps are `emacs-standard`, `emacs-meta`, `vi-insertion`, and
 `vi-command`. The `vi-insertion` setting maps to Bash's `vi-insert` keymap.
 The default is `emacs-standard`. `emacs-meta` is normalized to that root map
 with an Escape prefix so Readline can replay the dispatch macro. The internal
-sequences `\e[988~` and `\e[989~` are reserved. An existing binding overlapping
-either sequence prevents binding before changes are made; select a compatible
-Readline configuration rather than overwriting the conflicting internal key.
+sequences `\e[988~` and `\e[989~` are reserved. In vi insertion mode, bare
+Escape continues to switch to command mode. Readline can list this fallback
+alongside longer Escape sequences. Other bindings that overlap either reserved
+sequence prevent installation and retain their original behavior.
 Rebinding removes the previously
 installed plugin binding. Any existing binding on the new sequence is replaced;
 previous third-party bindings are not saved or restored. `cli_help_unbind`

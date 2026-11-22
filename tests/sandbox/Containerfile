@@ -1,0 +1,24 @@
+# Ubuntu 24.04 test environments. Build with an empty context.
+FROM docker.io/library/ubuntu:24.04 AS noble312
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        gcc libc6-dev git python3 tmux ncurses-term \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM noble312 AS python-build
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ca-certificates curl make xz-utils zlib1g-dev libncurses-dev libssl-dev \
+        libffi-dev libreadline-dev libbz2-dev liblzma-dev \
+    && rm -rf /var/lib/apt/lists/*
+# SHA-256 of the XZ source archive on the Python 3.10.20 release page.
+WORKDIR /tmp/build
+RUN curl -fsSLo python.tar.xz https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tar.xz \
+    && echo 'de6517421601e39a9a3bc3e1bc4c7b2f239297423ee05e282598c83ec0647505  python.tar.xz' | sha256sum -c - \
+    && tar -xJf python.tar.xz --strip-components=1 \
+    && ./configure --prefix=/opt/python310 --without-ensurepip \
+    && make -j4 && make install
+
+FROM noble312 AS noble310
+COPY --from=python-build /opt/python310 /opt/python310
+# Clean-shell fixtures resolve python3 on /usr/bin:/bin. Select it there too.
+RUN ln -sfn /opt/python310/bin/python3.10 /usr/bin/python3 \
+    && python3 -c 'import bz2, ctypes, curses, lzma, readline, ssl, zlib'

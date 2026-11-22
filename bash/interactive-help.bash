@@ -65,6 +65,11 @@ cli_help_bind() {
         if [[ ${_CLI_HELP_BOUND_MAP:-} != "$keymap" ]]; then
             while IFS= read -r binding; do
                 [[ $binding == \"* ]] || continue
+                # Readline 8.3 lists bare Escape alongside longer vi-insert
+                # sequences. Its normal mode switch remains active on Escape.
+                if [[ $keymap == vi-insert && $binding == '"\e": vi-movement-mode' ]]; then
+                    continue
+                fi
                 bound_key=${binding%%\":*}
                 bound_key=${bound_key#\"}
                 if [[ -n $bound_key && ( $internal == "$bound_key"* || $bound_key == "$internal"* ) ]]; then

@@ -80,6 +80,51 @@ packages require neither:
 bash tests/run.sh
 ```
 
+### Isolated local debugging
+
+[The local sandbox runner](../tests/run_sandbox.py) runs the same suite against
+a writable copy of the current tracked working-tree files, including edits and
+deletions. Each run gets a fresh home, temporary storage, process namespace
+and isolated network. The real checkout, home directory, service sockets and
+USB devices are outside the test filesystem. Tests can start their own Bash,
+tmux, compiler and fixture processes. Output and exit status return to the
+calling terminal. Temporary files disappear on exit.
+
+On an x86_64 Ubuntu host with Bubblewrap and the dependencies above, run as an
+ordinary user. The default uses the host's read-only `/usr`, including its
+system Python and Readline. These commands run the full suite and the focused
+vi rebinding regression, respectively.
+
+```bash
+python3 -I tests/run_sandbox.py
+python3 -I tests/run_sandbox.py -- python3 -m unittest discover -s tests \
+  -p test_bash_pty.py -k rebinding_between_keymaps -v
+```
+
+Use `--include tests/new_fixture.json` before `--` to add a new, untracked
+file to that run. Paths are relative to the repository root. The runner
+accepts regular files and rejects symlinks. Shell redirection on the host can
+retain a log. For example, `python3 -I tests/run_sandbox.py > run.log 2>&1`.
+
+The two [Ubuntu 24.04 image targets](../tests/sandbox/Containerfile) use
+rootless Podman. Preparation downloads Ubuntu packages and, for Python 3.10,
+builds the checksum-verified CPython source inside the image. The Python 3.12
+target uses Ubuntu's system interpreter. Preparation uses an empty build
+context. The images persist in the local user's Podman store for offline use.
+
+```bash
+python3 -I tests/run_sandbox.py --target noble310 --prepare
+python3 -I tests/run_sandbox.py --target noble312 --prepare
+python3 -I tests/run_sandbox.py --target noble310
+python3 -I tests/run_sandbox.py --target noble312
+```
+
+Both container runs disable network access and image pulls, drop capabilities
+and use a read-only image with executable private scratch storage. The runner
+prints the actual Ubuntu, Bash and Python versions and checks the requested
+Ubuntu/Python combination before starting tests. The same focused command
+syntax works with either target.
+
 The [native terminal and POSIX verification guide](numerical-inventory/native-posix-verification.md)
 describes a narrower offline selection with inert buffers and disposable
 collections. It separates ext4 from Windows-mounted 9p evidence and records
@@ -91,7 +136,7 @@ The [complete expansion validation report](compatibility-expansion-validation.md
 records its dated matrix, full-suite results, live versions, missing dependencies,
 and the distinction between deterministic edits and live documentation evidence.
 
-GitHub Actions runs the deterministic suite on Python 3.10 and 3.12 and retains
+GitHub Actions runs the deterministic suite and retains
 the suite log, fixed-input passive diagnostic reports, and documentation-link
 reports for 14 days, including failed runs.
 The fixed-input reports include passive collection inspection, invalid collection
@@ -312,10 +357,11 @@ privacy review; diagnostic summaries require local-path redaction before sharing
 ## Continuous integration
 
 The [Linux tests and documentation workflow](../.github/workflows/ci.yml) runs on
-pushes, pull requests, and manual dispatch. Each Ubuntu 24.04 test job runs the
+pushes, pull requests, and manual dispatch. Each Linux test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
-Python 3.10 and 3.12. The tests use the Python standard library, tmux for rendered
+Python 3.10 and 3.12 on Ubuntu 24.04 and Python 3.14 on Ubuntu 26.04.
+The tests use the Python standard library, tmux for rendered
 terminal state, Git for ignore-policy checks, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
 

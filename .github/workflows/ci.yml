@@ -15,12 +15,18 @@ concurrency:
 jobs:
   linux-tests:
     name: Linux tests (Python ${{ matrix.python }})
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.10', '3.12']
+        include:
+          - os: ubuntu-24.04
+            python: '3.10'
+          - os: ubuntu-24.04
+            python: '3.12'
+          - os: ubuntu-26.04
+            python: '3.14'
     env:
       LC_ALL: C.UTF-8
       TERM: xterm-256color

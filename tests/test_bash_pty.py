@@ -158,6 +158,10 @@ class BashIntegrationTests(unittest.TestCase):
         session.finish("\n")
         self.assertEqual(session.read_buffer(), ("rsync --archive ", 16))
         self.assertFalse(session.executed.exists())
+        # Escape must still enter vi command mode. Delete the first character
+        # there, then return to insertion mode to inspect the pending buffer.
+        session.send(b"\x1b0xi")
+        self.assertEqual(session.read_buffer(), ("sync --archive ", 0))
         session.send(b"\x03")
         session.expect(b"__HELP_TEST_PROMPT__")
         bindings = Path(self.temp.name, "bindings")
@@ -193,6 +197,17 @@ class BashIntegrationTests(unittest.TestCase):
         session.expect(b"already bound")
         session.expect(b"\r\n__CHECKED__")
         self.assertIn('"\\e[988~": forward-char', bindings.read_text())
+
+    def test_vi_insertion_preserves_custom_dispatch_prefix(self):
+        """A custom binding on a longer Escape prefix still prevents installation."""
+        session = self.start()
+        session.send("set -o vi; bind -m vi-insert '\"\\e[98\":forward-char'; "
+                     "CLI_HELP_KEYMAP=vi-insertion; cli_help_bind; echo status=$?; "
+                     "bind -m vi-insert -q forward-char\n")
+        output = session.expect(b"__HELP_TEST_PROMPT__")
+        self.assertIn(b"already bound", output)
+        self.assertIn(b"status=1", output)
+        self.assertIn(b'"\\e[98"', output.split(b"status=1")[-1])
 
     def test_unicode_prefix_preserves_bash_character_offset(self):
         session = self.start()
