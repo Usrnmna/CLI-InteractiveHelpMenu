@@ -28,10 +28,33 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                 self.assertEqual(record["returncode"], 0)
                 text = (fixture_root / record["file"]).read_text()
                 profile = self.profile(command.replace(" ", "-"))
+                if command == "podman run":
+                    self.assert_podman_run_coverage(text, profile)
+                    continue
                 for category in profile["categories"]:
                     for option in category["options"]:
                         pattern = r"(?<![\w-])" + re.escape(option["flag"].rstrip("=")) + r"(?![\w-])"
                         self.assertRegex(text, pattern)
+
+    def assert_podman_run_coverage(self, capture, profile):
+        """Reconcile the visible Noble flags and the documented cross-release additions."""
+        visible = set()
+        for line in capture.splitlines():
+            match = re.match(r"^\s+(?:(-\w),\s+)?(--[\w-]+)", line)
+            if match:
+                visible.update(flag for flag in match.groups() if flag)
+        self.assertEqual(len(visible), 155)
+
+        # Noble documents --net as an alias. Its help lists only --network.
+        manual_only_on_noble = {"--net"}
+        resolute_additions = {
+            "--cert-dir", "--creds", "--gpus", "--health-log-destination", "--health-max-log-count",
+            "--health-max-log-size", "--hosts-file", "--no-hostname", "--preserve-fd", "--retry",
+            "--retry-delay",
+        }
+        upstream_additions = {"--health-start-interval"}
+        flags = [option["flag"] for category in profile["categories"] for option in category["options"]]
+        self.assertCountEqual(flags, visible | manual_only_on_noble | resolute_additions | upstream_additions)
 
     def profile(self, name):
         return json.loads((ROOT / "profiles" / (name + ".json")).read_text())

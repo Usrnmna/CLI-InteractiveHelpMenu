@@ -1,10 +1,10 @@
 # Podman option audit
 
-The four menus contain 44 selectable entries. Short and long aliases occupy separate rows. The main syntax correction is in `podman build`. Selecting the pull policy now inserts `--pull=` and places the cursor after the equals sign. Typing a bare `--pull` remains valid. A space before a policy turns that word into a build-context operand.
+The first pass covered 44 selectable entries across four menus. The [run manual-coverage revisit](podman-run-manual-coverage.md) records the expanded inventory and updated verification. Short and long aliases occupy separate rows. The main syntax correction is in `podman build`. Selecting the pull policy now inserts `--pull=` and places the cursor after the equals sign. Typing a bare `--pull` remains valid. A space before a policy turns that word into a build-context operand.
 
 ## Sources and versions
 
-The upstream comparison used Podman 6.2.0. The profiles’ structured value guidance is scoped to upstream 5.4.2. Ubuntu’s four Noble man pages identify package `4.9.3+ds1-1ubuntu0.2`, and its four Resolute pages identify `5.7.0+ds2-3build1`.
+The first-pass comparison used Podman 6.2.0. Its structured value guidance was scoped to upstream 5.4.2. Ubuntu’s four Noble man pages identify package `4.9.3+ds1-1ubuntu0.2`, and its four Resolute pages identify `5.7.0+ds2-3build1`.
 
 | Menu | Upstream 6.2.0 | Pinned 5.4.2 | Ubuntu 24.04 | Ubuntu 26.04 |
 | --- | --- | --- | --- | --- |
@@ -17,7 +17,7 @@ The upstream comparison used Podman 6.2.0. The profiles’ structured value guid
 
 Each disposition applies to the original wording and value guidance of every listed spelling.
 
-### Run · 16 entries
+### Run · 16 original entries
 
 | Spelling | Disposition | Finding |
 | --- | --- | --- |
@@ -86,7 +86,7 @@ The upstream 5.4.2 flag registration assigns `missing` to the bare flag. Its bui
 
 Each Ubuntu client sent a log window starting ten minutes before its clock and ending ten minutes after it for `--since 10m --until 10m`. The parser also accepts fractional Unix seconds and treats a calendar timestamp without a zone as UTC. [5.4.2 log command](https://github.com/containers/podman/blob/v5.4.2/cmd/podman/containers/logs.go) · [5.4.2 time parser](https://github.com/containers/podman/blob/v5.4.2/pkg/util/utils.go)
 
-The newer upstream run manual allows a configured default host bind address. Supplying the address explicitly keeps port publication predictable across the releases. Examples of manual-only coverage include run’s `--network` and `--mount`, build’s `--manifest` and `--secret`, exec’s `--env-file` and `--detach-keys`, and logs’ `--latest`. The curated row count stays at 44. [6.2.0 port publication](https://github.com/containers/podman/blob/v6.2.0/docs/source/markdown/options/publish.md)
+The newer upstream run manual allows a configured default host bind address. Supplying the address explicitly keeps port publication predictable across the releases. At the end of the first pass, examples of manual-only coverage included run’s `--network` and `--mount`, build’s `--manifest` and `--secret`, exec’s `--env-file` and `--detach-keys`, and logs’ `--latest`. The first-pass baseline was 44 rows. [6.2.0 port publication](https://github.com/containers/podman/blob/v6.2.0/docs/source/markdown/options/publish.md)
 
 ## Rendered menus and offline verification
 

@@ -1,7 +1,8 @@
 # Project roadmap
 
-**Next task — revisit `podman run` for manual coverage.** Start with its missing
-options and volume-mount Details, then finish `podman build`, `exec` and `logs`.
+**Next task — revisit `podman build` for manual coverage.** The [completed run revisit](docs/podman-run-manual-coverage.md)
+verified all 168 selectable spellings on the three sandbox targets. Follow build with
+`podman exec` and `podman logs`.
 Revisit GNU tar next, then the other previously audited families in table order.
 Resume [the 21-entry `psql` menu](profiles/psql.json) after the revisits are verified.
 
@@ -29,7 +30,8 @@ established separately for each command.
 The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
-top of this page. Record new selectable rows separately from the baseline.
+top of this page. The run revisit adds 152 selectable rows to the baseline,
+bringing the bundled total to 1,094 across the same 76 profiles.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -54,7 +56,7 @@ top of this page. Record new selectable rows separately from the baseline.
 | Go — `go build`, `go test`, `go run`, `go mod tidy` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/go-option-audit.md) | Pending | Pending |
 | .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Pending | Pending |
 | `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Pending | Pending |
-| Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | Next · `run` | Next · `run` |
+| Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | `run` verified · [168 spellings](docs/podman-run-manual-coverage.md#option-inventory) · `build` next | `run` verified · [three sandbox targets](docs/podman-run-manual-coverage.md#verification) · `build` next |
 | `psql` | 1 | 21 | After revisits | — | — |
 | `ansible-playbook`, `az`, `gcloud` | 7 | 90 | Pending | — | — |
 | `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending | — | — |
@@ -78,10 +80,9 @@ top of this page. Record new selectable rows separately from the baseline.
 3. **Revisit Details on existing and new rows.** Keep the summary to one short
    statement of what the option does. Put syntax, defaults, interactions,
    units, side effects and version differences in Details when they change what
-   someone would type or expect. For the Podman pilot, inventory options such
-   as `--mount` and `--network`. Revisit `--volume` for the `:U` suffix’s
-   recursive ownership change on host files and the shared versus private
-   SELinux labels requested by `:z` and `:Z`.
+   someone would type or expect. The [Podman run revisit](docs/podman-run-manual-coverage.md#material-changes)
+   shows how to retain host ownership and SELinux labeling effects in volume
+   Details while keeping the row summary short.
 4. **Close each family against its inventory.** Record the distinct options
    found, options already covered, rows added, aliases accounted for and
    remaining gaps. Record material detail gaps fixed or still open separately.

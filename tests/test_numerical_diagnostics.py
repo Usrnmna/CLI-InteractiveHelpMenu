@@ -134,20 +134,30 @@ class NumericalDiagnosticTests(unittest.TestCase):
         self.assertEqual(sum(expected.values()), self.strict["external_only_logical_entries"])
         self.assertGreater(observations, sum(expected.values()))
 
-    def test_resource_observations_keep_unresolved_forms_and_capture_scope(self):
-        """Podman 4.9.3 base quantities do not establish a complete input grammar."""
-        for flag in ("--cpu-period", "--cpu-quota", "--memory", "-m", "--memory-reservation",
-                     "--memory-swap", "--timeout", "--pids-limit", "--blkio-weight",
-                     "--health-interval", "--device-read-bps", "--device-write-bps"):
-            identity = "option|podman run|" + flag
-            self.assertEqual(self.group(identity)["classification"], "unresolved")
-            self.assertEqual(self.group(identity)["evidence"], "source-derived")
-            for observation in self.entries[identity]["observations"]:
-                context = self.inventory["contexts"].get(observation.get("context_id"), {})
-                if observation["role"] == "fixture_help":
-                    self.assertTrue(any(a.get("version") == "podman version 4.9.3" for a in context.get("associations", [])))
-        # Operand loss is an explicitly deferred parser issue, not a passing
-        # assertion that requires the parser to retain its current defect.
+    def test_podman_resource_contracts_keep_capture_evidence_separate(self):
+        """Check authored units and keep the 4.9.3 help observations source-scoped."""
+        classifications = {
+            "--cpu-period": "quantity", "--cpu-quota": "quantity", "--memory": "quantity",
+            "-m": "quantity", "--memory-reservation": "quantity", "--memory-swap": "quantity",
+            "--timeout": "quantity", "--pids-limit": "count", "--blkio-weight": "level_or_enumeration",
+            "--health-interval": "timestamp_or_duration_expression",
+            "--device-read-bps": "composite", "--device-write-bps": "composite",
+        }
+        for flag, classification in classifications.items():
+            with self.subTest(flag=flag):
+                identity = "option|podman run|" + flag
+                self.assertEqual(self.group(identity)["classification"], classification)
+                self.assertEqual(self.group(identity)["evidence"], "verified")
+                observations = self.entries[identity]["observations"]
+                captured = [item for item in observations if item["role"] == "fixture_help"]
+                self.assertTrue(captured)
+                for item in captured:
+                    self.assertNotIn("value_semantics", item["option"])
+                    context = self.inventory["contexts"][item["context_id"]]
+                    self.assertTrue(any(a.get("version") == "podman version 4.9.3"
+                                        for a in context.get("associations", [])))
+                self.assertTrue(any("value_semantics" in item["option"] for item in observations
+                                    if item["role"] == "bundled_option"))
         raw = (ROOT / "tests/fixtures/help/followup-systems/podman-run.txt").read_text(encoding="utf-8")
         self.assertIn("--memory <number>[<unit>]", raw)
         self.assertIn("k (kibibytes)", raw)
