@@ -184,9 +184,8 @@ and at explicit consumers.
 Heuristics flag numerical placeholders, unit prose or incompatible structured
 kinds under nonnumerical dispositions. Names with digits, systemd `--unit`, a
 serial-device `PORT`, mounted `--volume`, opaque IDs and delegated configuration
-are not quantities by name alone. Current warnings for `fd --print0`,
-`fdfind --print0` and `tar --totals` concern output bytes rather than numerical
-operands; their nonnumerical dispositions remain appropriate. Warnings stay
+are not quantities by name alone. At the enforcement baseline, warnings for `fd --print0`,
+`fdfind --print0` and `tar --totals` concerned the number of bytes written. The original review classified the switches as nonnumerical. Warnings stay
 visible and nonfatal. Review resolves a signal by explaining the source in its
 exact review group or correcting demonstrated misclassification. Arbitrary
 wording, hidden grammars and misleading factual claims can escape heuristics;
@@ -194,7 +193,7 @@ explicit review and upstream documentation remain necessary.
 
 The subsequent [diagnostic investigation](diagnostic-investigation.md) records
 exact source-scoped dispositions for those warnings and all 3,977 external-only
-identities. The three warnings remain visible. External informational groups
+identities. The investigation recorded all three warnings. The [tar revisit](../tar-manual-coverage.md) subsequently documented the optional signal operand. External informational groups
 increase from ten to fourteen after justified review splits; source comparisons
 cover 63 identities within explicitly limited facts, not complete external
 contracts. No heuristic, eligibility, severity, exception or grouping rule changes.

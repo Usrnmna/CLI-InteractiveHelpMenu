@@ -60,8 +60,6 @@ PROFILE_SURFACES = {
     "ls": ["--all", "--almost-all", "--classify", "--color=", "--directory", "--dereference",
            "--escape", "--group-directories-first", "--hide=", "--human-readable", "--inode",
            "--numeric-uid-gid", "--quote-name", "--recursive", "--reverse", "--size", "-S", "-l", "-t"],
-    "tar": ["--bzip2", "--create", "--directory=", "--diff", "--exclude=", "--extract", "--file=",
-            "--gzip", "--list", "--totals", "--verbose", "--xz"],
 }
 
 FIXTURE_SURFACES = {
@@ -215,6 +213,10 @@ class PrioritizedInventoryTests(unittest.TestCase):
         for command, expected in PROFILE_SURFACES.items():
             with self.subTest(command=command):
                 self.assertEqual(sorted(options_of(profile_for(command))), sorted(expected))
+        # Preserve original tar insertions. The manual-coverage test pins its expanded surface.
+        original_tar = {"--bzip2", "--create", "--directory=", "--diff", "--exclude=", "--extract",
+                        "--file=", "--gzip", "--list", "--totals", "--verbose", "--xz"}
+        self.assertLessEqual(original_tar, options_of(profile_for("tar")).keys())
 
     def test_fixture_surfaces_are_pinned(self):
         for command, expected in FIXTURE_SURFACES.items():

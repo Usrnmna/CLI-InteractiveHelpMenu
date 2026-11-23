@@ -1,6 +1,6 @@
 # Bundled GNU tar option audit
 
-The [tar menu](../profiles/tar.json) has 12 selectable entries. The most
+The first-pass [tar menu](../profiles/tar.json) had 12 selectable entries. The [full manual-coverage revisit](tar-manual-coverage.md) records the expanded inventory and subsequent verification. The most
 consequential edit concerns `--directory` (`-C`). For example, in
 `tar -c -C src -f backup.tar main.c`, tar looks for `main.c` in `src`
 and writes `backup.tar` in the directory where tar started.

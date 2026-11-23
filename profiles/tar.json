@@ -1,34 +1,64 @@
 {
   "categories": [
     {
-      "description": "Select the archive operation. Most primary operations are mutually exclusive.",
       "name": "Operation",
+      "description": "Choose one main operation. Operands name disk files, archive members or input archives according to the operation.",
       "options": [
         {
           "flag": "--create",
           "summary": "Create a new archive",
-          "detail": "An existing archive at the output path is replaced. Named directories are archived recursively by default."
+          "detail": "Also spelled -c. An existing archive at the output path is replaced. Named directories are archived recursively by default. In traditional syntax, tar cfv out.tar src takes option values in letter order. In a dashed cluster the value-taking letter goes last, as in tar -cvf out.tar src."
         },
         {
           "flag": "--extract",
           "summary": "Extract files from an archive",
-          "detail": "With no member names, extract all members. To select files, use their stored names. Extraction writes under the current directory by default and can replace existing files."
+          "detail": "Also spelled -x, --get. With no member names, extract all members. To select files, use their stored names. Extraction writes under the current directory by default and can replace existing files. Later copies of the same member normally overwrite earlier copies."
         },
         {
           "flag": "--list",
           "summary": "List archive contents",
-          "detail": "Supply stored member names to limit the listing. Add -v to see sizes, permissions and modification times."
+          "detail": "Also spelled -t. Supply stored member names to limit the listing. Add -v to see sizes, permissions and modification times."
         },
         {
           "flag": "--diff",
           "summary": "Compare archive members with filesystem files",
-          "detail": "Checks contents and metadata against files with the same names on disk. Extra files on disk are ignored. Exit status 1 indicates differences."
+          "detail": "Also spelled -d, --compare. Checks contents and metadata against files with the same names on disk. Extra files on disk are ignored. Exit status 1 indicates differences."
+        },
+        {
+          "flag": "--append",
+          "summary": "Add files to the end of an archive",
+          "detail": "Also spelled -r. Name files on disk. A repeated name adds another member and keeps the earlier copy. Updating an archive in place requires uncompressed output."
+        },
+        {
+          "flag": "--update",
+          "summary": "Append new files and newer versions",
+          "detail": "Also spelled -u. Name files on disk. Tar compares modification times with archived copies and leaves earlier members in place. Compressed archives cannot be updated in place."
+        },
+        {
+          "flag": "--catenate",
+          "summary": "Append whole archives to another archive",
+          "detail": "Also spelled -A, --concatenate. Give the destination with -f and existing uncompressed archives as operands. Tar does not validate their formats. Appending several inputs at once can leave internal end markers. Use -i when reading past them or append one archive per invocation."
+        },
+        {
+          "flag": "--delete",
+          "summary": "Remove named members from an archive",
+          "detail": "Supply stored member names. By default tar removes every matching occurrence. Use an uncompressed archive on rewritable media."
+        },
+        {
+          "flag": "--test-label",
+          "summary": "Print or test the archive volume label",
+          "detail": "With no operands tar prints the label if present. Supply label patterns as separate operands for a silent test. Status 0 means a match and 1 means no match."
+        },
+        {
+          "flag": "-o",
+          "summary": "Select legacy format or ownership behavior",
+          "detail": "With --create, -o writes V7 format. With --extract, -o restores files as the extracting user. An archive filename belongs to -f."
         }
       ]
     },
     {
-      "description": "Choose the archive file and working directory.",
       "name": "Paths",
+      "description": "Choose the archive, working directory and file lists.",
       "options": [
         {
           "argument": "ARCHIVE",
@@ -94,7 +124,7 @@
               }
             ]
           },
-          "detail": "Give member names separately. For a local archive name containing a colon, use --force-local to disable remote archive handling."
+          "detail": "Also spelled -f. Give member names separately. For a local archive name containing a colon, use --force-local to disable remote archive handling."
         },
         {
           "argument": "DIRECTORY",
@@ -160,7 +190,7 @@
               }
             ]
           },
-          "detail": "Place -C before the names it affects. Successive relative -C paths start from the previous directory. A relative archive path given to -f still starts in the original working directory."
+          "detail": "Also spelled -C. Place -C before the names it affects. Successive relative -C paths start from the previous directory. A relative archive path given to -f still starts in the original working directory."
         },
         {
           "argument": "PATTERN",
@@ -227,43 +257,4196 @@
             ]
           },
           "detail": "Quote the pattern so the shell passes it to tar unchanged. When creating an archive, put exclusions before the file names they apply to."
+        },
+        {
+          "flag": "--files-from=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read file or member names from a list",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Use -T - for standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --files-from override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --files-from"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Read file or member names from a list",
+          "detail": "Also spelled -T. Use -T - for standard input. By default each newline ends a name. Tar interprets backslash escapes and recognizes option lines such as -Csrc. An ordinary line containing spaces names one file. A directory change in the list also affects later command-line names. Put --null or --verbatim-files-from before the list to protect literal names."
+        },
+        {
+          "flag": "--add-file=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add one file by its literal option-like name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Use --add-file=-report to archive a name starting with a dash."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --add-file override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --add-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Add one file by its literal option-like name",
+          "detail": "Use --add-file=-report to archive a name starting with a dash. Later options can still follow it."
+        },
+        {
+          "flag": "--null",
+          "summary": "Read NUL-delimited file lists verbatim",
+          "detail": "Place --null before each group of -T lists produced by find -print0. Embedded newlines are part of a name. A leading dash in the list is a filename character."
+        },
+        {
+          "flag": "--no-null",
+          "summary": "Restore newline-delimited file lists",
+          "detail": "For following -T inputs this also re-enables interpretation of option lines. Use --verbatim-files-from after --no-null for literal newline-delimited names."
+        },
+        {
+          "flag": "--verbatim-files-from",
+          "summary": "Treat file-list entries as literal names",
+          "detail": "Place before -T. Preserves leading and trailing spaces, backslashes and leading dashes. The delimiter stays unchanged."
+        },
+        {
+          "flag": "--no-verbatim-files-from",
+          "summary": "Re-enable option parsing in file lists",
+          "detail": "Applies to subsequent -T inputs. Lines beginning with a dash can change tar settings. This is the default for newline-delimited lists."
+        },
+        {
+          "flag": "--unquote",
+          "summary": "Decode backslash escapes in input names",
+          "detail": "Applies to following names by default. Verbatim file lists bypass escape decoding."
+        },
+        {
+          "flag": "--no-unquote",
+          "summary": "Keep backslashes literal in input names",
+          "detail": "Affects following names. Use --verbatim-files-from as well if a newline-delimited list contains names beginning with a dash."
+        },
+        {
+          "flag": "--absolute-names",
+          "summary": "Allow absolute paths and parent components",
+          "detail": "Also spelled -P. By default tar drops leading slashes and refuses extraction names containing a .. component. With -P a member can write outside the extraction directory."
+        },
+        {
+          "flag": "--force-local",
+          "summary": "Treat the archive path as local",
+          "detail": "A colon in the -f argument normally selects remote archive access. Use this option for a local name such as log:daily.tar."
         }
       ]
     },
     {
-      "description": "Select an archive compression method.",
+      "name": "Selection and patterns",
+      "description": "Select files and patterns in operand order.",
+      "options": [
+        {
+          "flag": "--recursion",
+          "summary": "Descend into named directories",
+          "detail": "This is the default. During extraction a matching parent directory also selects its descendants. Place before the names where recursion should resume."
+        },
+        {
+          "flag": "--no-recursion",
+          "summary": "Process named directories without descending",
+          "detail": "Place before the names it affects. During extraction a matching directory entry does not select its children. Explicitly named files can still be processed."
+        },
+        {
+          "flag": "--one-file-system",
+          "summary": "Keep recursive archival on one filesystem",
+          "detail": "A mount encountered while descending is not traversed. Explicitly named files and -T operands on another filesystem are still eligible."
+        },
+        {
+          "flag": "--exclude-from=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read exclusion patterns from a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Use one pattern per line."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-from override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-from"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Read exclusion patterns from a file",
+          "detail": "Also spelled -X. Use one pattern per line. Trailing spaces are significant. During creation, place the option before the names it affects."
+        },
+        {
+          "flag": "--exclude-backups",
+          "summary": "Skip conventional backup and lock files",
+          "detail": "Applies to subsequent inputs and recognizes names such as *~, .#* and #*#."
+        },
+        {
+          "flag": "--exclude-caches",
+          "summary": "Keep only the cache directory and its tag",
+          "detail": "Recognizes a CACHEDIR.TAG file with the cache-directory signature. Other contents are omitted."
+        },
+        {
+          "flag": "--exclude-caches-under",
+          "summary": "Keep a tagged cache directory empty",
+          "detail": "Omit all contents, including the valid CACHEDIR.TAG marker."
+        },
+        {
+          "flag": "--exclude-caches-all",
+          "summary": "Omit tagged cache directories entirely",
+          "detail": "A valid CACHEDIR.TAG excludes the directory entry as well as every file beneath it."
+        },
+        {
+          "flag": "--exclude-tag=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Keep only a marked directory and its marker",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply the marker filename."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-tag override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-tag"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Keep only a marked directory and its marker",
+          "detail": "Supply the marker filename. Its presence excludes the directory's other contents."
+        },
+        {
+          "flag": "--exclude-tag-under=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Keep marked directories empty",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply the marker filename."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-tag-under override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-tag-under"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Keep marked directories empty",
+          "detail": "Supply the marker filename. Tar omits every file beneath the directory, including the marker."
+        },
+        {
+          "flag": "--exclude-tag-all=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Omit directories containing a named marker",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply the marker filename."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-tag-all override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-tag-all"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Omit directories containing a named marker",
+          "detail": "Supply the marker filename. Both the marked directory and everything beneath it are omitted."
+        },
+        {
+          "flag": "--exclude-ignore=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read local exclusions in each directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply an ignore filename to look for during traversal."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-ignore override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-ignore"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Read local exclusions in each directory",
+          "detail": "Supply an ignore filename to look for during traversal. Its patterns apply in the directory containing it."
+        },
+        {
+          "flag": "--exclude-ignore-recursive=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Inherit exclusions from per-directory files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply an ignore filename to look for during traversal."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --exclude-ignore-recursive override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --exclude-ignore-recursive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Inherit exclusions from per-directory files",
+          "detail": "Supply an ignore filename to look for during traversal. Its patterns also apply in descendant directories."
+        },
+        {
+          "flag": "--exclude-vcs",
+          "summary": "Omit version-control files and directories",
+          "detail": "Covers administrative names such as .git and .svn. Use --exclude-vcs-ignores to read project ignore rules."
+        },
+        {
+          "flag": "--exclude-vcs-ignores",
+          "summary": "Honor version-control ignore files",
+          "detail": "Reads .gitignore, .cvsignore, .bzrignore and .hgignore using the corresponding pattern conventions."
+        },
+        {
+          "flag": "--wildcards",
+          "summary": "Interpret following patterns as shell-style globs",
+          "detail": "Quote patterns so the shell passes them intact. This is the default for exclusions. With -t or -x it enables wildcard member operands."
+        },
+        {
+          "flag": "--no-wildcards",
+          "summary": "Match subsequent patterns literally",
+          "detail": "This is the default for member operands. It can also make * or ? literal in subsequent exclusions."
+        },
+        {
+          "flag": "--anchored",
+          "summary": "Match from the start of a member name",
+          "detail": "Applies to following patterns. This is the default for inclusion patterns."
+        },
+        {
+          "flag": "--no-anchored",
+          "summary": "Allow matches after a directory separator",
+          "detail": "Following patterns can start at the beginning of a name or after any slash. This is the default for exclusions."
+        },
+        {
+          "flag": "--ignore-case",
+          "summary": "Ignore letter case in following patterns",
+          "detail": "Applies to inclusion and exclusion matches."
+        },
+        {
+          "flag": "--no-ignore-case",
+          "summary": "Match subsequent patterns case-sensitively",
+          "detail": "Restores the default after --ignore-case."
+        },
+        {
+          "flag": "--wildcards-match-slash",
+          "summary": "Allow wildcards to match directory separators",
+          "detail": "Applies to following wildcard patterns. This is the default for exclusions."
+        },
+        {
+          "flag": "--no-wildcards-match-slash",
+          "summary": "Keep wildcard matches within path components",
+          "detail": "A wildcard cannot consume a slash. This is the default for inclusion patterns."
+        },
+        {
+          "flag": "--newer=",
+          "argument": "DATE-OR-FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Archive files changed since a threshold",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DATE-OR-FILE",
+                    "grammar": "Tests modification time and status-change time."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --newer override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --newer"
+                    }
+                  ]
+                },
+                "time_basis": "Parse a GNU date/time expression or use the reference file modification time."
+              }
+            ]
+          },
+          "summary": "Archive files changed since a threshold",
+          "detail": "Also spelled -N, --after-date. Tests modification time and status-change time. A value beginning with / or . uses that file's modification time. Quote a date containing spaces."
+        },
+        {
+          "flag": "--newer-mtime=",
+          "argument": "DATE-OR-FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Archive files whose data changed since a threshold",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DATE-OR-FILE",
+                    "grammar": "Checks modification time only."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --newer-mtime override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --newer-mtime"
+                    }
+                  ]
+                },
+                "time_basis": "Parse a GNU date/time expression or use the reference file modification time."
+              }
+            ]
+          },
+          "summary": "Archive files whose data changed since a threshold",
+          "detail": "Checks modification time only. Supply a date or the modification time of a file named with a leading / or dot."
+        },
+        {
+          "flag": "--starting-file=",
+          "argument": "MEMBER-NAME",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Start processing at a named archive member",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MEMBER-NAME",
+                    "grammar": "Supply the stored member name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --starting-file override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --starting-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Start processing at a named archive member",
+          "detail": "Also spelled -K. Supply the stored member name. Earlier members are skipped when reading the archive."
+        },
+        {
+          "flag": "--preserve-order",
+          "summary": "Read requested members in archive order",
+          "detail": "Also spelled -s, --same-order. Supply names for listing, comparing or extracting in their order on tape. Tar can then handle long name lists with less memory."
+        },
+        {
+          "flag": "--occurrence",
+          "argument": "[=NUMBER]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "index",
+                "meaning": "Occurrence of each selected member",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Disable occurrence selection."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Process all matching occurrences."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Select the first matching occurrence"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --occurrence"
+                    }
+                  ]
+                },
+                "subject": "Occurrence of each selected member",
+                "origin": "1"
+              }
+            ]
+          },
+          "summary": "Select one occurrence of each requested member",
+          "detail": "Use with --list, --extract, --diff or --delete and explicit member names or -T. Bare --occurrence selects the first copy. Attach a positive number as --occurrence=N to select another. A value of 0 disables occurrence selection."
+        }
+      ]
+    },
+    {
+      "name": "Extraction and replacement",
+      "description": "Control destinations, collisions and replacement of files.",
+      "options": [
+        {
+          "flag": "--one-top-level",
+          "argument": "[=DIR]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Extract under one top-level directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Attach =DIR to choose it explicitly."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --one-top-level override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Derive the directory from the archive filename"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --one-top-level"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Extract under one top-level directory",
+          "detail": "Attach =DIR to choose it explicitly. Bare --one-top-level derives the name from the archive filename after removing recognized suffixes. A member already under that prefix is not nested twice. Supply =DIR for stdin or an archive filename without a recognized suffix. This option conflicts with -P."
+        },
+        {
+          "flag": "--strip-components=",
+          "argument": "NUMBER",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Leading pathname components removed",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Retain leading member path components."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --strip-components"
+                    }
+                  ]
+                },
+                "subject": "Leading pathname components removed"
+              }
+            ]
+          },
+          "summary": "Remove leading pathname components on extraction",
+          "detail": "Supply the number of components to remove. Members without a remaining filename are skipped. Select members by their original names."
+        },
+        {
+          "flag": "--transform=",
+          "argument": "EXPRESSION",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Rewrite names with a substitution expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXPRESSION",
+                    "grammar": "Quote a sed-style s/old/new/ expression."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --transform override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --transform"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --transform operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --transform"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Rewrite names with a substitution expression",
+          "detail": "Also spelled --xform. Quote a sed-style s/old/new/ expression. Transformations run before --strip-components. By default substitutions also apply to symbolic and hard link targets. Use --show-transformed-names with -t to preview names."
+        },
+        {
+          "flag": "--keep-directory-symlink",
+          "summary": "Extract through existing links to directories",
+          "detail": "When an archived directory meets a symlink to a directory, tar retains the link and writes into its target. The default replaces the link with a directory."
+        },
+        {
+          "flag": "--keep-newer-files",
+          "summary": "Preserve newer local files during extraction",
+          "detail": "Tar compares the existing file's modification time with the archive member's."
+        },
+        {
+          "flag": "--keep-old-files",
+          "summary": "Refuse to replace existing files",
+          "detail": "Also spelled -k. During extraction an existing file causes an error. Use --skip-old-files to skip it successfully."
+        },
+        {
+          "flag": "--skip-old-files",
+          "summary": "Silently skip existing files during extraction",
+          "detail": "An existing file is left in place without the failure status that --keep-old-files produces."
+        },
+        {
+          "flag": "--overwrite",
+          "summary": "Overwrite existing files during extraction",
+          "detail": "Tar can write through existing symbolic links and restore archived metadata onto existing paths."
+        },
+        {
+          "flag": "--overwrite-dir",
+          "summary": "Restore metadata of existing directories",
+          "detail": "This is the extraction default. Directory permissions, ownership and modification times can change."
+        },
+        {
+          "flag": "--no-overwrite-dir",
+          "summary": "Preserve existing directory metadata",
+          "detail": "Contents can still be extracted into those directories."
+        },
+        {
+          "flag": "--unlink-first",
+          "summary": "Remove an existing file before extracting over it",
+          "detail": "Also spelled -U. Removes the directory entry first, so other hard links to the old file keep their contents."
+        },
+        {
+          "flag": "--recursive-unlink",
+          "summary": "Remove obstructing directory trees on extraction",
+          "detail": "A conflicting directory and its contents can be deleted, including files absent from the archive."
+        },
+        {
+          "flag": "--remove-files",
+          "summary": "Delete source files after archiving them",
+          "detail": "Applies when adding files. The source copies disappear from disk after tar writes them."
+        },
+        {
+          "flag": "--backup",
+          "argument": "[=CONTROL]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Back up files before replacing them",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CONTROL",
+                    "grammar": "Backups can apply to extracted files and to an existing output archive."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --backup override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use VERSION_CONTROL or the existing method"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --backup"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Back up files before replacing them",
+          "detail": "Backups can apply to extracted files and to an existing output archive. Attach =CONTROL to override VERSION_CONTROL. numbered or t always numbers backups. existing or nil numbers them if numbered backups already exist. simple or never uses a suffix. none or off disables backups."
+        },
+        {
+          "flag": "--suffix=",
+          "argument": "STRING",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the suffix for simple backups",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STRING",
+                    "grammar": "This option also enables backups."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --suffix override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --suffix"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Set the suffix for simple backups",
+          "detail": "This option also enables backups. The default suffix is ~ unless SIMPLE_BACKUP_SUFFIX supplies another."
+        },
+        {
+          "flag": "--to-stdout",
+          "summary": "Write extracted file contents to standard output",
+          "detail": "Also spelled -O. Multiple regular members produce one continuous byte stream. Use --to-command for per-file processing."
+        },
+        {
+          "flag": "--to-command=",
+          "argument": "COMMAND",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Send each extracted regular file to a command",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "COMMAND",
+                    "grammar": "Tar starts a separate process for each regular member and sends its contents on standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --to-command override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --to-command"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --to-command operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --to-command"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Send each extracted regular file to a command",
+          "detail": "Tar starts a separate process for each regular member and sends its contents on standard input. TAR_REALNAME gives the stored name and TAR_SIZE gives the byte count. Quote a command containing shell syntax."
+        },
+        {
+          "flag": "--ignore-command-error",
+          "summary": "Ignore failure statuses from extraction commands",
+          "detail": "Use with --to-command when a child returning nonzero should not make extraction fail."
+        },
+        {
+          "flag": "--no-ignore-command-error",
+          "summary": "Report failures from extraction commands",
+          "detail": "A nonzero exit from a --to-command child makes tar fail. This is the default."
+        }
+      ]
+    },
+    {
+      "name": "Ownership and timestamps",
+      "description": "Choose metadata to store or restore.",
+      "options": [
+        {
+          "flag": "--owner=",
+          "argument": "NAME[:UID]",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Archive member owner name or UID",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME[:UID]",
+                    "grammar": "Supply a name, numeric UID or NAME:UID."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --owner override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --owner"
+                    }
+                  ]
+                },
+                "subject": "Archive member owner name or UID"
+              }
+            ]
+          },
+          "summary": "Set the owner recorded for added files",
+          "detail": "Supply a name, numeric UID or NAME:UID. A matching --owner-map rule takes precedence. Source file ownership is unchanged."
+        },
+        {
+          "flag": "--group=",
+          "argument": "NAME[:GID]",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Archive member group name or GID",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME[:GID]",
+                    "grammar": "Supply a group name, numeric GID or NAME:GID."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --group override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --group"
+                    }
+                  ]
+                },
+                "subject": "Archive member group name or GID"
+              }
+            ]
+          },
+          "summary": "Set the group recorded for added files",
+          "detail": "Supply a group name, numeric GID or NAME:GID. A matching --group-map rule takes precedence."
+        },
+        {
+          "flag": "--owner-map=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Translate selected owners when archiving",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Each line pairs an old owner with NEWNAME[:UID]."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --owner-map override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --owner-map"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Translate selected owners when archiving",
+          "detail": "Each line pairs an old owner with NEWNAME[:UID]. Use +UID for a numeric lookup and # for comments. Unmapped owners use --owner if supplied."
+        },
+        {
+          "flag": "--group-map=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Translate selected groups when archiving",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Each line pairs an old group with NEWNAME[:GID]."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --group-map override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --group-map"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Translate selected groups when archiving",
+          "detail": "Each line pairs an old group with NEWNAME[:GID]. Use +GID for a numeric lookup and # for comments. Unmapped groups use --group if supplied."
+        },
+        {
+          "flag": "--numeric-owner",
+          "summary": "Use numeric user and group IDs",
+          "detail": "When writing, omit ownership names. During extraction use stored IDs even if names resolve differently on this host. In a verbose listing display numerical IDs."
+        },
+        {
+          "flag": "--same-owner",
+          "summary": "Restore archived ownership when extracting",
+          "detail": "The default for the superuser. Changing ownership requires sufficient permissions."
+        },
+        {
+          "flag": "--no-same-owner",
+          "summary": "Extract files as the current user",
+          "detail": "This is the default for ordinary users. Existing ownership and filesystem restrictions still apply."
+        },
+        {
+          "flag": "--preserve-permissions",
+          "summary": "Restore the recorded file permission bits",
+          "detail": "Also spelled -p, --same-permissions. The extracting user's umask does not mask those bits. This is the default for the superuser."
+        },
+        {
+          "flag": "--no-same-permissions",
+          "summary": "Apply the current umask during extraction",
+          "detail": "This is the default for ordinary users. Permission bits masked by the umask are omitted."
+        },
+        {
+          "flag": "--mode=",
+          "argument": "CHANGES",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Change the permissions stored for added files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CHANGES",
+                    "grammar": "Supply an octal mode or chmod-style symbolic changes."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --mode override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --mode"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --mode operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --mode"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Change the permissions stored for added files",
+          "detail": "Supply an octal mode or chmod-style symbolic changes. Source file permissions are unaffected."
+        },
+        {
+          "flag": "--mtime=",
+          "argument": "DATE-OR-FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Set the modification time stored for added files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DATE-OR-FILE",
+                    "grammar": "Supply a date, or a reference file beginning with / or dot."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --mtime override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --mtime"
+                    }
+                  ]
+                },
+                "time_basis": "Parse a GNU date/time expression or use the reference file modification time."
+              }
+            ]
+          },
+          "summary": "Set the modification time stored for added files",
+          "detail": "Supply a date, or a reference file beginning with / or dot. With --clamp-mtime only later timestamps are changed."
+        },
+        {
+          "flag": "--clamp-mtime",
+          "summary": "Cap archived modification times at a chosen date",
+          "detail": "Requires --mtime to supply the upper limit. Files with earlier timestamps keep them."
+        },
+        {
+          "flag": "--touch",
+          "summary": "Give extracted files the extraction time",
+          "detail": "Also spelled -m. The modification time stored in the archive is normally restored."
+        },
+        {
+          "flag": "--atime-preserve",
+          "argument": "[=METHOD]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Preserve source access times during archival",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "METHOD",
+                    "grammar": "Bare --atime-preserve selects replace, which resets times after reading and can change ctime."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --atime-preserve override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use replace to restore the previous access time"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --atime-preserve"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Preserve source access times during archival",
+          "detail": "Bare --atime-preserve selects replace, which resets times after reading and can change ctime. Attach =system to avoid updating atime while reading where supported."
+        },
+        {
+          "flag": "--delay-directory-restore",
+          "summary": "Finish restoring directories at the end of extraction",
+          "detail": "Delays setting directory times and permissions until all members are processed. Useful when children appear far from their directory entries in the archive."
+        },
+        {
+          "flag": "--no-delay-directory-restore",
+          "summary": "Restore directory metadata as extraction advances",
+          "detail": "Resumes tar's normal ordering assumption that a directory's contents follow its entry."
+        },
+        {
+          "flag": "--acls",
+          "summary": "Store or restore POSIX access control lists",
+          "detail": "Use when creating and extracting to preserve ACL entries beyond ordinary mode bits. Creation uses pax extended headers."
+        },
+        {
+          "flag": "--no-acls",
+          "summary": "Disable POSIX ACL processing",
+          "detail": "Ordinary Unix permission bits are still handled."
+        },
+        {
+          "flag": "--selinux",
+          "summary": "Store or restore SELinux security contexts",
+          "detail": "Use on creation and extraction with a filesystem that supports the contexts."
+        },
+        {
+          "flag": "--no-selinux",
+          "summary": "Disable SELinux context processing",
+          "detail": "Tar omits the dedicated SELinux context handling for this operation."
+        },
+        {
+          "flag": "--xattrs",
+          "summary": "Store or restore extended attributes",
+          "detail": "Creation stores all namespaces by default. Extraction restores user.* by default. Use --xattrs-include for other namespaces when supported and permitted."
+        },
+        {
+          "flag": "--no-xattrs",
+          "summary": "Disable extended attribute processing",
+          "detail": "Tar skips extended attribute storage or restoration for this operation."
+        },
+        {
+          "flag": "--xattrs-exclude=",
+          "argument": "MASK",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Omit matching extended attribute keys",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MASK",
+                    "grammar": "Quote the glob."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --xattrs-exclude override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --xattrs-exclude"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Omit matching extended attribute keys",
+          "detail": "Quote the glob. Applied after inclusion, --xattrs-exclude='user.*' removes the user namespace from the selected keys."
+        },
+        {
+          "flag": "--xattrs-include=",
+          "argument": "MASK",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select matching extended attribute keys",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MASK",
+                    "grammar": "Quote the glob."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --xattrs-include override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --xattrs-include"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Select matching extended attribute keys",
+          "detail": "Quote the glob. Applies with --xattrs. During extraction use '*' to request every stored namespace before exclusions."
+        }
+      ]
+    },
+    {
+      "name": "Archive layout",
+      "description": "Choose archive conventions, entry ordering and backup format.",
+      "options": [
+        {
+          "flag": "--format=",
+          "argument": "FORMAT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the format of a new archive",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Use gnu, oldgnu, pax (also posix), ustar or v7."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --format override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --format"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose the format of a new archive",
+          "detail": "Also spelled -H. Use gnu, oldgnu, pax (also posix), ustar or v7. These Ubuntu clients default to gnu. Archive format and compression are separate choices."
+        },
+        {
+          "flag": "--old-archive",
+          "summary": "Write a traditional V7 archive",
+          "detail": "Also spelled --portability. Equivalent to --format=v7 during creation. V7 limits member names to 100 bytes."
+        },
+        {
+          "flag": "--posix",
+          "summary": "Write a POSIX pax archive",
+          "detail": "Equivalent to --format=posix. Extended headers can represent metadata beyond ustar limits."
+        },
+        {
+          "flag": "--pax-option=",
+          "argument": "KEYWORD-LIST",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Control pax extended-header keywords",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEYWORD-LIST",
+                    "grammar": "Supply comma-separated rules."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --pax-option override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --pax-option"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --pax-option operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --pax-option"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Control pax extended-header keywords",
+          "detail": "Supply comma-separated rules. delete=PATTERN drops matching keywords, KEY=VALUE supplies a global value and KEY:=VALUE supplies a per-file value. Quote wildcard patterns."
+        },
+        {
+          "flag": "--label=",
+          "argument": "TEXT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set or match the archive volume label",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "During creation use literal label text in GNU or pax format."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --label override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --label"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Set or match the archive volume label",
+          "detail": "Also spelled -V. During creation use literal label text in GNU or pax format. During listing or extraction use a quoted glob to require a matching label."
+        },
+        {
+          "flag": "--sort=",
+          "argument": "ORDER",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Order directory entries when creating an archive",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ORDER",
+                    "grammar": "none uses filesystem order by default."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --sort override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --sort"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Order directory entries when creating an archive",
+          "detail": "none uses filesystem order by default. name gives reproducible traversal. inode orders by inode number where available. Explicit operands retain their order."
+        },
+        {
+          "flag": "--dereference",
+          "summary": "Archive symbolic link targets",
+          "detail": "Also spelled -h. Normally tar records the symlink itself. Following it can include files outside the named tree."
+        },
+        {
+          "flag": "--hard-dereference",
+          "summary": "Store hard-linked files as independent copies",
+          "detail": "Normally tar records data once and refers to the first member for its other hard links. Separate copies use more space and extract independently."
+        },
+        {
+          "flag": "--sparse",
+          "summary": "Store holes in sparse files compactly",
+          "detail": "Also spelled -S. GNU and pax sparse formats record data extents so unwritten regions need little archive space. Extraction can recreate the holes."
+        },
+        {
+          "flag": "--hole-detection=",
+          "argument": "TYPE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how to find holes in sparse files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TYPE",
+                    "grammar": "Implies --sparse."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --hole-detection override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --hole-detection"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose how to find holes in sparse files",
+          "detail": "Implies --sparse. seek queries filesystem extents and is the default with fallback to raw. raw scans file contents for zero-filled blocks."
+        },
+        {
+          "flag": "--sparse-version=",
+          "argument": "MAJOR[.MINOR]",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the pax sparse format version",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MAJOR[.MINOR]",
+                    "grammar": "Implies --sparse."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --sparse-version override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --sparse-version"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose the pax sparse format version",
+          "detail": "Implies --sparse. Supported versions are 0.0, 0.1 and 1.0. Use --format=pax when creating archives in these formats."
+        },
+        {
+          "flag": "--listed-incremental=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Create or restore a snapshot-based incremental backup",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "During creation tar reads and updates the snapshot file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --listed-incremental override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --listed-incremental"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Create or restore a snapshot-based incremental backup",
+          "detail": "Also spelled -g. During creation tar reads and updates the snapshot file. A missing snapshot starts a full backup. During extraction the operand is still required, but /dev/null suffices. Incremental restoration can delete files absent from a backed-up directory."
+        },
+        {
+          "flag": "--incremental",
+          "summary": "Process an old GNU incremental archive",
+          "detail": "Also spelled -G. Creation writes incremental directory records without a snapshot file for later backup levels. During listing and extraction it has the same effect as --listed-incremental. Restoring a directory can remove files missing from the backup."
+        },
+        {
+          "flag": "--level=",
+          "argument": "NUMBER",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "Listed incremental dump level",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Use a nonnegative dump level with --listed-incremental.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Truncate the snapshot and create a full backup."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the existing snapshot state."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --level"
+                    }
+                  ]
+                },
+                "ordering": "Only level 0 forces a fresh full backup."
+              }
+            ]
+          },
+          "summary": "Set the level of a listed incremental backup",
+          "detail": "Use with --listed-incremental. A value of 0 truncates the snapshot for a full backup. Other levels have no additional effect in GNU tar 1.35."
+        },
+        {
+          "flag": "--check-device",
+          "summary": "Use device numbers to detect incremental changes",
+          "detail": "Enabled by default for listed incremental creation. Changes in device numbering can trigger unnecessary copying."
+        },
+        {
+          "flag": "--no-check-device",
+          "summary": "Ignore device-number changes in incremental backups",
+          "detail": "Useful on mounts with unstable device numbers. Applies during listed incremental creation."
+        },
+        {
+          "flag": "--ignore-failed-read",
+          "summary": "Treat source read failures as warnings",
+          "detail": "When creating an archive, unreadable, disappearing or changing files can leave the archive incomplete without a failing exit status."
+        }
+      ]
+    },
+    {
       "name": "Compression",
+      "description": "Choose the program that encodes or decodes the archive stream.",
       "options": [
         {
           "flag": "--gzip",
           "summary": "Compress or decompress with gzip",
-          "detail": "When reading a regular archive file, tar normally detects gzip automatically. Specify the method for compressed input from a pipe or non-seekable tape."
+          "detail": "Also spelled -z, --gunzip, --ungzip. When reading a regular archive file, tar normally detects gzip automatically. Specify the method for compressed input from a pipe or non-seekable tape."
         },
         {
           "flag": "--xz",
           "summary": "Compress or decompress with xz",
-          "detail": "When reading a regular archive file, tar normally detects xz automatically. Specify the method for compressed input from a pipe or non-seekable tape."
+          "detail": "Also spelled -J. When reading a regular archive file, tar normally detects xz automatically. Specify the method for compressed input from a pipe or non-seekable tape."
         },
         {
           "flag": "--bzip2",
           "summary": "Compress or decompress with bzip2",
-          "detail": "When reading a regular archive file, tar normally detects bzip2 automatically. Specify the method for compressed input from a pipe or non-seekable tape."
+          "detail": "Also spelled -j. When reading a regular archive file, tar normally detects bzip2 automatically. Specify the method for compressed input from a pipe or non-seekable tape."
+        },
+        {
+          "flag": "--compress",
+          "summary": "Compress or decompress with Unix compress",
+          "detail": "Also spelled -Z, --uncompress. Select the filter explicitly for compressed input from a pipe. Reading an ordinary archive file normally detects compression."
+        },
+        {
+          "flag": "--lzip",
+          "summary": "Compress or decompress with lzip",
+          "detail": "Use the filter explicitly for lzip input on a pipe or non-seekable tape."
+        },
+        {
+          "flag": "--lzma",
+          "summary": "Use the configured LZMA compression program",
+          "detail": "Both Ubuntu builds invoke xz for this switch. Its default output is XZ. To create a legacy LZMA stream with xz, use -I 'xz --format=lzma'."
+        },
+        {
+          "flag": "--lzop",
+          "summary": "Compress or decompress with lzop",
+          "detail": "Use the filter explicitly for lzop input on a pipe or non-seekable tape."
+        },
+        {
+          "flag": "--zstd",
+          "summary": "Compress or decompress with Zstandard",
+          "detail": "Use the filter explicitly for zstd input on a pipe or non-seekable tape."
+        },
+        {
+          "flag": "--auto-compress",
+          "summary": "Choose compression from the output archive suffix",
+          "detail": "Also spelled -a. During creation a recognized name such as .tar.gz selects its filter. A pipe has no filename suffix. Reading regular archives normally detects compression without -a."
+        },
+        {
+          "flag": "--no-auto-compress",
+          "summary": "Disable suffix-based compression selection",
+          "detail": "When writing, name the compression option explicitly or write an uncompressed archive. This cancels an earlier -a."
+        },
+        {
+          "flag": "--use-compress-program=",
+          "argument": "PROG",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Filter archive data through a chosen program",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PROG",
+                    "grammar": "Supply a program and optional arguments as one shell word."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --use-compress-program override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --use-compress-program"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --use-compress-program operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --use-compress-program"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Filter archive data through a chosen program",
+          "detail": "Also spelled -I. Supply a program and optional arguments as one shell word. It reads archive data on standard input and writes the result on standard output. Tar adds -d when decompressing."
         }
       ]
     },
     {
-      "description": "Control operation reporting.",
+      "name": "Media and records",
+      "description": "Choose storage media, volume handling and I/O record size.",
+      "options": [
+        {
+          "flag": "--blocking-factor=",
+          "argument": "BLOCKS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "512-byte blocks per archive record",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the compiled blocking factor unless a record size was supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --blocking-factor"
+                    }
+                  ]
+                },
+                "subject": "512-byte blocks per archive record"
+              }
+            ]
+          },
+          "summary": "Set the number of blocks in an I/O record",
+          "detail": "Also spelled -b. Each block is 512 bytes. These clients default to 20 blocks per record. Use a positive integer."
+        },
+        {
+          "flag": "--record-size=",
+          "argument": "SIZE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Archive I/O record length",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "suffix-c",
+                    "notation": "suffix",
+                    "syntax": "Nc",
+                    "tokens": [
+                      "c"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "suffix-w",
+                    "notation": "suffix",
+                    "syntax": "Nw",
+                    "tokens": [
+                      "w"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2"
+                    }
+                  },
+                  {
+                    "id": "suffix-b",
+                    "notation": "suffix",
+                    "syntax": "Nb",
+                    "tokens": [
+                      "b"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "512"
+                    }
+                  },
+                  {
+                    "id": "suffix-B",
+                    "notation": "suffix",
+                    "syntax": "NB",
+                    "tokens": [
+                      "B",
+                      "k",
+                      "K"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    }
+                  },
+                  {
+                    "id": "suffix-m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m",
+                      "M"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
+                  },
+                  {
+                    "id": "suffix-g",
+                    "notation": "suffix",
+                    "syntax": "Ng",
+                    "tokens": [
+                      "g",
+                      "G"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    }
+                  },
+                  {
+                    "id": "suffix-t",
+                    "notation": "suffix",
+                    "syntax": "Nt",
+                    "tokens": [
+                      "t",
+                      "T"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    }
+                  },
+                  {
+                    "id": "suffix-P",
+                    "notation": "suffix",
+                    "syntax": "NP",
+                    "tokens": [
+                      "P"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1125899906842624"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the record length determined by the blocking factor."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --record-size"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Set the I/O record size in bytes",
+          "detail": "The resulting size must be a multiple of 512 bytes. A bare 10240 and 10K both select a 20-block record."
+        },
+        {
+          "flag": "--read-full-records",
+          "summary": "Accumulate short reads into full archive records",
+          "detail": "Also spelled -B. Useful on pipes and other inputs that return less than a whole record in one read."
+        },
+        {
+          "flag": "--seek",
+          "summary": "Assume the input archive supports seeking",
+          "detail": "Also spelled -n. Ordinarily tar detects seekability. Use when reading an archive whose device is incorrectly classified."
+        },
+        {
+          "flag": "--no-seek",
+          "summary": "Read the archive without seeking",
+          "detail": "Overrides automatic detection for input that must be read sequentially."
+        },
+        {
+          "flag": "--ignore-zeros",
+          "summary": "Read past zero-filled end markers",
+          "detail": "Also spelled -i. Can recover later members from concatenated archives or damaged input. Tar must continue reading to the physical end."
+        },
+        {
+          "flag": "--multi-volume",
+          "summary": "Split or read an archive across volumes",
+          "detail": "Also spelled -M. Use repeated -f arguments for successive volume paths or change media when prompted. GNU multi-volume archives cannot be compressed."
+        },
+        {
+          "flag": "--tape-length=",
+          "argument": "SIZE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Maximum volume length",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    }
+                  },
+                  {
+                    "id": "suffix-c",
+                    "notation": "suffix",
+                    "syntax": "Nc",
+                    "tokens": [
+                      "c"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "suffix-w",
+                    "notation": "suffix",
+                    "syntax": "Nw",
+                    "tokens": [
+                      "w"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "2"
+                    }
+                  },
+                  {
+                    "id": "suffix-b",
+                    "notation": "suffix",
+                    "syntax": "Nb",
+                    "tokens": [
+                      "b"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "512"
+                    }
+                  },
+                  {
+                    "id": "suffix-B",
+                    "notation": "suffix",
+                    "syntax": "NB",
+                    "tokens": [
+                      "B",
+                      "k",
+                      "K"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    }
+                  },
+                  {
+                    "id": "suffix-m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m",
+                      "M"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
+                  },
+                  {
+                    "id": "suffix-g",
+                    "notation": "suffix",
+                    "syntax": "Ng",
+                    "tokens": [
+                      "g",
+                      "G"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    }
+                  },
+                  {
+                    "id": "suffix-t",
+                    "notation": "suffix",
+                    "syntax": "Nt",
+                    "tokens": [
+                      "t",
+                      "T"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    }
+                  },
+                  {
+                    "id": "suffix-P",
+                    "notation": "suffix",
+                    "syntax": "NP",
+                    "tokens": [
+                      "P"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1125899906842624"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No length-based volume limit is requested."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --tape-length"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Limit the amount written to each volume",
+          "detail": "Also spelled -L. Implies --multi-volume. A bare number counts 1024-byte units. A suffix replaces that multiplier. A value of 0 imposes no size limit. The volume must fit at least one I/O record."
+        },
+        {
+          "flag": "--info-script=",
+          "argument": "COMMAND",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Run a command at each volume change",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "COMMAND",
+                    "grammar": "Implies --multi-volume."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --info-script override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --info-script"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --info-script operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --info-script"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Run a command at each volume change",
+          "detail": "Also spelled -F, --new-volume-script. Implies --multi-volume. Tar passes the archive name and next volume number in TAR_ARCHIVE and TAR_VOLUME. The command can write the next archive path to the file descriptor in TAR_FD. A nonzero exit stops tar."
+        },
+        {
+          "flag": "--volno-file=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Keep the current volume number in a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Use with --multi-volume to read and update the volume count across runs."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --volno-file override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --volno-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Keep the current volume number in a file",
+          "detail": "Use with --multi-volume to read and update the volume count across runs."
+        },
+        {
+          "flag": "--rmt-command=",
+          "argument": "COMMAND",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the remote tape server program",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "COMMAND",
+                    "grammar": "For a remote -f archive, tar invokes this program on the remote host."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --rmt-command override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --rmt-command"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose the remote tape server program",
+          "detail": "For a remote -f archive, tar invokes this program on the remote host. It must understand the rmt protocol on standard input and output."
+        },
+        {
+          "flag": "--rsh-command=",
+          "argument": "COMMAND",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the remote shell for archive access",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "COMMAND",
+                    "grammar": "Tar invokes the program with the remote host and tape server command."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --rsh-command override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --rsh-command"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose the remote shell for archive access",
+          "detail": "Tar invokes the program with the remote host and tape server command. It carries the rmt protocol over its input and output streams."
+        },
+        {
+          "flag": "--verify",
+          "summary": "Read back an archive after writing it",
+          "detail": "Also spelled -W. Compares newly written data with disk files. Requires media that can be reread. Pipes, compressed archives and multi-volume output cannot be verified this way."
+        }
+      ]
+    },
+    {
       "name": "Output",
+      "description": "Control progress, diagnostics, listing and program information.",
       "options": [
         {
           "flag": "--verbose",
           "summary": "List processed files",
-          "detail": "With a listing, -v adds file metadata. During creation or extraction it shows member names."
+          "detail": "Also spelled -v. With a listing, -v adds file metadata. During creation or extraction it shows member names. Repeat -v for more detail."
         },
         {
           "flag": "--totals",
           "summary": "Print total bytes processed at completion",
-          "detail": "The optional --totals=SIGNAL form reports the running total when tar receives that signal."
+          "detail": "The optional --totals=SIGNAL form reports the running total when tar receives that signal. Attach HUP, QUIT, INT, USR1 or USR2 with or without the SIG prefix. A separate word remains a member operand.",
+          "argument": "[=SIGNAL]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Signal for an interim byte report",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SIGNAL",
+                    "grammar": "The optional --totals=SIGNAL form reports the running total when tar receives that signal."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No totals report is requested."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Report total bytes at completion"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --totals"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--checkpoint",
+          "argument": "[=N]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Archive records between checkpoints",
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "id": "dots",
+                    "notation": "expression",
+                    "syntax": ".N",
+                    "grammar": "A leading dot also prints a dot at each checkpoint."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No periodic report unless a checkpoint action is requested."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Report every 10 records"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --checkpoint"
+                    }
+                  ]
+                },
+                "subject": "Archive records between checkpoints"
+              }
+            ]
+          },
+          "summary": "Report progress every N archive records",
+          "detail": "Bare --checkpoint uses 10 records. Attach the interval as --checkpoint=N. The interval counts I/O records, whose byte size depends on the blocking factor. A leading dot as in --checkpoint=.100 prints a dot every 100 records."
+        },
+        {
+          "flag": "--checkpoint-action=",
+          "argument": "ACTION",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Choose the action at each checkpoint",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ACTION",
+                    "grammar": "Repeat to run actions in order."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --checkpoint-action override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --checkpoint-action"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --checkpoint-action operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --checkpoint-action"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Choose the action at each checkpoint",
+          "detail": "Repeat to run actions in order. Use echo[=TEXT], dot (or .), bell, ttyout=TEXT or totals for output. sleep=SECONDS pauses and wait=SIGNAL waits for a signal. exec=COMMAND gets the checkpoint number and archive name in TAR_CHECKPOINT and TAR_ARCHIVE. An action alone enables checkpoints every 10 records."
+        },
+        {
+          "flag": "--index-file=",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write verbose output to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "The filename receives the verbose listing."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --index-file override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --index-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Write verbose output to a file",
+          "detail": "The filename receives the verbose listing. Archive data still goes to the destination selected with -f."
+        },
+        {
+          "flag": "--block-number",
+          "summary": "Include archive block offsets in messages",
+          "detail": "Also spelled -R. Offsets count 512-byte blocks from the start of the archive."
+        },
+        {
+          "flag": "--check-links",
+          "summary": "Warn about missing hard links",
+          "detail": "Also spelled -l. During creation tar checks whether all hard links to each archived file were included."
+        },
+        {
+          "flag": "--full-time",
+          "summary": "Display full-resolution file timestamps",
+          "detail": "Use in a verbose listing to see fractional seconds where the archive format records them."
+        },
+        {
+          "flag": "--utc",
+          "summary": "Display modification times in UTC",
+          "detail": "Also enables a verbose listing. Stored timestamps are unchanged."
+        },
+        {
+          "flag": "--quote-chars=",
+          "argument": "STRING",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Quote additional characters in printed names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STRING",
+                    "grammar": "Supply the characters themselves in one shell word."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --quote-chars override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --quote-chars"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Quote additional characters in printed names",
+          "detail": "Supply the characters themselves in one shell word. Affects displayed names."
+        },
+        {
+          "flag": "--no-quote-chars=",
+          "argument": "STRING",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Undo extra quoting for selected characters",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STRING",
+                    "grammar": "Removes those characters from the --quote-chars set."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --no-quote-chars override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --no-quote-chars"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Undo extra quoting for selected characters",
+          "detail": "Removes those characters from the --quote-chars set. The selected quoting style still applies."
+        },
+        {
+          "flag": "--quoting-style=",
+          "argument": "STYLE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how printed names are quoted",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STYLE",
+                    "grammar": "These Ubuntu builds accept literal, shell, shell-always, shell-escape, shell-escape-always, c, c-maybe, escape, locale and clocale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --quoting-style override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --quoting-style"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Choose how printed names are quoted",
+          "detail": "These Ubuntu builds accept literal, shell, shell-always, shell-escape, shell-escape-always, c, c-maybe, escape, locale and clocale. The compiled default is escape."
+        },
+        {
+          "flag": "--show-omitted-dirs",
+          "summary": "Report directories skipped by member selection",
+          "detail": "Applies when listing or extracting selected members."
+        },
+        {
+          "flag": "--show-transformed-names",
+          "summary": "Display the names after path transformations",
+          "detail": "Also spelled --show-stored-names. Use with a listing to inspect the effects of --transform or --strip-components before extraction."
+        },
+        {
+          "flag": "--warning=",
+          "argument": "KEYWORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Enable or suppress a class of warnings",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEYWORD",
+                    "grammar": "Use all or none for all classes, or a keyword such as file-changed."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No --warning override is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU tar"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.35"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                      "locator": "doc/tar.texi and src/tar.c or src/names.c, --warning"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "GNU tar --warning operand",
+                  "reference": {
+                    "source": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz",
+                    "locator": "doc/tar.texi and src/tar.c or src/names.c, --warning"
+                  }
+                }
+              }
+            ]
+          },
+          "summary": "Enable or suppress a class of warnings",
+          "detail": "Use all or none for all classes, or a keyword such as file-changed. Prefix a keyword with no- to silence that class. Repeat for several classes. Suppression alone does not change exit status."
+        },
+        {
+          "flag": "--interactive",
+          "summary": "Ask before acting on each member",
+          "detail": "Also spelled -w, --confirmation. Tar requests confirmation before actions such as adding or extracting a file. A negative response skips that action."
+        },
+        {
+          "flag": "--restrict",
+          "summary": "Disable the shell escape at a volume prompt",
+          "detail": "Prevents starting a shell from the multi-volume media-change menu."
+        },
+        {
+          "flag": "--show-defaults",
+          "summary": "Print the compiled archive defaults",
+          "detail": "Reports settings such as format, archive device, blocking factor and quoting style, then exits."
+        },
+        {
+          "flag": "--show-snapshot-field-ranges",
+          "summary": "Print the ranges of snapshot fields",
+          "detail": "Shows the minimum and maximum this build supports for each numeric snapshot-file field, then exits."
+        },
+        {
+          "flag": "--help",
+          "summary": "Show the full command help",
+          "detail": "Also spelled -?. Includes operation modes, option aliases and build defaults. Quote '-?' if typing the short alias in a shell that expands wildcards."
+        },
+        {
+          "flag": "--usage",
+          "summary": "Print a brief synopsis of the option syntax",
+          "detail": "Displays accepted spellings and argument placeholders, then exits."
+        },
+        {
+          "flag": "--version",
+          "summary": "Print the GNU tar version",
+          "detail": "Displays release and license information, then exits."
         }
       ]
     }

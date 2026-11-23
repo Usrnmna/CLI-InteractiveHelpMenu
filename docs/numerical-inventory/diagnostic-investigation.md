@@ -100,17 +100,14 @@ missing required metadata.
 | --- | --- |
 | `option\|fd\|--print0`, `profiles/fd.json`, `/categories/0/options/18` | NUL bytes describe output separation, not numerical input. fd 9.0.0 declares `null_separator` as a boolean |
 | `option\|fdfind\|--print0`, `profiles/fdfind.json`, `/categories/0/options/18` | The same bounded declaration is consistent with the recorded fdfind 9.0.0 capture; other installed aliases/releases are not inferred |
-| `option\|tar\|--totals`, `profiles/tar.json`, `/categories/3/options/1` | The maintained bare form requests byte totals. The official GNU tar 1.35.90 manual also describes an optional signal form; that larger grammar is not added to the existing no-value declaration |
+| `option\|tar\|--totals`, `profiles/tar.json`, `/categories/3/options/1` | The reviewed bare form requested byte totals. The GNU tar 1.35.90 manual also described a signal operand. The [tar revisit](../tar-manual-coverage.md) now declares the optional attached signal |
 
 The [fd 9.0.0 declaration](https://raw.githubusercontent.com/sharkdp/fd/v9.0.0/src/cli.rs)
 and [GNU tar option summary](https://www.gnu.org/software/tar/manual/html_node/Option-Summary.html)
 support these distinctions. The tar URL is moving documentation labeled
 1.35.90 when retrieved; it does not establish all releases or installed behavior.
 
-Two exact review groups replace the generic action review for these three
-identities. Accurate summary text and literal insertion remain unchanged.
-Warnings remain useful nonfatal signals; no allowlist, numerical operand,
-fabricated unit or production metadata is introduced.
+At this baseline, two review groups recorded the three output actions. All three retained their original summary text and literal insertion behavior. The checker continued to report the warnings as nonfatal signals.
 
 ## Confirmed review corrections and bounded source findings
 

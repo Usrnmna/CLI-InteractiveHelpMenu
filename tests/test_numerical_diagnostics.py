@@ -41,10 +41,9 @@ class NumericalDiagnosticTests(unittest.TestCase):
         return self.groups[self.entries[identity]["review_group"]]
 
     def test_output_byte_warnings_remain_visible_without_invented_operands(self):
-        """fd 9.0.0 bool and GNU tar bare action distinguish output from input."""
+        """The fd 9.0.0 delimiter switches distinguish output bytes from numerical input."""
         for command, flag, token in (("fd", "--print0", "NUL bytes"),
-                                     ("fdfind", "--print0", "NUL bytes"),
-                                     ("tar", "--totals", "bytes processed")):
+                                     ("fdfind", "--print0", "NUL bytes")):
             with self.subTest(command=command):
                 identity = f"option|{command}|{flag}"
                 profile = json.loads((ROOT / "profiles" / (command + ".json")).read_text(encoding="utf-8"))
