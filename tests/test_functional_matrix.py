@@ -51,6 +51,12 @@ ORIGINAL_GREP_FLAGS = {
     "--only-matching", "--regexp=", "--recursive", "--word-regexp",
 }
 
+ORIGINAL_LS_FLAGS = (
+    "--all", "--almost-all", "-l", "--human-readable", "--classify", "--color=", "--inode",
+    "--size", "--numeric-uid-gid", "--quote-name", "--escape", "--hide=", "--reverse",
+    "-t", "-S", "--group-directories-first", "--recursive", "--directory", "--dereference",
+)
+
 ORIGINAL_RSYNC_FLAGS = {
     "--acls", "--archive", "--backup", "--backup-dir=", "--bwlimit=", "--checksum", "--compress",
     "--delete", "--delete-after", "--dry-run", "--exclude=", "--exclude-from=", "--hard-links",
@@ -64,9 +70,6 @@ ORIGINAL_RSYNC_FLAGS = {
 PROFILE_SURFACES = {
     "git commit": ["--amend", "--all", "--dry-run", "--edit", "--file", "--message", "--patch", "--verbose", "--short"],
     "git log": ["--all", "--author=", "--decorate", "--grep=", "--graph", "--max-count=", "--oneline", "--patch", "--since=", "--stat"],
-    "ls": ["--all", "--almost-all", "--classify", "--color=", "--directory", "--dereference",
-           "--escape", "--group-directories-first", "--hide=", "--human-readable", "--inode",
-           "--numeric-uid-gid", "--quote-name", "--recursive", "--reverse", "--size", "-S", "-l", "-t"],
 }
 
 FIXTURE_SURFACES = {
@@ -222,6 +225,8 @@ class PrioritizedInventoryTests(unittest.TestCase):
                 self.assertEqual(sorted(options_of(profile_for(command))), sorted(expected))
         # Each manual inventory independently pins the expanded set of spellings.
         self.assertLessEqual(ORIGINAL_GREP_FLAGS, options_of(profile_for("grep")).keys())
+        ls_flags = options_of(profile_for("ls"))
+        self.assertEqual(tuple(flag for flag in ls_flags if flag in ORIGINAL_LS_FLAGS), ORIGINAL_LS_FLAGS)
         self.assertLessEqual(ORIGINAL_RSYNC_FLAGS, options_of(profile_for("rsync")).keys())
         # Preserve original tar insertions. The manual-coverage test pins its expanded surface.
         original_tar = {"--bzip2", "--create", "--directory=", "--diff", "--exclude=", "--extract",

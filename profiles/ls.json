@@ -5,22 +5,22 @@
       "name": "Display",
       "options": [
         {
-          "detail": "When listing a directory, include the implied . (this directory) and .. (its parent).",
+          "detail": "-a includes the implied . (this directory) and .. (its parent). When -a and -A are combined, the last one determines whether those two entries appear on the reviewed Ubuntu releases.",
           "flag": "--all",
           "summary": "Include entries beginning with a dot"
         },
         {
-          "detail": "Skip only the implied . and .. in directory listings. An explicitly named hidden file is still listed.",
+          "detail": "-A skips the implied current and parent entries when reading a directory. An explicit hidden operand still appears. On the reviewed Ubuntu releases, -aA omits both dot entries and -Aa includes both.",
           "flag": "--almost-all",
           "summary": "Include hidden names except the . and .. entries"
         },
         {
-          "detail": "Show type and permissions, link count, owner, group, file length, modification time (by default) and name. Length normally uses bytes. -h, --block-size, LS_BLOCK_SIZE or BLOCK_SIZE can scale it. Device files show major and minor numbers in the size field.",
+          "detail": "Show file type and permissions, link count, owner, group, size, timestamp and name. Regular-file length normally uses bytes. Use -h or --block-size to scale it. LS_BLOCK_SIZE and BLOCK_SIZE can also set its unit. Device files show major and minor numbers. The default time is the last data modification. A directory total measures disk usage. --format=long works on all three binaries. Only uutils accepts the alias --long.",
           "flag": "-l",
           "summary": "Use the long listing format"
         },
         {
-          "detail": "Use with -l for file length or -s for disk usage. M means 1048576 bytes. Use --si for powers of 1000.",
+          "detail": "-h scales file length in a long listing, disk usage with -s, and the directory total. M means 1048576 bytes. Use --si for powers of 1000.",
           "flag": "--human-readable",
           "summary": "Show sizes with 1024-based suffixes (-l or -s)",
           "value_semantics": {
@@ -45,7 +45,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   }
                 },
@@ -66,12 +68,83 @@
                   }
                 ],
                 "kind": "enumeration",
-                "meaning": "Print size fields with powers-of-1024 suffixes",
+                "meaning": "Print size fields with powers-of-1024 suffixes (GNU 9.4, 9.6, 9.7)",
                 "review": {
                   "references": [
                     {
                       "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--human-readable option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--human-readable option declaration and handling"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Print size fields with powers-of-1024 suffixes",
+                    "notation": "literal",
+                    "syntax": "--human-readable",
+                    "tokens": [
+                      "--human-readable"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Print size fields with powers-of-1024 suffixes (uutils 0.10.0)",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--human-readable option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--human-readable option declaration and handling"
                     }
                   ],
                   "status": "verified"
@@ -89,13 +162,13 @@
           }
         },
         {
-          "detail": "Append / to directories, @ to symbolic links, * to executable regular files, | to FIFOs and = to sockets. Plain --classify always adds indicators. Use --classify=auto for terminal output only.",
+          "detail": "-F marks directories with /, links with @, executable regular files with *, FIFOs with | and sockets with =. Other regular files have no suffix. GNU also uses > for doors on systems that support them. The inserted bare --classify enables indicators even on pipes. Use --classify=auto for terminals only. On GNU, =never leaves an earlier indicator style in effect. Use --indicator-style=none to clear it. On uutils, =never clears classification. The policy aliases yes and force mean always, tty and if-tty mean auto, and no and none mean never. An empty policy is invalid. A separate word is a file operand. Only uutils accepts -F=WHEN.",
           "flag": "--classify",
           "summary": "Append file-type indicators"
         },
         {
           "argument": "WHEN",
-          "detail": "Use auto for terminals only, always even in pipes, or never to disable color. Plain --color means always. The menu inserts --color= for an attached value.",
+          "detail": "Bare --color means always, including on pipes. Attach =auto for terminals only or =never for plain output. The menu inserts --color= for a value. Leaving the equals sign empty is invalid. A separated word is a file operand. With TERM=dumb, uutils suppresses color even for always. LS_COLORS controls the colors for file types.",
           "flag": "--color=",
           "summary": "Control colored output",
           "value_semantics": {
@@ -103,7 +176,7 @@
             "variants": [
               {
                 "kind": "enumeration",
-                "meaning": "Color-output policy",
+                "meaning": "Color-output policy (GNU 9.4, 9.6, 9.7)",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -205,8 +278,9 @@
                   "meaning": "Do not enable color through this option."
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "This maintained entry is the attached --color=WHEN form and requires WHEN; upstream's separate plain --color spelling implies always"
+                  "state": "known",
+                  "value": "always",
+                  "form": "choice-1"
                 },
                 "applicability": {
                   "implementation": {
@@ -218,7 +292,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   },
                   "platform": {
@@ -236,15 +312,168 @@
                     {
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
                       "locator": "ls --color WHEN"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--color option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--color option declaration and handling"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Color-output policy (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "yes",
+                    "tokens": [
+                      "yes"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "force",
+                    "tokens": [
+                      "force"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit color codes"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "tty",
+                    "tokens": [
+                      "tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "if-tty",
+                    "tokens": [
+                      "if-tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Color output to a terminal"
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  },
+                  {
+                    "id": "choice-8",
+                    "notation": "literal",
+                    "syntax": "no",
+                    "tokens": [
+                      "no"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  },
+                  {
+                    "id": "choice-9",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable color codes"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not enable color through this option."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "value": "always",
+                  "form": "choice-1"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--color option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--color option declaration and handling"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "argument_optional": true
         },
         {
-          "detail": "Hard links to the same file share an inode number. Compare numbers within the same filesystem.",
+          "detail": "-i adds the filesystem index number. Hard links to the same file share this number. Compare inode numbers within the same filesystem.",
           "flag": "--inode",
           "summary": "Print each file's inode number",
           "value_semantics": {
@@ -269,7 +498,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   }
                 },
@@ -290,12 +521,83 @@
                   }
                 ],
                 "kind": "enumeration",
-                "meaning": "Display filesystem inode numbers",
+                "meaning": "Display filesystem inode numbers (GNU 9.4, 9.6, 9.7)",
                 "review": {
                   "references": [
                     {
                       "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--inode option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--inode option declaration and handling"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Display filesystem inode numbers",
+                    "notation": "literal",
+                    "syntax": "--inode",
+                    "tokens": [
+                      "--inode"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Display filesystem inode numbers (uutils 0.10.0)",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--inode option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--inode option declaration and handling"
                     }
                   ],
                   "status": "verified"
@@ -313,7 +615,7 @@
           }
         },
         {
-          "detail": "Prefix each entry with its disk usage. Blocks default to 1024 bytes. --block-size overrides LS_BLOCK_SIZE, BLOCK_SIZE and BLOCKSIZE (checked in that order). With none set, POSIXLY_CORRECT selects 512-byte blocks. A sparse file can have a large file length but little allocated space.",
+          "detail": "-s prefixes each entry with its disk usage. The directory total also measures usage. The default unit is 1024 bytes. --block-size overrides LS_BLOCK_SIZE, BLOCK_SIZE and BLOCKSIZE, checked in that order. With none set, POSIXLY_CORRECT selects 512-byte blocks. GNU rounds partial blocks up. uutils drops the fractional part for each entry before adding the total. A sparse file can have a large file length but little allocated space.",
           "flag": "--size",
           "summary": "Show allocated disk space in blocks",
           "value_semantics": {
@@ -338,7 +640,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   }
                 },
@@ -359,12 +663,83 @@
                   }
                 ],
                 "kind": "enumeration",
-                "meaning": "Print allocated disk usage in configured blocks",
+                "meaning": "Print allocated disk usage in configured blocks (GNU 9.4, 9.6, 9.7)",
                 "review": {
                   "references": [
                     {
                       "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--size option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--size option declaration and handling"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Print allocated disk usage in configured blocks",
+                    "notation": "literal",
+                    "syntax": "--size",
+                    "tokens": [
+                      "--size"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Print allocated disk usage in configured blocks (uutils 0.10.0)",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--size option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--size option declaration and handling"
                     }
                   ],
                   "status": "verified"
@@ -382,7 +757,7 @@
           }
         },
         {
-          "detail": "Selects long format even without -l.",
+          "detail": "-n enables long format and prints user and group IDs as numbers. With uutils, use -lnu for a name-sorted listing with access times. Bare -nu also sorts by access time there.",
           "flag": "--numeric-uid-gid",
           "summary": "Use numeric owner and group IDs in a long listing",
           "value_semantics": {
@@ -407,7 +782,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   }
                 },
@@ -428,12 +805,83 @@
                   }
                 ],
                 "kind": "enumeration",
-                "meaning": "Display user/group identifiers",
+                "meaning": "Display user/group identifiers (GNU 9.4, 9.6, 9.7)",
                 "review": {
                   "references": [
                     {
                       "locator": "ls block size, --human-readable, --size, --inode, --numeric-uid-gid",
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--numeric-uid-gid option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--numeric-uid-gid option declaration and handling"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Display user/group identifiers",
+                    "notation": "literal",
+                    "syntax": "--numeric-uid-gid",
+                    "tokens": [
+                      "--numeric-uid-gid"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Display user/group identifiers (uutils 0.10.0)",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--numeric-uid-gid option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--numeric-uid-gid option declaration and handling"
                     }
                   ],
                   "status": "verified"
@@ -451,17 +899,18 @@
           }
         },
         {
-          "detail": "Escape nongraphic characters using C syntax inside the quotes.",
+          "detail": "-Q selects --quoting-style=c. Nongraphic characters use C-style escapes inside the quotes.",
           "flag": "--quote-name",
           "summary": "Enclose entry names in double quotes"
         },
         {
           "flag": "--escape",
-          "summary": "Print C-style escapes for nongraphic characters"
+          "summary": "Print C-style escapes for nongraphic characters",
+          "detail": "-b selects --quoting-style=escape. The escapes appear without surrounding quotes. An embedded newline is printed as a backslash and the letter n."
         },
         {
           "argument": "PATTERN",
-          "detail": "Quote wildcards so ls receives the pattern, as in --hide='*.bak'. Explicitly named files still appear. -a or -A overrides the hide pattern.",
+          "detail": "Quote wildcards so ls receives the pattern, as in --hide='*.bak'. Explicitly named files still appear. Either -a or -A overrides every --hide pattern. Use --ignore to keep filtering under those options. Repeat --hide for additional patterns.",
           "flag": "--hide=",
           "summary": "Hide directory entries matching a shell pattern",
           "value_semantics": {
@@ -469,7 +918,7 @@
             "variants": [
               {
                 "kind": "nonnumerical",
-                "meaning": "Hidden-name wildcard pattern",
+                "meaning": "Hidden-name wildcard pattern (GNU 9.4, 9.6, 9.7)",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -500,7 +949,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.6"
+                      "9.4",
+                      "9.6",
+                      "9.7"
                     ]
                   },
                   "platform": {
@@ -518,6 +969,809 @@
                     {
                       "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.6/doc/coreutils.texi",
                       "locator": "ls --hide"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--hide option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--hide option declaration and handling"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "nonnumerical",
+                "meaning": "Hidden-name wildcard pattern (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Shell-style filename wildcard pattern hiding matching names; --all/--almost-all can override this behavior."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this hide pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--hide option declaration and handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--hide option declaration and handling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--author",
+          "summary": "Include the author in a long listing",
+          "detail": "Use with -l to add the author field. On Ubuntu the author is the file owner. GNU/Hurd can store a different author."
+        },
+        {
+          "flag": "--no-group",
+          "summary": "Omit the group from a long listing",
+          "detail": "-G takes effect when a long format is active. Use -o to select long format and omit the group in one switch."
+        },
+        {
+          "flag": "-o",
+          "summary": "Show a long listing without group information",
+          "detail": "Selects long format with the group field suppressed, like -lG. Adding -g also suppresses the owner."
+        },
+        {
+          "flag": "-g",
+          "summary": "Show a long listing without owner information",
+          "detail": "Selects long format and suppresses the owner field. Adding -o also suppresses the group."
+        },
+        {
+          "flag": "--context",
+          "summary": "Print each file’s security context",
+          "detail": "-Z displays the security label, such as an SELinux context, alongside the entry. A question mark can indicate that the context is unavailable."
+        },
+        {
+          "flag": "--si",
+          "summary": "Scale sizes with powers of 1000",
+          "detail": "With -l, -s or directory totals, choose a suffix separately for each value. A value of 1M represents one million bytes. Use -h for powers of 1024."
+        },
+        {
+          "flag": "--kibibytes",
+          "summary": "Use 1024-byte blocks for disk usage",
+          "detail": "-k overrides environment settings for -s and directory totals. Long-listing file length keeps its own unit, including one set by LS_BLOCK_SIZE or BLOCK_SIZE. An explicit --block-size, -h or --si takes precedence even before -k."
+        },
+        {
+          "flag": "--block-size=",
+          "summary": "Set the display unit for lengths and disk usage",
+          "detail": "Scale long-listing file lengths, -s blocks and directory totals. Use a positive byte count, a unit such as 1K or 1KB, or the modes human-readable and si. K and KiB mean 1024 bytes. KB means 1000. GNU rounds fractions up and appends a suffix when SIZE is a unit alone. uutils rounds lengths up, truncates each allocation before totaling it, and prints --block-size=K without a suffix. This option overrides block-size environment variables. The largest block on these builds is 18446744073709551615 bytes. Larger units such as Z do not fit. A bare unit supplies a multiplier of one. GNU accepts a leading apostrophe for locale digit grouping. uutils accepts the suffix b for 512 bytes.",
+          "argument": "SIZE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Bytes per display block or automatic scaling policy (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "bytes"
+                },
+                "forms": [
+                  {
+                    "id": "bytes",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709551615"
+                    },
+                    "grammar": "A positive byte count. A leading zero selects octal. The 0x and 0b prefixes select hexadecimal and binary on these builds."
+                  },
+                  {
+                    "id": "binary-k",
+                    "notation": "suffix",
+                    "syntax": "NK",
+                    "tokens": [
+                      "K",
+                      "k",
+                      "KiB",
+                      "kiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18014398509481983"
+                    }
+                  },
+                  {
+                    "id": "decimal-k",
+                    "notation": "suffix",
+                    "syntax": "NKB",
+                    "tokens": [
+                      "KB",
+                      "kB",
+                      "KD",
+                      "kD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709551"
+                    }
+                  },
+                  {
+                    "id": "binary-m",
+                    "notation": "suffix",
+                    "syntax": "NM",
+                    "tokens": [
+                      "M",
+                      "m",
+                      "MiB",
+                      "miB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "17592186044415"
+                    }
+                  },
+                  {
+                    "id": "decimal-m",
+                    "notation": "suffix",
+                    "syntax": "NMB",
+                    "tokens": [
+                      "MB",
+                      "mB",
+                      "MD",
+                      "mD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709"
+                    }
+                  },
+                  {
+                    "id": "binary-g",
+                    "notation": "suffix",
+                    "syntax": "NG",
+                    "tokens": [
+                      "G",
+                      "g",
+                      "GiB",
+                      "giB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "17179869183"
+                    }
+                  },
+                  {
+                    "id": "decimal-g",
+                    "notation": "suffix",
+                    "syntax": "NGB",
+                    "tokens": [
+                      "GB",
+                      "gB",
+                      "GD",
+                      "gD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073"
+                    }
+                  },
+                  {
+                    "id": "binary-t",
+                    "notation": "suffix",
+                    "syntax": "NT",
+                    "tokens": [
+                      "T",
+                      "t",
+                      "TiB",
+                      "tiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "16777215"
+                    }
+                  },
+                  {
+                    "id": "decimal-t",
+                    "notation": "suffix",
+                    "syntax": "NTB",
+                    "tokens": [
+                      "TB",
+                      "tB",
+                      "TD",
+                      "tD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744"
+                    }
+                  },
+                  {
+                    "id": "binary-p",
+                    "notation": "suffix",
+                    "syntax": "NP",
+                    "tokens": [
+                      "P",
+                      "PiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1125899906842624"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "16383"
+                    }
+                  },
+                  {
+                    "id": "decimal-p",
+                    "notation": "suffix",
+                    "syntax": "NPB",
+                    "tokens": [
+                      "PB",
+                      "PD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446"
+                    }
+                  },
+                  {
+                    "id": "binary-e",
+                    "notation": "suffix",
+                    "syntax": "NE",
+                    "tokens": [
+                      "E",
+                      "EiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1152921504606846976"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "15"
+                    }
+                  },
+                  {
+                    "id": "decimal-e",
+                    "notation": "suffix",
+                    "syntax": "NEB",
+                    "tokens": [
+                      "EB",
+                      "ED"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18"
+                    }
+                  },
+                  {
+                    "id": "human-readable",
+                    "notation": "literal",
+                    "syntax": "human-readable",
+                    "tokens": [
+                      "human-readable"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Choose a power-of-1024 suffix separately per size",
+                    "sentinel": true
+                  },
+                  {
+                    "id": "si",
+                    "notation": "literal",
+                    "syntax": "si",
+                    "tokens": [
+                      "si"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Choose a power-of-1000 suffix separately per size",
+                    "sentinel": true
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the environment or the normal field defaults: one byte for length and 1024 bytes for disk usage."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--block-size and fixed display units"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--block-size and fixed display units"
+                    },
+                    {
+                      "source": "https://www.gnu.org/software/coreutils/manual/coreutils.html#Block-size",
+                      "locator": "Block size, suffixes and environment precedence"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "quantity",
+                "meaning": "Bytes per display block or automatic scaling policy (uutils 0.10.0)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "bytes"
+                },
+                "forms": [
+                  {
+                    "id": "bytes",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709551615"
+                    },
+                    "grammar": "A positive byte count. A leading zero selects octal. The 0x and 0b prefixes select hexadecimal and binary on these builds."
+                  },
+                  {
+                    "id": "binary-k",
+                    "notation": "suffix",
+                    "syntax": "NK",
+                    "tokens": [
+                      "K",
+                      "k",
+                      "KiB",
+                      "kiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18014398509481983"
+                    }
+                  },
+                  {
+                    "id": "decimal-k",
+                    "notation": "suffix",
+                    "syntax": "NKB",
+                    "tokens": [
+                      "KB",
+                      "kB",
+                      "KD",
+                      "kD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709551"
+                    }
+                  },
+                  {
+                    "id": "binary-m",
+                    "notation": "suffix",
+                    "syntax": "NM",
+                    "tokens": [
+                      "M",
+                      "m",
+                      "MiB",
+                      "miB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "17592186044415"
+                    }
+                  },
+                  {
+                    "id": "decimal-m",
+                    "notation": "suffix",
+                    "syntax": "NMB",
+                    "tokens": [
+                      "MB",
+                      "mB",
+                      "MD",
+                      "mD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073709"
+                    }
+                  },
+                  {
+                    "id": "binary-g",
+                    "notation": "suffix",
+                    "syntax": "NG",
+                    "tokens": [
+                      "G",
+                      "g",
+                      "GiB",
+                      "giB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "17179869183"
+                    }
+                  },
+                  {
+                    "id": "decimal-g",
+                    "notation": "suffix",
+                    "syntax": "NGB",
+                    "tokens": [
+                      "GB",
+                      "gB",
+                      "GD",
+                      "gD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744073"
+                    }
+                  },
+                  {
+                    "id": "binary-t",
+                    "notation": "suffix",
+                    "syntax": "NT",
+                    "tokens": [
+                      "T",
+                      "t",
+                      "TiB",
+                      "tiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "16777215"
+                    }
+                  },
+                  {
+                    "id": "decimal-t",
+                    "notation": "suffix",
+                    "syntax": "NTB",
+                    "tokens": [
+                      "TB",
+                      "tB",
+                      "TD",
+                      "tD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446744"
+                    }
+                  },
+                  {
+                    "id": "binary-p",
+                    "notation": "suffix",
+                    "syntax": "NP",
+                    "tokens": [
+                      "P",
+                      "p",
+                      "PiB",
+                      "piB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1125899906842624"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "16383"
+                    }
+                  },
+                  {
+                    "id": "decimal-p",
+                    "notation": "suffix",
+                    "syntax": "NPB",
+                    "tokens": [
+                      "PB",
+                      "pB",
+                      "PD",
+                      "pD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18446"
+                    }
+                  },
+                  {
+                    "id": "binary-e",
+                    "notation": "suffix",
+                    "syntax": "NE",
+                    "tokens": [
+                      "E",
+                      "e",
+                      "EiB",
+                      "eiB"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1152921504606846976"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "15"
+                    }
+                  },
+                  {
+                    "id": "decimal-e",
+                    "notation": "suffix",
+                    "syntax": "NEB",
+                    "tokens": [
+                      "EB",
+                      "eB",
+                      "ED",
+                      "eD"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1000000000000000000"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "18"
+                    }
+                  },
+                  {
+                    "id": "human-readable",
+                    "notation": "literal",
+                    "syntax": "human-readable",
+                    "tokens": [
+                      "human-readable"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Choose a power-of-1024 suffix separately per size",
+                    "sentinel": true
+                  },
+                  {
+                    "id": "si",
+                    "notation": "literal",
+                    "syntax": "si",
+                    "tokens": [
+                      "si"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Choose a power-of-1000 suffix separately per size",
+                    "sentinel": true
+                  },
+                  {
+                    "id": "blocks",
+                    "notation": "suffix",
+                    "syntax": "Nb",
+                    "tokens": [
+                      "b"
+                    ],
+                    "case": "sensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "512"
+                    },
+                    "bounds": {
+                      "min": "1",
+                      "max": "36028797018963967"
+                    }
+                  },
+                  {
+                    "id": "physical-memory",
+                    "notation": "expression",
+                    "syntax": "N%",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Undocumented Linux parser extension. The byte count is the system memory size times the whole-number quotient of N divided by 100. A zero result or overflow is rejected. GNU rejects the percent suffix."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the environment or the normal field defaults: one byte for length and 1024 bytes for disk usage."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--block-size and fixed display units"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--block-size and fixed display units"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uucore/src/lib/features/parser/parse_size.rs",
+                      "locator": "Parser::parse, parse_size_non_zero_u64"
                     }
                   ]
                 }
@@ -532,23 +1786,634 @@
       "name": "Sorting",
       "options": [
         {
-          "detail": "With -t, oldest comes first. With -S, smallest comes first. Has no effect with -U (unsorted).",
+          "detail": "-r puts the oldest first with -t and the shortest first with -S. GNU ignores -r with -U, while uutils reverses the unsorted directory order. With --group-directories-first, the directories still come first.",
           "flag": "--reverse",
           "summary": "Reverse the sorting order"
         },
         {
-          "detail": "Use --time to choose another timestamp, such as access time with --time=atime.",
+          "detail": "The default key is modification time. Use -u or --time=atime for last access, or -c for a metadata change. With -l the chosen time is also displayed. --sort=time selects the same ordering.",
           "flag": "-t",
-          "summary": "Sort by modification time, newest first"
+          "summary": "Sort by time, newest first"
         },
         {
           "flag": "-S",
-          "summary": "Sort by file length, largest first"
+          "summary": "Sort by file length, largest first",
+          "detail": "--sort=size compares file lengths even if -s displays disk usage. A long sparse file can sort ahead of a shorter file that uses more storage. Add -r for smallest first."
         },
         {
-          "detail": "Sort each group separately using the selected sort order. -U disables grouping.",
+          "detail": "Sort directories and other entries separately with the active key. Reverse order applies within each group. Grouping is disabled while --sort=none or -U is in effect.",
           "flag": "--group-directories-first",
           "summary": "List directories before files"
+        },
+        {
+          "flag": "--sort=",
+          "summary": "Choose the entry sort key",
+          "detail": "Use none, size, time, version, extension or width. Both Resolute binaries also accept name to restore the default name sort. Noble GNU 9.4 rejects that explicit value. Width uses the printed name width on GNU and the name’s byte length on uutils.",
+          "argument": "WORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Directory sort key (GNU 9.4)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "none",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Keep directory order"
+                  },
+                  {
+                    "id": "size",
+                    "notation": "literal",
+                    "syntax": "size",
+                    "tokens": [
+                      "size"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Largest file length first"
+                  },
+                  {
+                    "id": "time",
+                    "notation": "literal",
+                    "syntax": "time",
+                    "tokens": [
+                      "time"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Latest selected timestamp first"
+                  },
+                  {
+                    "id": "version",
+                    "notation": "literal",
+                    "syntax": "version",
+                    "tokens": [
+                      "version"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Compare digit runs in names as version numbers"
+                  },
+                  {
+                    "id": "extension",
+                    "notation": "literal",
+                    "syntax": "extension",
+                    "tokens": [
+                      "extension"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by extension"
+                  },
+                  {
+                    "id": "width",
+                    "notation": "literal",
+                    "syntax": "width",
+                    "tokens": [
+                      "width"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by printed name width"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Normally sort by name. Timestamp and other sort switches can select another key."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "sort_args and sort_types"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Directory sort key (GNU 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "none",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Keep directory order"
+                  },
+                  {
+                    "id": "size",
+                    "notation": "literal",
+                    "syntax": "size",
+                    "tokens": [
+                      "size"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Largest file length first"
+                  },
+                  {
+                    "id": "time",
+                    "notation": "literal",
+                    "syntax": "time",
+                    "tokens": [
+                      "time"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Latest selected timestamp first"
+                  },
+                  {
+                    "id": "version",
+                    "notation": "literal",
+                    "syntax": "version",
+                    "tokens": [
+                      "version"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Compare digit runs in names as version numbers"
+                  },
+                  {
+                    "id": "extension",
+                    "notation": "literal",
+                    "syntax": "extension",
+                    "tokens": [
+                      "extension"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by extension"
+                  },
+                  {
+                    "id": "width",
+                    "notation": "literal",
+                    "syntax": "width",
+                    "tokens": [
+                      "width"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by printed name width"
+                  },
+                  {
+                    "id": "name",
+                    "notation": "literal",
+                    "syntax": "name",
+                    "tokens": [
+                      "name"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by name"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Normally sort by name. Timestamp and other sort switches can select another key."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "sort_args and sort_types"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Directory sort key (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "none",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Keep directory order"
+                  },
+                  {
+                    "id": "size",
+                    "notation": "literal",
+                    "syntax": "size",
+                    "tokens": [
+                      "size"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Largest file length first"
+                  },
+                  {
+                    "id": "time",
+                    "notation": "literal",
+                    "syntax": "time",
+                    "tokens": [
+                      "time"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Latest selected timestamp first"
+                  },
+                  {
+                    "id": "version",
+                    "notation": "literal",
+                    "syntax": "version",
+                    "tokens": [
+                      "version"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Compare digit runs in names as version numbers"
+                  },
+                  {
+                    "id": "extension",
+                    "notation": "literal",
+                    "syntax": "extension",
+                    "tokens": [
+                      "extension"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by extension"
+                  },
+                  {
+                    "id": "width",
+                    "notation": "literal",
+                    "syntax": "width",
+                    "tokens": [
+                      "width"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by byte length of the filename"
+                  },
+                  {
+                    "id": "name",
+                    "notation": "literal",
+                    "syntax": "name",
+                    "tokens": [
+                      "name"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Order by name"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Normally sort by name. Timestamp and other sort switches can select another key."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--sort and extract_sort"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--sort and extract_sort"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-U",
+          "summary": "List entries in directory order",
+          "detail": "Equivalent to --sort=none. Dot-prefixed names stay hidden unless requested. Unsorted mode disables directory grouping. Use -f to include hidden names as well."
+        },
+        {
+          "flag": "-v",
+          "summary": "Sort numbers within names in version order",
+          "detail": "Selects --sort=version. This puts file2 before file10. Add -r to reverse version order."
+        },
+        {
+          "flag": "-X",
+          "summary": "Sort by filename extension",
+          "detail": "Selects --sort=extension. Entries without an extension come first, followed by extensions in alphabetical order. The extension follows the final dot."
+        },
+        {
+          "flag": "-f",
+          "summary": "Include hidden entries in directory order",
+          "detail": "Combines -a and -U. On Noble GNU 9.4, -f also clears an earlier long format, -s, color and hyperlinks. Place those options after -f to keep them. GNU 9.7 and uutils keep an explicitly requested long format and disk-usage field."
+        },
+        {
+          "flag": "-u",
+          "summary": "Use the last access time",
+          "detail": "With -l, display access time and retain name order by default. With -lt, both display and sort by access time. Without -l or an explicit sort, -u orders by latest access. On uutils, -nu and --format=long -u also select time order."
+        },
+        {
+          "flag": "-c",
+          "summary": "Use the last metadata-change time",
+          "detail": "The ctime tracks changes to file status, including permissions. With -l, show ctime in name order by default. With -lt, show and sort by ctime. Alone, -c sorts by ctime. On uutils, long format selected by -n or --format=long can also sort by ctime."
+        },
+        {
+          "flag": "--time=",
+          "summary": "Choose the timestamp to display or sort by",
+          "detail": "With -l, choose modification (mtime), access (atime, use), status change (ctime, status), or creation (birth, creation) time. Add -t to sort by the chosen field. Outside long format an explicit access, status or birth field normally selects time sorting. --time=mtime alone keeps name order on Noble GNU 9.4 and selects time order on both Resolute binaries. If the filesystem supplies no birth time, the reviewed GNU builds display ? and uutils displays ???.",
+          "argument": "WORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Timestamp field (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "mtime",
+                    "notation": "literal",
+                    "syntax": "mtime",
+                    "tokens": [
+                      "mtime",
+                      "modification"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last data modification"
+                  },
+                  {
+                    "id": "atime",
+                    "notation": "literal",
+                    "syntax": "atime",
+                    "tokens": [
+                      "atime",
+                      "access",
+                      "use"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last file access"
+                  },
+                  {
+                    "id": "ctime",
+                    "notation": "literal",
+                    "syntax": "ctime",
+                    "tokens": [
+                      "ctime",
+                      "status"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last inode status change"
+                  },
+                  {
+                    "id": "birth",
+                    "notation": "literal",
+                    "syntax": "birth",
+                    "tokens": [
+                      "birth",
+                      "creation"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "File creation time when available"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Modification time unless -u or -c selects a different field."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--time and timestamp selectors"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--time and timestamp selectors"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Timestamp field (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "mtime",
+                    "notation": "literal",
+                    "syntax": "mtime",
+                    "tokens": [
+                      "mtime",
+                      "modification"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last data modification"
+                  },
+                  {
+                    "id": "atime",
+                    "notation": "literal",
+                    "syntax": "atime",
+                    "tokens": [
+                      "atime",
+                      "access",
+                      "use"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last file access"
+                  },
+                  {
+                    "id": "ctime",
+                    "notation": "literal",
+                    "syntax": "ctime",
+                    "tokens": [
+                      "ctime",
+                      "status"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Last inode status change"
+                  },
+                  {
+                    "id": "birth",
+                    "notation": "literal",
+                    "syntax": "birth",
+                    "tokens": [
+                      "birth",
+                      "creation"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "File creation time when available"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Modification time unless -u or -c selects a different field."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--time and timestamp selectors"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--time and timestamp selectors"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -557,19 +2422,1606 @@
       "name": "Traversal",
       "options": [
         {
-          "detail": "List the contents of each directory and its subdirectories. Links encountered during descent are normally listed as links. Add -L to follow them.",
+          "detail": "-R descends into real subdirectories. Add -L to follow links encountered during descent. If a sibling link leads back to a directory in the same traversal, GNU can list both paths. uutils reports an already-listed directory and exits 2. Separate command-line operands can each visit the same target.",
           "flag": "--recursive",
           "summary": "List subdirectories recursively"
         },
         {
-          "detail": "Use -ld DIR to show the directory's own long listing. For a symbolic link to a directory, -ld shows the link and -ldL shows the target directory under the link name.",
+          "detail": "-d lists each named directory as an entry. Use -ld DIR for its own long listing. For a link to a directory, -ld shows the link and -ldL shows the target directory under the link name.",
           "flag": "--directory",
           "summary": "List directories themselves"
         },
         {
-          "detail": "Keep the link name but use the target's attributes. Applies to named and discovered links. A plain ls of a named link to a directory normally lists its contents. Use -H to follow only command-line links.",
+          "detail": "-L follows named links and links found in a directory. The printed name remains the link name. A plain ls of a named link to a directory ordinarily lists its contents. Use -H to follow only command-line links.",
           "flag": "--dereference",
           "summary": "Show information for symbolic-link targets"
+        },
+        {
+          "flag": "--dereference-command-line",
+          "summary": "Follow links named on the command line",
+          "detail": "-H follows each explicitly named link to a file or directory. Links encountered inside a listed directory keep their own attributes. Use -ldH LINK to inspect a named directory target itself."
+        },
+        {
+          "flag": "--dereference-command-line-symlink-to-dir",
+          "summary": "Follow named links that point to directories",
+          "detail": "Follow only command-line links to directories. Links to files and links discovered during traversal keep their own attributes. Plain ls normally follows named directory links this way. Long format, -d and active classification change that default."
+        },
+        {
+          "flag": "--ignore=",
+          "summary": "Skip directory entries matching a shell pattern",
+          "detail": "Repeat -I PATTERN for multiple patterns. Quote the wildcard, as in --ignore='*.bak'. A leading dot needs a literal dot in the pattern. Explicit file operands still appear. -a and -A preserve this filter. With -a and --ignore='.*', GNU also filters the implied dot entries. uutils keeps . and .. in that case. Use -Ipattern or -I pattern. With -I=pattern, GNU includes the equals sign in the pattern and uutils drops it.",
+          "argument": "PATTERN",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filename exclusion pattern (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "PATTERN",
+                    "grammar": "A shell wildcard pattern applied to directory entries. An initial dot must be matched explicitly."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No exclusion from this pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--ignore and directory filters"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--ignore and directory filters"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filename exclusion pattern (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "PATTERN",
+                    "grammar": "A shell wildcard pattern applied to directory entries. An initial dot must be matched explicitly."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No exclusion from this pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--ignore and directory filters"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--ignore and directory filters"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ignore-backups",
+          "summary": "Skip directory entries ending in a tilde",
+          "detail": "-B filters both ordinary and hidden backup names, even with -a or -A. An explicitly named backup still appears. This has the effect of --ignore='*~' and --ignore='.*~'."
+        }
+      ]
+    },
+    {
+      "name": "Layout",
+      "description": "Arrange names, columns and timestamps.",
+      "options": [
+        {
+          "flag": "--format=",
+          "summary": "Choose the listing layout",
+          "detail": "Use long or verbose (-l), single-column (-1), vertical (-C), across or horizontal (-x), or commas (-m). uutils also accepts columns for vertical layout. Unlike -1, a later --format=single-column replaces long format.",
+          "argument": "WORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Output layout (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "vertical",
+                    "notation": "literal",
+                    "syntax": "vertical",
+                    "tokens": [
+                      "vertical"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Fill columns from top to bottom"
+                  },
+                  {
+                    "id": "horizontal",
+                    "notation": "literal",
+                    "syntax": "horizontal",
+                    "tokens": [
+                      "horizontal",
+                      "across"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Fill columns from left to right"
+                  },
+                  {
+                    "id": "commas",
+                    "notation": "literal",
+                    "syntax": "commas",
+                    "tokens": [
+                      "commas"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Wrap a comma-separated list"
+                  },
+                  {
+                    "id": "long",
+                    "notation": "literal",
+                    "syntax": "long",
+                    "tokens": [
+                      "long",
+                      "verbose"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Show metadata with each name"
+                  },
+                  {
+                    "id": "single-column",
+                    "notation": "literal",
+                    "syntax": "single-column",
+                    "tokens": [
+                      "single-column"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use a separate line per entry"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use columns on a terminal and single-column output on a pipe unless another layout is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--format and layout selectors"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--format and layout selectors"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Output layout (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "vertical",
+                    "notation": "literal",
+                    "syntax": "vertical",
+                    "tokens": [
+                      "vertical",
+                      "columns"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Fill columns from top to bottom"
+                  },
+                  {
+                    "id": "horizontal",
+                    "notation": "literal",
+                    "syntax": "horizontal",
+                    "tokens": [
+                      "horizontal",
+                      "across"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Fill columns from left to right"
+                  },
+                  {
+                    "id": "commas",
+                    "notation": "literal",
+                    "syntax": "commas",
+                    "tokens": [
+                      "commas"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Wrap a comma-separated list"
+                  },
+                  {
+                    "id": "long",
+                    "notation": "literal",
+                    "syntax": "long",
+                    "tokens": [
+                      "long",
+                      "verbose"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Show metadata with each name"
+                  },
+                  {
+                    "id": "single-column",
+                    "notation": "literal",
+                    "syntax": "single-column",
+                    "tokens": [
+                      "single-column"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use a separate line per entry"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use columns on a terminal and single-column output on a pipe unless another layout is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--format and layout selectors"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--format and layout selectors"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-1",
+          "summary": "List one entry per line",
+          "detail": "The default layout for a pipe. A long listing stays long even after -1. Use --format=single-column to override long format. Embedded newlines can span multiple lines. For a filename stream, use --zero.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "One entry per output line (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "single-column",
+                    "notation": "literal",
+                    "syntax": "-1",
+                    "tokens": [
+                      "-1"
+                    ],
+                    "meaning": "Select one entry per line unless long format is in effect"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Layout depends on the output destination and other format options."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "-1 / single-column format handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "-1 / single-column format handling"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "One entry per output line (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "single-column",
+                    "notation": "literal",
+                    "syntax": "-1",
+                    "tokens": [
+                      "-1"
+                    ],
+                    "meaning": "Select one entry per line unless long format is in effect"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Layout depends on the output destination and other format options."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "-1 / single-column format handling"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "-1 / single-column format handling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-C",
+          "summary": "Fill columns from top to bottom",
+          "detail": "Selects --format=vertical, the usual terminal layout. Column width depends on the displayed names and the available output width."
+        },
+        {
+          "flag": "-x",
+          "summary": "Fill columns from left to right",
+          "detail": "Selects --format=across (also horizontal). Read each row from left to right to follow the active sort order."
+        },
+        {
+          "flag": "-m",
+          "summary": "Separate entries with commas",
+          "detail": "Selects --format=commas. Names run across each line with a comma and a space between entries, wrapping to the output width."
+        },
+        {
+          "flag": "--width=",
+          "summary": "Set the output width in columns",
+          "detail": "-w COLS sets the line width used to arrange columns or comma-separated names. Zero removes the width limit. GNU normally tries the terminal width before COLUMNS. uutils checks COLUMNS first. Both fall back to 80 columns. Use -w2 or -w 2 on either implementation. Only uutils accepts -w=2.",
+          "argument": "COLS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Output line width (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "columns"
+                },
+                "forms": [
+                  {
+                    "id": "columns",
+                    "notation": "number",
+                    "syntax": "COLS",
+                    "grammar": "An unsigned integer in columns. A leading zero selects octal. The 0x and 0b prefixes select hexadecimal and binary on these Ubuntu builds. A value above 9223372036854775807 means unlimited on this build.",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "unit": {
+                      "base": "column",
+                      "multiplier": "1"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Unlimited output width"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the terminal width, then COLUMNS, then 80 columns."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "decode_line_length and tabsize_opt"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "decode_line_length and tabsize_opt"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "quantity",
+                "meaning": "Output line width (uutils 0.10.0)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "columns"
+                },
+                "forms": [
+                  {
+                    "id": "columns",
+                    "notation": "number",
+                    "syntax": "COLS",
+                    "grammar": "Decimal by default. A leading zero on a multi-digit value selects octal. Hexadecimal and binary width prefixes are rejected. Values above 65535 saturate at 65535.",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "unit": {
+                      "base": "column",
+                      "multiplier": "1"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Unlimited output width"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use COLUMNS, then the terminal width, then 80 columns."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "extract_width and parse_tab_size"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "extract_width and parse_tab_size"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--tabsize=",
+          "summary": "Set the tab-stop spacing in columns",
+          "detail": "-T COLS controls tab spacing when aligning columns. Zero uses spaces only. Without an explicit value, TABSIZE sets the spacing and the default is 8. Use -T2 or -T 2 on either implementation. Only uutils accepts -T=2.",
+          "argument": "COLS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Distance between tab stops (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "columns"
+                },
+                "forms": [
+                  {
+                    "id": "columns",
+                    "notation": "number",
+                    "syntax": "COLS",
+                    "grammar": "An unsigned integer in columns. A leading zero selects octal. The 0x and 0b prefixes select hexadecimal and binary on these Ubuntu builds.",
+                    "bounds": {
+                      "min": "0",
+                      "max": "9223372036854775807"
+                    },
+                    "unit": {
+                      "base": "column",
+                      "multiplier": "1"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Use spaces instead of tabs"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use TABSIZE if set, otherwise 8 columns."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "decode_line_length and tabsize_opt"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "decode_line_length and tabsize_opt"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "quantity",
+                "meaning": "Distance between tab stops (uutils 0.10.0)",
+                "bare": {
+                  "state": "accepted",
+                  "form": "columns"
+                },
+                "forms": [
+                  {
+                    "id": "columns",
+                    "notation": "number",
+                    "syntax": "COLS",
+                    "grammar": "Decimal, including leading zeros, or hexadecimal with a 0x prefix.",
+                    "bounds": {
+                      "min": "0",
+                      "max": "18446744073709551615"
+                    },
+                    "unit": {
+                      "base": "column",
+                      "multiplier": "1"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Use spaces instead of tabs"
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use TABSIZE if set, otherwise 8 columns."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "extract_width and parse_tab_size"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "extract_width and parse_tab_size"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--time-style=",
+          "summary": "Set the long-listing timestamp format",
+          "detail": "TIME_STYLE supplies the default, normally locale. Use full-iso for seconds, nanoseconds and zone, long-iso for minutes, or iso for an age-dependent layout. Quote a custom date-style +FORMAT. With two formats separated by a newline, GNU uses older then recent, while uutils uses recent then older. With LC_ALL=C, posix-long-iso uses locale dates on GNU and long-iso on uutils.",
+          "argument": "TIME_STYLE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Long-listing timestamp style (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "TIME_STYLE",
+                    "grammar": "full-iso includes nanoseconds and zone. long-iso shows minutes. iso varies with age. locale uses local date conventions. A leading + introduces a date format. posix- qualifies the style by locale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use TIME_STYLE from the environment, otherwise locale."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--time-style and custom timestamp formats"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--time-style and custom timestamp formats"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Long-listing timestamp style (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "TIME_STYLE",
+                    "grammar": "full-iso includes nanoseconds and zone. long-iso shows minutes. iso varies with age. locale uses local date conventions. A leading + introduces a date format. posix- qualifies the style by locale."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use TIME_STYLE from the environment, otherwise locale."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--time-style and custom timestamp formats"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--time-style and custom timestamp formats"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--full-time",
+          "summary": "Show full timestamps in a long listing",
+          "detail": "Selects -l and --time-style=full-iso. The selected timestamp includes the date, time, nanoseconds and time-zone offset. Use --time to change the timestamp field."
+        },
+        {
+          "flag": "--dired",
+          "summary": "Emit filename byte offsets for Emacs Dired",
+          "detail": "-D produces //DIRED// offsets into the displayed listing. Recursive listings also identify directory names. Noble GNU 9.4 requires long format (-lD). GNU 9.7 and uutils enable it with -D alone. Use --quoting-style=literal for unescaped names. With active hyperlinks, ls omits the offsets. On Resolute, -D also cancels earlier hyperlinks. Active Dired offsets and --zero are incompatible."
+        }
+      ]
+    },
+    {
+      "name": "Names",
+      "description": "Choose quoting, delimiters and file-type indicators.",
+      "options": [
+        {
+          "flag": "--literal",
+          "summary": "Print names without surrounding quotes",
+          "detail": "-N selects --quoting-style=literal. To preserve unescaped control characters on a terminal, add --show-control-chars. uutils also declares --l as an alias for --literal. GNU accepts --l as an abbreviation. The single-dash -l selects long format."
+        },
+        {
+          "flag": "--quoting-style=",
+          "summary": "Choose how to quote entry names",
+          "detail": "Choose literal, shell, shell-always, shell-escape, shell-escape-always, c, escape, locale or clocale. GNU c-maybe adds double quotes when escaping requires them. uutils treats c-maybe like c and always adds the quotes. QUOTING_STYLE sets the default. Otherwise terminal output uses shell-escape and piped output normally uses literal names.",
+          "argument": "WORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Filename quoting style (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "WORD",
+                    "grammar": "literal emits names directly. shell quotes when needed and shell-always quotes every name. shell-escape and shell-escape-always also handle nongraphic bytes. c uses double quotes and C escapes. escape omits the outer double quotes. locale and clocale choose locale quotation marks. c-maybe quotes only when escaping requires it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use QUOTING_STYLE if set. Otherwise use shell-escape on a terminal and literal on a pipe."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--quoting-style and quoting styles"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--quoting-style and quoting styles"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Filename quoting style (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "selector",
+                    "notation": "expression",
+                    "syntax": "WORD",
+                    "grammar": "literal emits names directly. shell quotes when needed and shell-always quotes every name. shell-escape and shell-escape-always also handle nongraphic bytes. c uses double quotes and C escapes. escape omits the outer double quotes. locale and clocale choose locale quotation marks. c-maybe selects the same style as c."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use QUOTING_STYLE if set. Otherwise use shell-escape on a terminal and literal on a pipe."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--quoting-style and quoting styles"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--quoting-style and quoting styles"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--hide-control-chars",
+          "summary": "Replace unescaped nongraphic characters with question marks",
+          "detail": "-q affects control characters left unescaped by the quoting style. With -Nq, ls turns a newline inside a name into a question mark."
+        },
+        {
+          "flag": "--show-control-chars",
+          "summary": "Print unescaped control characters literally",
+          "detail": "Applies to characters left unescaped by the quoting style. With -N an embedded newline can occupy another output line. Use --zero for a delimiter that cannot occur in a filename."
+        },
+        {
+          "flag": "--zero",
+          "summary": "End output records with a NUL byte",
+          "detail": "With names alone, --zero gives one literal filename per NUL, including embedded newlines. It selects single-column layout unless long format is active and disables color and quoting. Later options can change those settings. On uutils, a later -C can end the column output with a newline. Hyperlinks can still add escape sequences. For raw names, use --zero alone."
+        },
+        {
+          "flag": "--indicator-style=",
+          "summary": "Choose which file-type suffixes to print",
+          "detail": "none omits indicators. slash (-p) marks only directories. file-type adds type markers without marking executables. classify (-F) also adds an asterisk to executable regular files.",
+          "argument": "WORD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "File-type indicator style (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "none",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit file-type suffixes"
+                  },
+                  {
+                    "id": "slash",
+                    "notation": "literal",
+                    "syntax": "slash",
+                    "tokens": [
+                      "slash"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Mark directories"
+                  },
+                  {
+                    "id": "file-type",
+                    "notation": "literal",
+                    "syntax": "file-type",
+                    "tokens": [
+                      "file-type"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Mark directories and special file types"
+                  },
+                  {
+                    "id": "classify",
+                    "notation": "literal",
+                    "syntax": "classify",
+                    "tokens": [
+                      "classify"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Also mark executable regular files"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No indicators unless another indicator switch is used."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--indicator-style values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--indicator-style values"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "File-type indicator style (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "none",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit file-type suffixes"
+                  },
+                  {
+                    "id": "slash",
+                    "notation": "literal",
+                    "syntax": "slash",
+                    "tokens": [
+                      "slash"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Mark directories"
+                  },
+                  {
+                    "id": "file-type",
+                    "notation": "literal",
+                    "syntax": "file-type",
+                    "tokens": [
+                      "file-type"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Mark directories and special file types"
+                  },
+                  {
+                    "id": "classify",
+                    "notation": "literal",
+                    "syntax": "classify",
+                    "tokens": [
+                      "classify"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Also mark executable regular files"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No indicators unless another indicator switch is used."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "A value is required"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--indicator-style values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--indicator-style values"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--file-type",
+          "summary": "Append file-type indicators except the executable marker",
+          "detail": "Selects --indicator-style=file-type. Marks directories with /, symbolic links with @, FIFOs with | and sockets with =. Leaves regular files unmarked. GNU also marks doors with > on systems that support them."
+        },
+        {
+          "flag": "-p",
+          "summary": "Append a slash to directory names",
+          "detail": "Selects --indicator-style=slash. Other file types receive no suffix."
+        },
+        {
+          "flag": "--hyperlink=",
+          "summary": "Make displayed paths clickable in supporting terminals",
+          "detail": "Bare --hyperlink means always, even in a pipe. Attach =auto for terminals only or =never to disable links. The menu inserts --hyperlink= for a value. An empty value is invalid. A separated word names a file. Hyperlinks insert terminal escape sequences containing a file URI.",
+          "argument": "WHEN",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Hyperlink emission policy (GNU 9.4, 9.7)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "always",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always",
+                      "yes",
+                      "force"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit hyperlink sequences even in a pipe"
+                  },
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto",
+                      "tty",
+                      "if-tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit links only on a terminal"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never",
+                      "no",
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit hyperlink sequences"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No hyperlinks."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "value": "always",
+                  "form": "always"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.4",
+                      "9.7"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.4/src/ls.c",
+                      "locator": "--hyperlink and WHEN values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/coreutils/coreutils/v9.7/src/ls.c",
+                      "locator": "--hyperlink and WHEN values"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Hyperlink emission policy (uutils 0.10.0)",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The option selects a mode or text grammar"
+                },
+                "forms": [
+                  {
+                    "id": "always",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always",
+                      "yes",
+                      "force"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit hyperlink sequences even in a pipe"
+                  },
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto",
+                      "tty",
+                      "if-tty"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Emit links only on a terminal"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never",
+                      "no",
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit hyperlink sequences"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No hyperlinks."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "value": "always",
+                  "form": "always"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uutils coreutils"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.10.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu Linux (amd64)"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The option has no chip-specific interpretation"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/ls.rs",
+                      "locator": "--hyperlink and WHEN values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/uutils/coreutils/0.10.0/src/uu/ls/src/config.rs",
+                      "locator": "--hyperlink and WHEN values"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Information",
+      "description": "Display command help and version information.",
+      "options": [
+        {
+          "flag": "--help",
+          "summary": "Show the available options and exit",
+          "detail": "Lists the options supported by the installed ls. Use --version to identify which implementation supplies them."
+        },
+        {
+          "flag": "--version",
+          "summary": "Print the implementation and version",
+          "detail": "Both GNU and uutils accept --version. The short alias -V works on uutils. GNU rejects -V."
         }
       ]
     }
@@ -577,5 +4029,5 @@
   "command": [
     "ls"
   ],
-  "description": "List files and directory contents using GNU ls options."
+  "description": "List files and directory contents with GNU and Ubuntu uutils ls."
 }

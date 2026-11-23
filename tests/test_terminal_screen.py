@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import re
 import shlex
 import shutil
 import subprocess
@@ -203,7 +204,8 @@ class OptionsLayoutTests(TerminalTestCase):
     def test_ls_allocated_space_search_and_midline_hide_insertion(self):
         """Read the sparse-file distinction and insert a pattern flag before an operand."""
         shell = self.start()
-        prefix, suffix = "ls ", " existing-dir"
+        prefix, suffix = "ls ", " 'existing dir'"
+        shell.resize(180, 48)
         shell.text(prefix + suffix)
         shell.keys(*(["Left"] * len(suffix)))
         initial = shell.open_menu()
@@ -217,7 +219,9 @@ class OptionsLayoutTests(TerminalTestCase):
         found = shell.wait_for(lambda state: state.cells[2] == "Filter: allocated")
         self.assertIn("> --size ", found.cells[4])
         self.assertNotIn("little allocated space.", " ".join(found.cells[:-3]))
-        shell.keys(*(["]"] * 32))
+        _, last, total = map(int, re.split(r"[-/]", found.cells[-3].split()[1]))
+        self.assertLess(last, total)
+        shell.keys(*(["]"] * total))
         shell.wait_for(lambda state: "large file length but little allocated space."
                        in " ".join(" ".join(state.cells[:-3]).split()))
         shell.cancel()
@@ -225,7 +229,7 @@ class OptionsLayoutTests(TerminalTestCase):
 
         shell.open_menu()
         shell.keys("/")
-        shell.text("--hide")
+        shell.text("--hide=")
         shell.keys("Enter")
         shell.wait_for(lambda state: "> --hide=PATTERN" in state.cells[4])
         shell.cancel("Enter")

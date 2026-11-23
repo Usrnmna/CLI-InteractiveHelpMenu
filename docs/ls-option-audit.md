@@ -1,6 +1,6 @@
 # GNU ls option audit
 
-The [bundled ls profile](../profiles/ls.json) contains 19 entries in three categories. The review covers the menu opened for a pending `ls` command with discovery disabled. Ubuntu 26.04 supplies a different implementation under the same command name.
+The first pass reviewed the 19 entries then bundled in three categories. The [full manual-coverage revisit](ls-manual-coverage.md) records the expanded menu and the subsequent package and terminal checks. The review covers the menu opened for a pending `ls` command with discovery disabled. Ubuntu 26.04 supplies a different implementation under the same command name.
 
 ## Sources and versions
 
@@ -46,7 +46,7 @@ The sort-key findings follow the GNU selection of timestamp, size and grouping. 
 
 ## Manual-only coverage
 
-The following long option names have no dedicated row. Attached values count under their base option. Some modes still have a selectable short spelling, such as `-t` and `-S` for two values of `--sort`.
+At the end of the first pass, the following long option names had no dedicated row. Attached values count under their base option. Some modes still have a selectable short spelling, such as `-t` and `-S` for two values of `--sort`.
 
 | Purpose | Additional long names shared by the GNU manual and both Ubuntu pages |
 | --- | --- |
@@ -68,7 +68,7 @@ The following checks invoked binaries directly on temporary sandbox files. Noble
 | Sparse file with length 1,048,576 bytes | All three binaries showed allocation 0 and length 1048576 with `-ls`. Adding `-h` showed 0 and 1.0M. |
 | File containing 4,608 bytes | The two `-ls` fields were 8 and 4608. With `BLOCKSIZE=2K` they were 4 and 4608. With `LS_BLOCK_SIZE=1K` and `BLOCK_SIZE=2K` they were 8 and 5. With only `POSIXLY_CORRECT=1` they were 16 and 4608. An explicit one-byte unit overrode `LS_BLOCK_SIZE=1K` and showed 8192 and 4608. |
 | Directory containing a name matching a hide pattern | Both attached and separate pattern arguments filtered the directory listing. The explicit matching file remained visible, and both `-a` and `-A` restored the matching entry. `-aA` omitted the implied dot entries and `-Aa` included them on all three binaries. |
-| Symlink to a directory | The bare operand showed its contents. `-ld` reported a link, while `-ldL` reported a directory using the link name. Recursive `-RL` over both paths listed both on GNU 9.4 and 9.7. uutils 0.10.0 diagnosed an already-listed directory and returned 2. |
+| Symlink to a directory | The bare operand showed its contents. `-ld` reported a link, while `-ldL` reported a directory using the link name. Within a single recursive root, `-RL` visited a directory and its sibling symlink on both GNU versions. uutils diagnosed a repeated directory and returned 2. The revisit also checked two separately named operands, which succeeded on all three. |
 | Output to a pipe | Bare classify added a directory slash. `--classify=auto` omitted it. With directory colors configured, bare color and the always aliases emitted escapes. The auto and never aliases produced plain text. All three binaries accepted all nine color values, rejected uppercase `AUTO` and rejected an empty color value. |
 | Sorting a sparse file and a shorter file with disk blocks | `-S` listed the longer sparse file first and `-Sr` reversed the order. Opposing access and modification times produced opposite orders for `-t --time=atime` and plain `-t`. |
 | Hard link, numeric IDs and a filename containing a newline | Both hard-link names had the same inode. `-n` alone produced a long listing with numeric owner and group. Both `-b` and `-Q` showed the newline as `\n`. Only `-Q` surrounded the name with double quotes. |
