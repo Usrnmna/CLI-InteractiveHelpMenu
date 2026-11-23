@@ -1,6 +1,8 @@
 # OpenSSH client option audit
 
-The bundled menus contain 19 [ssh entries](../profiles/ssh.json), 15 [scp entries](../profiles/scp.json) and 17 [sftp entries](../profiles/sftp.json). All 51 command-line rows were compared with the manuals and inspected in real Bash/tmux sessions on the three supported sandbox targets. Each client retains its original option order, argument placeholders, insertion spelling and positional boundary.
+The first-pass menus contained 19 [ssh entries](../profiles/ssh.json), 15 [scp entries](../profiles/scp.json) and 17 [sftp entries](../profiles/sftp.json). All 51 command-line rows were compared with the manuals and inspected in real Bash/tmux sessions on the three supported sandbox targets. Each client retains its original option order, argument placeholders, insertion spelling and positional boundary.
+
+The [full manual-coverage revisit](openssh-manual-coverage.md) records the expanded menus, release-specific options and subsequent verification.
 
 ## Manual sources
 
@@ -78,7 +80,7 @@ The tables assess the original summary and Details together. The first table cov
 
 ## Manual-only coverage
 
-These are top-level command-line options outside the curated menus. Each option is counted under the program that owns it. SSH configuration keywords, ssh session escapes and commands entered at the interactive `sftp>` prompt have separate grammars.
+These top-level options fell outside the original 51-row selection. Each option is counted under the program that owns it. SSH configuration keywords, ssh session escapes and commands entered at the interactive `sftp>` prompt have separate grammars.
 
 | Client | Additional documented switches and differences |
 | --- | --- |

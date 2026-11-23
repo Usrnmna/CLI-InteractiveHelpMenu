@@ -62,7 +62,7 @@ class NumericalDiagnosticTests(unittest.TestCase):
 
     def test_fixed_digits_classify_the_documented_action_or_count(self):
         """Pinned fd/fzf/psql/yq and coreutils sections support these distinctions."""
-        actions = ["du|-0", "fd|-0", "fdfind|-0", "psql|-0", "psql|-1", "scp|-3", "yq eval|-0"]
+        actions = ["du|-0", "fd|-0", "fdfind|-0", "psql|-0", "psql|-1", "yq eval|-0"]
         counts = ["fd|-1", "fdfind|-1", "fzf|-0", "fzf|-1"]
         for classification, names in (("nonnumerical", actions), ("count", counts)):
             for name in names:
@@ -75,6 +75,21 @@ class NumericalDiagnosticTests(unittest.TestCase):
                     self.assertEqual(group["evidence"], "source-derived")
                     self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
                     self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+
+    def test_scp_relay_mode_preserves_external_and_bundled_evidence(self):
+        """The digit selects a transfer route and takes no numerical operand."""
+        identity = "option|scp|-3"
+        entry = self.entries[identity]
+        self.assertTrue(entry["numeric_fixed_spelling"])
+        self.assertEqual(self.group(identity)["classification"], "level_or_enumeration")
+        self.assertEqual(self.group(identity)["evidence"], "verified")
+        self.assertEqual({o["role"] for o in entry["observations"]},
+                         {"bundled_option", "captured_help", "fixture_help"})
+        option = next(o["option"] for o in entry["observations"] if o["role"] == "bundled_option")
+        self.assertFalse(option["argument"])
+        variant, = option["value_semantics"]["variants"]
+        self.assertEqual(variant["forms"][0]["tokens"], ["-3"])
+        self.assertEqual(variant["bare"]["state"], "not_applicable")
 
     def test_reclassified_fixed_actions_cannot_evade_future_maintained_contracts(self):
         """A source-reviewed external action is not a future bundled exemption."""

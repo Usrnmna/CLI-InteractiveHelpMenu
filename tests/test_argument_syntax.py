@@ -145,9 +145,9 @@ class ArgumentSyntaxTests(unittest.TestCase):
 
     def test_bounded_openssh_bundles_keep_the_destination_boundary(self):
         profile = json.loads((ROOT / "profiles/ssh.json").read_text())
-        for prefix in ("ssh -vCp22 ", "ssh -vv -p 22 ", "ssh -4q "):
+        for prefix in ("ssh -vCp22 ", "ssh -vv -p 22 ", "ssh -4q ", "ssh -vZ "):
             self.assertEqual(find_context(prefix + "-i", len(prefix + "-i"), [profile]).query, "-i")
-        for line in ("ssh -vCp --fl", "ssh -vZ -i", "ssh -vCp22 host -i", "ssh -vCp22 -- -i"):
+        for line in ("ssh -vCp --fl", "ssh -vH -i", "ssh -vCp22 host -i", "ssh -vCp22 -- -i"):
             with self.subTest(line=line), self.assertRaises(HelpError):
                 find_context(line, len(line), [profile])
 

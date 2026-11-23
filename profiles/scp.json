@@ -6,6 +6,7 @@
       "options": [
         {
           "argument": "",
+          "bundle": true,
           "flag": "-4",
           "summary": "Use IPv4 addresses only",
           "value_semantics": {
@@ -75,6 +76,7 @@
         },
         {
           "argument": "",
+          "bundle": true,
           "flag": "-6",
           "summary": "Use IPv6 addresses only",
           "value_semantics": {
@@ -144,12 +146,14 @@
         },
         {
           "argument": "",
+          "bundle": true,
           "flag": "-C",
           "summary": "Request SSH compression"
         },
         {
           "argument": "CONFIGFILE",
           "attached": true,
+          "bundle": true,
           "detail": "The named file replaces the usual user configuration and bypasses the system configuration file. Use -F none to skip both.",
           "flag": "-F",
           "summary": "Use an alternate SSH client configuration",
@@ -217,6 +221,7 @@
         {
           "argument": "IDENTITY_FILE",
           "attached": true,
+          "bundle": true,
           "detail": "Repeat -i to offer multiple identities. A public key file can select its matching private key held by ssh-agent.",
           "flag": "-i",
           "summary": "Select an identity file for authentication",
@@ -284,7 +289,8 @@
         {
           "argument": "DESTINATION",
           "attached": true,
-          "detail": "List hops in order, separated by commas. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
+          "bundle": true,
+          "detail": "Each hop is [user@]host[:port]. List hops in order, separated by commas. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
           "flag": "-J",
           "summary": "Connect through one or more jump hosts",
           "value_semantics": {
@@ -535,6 +541,7 @@
         {
           "argument": "OPTION",
           "attached": true,
+          "bundle": true,
           "detail": "Pass one ssh_config setting per -o, such as Port=2222. The keyword determines the value and its units.",
           "flag": "-o",
           "summary": "Set an SSH configuration option",
@@ -608,19 +615,22 @@
         },
         {
           "argument": "",
+          "bundle": true,
           "detail": "Also suppresses SSH diagnostic messages.",
           "flag": "-q",
           "summary": "Hide transfer progress and SSH warnings"
         },
         {
           "argument": "",
+          "bundle": true,
           "flag": "-v",
           "summary": "Show file-copy and SSH diagnostics"
         },
         {
           "argument": "PORT",
           "attached": true,
-          "detail": "Use uppercase -P for the port. The configured Port applies when omitted and defaults to 22.",
+          "bundle": true,
+          "detail": "Use uppercase -P for the port. Supply 1 through 65535 or a locally known TCP service name. The configured Port applies when omitted and defaults to 22.",
           "flag": "-P",
           "summary": "Select the remote SSH port",
           "value_semantics": {
@@ -655,10 +665,16 @@
                 },
                 "forms": [
                   {
-                    "grammar": "TCP-port identifier, not a byte/rate value",
+                    "grammar": "Decimal TCP port from 1 through 65535.",
                     "id": "port",
                     "notation": "number",
                     "syntax": "N"
+                  },
+                  {
+                    "id": "service",
+                    "notation": "expression",
+                    "syntax": "SERVICE",
+                    "grammar": "TCP service name resolved by the local services database."
                   }
                 ],
                 "kind": "identifier",
@@ -672,6 +688,14 @@
                     {
                       "locator": "Port default 22",
                       "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5"
+                    },
+                    {
+                      "locator": "a2port numeric and TCP services lookup",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/misc.c"
+                    },
+                    {
+                      "locator": "main, -P positive-port check",
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/scp.c"
                     }
                   ],
                   "status": "verified"
@@ -691,12 +715,14 @@
         },
         {
           "argument": "",
+          "bundle": true,
           "detail": "Preserves access and modification times and file permissions.",
           "flag": "-p",
           "summary": "Preserve source timestamps and mode bits"
         },
         {
           "argument": "",
+          "bundle": true,
           "detail": "Follows symbolic links encountered during traversal, so their targets can be copied too.",
           "flag": "-r",
           "summary": "Copy directory trees recursively"
@@ -704,6 +730,7 @@
         {
           "argument": "LIMIT",
           "attached": true,
+          "bundle": true,
           "detail": "Use a decimal integer from 1 to 104857600 without a suffix. Zero is invalid. Omit -l to leave this limit unset.",
           "flag": "-l",
           "summary": "Limit bandwidth in units of 1024 bits/s",
@@ -779,13 +806,15 @@
         },
         {
           "argument": "",
-          "detail": "The default is SFTP. Legacy mode can help with older servers or remote wildcard and tilde expansion. The remote shell interprets the path in legacy mode.",
+          "bundle": true,
+          "detail": "The default is SFTP. Legacy mode can help with older servers or remote wildcard and tilde expansion. The remote shell interprets the path in legacy mode. Quote remote shell metacharacters that should stay literal.",
           "flag": "-O",
           "summary": "Use the legacy SCP protocol"
         },
         {
           "argument": "PROGRAM",
           "attached": true,
+          "bundle": true,
           "detail": "The program must accept SSH command-line options.",
           "flag": "-S",
           "summary": "Choose the SSH connection program",
@@ -845,6 +874,365 @@
                       "locator": "-S"
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "This is the default route. With legacy SCP (-O), the second host uses batch mode and cannot prompt for a password. Use -R to run the copy on the origin host.",
+          "flag": "-3",
+          "summary": "Relay a remote-to-remote copy through this machine",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Remote copy routed through the local host",
+                    "notation": "literal",
+                    "syntax": "-3",
+                    "tokens": [
+                      "-3"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Remote copy routed through the local host",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/scp.c",
+                      "locator": "throughlocal default and cases 3/R"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/scp.c",
+                      "locator": "throughlocal default and cases 3/R"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Relay locally by default. A later -R switches to copying directly from the origin host.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "Agent forwarding is disabled by default. Processes with access to the forwarded socket can request signatures from the local agent.",
+          "flag": "-A",
+          "summary": "Forward the authentication agent"
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "Passes BatchMode=yes to SSH. Arrange authentication that can finish without a password or passphrase prompt.",
+          "flag": "-B",
+          "summary": "Disable interactive authentication prompts"
+        },
+        {
+          "argument": "CIPHER",
+          "attached": true,
+          "bundle": true,
+          "detail": "Supply a cipher or an ordered comma-separated list. Use ssh -Q cipher to list supported names.",
+          "flag": "-c",
+          "summary": "Select SSH encryption ciphers",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select SSH encryption ciphers",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CIPHER",
+                    "grammar": "Cipher name or comma-separated list in preference order."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "SSH uses its configured cipher preferences."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/scp.1",
+                      "locator": "-c"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/scp.1",
+                      "locator": "-c"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh_config.5",
+                      "locator": "Ciphers"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh_config.5",
+                      "locator": "Ciphers"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SFTP_SERVER_PATH",
+          "attached": true,
+          "bundle": true,
+          "detail": "Direct SFTP mode bypasses the SSH transport. Supply a single executable path. Quote a path containing spaces as one argument.",
+          "flag": "-D",
+          "summary": "Run a local SFTP server executable",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Run a local SFTP server executable",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SFTP_SERVER_PATH",
+                    "grammar": "Path or program name identifying a single local SFTP server executable."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Connect through SSH for a remote transfer."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/scp.1",
+                      "locator": "-D"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/scp.1",
+                      "locator": "-D"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "The origin must authenticate to the destination without a password prompt. Omit the port from the target URI. Use -3 to relay the data through this machine. Upstream 10.6p2 warns that -R is deprecated.",
+          "flag": "-R",
+          "summary": "Run a remote-to-remote copy on the origin host"
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "SFTP is already the default. In Ubuntu 24.04 and 26.04 a later -s reverses -O. Upstream 10.6p2 accepts and ignores -s, so -O stays in effect.",
+          "flag": "-s",
+          "summary": "Select SFTP on the Ubuntu clients"
+        },
+        {
+          "argument": "",
+          "bundle": true,
+          "detail": "With -O, a nonrecursive download normally matches incoming names against the requested patterns. Use -T only when the server is trusted to choose the filenames.",
+          "flag": "-T",
+          "summary": "Disable strict filename matching for legacy downloads"
+        },
+        {
+          "argument": "SFTP_OPTION",
+          "attached": true,
+          "bundle": true,
+          "detail": "Use buffer=SIZE for bytes per request or nrequests=COUNT for simultaneous requests. Each accepts 1 through 262144. Only buffer accepts scaled sizes such as 32K. Repeat -X to set both. These parameters apply to SFTP transfers.",
+          "flag": "-X",
+          "summary": "Set an SFTP transfer parameter",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "id": "buffer",
+                    "notation": "expression",
+                    "syntax": "buffer=SIZE",
+                    "grammar": "One through 262144 bytes per request. A bare size uses bytes. A suffix such as K scales by 1024."
+                  },
+                  {
+                    "id": "requests",
+                    "notation": "expression",
+                    "syntax": "nrequests=COUNT",
+                    "grammar": "One through 262144 concurrent requests, as a decimal integer."
+                  }
+                ],
+                "grammar": {
+                  "name": "SFTP transfer parameters",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/scp.c",
+                    "locator": "main, case X"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "SFTP request size or concurrency",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/scp.c",
+                      "locator": "main, case X"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/scp.c",
+                      "locator": "main, case X"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/sftp-client.c",
+                      "locator": "sftp_init, default and negotiated limits"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/sftp-client.c",
+                      "locator": "sftp_init, default and negotiated limits"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "With no explicit setting, the fallbacks are 32768 bytes and 64 requests. Advertised read and write limits can change the buffers. A smaller nonzero handle limit can reduce concurrency.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
                 }
               }
             ]

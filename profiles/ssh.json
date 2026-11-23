@@ -153,7 +153,6 @@
         },
         {
           "argument": "CONFIGFILE",
-          "attached": true,
           "detail": "The named file replaces the usual user configuration and bypasses the system configuration file. Use -F none to skip both.",
           "flag": "-F",
           "summary": "Use an alternate SSH client configuration",
@@ -216,11 +215,12 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "IDENTITY_FILE",
-          "attached": true,
           "detail": "Repeat -i to offer multiple identities. A public key file can select its matching private key held by ssh-agent.",
           "flag": "-i",
           "summary": "Select an identity file for authentication",
@@ -283,12 +283,13 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "DESTINATION",
-          "attached": true,
-          "detail": "List hops in order, separated by commas. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
+          "detail": "Put all hops in one -J, separated by commas. Bracket IPv6 addresses. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
           "flag": "-J",
           "summary": "Connect through one or more jump hosts",
           "value_semantics": {
@@ -534,11 +535,12 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "OPTION",
-          "attached": true,
           "detail": "Pass one ssh_config setting per -o, such as Port=2222. The keyword determines the value and its units.",
           "flag": "-o",
           "summary": "Set an SSH configuration option",
@@ -608,7 +610,9 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "",
@@ -625,9 +629,8 @@
         },
         {
           "argument": "PORT",
-          "attached": true,
           "bundle": true,
-          "detail": "Defaults to 22 unless the SSH configuration selects another Port.",
+          "detail": "Use a TCP port from 1 to 65535, or a local TCP service name. Defaults to 22 unless the SSH configuration selects another Port.",
           "flag": "-p",
           "summary": "Select the remote TCP port",
           "value_semantics": {
@@ -652,7 +655,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "9.9p2"
+                      "9.6p1",
+                      "9.9p2",
+                      "10.2p1"
                     ]
                   }
                 },
@@ -662,14 +667,24 @@
                 },
                 "forms": [
                   {
-                    "grammar": "TCP-port identifier, not a byte/rate value",
+                    "grammar": "Decimal TCP port.",
                     "id": "port",
                     "notation": "number",
-                    "syntax": "N"
+                    "syntax": "N",
+                    "bounds": {
+                      "min": "1",
+                      "max": "65535"
+                    }
+                  },
+                  {
+                    "id": "service",
+                    "notation": "expression",
+                    "syntax": "SERVICE",
+                    "grammar": "Name resolved from the local TCP service database."
                   }
                 ],
                 "kind": "identifier",
-                "meaning": "Remote TCP port number",
+                "meaning": "Remote TCP service port",
                 "review": {
                   "references": [
                     {
@@ -679,6 +694,30 @@
                     {
                       "locator": "Port default 22",
                       "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh_config.5"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.c",
+                      "locator": "a2port: decimal TCP port or getservbyname"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, -p rejects zero"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/misc.c",
+                      "locator": "a2port: decimal TCP port or getservbyname"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_9_P2/ssh.c",
+                      "locator": "main, -p rejects zero"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.c",
+                      "locator": "a2port: decimal TCP port or getservbyname"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, -p rejects zero"
                     }
                   ],
                   "status": "verified"
@@ -694,11 +733,11 @@
                 }
               }
             ]
-          }
+          },
+          "attached": true
         },
         {
           "argument": "USER",
-          "attached": true,
           "flag": "-l",
           "summary": "Select the remote login name",
           "value_semantics": {
@@ -760,12 +799,13 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "ADDRESS",
-          "attached": true,
-          "detail": "Connections arrive on the client. The server connects to the specified destination. Either endpoint can be a TCP port or a Unix socket.",
+          "detail": "Connections arrive on the client. The server connects to the specified destination. Either endpoint can be a TCP port or a Unix socket. Use localhost to bind a TCP listener to loopback, or * for all interfaces.",
           "flag": "-L",
           "summary": "Forward a local listener to a destination",
           "value_semantics": {
@@ -1132,12 +1172,13 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "ADDRESS",
-          "attached": true,
-          "detail": "Connections arrive on the server. The client connects to the destination. TCP and Unix sockets are supported. A remote listening port of 0 requests an assigned port. Omit the destination for a remote SOCKS proxy.",
+          "detail": "Connections arrive on the server. The client connects to the destination. TCP and Unix sockets are supported. A remote listening port of 0 requests an assigned port, printed by -O forward. Omit the destination for a remote SOCKS proxy.",
           "flag": "-R",
           "summary": "Forward a remote listener to the client side",
           "value_semantics": {
@@ -1510,12 +1551,13 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "ADDRESS",
-          "attached": true,
-          "detail": "Use [bind_address:]port. Bracket an IPv6 bind address. SOCKS4 or SOCKS5 clients choose the destination for each connection.",
+          "detail": "Use [bind_address:]port. Bracket an IPv6 bind address. SOCKS4 or SOCKS5 clients select a destination and the SSH server connects to it. The default listener is local unless GatewayPorts changes it.",
           "flag": "-D",
           "summary": "Open a local SOCKS proxy",
           "value_semantics": {
@@ -1701,35 +1743,40 @@
                 }
               }
             ]
-          }
+          },
+          "bundle": true,
+          "attached": true
         },
         {
           "argument": "",
           "detail": "Useful for a forwarding-only connection.",
           "flag": "-N",
-          "summary": "Skip the remote shell and command"
+          "summary": "Skip the remote shell and command",
+          "bundle": true
         },
         {
           "argument": "",
           "flag": "-T",
-          "summary": "Disable pseudo-terminal allocation"
+          "summary": "Disable pseudo-terminal allocation",
+          "bundle": true
         },
         {
           "argument": "",
           "detail": "Use -tt to force allocation even when the client has no local terminal.",
           "flag": "-t",
-          "summary": "Force pseudo-terminal allocation"
+          "summary": "Force pseudo-terminal allocation",
+          "bundle": true
         },
         {
           "argument": "",
           "detail": "Use for background sessions or to leave a loop's input available to the calling shell.",
           "flag": "-n",
-          "summary": "Prevent SSH from reading standard input"
+          "summary": "Prevent SSH from reading standard input",
+          "bundle": true
         },
         {
           "argument": "LOG_FILE",
-          "attached": true,
-          "detail": "Replaces standard error as the log destination.",
+          "detail": "Appends to the named file instead of standard error. Cannot be combined with -y.",
           "flag": "-E",
           "summary": "Append SSH diagnostics to a log file",
           "value_semantics": {
@@ -1791,7 +1838,1425 @@
                 }
               }
             ]
+          },
+          "bundle": true,
+          "attached": true
+        },
+        {
+          "flag": "-A",
+          "argument": "",
+          "summary": "Forward the local authentication agent",
+          "detail": "A process with access to the forwarded socket can ask the agent to authenticate with loaded keys. The private keys stay in the local agent.",
+          "bundle": true
+        },
+        {
+          "flag": "-a",
+          "argument": "",
+          "summary": "Disable authentication agent forwarding",
+          "detail": "Use local keys or the agent to log in without making the agent available on the remote host.",
+          "bundle": true
+        },
+        {
+          "flag": "-B",
+          "argument": "INTERFACE",
+          "summary": "Bind the outgoing connection to a network interface",
+          "detail": "Give the local interface name. Use -b to select a particular source address.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Local network interface",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "INTERFACE",
+                    "grammar": "Network interface name on this client."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured BindInterface or normal source-address selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -B"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-B"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -B"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-B"
+                    }
+                  ]
+                }
+              }
+            ]
           }
+        },
+        {
+          "flag": "-b",
+          "argument": "BIND_ADDRESS",
+          "summary": "Select the source address for the outgoing connection",
+          "detail": "Give an address assigned to the client, for example when an interface has several addresses.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Local source address",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "BIND_ADDRESS",
+                    "grammar": "Local IPv4 or IPv6 address."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured BindAddress or normal source-address selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -b"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-b"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -b"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-b"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-c",
+          "argument": "CIPHER_SPEC",
+          "summary": "Select encryption ciphers in preference order",
+          "detail": "Separate cipher names with commas. ssh -Q cipher lists ciphers available in this client.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Session cipher list",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "CIPHER_SPEC",
+                    "grammar": "Comma-separated cipher names in preference order. A leading + appends to or ^ prepends to the defaults."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured or default Ciphers list."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -c"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-c"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -c"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-c"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-e",
+          "argument": "ESCAPE_CHAR",
+          "summary": "Set the escape character for a terminal session",
+          "detail": "The default is ~ at the start of a line. Use none to disable escapes. A single character or a caret control-character spelling is accepted.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Interactive escape character",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "ESCAPE_CHAR",
+                    "grammar": "One character, a caret control-character spelling such as ^A, or none."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured EscapeChar, normally ~."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -e"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-e"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -e"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-e"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-f",
+          "argument": "",
+          "summary": "Background the client after authentication",
+          "detail": "ssh can prompt before it backgrounds and implies -n. With ExitOnForwardFailure=yes it waits for requested remote forwards to be established.",
+          "bundle": true
+        },
+        {
+          "flag": "-G",
+          "argument": "",
+          "summary": "Print the effective configuration for a destination",
+          "detail": "Supply a destination. ssh evaluates Host and Match settings, prints the resulting configuration and exits before connecting. Use -F none to omit configuration files.",
+          "bundle": true
+        },
+        {
+          "flag": "-g",
+          "argument": "",
+          "summary": "Let other hosts connect to local forwarded ports",
+          "detail": "This changes the default TCP listening address for client-side forwards. With connection sharing, set it on the master.",
+          "bundle": true
+        },
+        {
+          "flag": "-I",
+          "argument": "PKCS11_LIBRARY",
+          "summary": "Use a PKCS#11 provider for authentication",
+          "detail": "Give the path to a local shared library that can access the token holding the authentication key.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "PKCS#11 provider library",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PKCS11_LIBRARY",
+                    "grammar": "Path to the shared library providing a token interface."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured authentication providers and identities."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -I"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-I"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -I"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-I"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-K",
+          "argument": "",
+          "summary": "Enable GSSAPI authentication and credential delegation",
+          "detail": "Delegated credentials become available on the remote server.",
+          "bundle": true
+        },
+        {
+          "flag": "-k",
+          "argument": "",
+          "summary": "Disable GSSAPI credential delegation",
+          "detail": "GSSAPI authentication can still be used.",
+          "bundle": true
+        },
+        {
+          "flag": "-M",
+          "argument": "",
+          "summary": "Start a master connection for other SSH sessions",
+          "detail": "Set a control socket with -S or ControlPath. Use -MM to require ssh-askpass confirmation for operations such as opening another session.",
+          "bundle": true
+        },
+        {
+          "flag": "-m",
+          "argument": "MAC_SPEC",
+          "summary": "Select message authentication codes in preference order",
+          "detail": "Separate algorithm names with commas. ssh -Q mac lists the codes available in this client.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Message authentication algorithms",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "MAC_SPEC",
+                    "grammar": "Comma-separated MAC names in preference order."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured or default MACs list."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -m"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-m"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -m"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-m"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-O",
+          "argument": "CONTROL_COMMAND",
+          "summary": "Send a control request to a multiplexing master",
+          "detail": "Use its control socket (-S or ControlPath). check tests whether the master is running. forward and cancel manage forwards. proxy opens a proxy connection. stop refuses new sharing requests and exit terminates the master. Only newer upstream clients accept conninfo and channels.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Multiplex control operation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "CONTROL_COMMAND",
+                    "grammar": "check, forward, cancel, proxy, stop or exit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Make no explicit request to control a master."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -O"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-O"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -O"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-O"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-P",
+          "argument": "TAG",
+          "summary": "Select configuration that matches a tag",
+          "detail": "Match tagged in ssh_config can match this name. Specify the SSH port with lowercase -p.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Configuration tag",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "TAG",
+                    "grammar": "Tag name matched by the tagged condition in ssh_config."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Configuration can still assign a tag."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -P"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-P"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -P"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-P"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-Q",
+          "argument": "QUERY",
+          "summary": "List capabilities supported by the local SSH client",
+          "detail": "No destination is required. Use -Q help for query names, -Q cipher for ciphers or -Q key for key types. The output describes client support. A connection can negotiate a different subset. Both Ubuntu clients accept kex-gss. The newer upstream addressfamily query is unavailable on these Ubuntu releases.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Local capability query",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "QUERY",
+                    "grammar": "A query name or a supported algorithm-list keyword, for example cipher or Ciphers."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Continue with the requested SSH operation."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -Q"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-Q"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -Q"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-Q"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-S",
+          "argument": "CONTROL_PATH",
+          "summary": "Set the control socket for connection sharing",
+          "detail": "Use the same path for the master and later sessions or -O requests. The special path none disables connection sharing.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Multiplex control socket",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "CONTROL_PATH",
+                    "grammar": "Local socket pathname or none. A ControlPath can contain expansion tokens such as %C."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured ControlPath if present."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -S"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-S"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -S"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-S"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "summary": "Request a remote subsystem",
+          "detail": "Place the subsystem name after the destination, for example ssh -s host sftp. The name occupies the remote command position.",
+          "bundle": true
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "summary": "Print the SSH client version",
+          "detail": "Writes the version to standard error and exits without requiring a destination.",
+          "bundle": true
+        },
+        {
+          "flag": "-W",
+          "argument": "HOST:PORT",
+          "summary": "Forward standard input and output to a TCP destination",
+          "detail": "Supply the destination reached from the SSH server, followed by the SSH login host. This implies -N, -T, ExitOnForwardFailure and ClearAllForwardings. Use -o to override forwarding settings.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "host",
+                    "required": true,
+                    "slot": 1,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.6p1",
+                            "10.2p1"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "This component is not a scalar numerical value",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "id": "host",
+                          "notation": "expression",
+                          "syntax": "HOST",
+                          "grammar": "Hostname or bracketed IPv6 address."
+                        }
+                      ],
+                      "kind": "nonnumerical",
+                      "meaning": "TCP destination reached by the server",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                            "locator": "-W"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                            "locator": "-W"
+                          }
+                        ]
+                      },
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    }
+                  },
+                  {
+                    "id": "port",
+                    "required": true,
+                    "slot": 1,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.6p1",
+                            "10.2p1"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "port"
+                      },
+                      "forms": [
+                        {
+                          "id": "port",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Decimal TCP port.",
+                          "bounds": {
+                            "min": "1",
+                            "max": "65535"
+                          }
+                        },
+                        {
+                          "id": "service",
+                          "notation": "expression",
+                          "syntax": "SERVICE",
+                          "grammar": "TCP service name resolved on the client."
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "TCP destination port",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                            "locator": "-W"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/readconf.c",
+                            "locator": "parse_forward"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.c",
+                            "locator": "a2port"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                            "locator": "-W"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/readconf.c",
+                            "locator": "parse_forward"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.c",
+                            "locator": "a2port"
+                          }
+                        ]
+                      },
+                      "subject": "TCP service ports",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    }
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Join host and port with a colon. Bracket an IPv6 address.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "HOST:PORT"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Standard-stream TCP destination",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-W"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -W"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-W"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -W"
+                    }
+                  ]
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Keep standard input and output attached to the session according to its settings.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-w",
+          "argument": "LOCAL_TUN[:REMOTE_TUN]",
+          "summary": "Request tunnel devices on the client and server",
+          "detail": "Separate the device IDs with a colon. any selects a free device and is the default for an omitted remote ID. To change the point-to-point default, put -o Tunnel=ethernet before -w.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSH Portable"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.6p1",
+                      "10.2p1"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "local",
+                    "required": true,
+                    "slot": 1,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.6p1",
+                            "10.2p1"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "device"
+                      },
+                      "forms": [
+                        {
+                          "id": "device",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Decimal tunnel device ID.",
+                          "bounds": {
+                            "min": "0",
+                            "max": "2147483645"
+                          }
+                        },
+                        {
+                          "id": "free",
+                          "notation": "literal",
+                          "syntax": "any",
+                          "tokens": [
+                            "any"
+                          ],
+                          "case": "insensitive",
+                          "meaning": "Next available device."
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Local tunnel device",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.c",
+                            "locator": "a2tun"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.h",
+                            "locator": "SSH_TUNID_MAX"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.c",
+                            "locator": "a2tun"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.h",
+                            "locator": "SSH_TUNID_MAX"
+                          }
+                        ]
+                      },
+                      "subject": "Local tunnel devices",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    }
+                  },
+                  {
+                    "id": "remote",
+                    "required": false,
+                    "slot": 1,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "OpenSSH Portable"
+                          ]
+                        },
+                        "platform": {
+                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                          "state": "not_applicable"
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "9.6p1",
+                            "10.2p1"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "state": "accepted",
+                        "form": "device"
+                      },
+                      "forms": [
+                        {
+                          "id": "device",
+                          "notation": "number",
+                          "syntax": "N",
+                          "grammar": "Decimal tunnel device ID.",
+                          "bounds": {
+                            "min": "0",
+                            "max": "2147483645"
+                          }
+                        },
+                        {
+                          "id": "free",
+                          "notation": "literal",
+                          "syntax": "any",
+                          "tokens": [
+                            "any"
+                          ],
+                          "case": "insensitive",
+                          "meaning": "Next available device."
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "Remote tunnel device",
+                      "review": {
+                        "status": "verified",
+                        "references": [
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.c",
+                            "locator": "a2tun"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/misc.h",
+                            "locator": "SSH_TUNID_MAX"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.c",
+                            "locator": "a2tun"
+                          },
+                          {
+                            "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/misc.h",
+                            "locator": "SSH_TUNID_MAX"
+                          }
+                        ]
+                      },
+                      "subject": "Remote tunnel devices",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "state": "known",
+                        "meaning": "Choose the next available remote device."
+                      }
+                    }
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Use LOCAL or LOCAL:REMOTE. Each field accepts a decimal device ID or any.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "LOCAL_TUN[:REMOTE_TUN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Local and remote tunnel devices",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.1",
+                      "locator": "-w"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_9_6_P1/ssh.c",
+                      "locator": "main, option -w"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.1",
+                      "locator": "-w"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssh/openssh-portable/V_10_2_P1/ssh.c",
+                      "locator": "main, option -w"
+                    }
+                  ]
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Use tunnel forwarding only if requested by configuration.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-X",
+          "argument": "",
+          "summary": "Forward X11 display connections to the client",
+          "detail": "Trust follows ForwardX11Trusted. Upstream defaults to untrusted X11. Ubuntu 24.04 and 26.04 default to trusted X11. Use -X -o ForwardX11Trusted=no to restrict remote X11 clients.",
+          "bundle": true
+        },
+        {
+          "flag": "-x",
+          "argument": "",
+          "summary": "Disable X11 forwarding",
+          "detail": "Override a configuration that enables ForwardX11.",
+          "bundle": true
+        },
+        {
+          "flag": "-Y",
+          "argument": "",
+          "summary": "Enable trusted X11 forwarding",
+          "detail": "Remote X11 programs get full access to the local display without X11 SECURITY restrictions.",
+          "bundle": true
+        },
+        {
+          "flag": "-y",
+          "argument": "",
+          "summary": "Send SSH diagnostics to syslog",
+          "detail": "The usual log destination is standard error. This option cannot be combined with -E.",
+          "bundle": true
+        },
+        {
+          "flag": "-Z",
+          "argument": "",
+          "summary": "List public keys the client would try for a destination",
+          "detail": "Upstream lists keys in authentication preference order and exits. The Ubuntu 24.04 and 26.04 clients reject -Z.",
+          "bundle": true
         }
       ]
     }
