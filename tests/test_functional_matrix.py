@@ -339,10 +339,13 @@ class InsertionContractTests(unittest.TestCase):
                 with self.subTest(command=command, flag=option["flag"]):
                     ctx = context(line, profile, len(prefix) + 4)
                     edited, point = insert_option(ctx, option)
-                    expected = prefix + option["flag"] + suffix
+                    literal = option["flag"]
+                    if option.get("argument_style") == "equals" and not literal.endswith("="):
+                        literal += "="
+                    expected = prefix + literal + suffix
                     self.assertEqual(edited, expected)
-                    joined = option["flag"].endswith("=") or option.get("argument_style") == "attached_only"
-                    self.assertEqual(point, len(prefix + option["flag"]) + (0 if joined else 1))
+                    joined = literal.endswith("=") or option.get("argument_style") == "attached_only"
+                    self.assertEqual(point, len(prefix + literal) + (0 if joined else 1))
 
     def test_value_options_reserve_their_slot(self):
         rsync = profile_for("rsync")

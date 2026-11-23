@@ -420,9 +420,11 @@ A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to ch
 Markdown links throughout the repository, including local files, images, heading
 anchors, and external HTTP(S) URLs. [lychee.toml](../lychee.toml) excludes generated
 reports and dependency directories. Workflow and badge endpoints are checked
-alongside other external links. Broken links fail
-the job after bounded retries; network outages can also cause failures. Results
-appear in the Actions job summary. Cache, build, and generated-collection
+alongside other external links. CI retries the full check once when every failure
+is an HTTP 429 from the GNU manuals host or an HTTP 503 from a GitHub source file
+page. Broken anchors, other errors, and a failed retry fail the job. Both attempt
+reports are retained when a retry runs. Results appear in the Actions job summary.
+Cache, build, and generated-collection
 directories are excluded alongside local reports; maintained Markdown and public
 media references remain checked.
 

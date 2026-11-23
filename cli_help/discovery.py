@@ -963,7 +963,8 @@ def merge_profiles(profiles: list[dict]) -> dict:
                 old_count = previous.get("argument_count", 1) if previous.get("argument") else 0
                 new_count = entry.get("argument_count", 1) if entry.get("argument") else 0
                 old_optional, new_optional = previous.get("argument_optional", False), entry.get("argument_optional", False)
-                declaration_fields = ("flag", "argument", "argument_optional", "argument_count", "argument_style", "attached", "bundle", "optional_value_kind")
+                declaration_fields = ("flag", "argument", "argument_optional", "argument_count", "argument_style",
+                                      "attached", "bundle", "optional_value_kind", "numeric_shorthand")
                 old_declaration = {field: previous[field] for field in declaration_fields if field in previous}
                 if old_count and new_count and (old_count, old_optional) != (new_count, new_optional):
                     previous["detail"] += ("\n\nArgument declarations disagree across sources; "

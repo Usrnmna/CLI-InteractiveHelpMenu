@@ -129,7 +129,13 @@ def validate_profile(profile: dict, source: Path):
                         or not option.get("argument_optional") or count != 1
                         or option.get("argument_style") not in (None, "separate")):
                     raise HelpError("optional_value_kind requires nonnegative_integer and one optional argument.")
+            if "numeric_shorthand" in option and (
+                    type(option["numeric_shorthand"]) is not bool or option["numeric_shorthand"] and
+                    (kind != "flag" or not option.get("argument") or option.get("argument_optional") or count != 1)):
+                raise HelpError("numeric_shorthand requires a boolean and one required count operand when enabled.")
     all_options = [option for category in categories for option in category["options"]]
+    if sum(bool(option.get("numeric_shorthand")) for option in all_options) > 1:
+        raise HelpError("Only one option can own the -NUMBER shorthand.")
     if any(option.get("argument_style") or option.get("bundle") for option in all_options):
         canonical_flags = [option["flag"].rstrip("=") for option in all_options]
         if len(canonical_flags) != len(set(canonical_flags)):

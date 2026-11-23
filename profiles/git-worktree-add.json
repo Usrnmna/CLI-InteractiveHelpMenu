@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "name": "Options",
       "options": [
         {
@@ -9,21 +9,21 @@
           "argument_optional": false,
           "flag": "-f",
           "summary": "Override checks on the branch or path",
-          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice."
+          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice. --no-force clears earlier force flags."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--force",
           "summary": "Override checks on the branch or path",
-          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice."
+          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice. --no-force clears earlier force flags."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--detach",
           "summary": "Check out a commit with detached HEAD",
-          "detail": "Use the specified commit, or HEAD by default, without checking out a branch."
+          "detail": "Use the specified commit, or HEAD by default, without checking out a branch. Use -d as a short alias. --no-detach cancels an earlier --detach."
         },
         {
           "argument": "BRANCH",
@@ -91,7 +91,8 @@
               }
             ]
           },
-          "detail": "Starts at the supplied commit or HEAD. The branch name must be new."
+          "detail": "Starts at the supplied commit or HEAD. The branch name must be new.",
+          "attached": true
         },
         {
           "argument": "BRANCH",
@@ -159,7 +160,8 @@
               }
             ]
           },
-          "detail": "An existing branch is reset to the supplied start point, or to HEAD if omitted."
+          "detail": "An existing branch is reset to the supplied start point, or to HEAD if omitted.",
+          "attached": true
         },
         {
           "argument": "",
@@ -180,7 +182,7 @@
           "argument_optional": false,
           "flag": "--lock",
           "summary": "Lock the worktree as it is created",
-          "detail": "Protects its registration against pruning while the directory is unavailable. Use --reason to record why."
+          "detail": "Protects its registration against pruning while the directory is unavailable. Use --reason to record why. Locking at creation closes the interval before a separate lock command. --no-lock cancels an earlier lock request."
         },
         {
           "argument": "REASON",
@@ -247,19 +249,84 @@
               }
             ]
           },
-          "detail": "Requires --lock on add. Quote a multiword reason as one argument."
+          "detail": "Requires --lock on add. Quote a multiword reason as one argument. --no-reason clears an earlier reason."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Suppress worktree creation feedback"
+          "summary": "Suppress worktree creation feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Suppress worktree creation feedback"
+          "summary": "Suppress worktree creation feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
+        },
+        {
+          "flag": "-d",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Detach HEAD in the new worktree",
+          "detail": "Alias of --detach. Supply the path and optionally a commit. Without a commit the new worktree starts at HEAD."
+        },
+        {
+          "flag": "--orphan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Create an empty worktree on an unborn branch",
+          "detail": "Use the path basename for the branch or supply -b NAME. Omit the start commit, --detach, --track and --no-checkout. --no-orphan cancels an explicit orphan request."
+        },
+        {
+          "flag": "--track",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the starting branch as the new branch’s upstream",
+          "detail": "Use when creating a branch, for example --track -b TOPIC PATH MAIN. This switch takes no value. Worktree add rejects --track=direct and --track=inherit."
+        },
+        {
+          "flag": "--no-track",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Create the branch without setting an upstream",
+          "detail": "Use when a new branch would otherwise track its start point. A separate value is a positional operand."
+        },
+        {
+          "flag": "--guess-remote",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Base a path-named branch on a matching remote-tracking branch",
+          "detail": "With no explicit start point, use a unique match for the path basename as the upstream. With no match, start at HEAD. For unresolved multiple matches, Git 2.43 and 2.53 fall back to HEAD while upstream 2.56 fails. checkout.defaultRemote can resolve a tie."
+        },
+        {
+          "flag": "--no-guess-remote",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable remote guessing for a path-named branch",
+          "detail": "Overrides worktree.guessRemote. With no explicit start point, use the local branch matching the basename or create it at HEAD."
+        },
+        {
+          "flag": "--relative-paths",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write relative links between the repository and worktree",
+          "detail": "Overrides worktree.useRelativePaths. Enables the repository extension extensions.relativeWorktrees, which older clients cannot read. Git 2.53 and upstream support this option. Ubuntu 24.04 rejects it."
+        },
+        {
+          "flag": "--no-relative-paths",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write absolute links for the new worktree",
+          "detail": "Absolute paths are the default. Overrides worktree.useRelativePaths without disabling an existing repository extension. Git 2.53 and upstream support this option. Ubuntu 24.04 rejects it."
         }
       ]
     }
@@ -271,8 +338,8 @@
   ],
   "description": "Create a linked working tree at the specified path.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Version-qualified manual coverage",
+    "reviewed": "2026-11-23",
     "source": "https://git-scm.com/docs/git-worktree"
   },
   "stop_at_positional": false

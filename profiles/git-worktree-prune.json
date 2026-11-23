@@ -1,32 +1,36 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "name": "Options",
       "options": [
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-n",
-          "summary": "Preview stale registrations without removing them"
+          "summary": "Preview stale registrations without removing them",
+          "detail": "--no-dry-run cancels the preview and permits removal."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--dry-run",
-          "summary": "Preview stale registrations without removing them"
+          "summary": "Preview stale registrations without removing them",
+          "detail": "--no-dry-run cancels the preview and permits removal."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Report each registration removed"
+          "summary": "Report each registration removed",
+          "detail": "--no-verbose clears earlier verbosity flags."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Report each registration removed"
+          "summary": "Report each registration removed",
+          "detail": "--no-verbose clears earlier verbosity flags."
         },
         {
           "argument": "TIME",
@@ -123,6 +127,20 @@
               }
             ]
           }
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
+        },
+        {
+          "flag": "--no-expire",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable ordinary age-based pruning",
+          "detail": "Equivalent to --expire never, including when used alone. Broken administrative records can qualify independently of age."
         }
       ]
     }
@@ -134,8 +152,8 @@
   ],
   "description": "Remove stale administrative records for missing working trees.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Version-qualified manual coverage",
+    "reviewed": "2026-11-23",
     "source": "https://git-scm.com/docs/git-worktree"
   },
   "stop_at_positional": false

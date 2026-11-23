@@ -1,7 +1,8 @@
 # Project roadmap
 
-**Next task — revisit Git stash and worktree for full manual coverage.** Start with the
-[coverage boundaries for the 11 Git stash and worktree profiles](docs/git-stash-worktree-option-audit.md#coverage-boundaries-and-version-differences).
+**Next task — revisit Git commit and log for full manual coverage.** Start with the
+[original commit and log audit](docs/git-commit-log-option-audit.md). The
+[stash and worktree revisit](docs/git-stash-worktree-manual-coverage.md) is complete.
 The [OpenSSH family revisit](docs/openssh-manual-coverage.md) is complete.
 The [ls revisit](docs/ls-manual-coverage.md), [GNU grep revisit](docs/grep-manual-coverage.md),
 [rsync client and daemon revisit](docs/rsync-manual-coverage.md), [GNU tar revisit](docs/tar-manual-coverage.md)
@@ -33,8 +34,8 @@ The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
-124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41 and OpenSSH added 45.
-The bundled total is **1,689 rows across 76 profiles**, compared with the historical 942.
+124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45 and Git stash/worktree added 348.
+The bundled total is **2,037 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -43,7 +44,7 @@ The bundled total is **1,689 rows across 76 profiles**, compared with the histor
 | GNU `grep` | 1 | 14 | Complete locally. [First-pass audit](docs/grep-option-audit.md) | Complete · [48 options, 38 literal aliases and a numeric shorthand](docs/grep-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/grep-manual-coverage.md#verification) |
 | GNU and uutils `ls` | 1 | 19 | Complete locally. [First-pass audit](docs/ls-option-audit.md) | Complete · [60 options and 27 aliases](docs/ls-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/ls-manual-coverage.md#verification) |
 | OpenSSH — `ssh`, `scp`, `sftp` | 3 | 51 | Complete locally. [First-pass audit](docs/openssh-option-audit.md) | Complete · [46 ssh, 24 scp and 26 sftp options](docs/openssh-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/openssh-manual-coverage.md#verification) |
-| Git — stash and worktree | 11 | 85 | Complete locally. [Manual comparison and sandbox results](docs/git-stash-worktree-option-audit.md) | Pending | Pending |
+| Git — stash and worktree | 11 | 85 | Complete locally. [First-pass audit](docs/git-stash-worktree-option-audit.md) | Complete · [433 rows and 365 path-specific effects](docs/git-stash-worktree-manual-coverage.md#menu-inventory) | Complete on all three targets · [menu and suite results](docs/git-stash-worktree-manual-coverage.md#verification) |
 | Git — commit and log | 2 | 19 | Complete locally. [Manual comparison and sandbox results](docs/git-commit-log-option-audit.md) | Pending | Pending |
 | `7z x`, `7zz x` | 2 | 8 | Complete locally. [Manual comparison and sandbox results](docs/7zip-extraction-option-audit.md) | Pending | Pending |
 | `fd`, `fdfind` | 2 | 38 | Complete locally. [Manual comparison and sandbox results](docs/fd-option-audit.md) | Pending | Pending |

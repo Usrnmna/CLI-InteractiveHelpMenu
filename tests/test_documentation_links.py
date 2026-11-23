@@ -19,7 +19,17 @@ SPEC = importlib.util.spec_from_file_location(
 retry = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(retry)
 GNU_URL = "https://www.gnu.org/software/coreutils/manual/html_node/env-invocation.html"
-FIRST_FAILURE = f"# Summary\n\n* [429] <{GNU_URL}>\n"
+GITHUB_SOURCE = "https://github.com/openssh/openssh-portable/blob/V_10_2_P1/ssh.c"
+
+
+def failure_report(*entries):
+    """Format failures as Lychee 0.24.2 writes them in its Markdown report."""
+    return f"| 🚫 Errors | {len(entries)} |\n\n" + "".join(
+        f"* [{status}] <{url}>\n" for status, url in entries
+    )
+
+
+FIRST_FAILURE = failure_report(("429", GNU_URL))
 
 
 class DocumentationRetryTests(unittest.TestCase):
@@ -40,8 +50,8 @@ class DocumentationRetryTests(unittest.TestCase):
             retry.retry_delay([116])
 
     def test_only_unique_gnu_https_429_links_are_probed(self):
-        report = FIRST_FAILURE * 2 + "\n[404] <https://www.gnu.org/missing>\n[429] <https://other.example/>\n[429] <http://www.gnu.org/>"
-        self.assertEqual(retry.gnu_rate_limited_urls(report), [GNU_URL])
+        report = failure_report(("429", GNU_URL), ("429", GNU_URL), ("503", GITHUB_SOURCE))
+        self.assertEqual(retry.retryable_failures(report), [GNU_URL])
 
     def test_http_429_probe_retains_headers_and_reads_retry_after(self):
         headers = Message()
@@ -140,11 +150,26 @@ class DocumentationRetryTests(unittest.TestCase):
         run.assert_not_called()
         sleep.assert_not_called()
 
-    def test_non_gnu_failure_is_not_retried_or_masked(self):
-        code, first, second, final, run, sleep = self.run_gate(first_report="[404] <https://example.com/missing>")
-        self.assertNotEqual(code, 0)
-        run.assert_not_called()
-        sleep.assert_not_called()
+    def test_mixed_or_incomplete_failures_are_not_retried(self):
+        for other in (("ERROR", GNU_URL + "#missing"), ("404", GITHUB_SOURCE),
+                      ("503", "https://example.com/path"), ("503", "https://github.com/settings"),
+                      ("429", "http://www.gnu.org/"), ("429", "https://other.example/")):
+            with self.subTest(other=other):
+                report = failure_report(("503", GITHUB_SOURCE), other)
+                code, _, _, _, run, sleep = self.run_gate(first_report=report)
+                self.assertNotEqual(code, 0)
+                run.assert_not_called()
+                sleep.assert_not_called()
+        self.assertIsNone(retry.retryable_failures(FIRST_FAILURE.replace("Errors | 1", "Errors | 2")))
+
+    def test_github_source_unavailability_gets_one_strict_retry(self):
+        report = failure_report(("503", GITHUB_SOURCE))
+        for result in (0, 2):
+            with self.subTest(result=result):
+                code, _, _, _, run, sleep = self.run_gate(first_report=report, second_code=result)
+                self.assertEqual(code, result)
+                self.assertEqual(run.call_count, 2)
+                sleep.assert_called_once_with(60)
 
     def test_unpinned_version_is_rejected_before_retry(self):
         code, first, second, final, run, sleep = self.run_gate(version="lychee 0.25.0\n")

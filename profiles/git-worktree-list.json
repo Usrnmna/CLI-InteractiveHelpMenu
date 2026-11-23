@@ -8,14 +8,14 @@
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "options": [
         {
           "flag": "--porcelain",
           "argument": "",
           "argument_optional": false,
           "summary": "Show stable, machine-readable worktree fields",
-          "detail": "Attributes appear on separate lines with a blank line between worktrees. Use -z to handle paths containing newlines."
+          "detail": "Attributes appear on separate lines with a blank line between worktrees. Use -z to handle paths containing newlines. --no-porcelain restores the human-readable format."
         },
         {
           "flag": "-z",
@@ -29,14 +29,124 @@
           "argument": "",
           "argument_optional": false,
           "summary": "Show why worktrees are locked or prunable",
-          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output."
+          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output. --no-verbose clears earlier verbosity flags."
         },
         {
           "flag": "--verbose",
           "argument": "",
           "argument_optional": false,
           "summary": "Show why worktrees are locked or prunable",
-          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output."
+          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output. --no-verbose clears earlier verbosity flags."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
+        },
+        {
+          "flag": "--expire",
+          "argument": "TIME",
+          "argument_optional": false,
+          "summary": "Mark missing worktrees older than a cutoff as prunable",
+          "detail": "Changes the list annotation only. No registrations are deleted. Quote a relative date such as \"2 weeks ago\" as one argument. --expire never suppresses ordinary age-based annotations.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Cutoff for marking a missing worktree as prunable",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Bare numbers use Git's calendar/epoch heuristics, not one scalar duration unit; the form documents the threshold and explicit alternatives"
+                },
+                "forms": [
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "GIT-DATE/EXPIRY",
+                    "grammar": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression."
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "never",
+                    "meaning": "Use a zero cutoff, preventing ordinary expiry by age",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "never | false",
+                    "tokens": [
+                      "never",
+                      "false"
+                    ]
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "all",
+                    "meaning": "Use TIME_MAX as the cutoff, imposing no additional age restriction",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "all | now",
+                    "tokens": [
+                      "all",
+                      "now"
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "List marks eligible missing registrations without an extra age delay."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/date.c",
+                      "locator": "parse_expiry_date exact sentinel mapping and approxidate_careful"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/builtin/worktree.c",
+                      "locator": "list initial expiry and worktree annotations"
+                    }
+                  ]
+                },
+                "time_basis": "Timestamp cutoff against worktree administrative metadata; relative date expressions use the current local wall clock."
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-expire",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable ordinary age-based prunable annotations",
+          "detail": "Equivalent to --expire never, including when used alone. Broken administrative records can qualify independently of age."
         }
       ]
     }
@@ -44,7 +154,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-worktree",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Version-qualified manual coverage"
   }
 }

@@ -8,21 +8,28 @@
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "options": [
         {
           "flag": "-f",
           "argument": "",
           "argument_optional": false,
           "summary": "Allow removal of a dirty linked worktree",
-          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice."
+          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice. --no-force clears earlier force flags."
         },
         {
           "flag": "--force",
           "argument": "",
           "argument_optional": false,
           "summary": "Allow removal of a dirty linked worktree",
-          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice."
+          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice. --no-force clears earlier force flags."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
         }
       ]
     }
@@ -30,7 +37,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-worktree",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Version-qualified manual coverage"
   }
 }

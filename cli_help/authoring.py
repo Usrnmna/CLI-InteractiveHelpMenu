@@ -54,7 +54,10 @@ def _facts(option):
     defaults = {"kind": "flag", "argument": "", "argument_count": 1, "argument_optional": False,
                 "optional_value_kind": None, "argument_style": None, "attached": False,
                 "bundle": False, "summary": "", "detail": ""}
-    return {field: option.get(field, defaults[field]) for field in OPTION_FIELDS}
+    facts = {field: option.get(field, defaults[field]) for field in OPTION_FIELDS}
+    if option.get("numeric_shorthand"):
+        facts["numeric_shorthand"] = True
+    return facts
 
 
 def referenced_definitions(metadata, definitions):

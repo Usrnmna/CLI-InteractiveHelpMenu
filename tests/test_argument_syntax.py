@@ -26,6 +26,27 @@ PROFILE = {"command": ["typed"], "description": "Fixture", "categories": [{"name
 
 
 class ArgumentSyntaxTests(unittest.TestCase):
+    def test_numeric_shorthand_is_scoped_and_has_no_separate_operand(self):
+        """Recognize complete ASCII -NUMBER tokens only for an explicit count owner."""
+        profile = copy.deepcopy(PROFILE)
+        count = profile["categories"][0]["options"][2]
+        count["numeric_shorthand"] = True
+        validate_profile(profile, Path("fixture"))
+        for digits in ("0", "3", "125"):
+            line = f"typed -{digits} --fl"
+            self.assertEqual(find_context(line, len(line), [profile]).query, "--fl")
+            with self.assertRaises(HelpError):
+                find_context(line, len(line), [PROFILE])
+            with self.assertRaises(HelpError):
+                find_context(line, len(f"typed -{digits}"), [profile])
+        for word in ("-1x", "-٣", "--3"):
+            line = f"typed {word} --fl"
+            with self.assertRaises(HelpError):
+                find_context(line, len(line), [profile])
+        profile["categories"][0]["options"][3]["numeric_shorthand"] = True
+        with self.assertRaisesRegex(HelpError, "Only one option"):
+            validate_profile(profile, Path("fixture"))
+
     def test_declared_forms_and_bundles_preserve_literal_input(self):
         for prefix in ("typed -ab ", "typed -abn5 ", "typed -ban -5 ", "typed -o'café dir' ",
                        "typed --value='café value' ", "typed -a -b -n 2 "):

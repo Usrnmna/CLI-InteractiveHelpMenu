@@ -122,8 +122,11 @@ def check_curated_case(words, registry, record, case, timeout):
         context = find_context(line, len(line), [profile], driver_registry=registry,
                                discover=lambda *args, **kwargs: profile)
         for option in options:
-            suffix = "" if option["flag"].endswith("=") or option.get("argument_style") == "attached_only" else " "
-            expected = " ".join(words) + " " + option["flag"] + suffix
+            literal = option["flag"]
+            if option.get("argument_style") == "equals" and not literal.endswith("="):
+                literal += "="
+            suffix = "" if literal.endswith("=") or option.get("argument_style") == "attached_only" else " "
+            expected = " ".join(words) + " " + literal + suffix
             if insert_option(context, option) != (expected, len(expected)):
                 raise HelpError("Curated literal insertion invariant failed.")
         return {**record, "status": "passed", "evidence": "fixed-route documentation sentinels and curated literal edits",

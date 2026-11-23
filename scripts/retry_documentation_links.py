@@ -1,9 +1,4 @@
-"""Apply one bounded GNU rate-limit retry and retain both Lychee reports.
-
-The initial action remains strict but defers the job result to this gate. Only
-GNU HTTP 429 failures qualify for a retry; the retry checks every link again,
-reusing successful responses through the normal Lychee cache configuration.
-"""
+"""Retry transient documentation failures once and retain both Lychee reports."""
 
 import argparse
 from datetime import datetime, timezone
@@ -49,15 +44,24 @@ def retry_after_seconds(value, now):
         return None
 
 
-def gnu_rate_limited_urls(report):
-    """Extract unique GNU HTTPS targets from Lychee's Markdown 429 entries."""
-    urls = []
-    for url in re.findall(r"\[429\]\s+<([^>]+)>", report):
-        parsed = urlsplit(url)
-        if (parsed.scheme == "https" and parsed.netloc == "www.gnu.org"
-                and url not in urls):
-            urls.append(url)
-    return urls
+def retryable_failures(report):
+    """Return GNU URLs to probe, or None if any reported failure cannot be retried."""
+    entries = re.findall(r"^\* \[([^\]]+)\] <([^>]+)>", report, re.MULTILINE)
+    count = re.search(r"\|[^|\n]*Errors\s*\|\s*(\d+)\s*\|", report)
+    if not entries or not count or len(entries) != int(count.group(1)):
+        return None
+    gnu_urls = []
+    for status, url in entries:
+        target = urlsplit(url)
+        if target.scheme != "https":
+            return None
+        if status == "429" and target.netloc == "www.gnu.org":
+            if url not in gnu_urls:
+                gnu_urls.append(url)
+        elif not (status == "503" and target.netloc == "github.com"
+                  and re.fullmatch(r"/[^/]+/[^/]+/blob/.+", target.path)):
+            return None
+    return gnu_urls
 
 
 def probe_retry_after(url, evidence):
@@ -93,7 +97,7 @@ def retry_delay(delays):
 
 
 def finish(first_outcome, lychee="lychee"):
-    """Return the final check status, retrying at most once after a GNU 429.
+    """Return the final check status after at most one eligible retry.
 
     Reports are never used as success evidence without the corresponding process
     success. Missing reports, version mismatches and timeouts fail this gate.
@@ -107,22 +111,23 @@ def finish(first_outcome, lychee="lychee"):
     shutil.copyfile(FIRST_REPORT, FINAL_REPORT)
     if first_outcome == "success":
         return 0
-    urls = gnu_rate_limited_urls(FIRST_REPORT.read_text(encoding="utf-8"))
-    if not urls:
-        print("Initial failure has no GNU HTTP 429; failing without a retry.", flush=True)
+    urls = retryable_failures(FIRST_REPORT.read_text(encoding="utf-8"))
+    if urls is None:
+        print("Initial report contains an ineligible or unidentified failure.", flush=True)
         return 1
     version = subprocess.run([lychee, "--version"], capture_output=True, text=True, timeout=10, check=True)
     if version.stdout.strip() != "lychee 0.24.2":
         raise ValueError(f"Expected lychee 0.24.2, got {version.stdout.strip()!r}")
-    with (REPORT_DIRECTORY / "gnu-response-headers.txt").open("w", encoding="utf-8") as evidence:
-        # At most two diagnostic requests; additional failures remain in the report.
-        delays = []
-        for url in urls[:2]:
-            time.sleep(10)
-            delays.append(probe_retry_after(url, evidence))
-        delay = retry_delay(delays)
-        evidence.write(f"\nCooldown before the only retry: {delay} seconds\n")
-    print(f"GNU rate limited the initial check. Waiting {delay}s before the only retry.", flush=True)
+    delays = []
+    delay = MINIMUM_DELAY_SECONDS
+    if urls:
+        with (REPORT_DIRECTORY / "gnu-response-headers.txt").open("w", encoding="utf-8") as evidence:
+            for url in urls[:2]:
+                time.sleep(10)
+                delays.append(probe_retry_after(url, evidence))
+            delay = retry_delay(delays)
+            evidence.write(f"\nCooldown before the only retry: {delay} seconds\n")
+    print(f"Waiting {delay}s before rechecking documentation links.", flush=True)
     time.sleep(delay)
     command = [lychee, "--config", "lychee.toml", "--no-progress", "--format", "markdown",
                "--output", str(SECOND_REPORT), "**/*.md"]

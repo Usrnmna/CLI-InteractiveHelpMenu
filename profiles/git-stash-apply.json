@@ -8,26 +8,243 @@
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "options": [
         {
           "flag": "--index",
           "argument": "",
           "argument_optional": false,
           "summary": "Try to restore the saved staging state",
-          "detail": "Restore the saved index as well as working-tree changes. Conflicts can prevent the index from being restored."
+          "detail": "Restore the saved index as well as working-tree changes. Conflicts can prevent the index from being restored. On Git 2.53 and current upstream, stash.index=true enables this by default. Git 2.43 requires the switch."
         },
         {
           "flag": "-q",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
         },
         {
           "flag": "--quiet",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
+        },
+        {
+          "flag": "--no-index",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Restore changes without recreating the saved staging state",
+          "detail": "Overrides --index and, on Git 2.53 and current upstream, stash.index=true. A conflict can still leave unmerged index entries."
+        },
+        {
+          "flag": "--label-ours=",
+          "argument": "LABEL",
+          "argument_optional": false,
+          "summary": "Name the current worktree side in conflict markers",
+          "detail": "Upstream Git 2.56 apply takes one label in place of \"Updated upstream\". --no-label-ours clears it. Both Ubuntu clients reject this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Current worktree conflict-marker label",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The marker contains text."
+                },
+                "forms": [
+                  {
+                    "id": "label",
+                    "notation": "expression",
+                    "syntax": "LABEL",
+                    "grammar": "One string. Quote spaces to pass the label as one argument."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default label Updated upstream."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One label is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The Git option parser defines this value."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option uses no hardware-specific units."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/git/git/blob/v2.56.0/builtin/stash.c",
+                      "locator": "apply_stash and do_apply_stash"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--label-theirs=",
+          "argument": "LABEL",
+          "argument_optional": false,
+          "summary": "Name the saved stash side in conflict markers",
+          "detail": "Upstream Git 2.56 apply takes one label in place of \"Stashed changes\". --no-label-theirs clears it. Both Ubuntu clients reject this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Saved stash conflict-marker label",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The marker contains text."
+                },
+                "forms": [
+                  {
+                    "id": "label",
+                    "notation": "expression",
+                    "syntax": "LABEL",
+                    "grammar": "One string. Quote spaces to pass the label as one argument."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default label Stashed changes."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One label is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The Git option parser defines this value."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option uses no hardware-specific units."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/git/git/blob/v2.56.0/builtin/stash.c",
+                      "locator": "apply_stash and do_apply_stash"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--label-base=",
+          "argument": "LABEL",
+          "argument_optional": false,
+          "summary": "Name the common ancestor side in conflict markers",
+          "detail": "Upstream Git 2.56 apply takes one label in place of \"Stash base\". Use a conflict style that displays the base, such as diff3. --no-label-base clears it. Both Ubuntu clients reject this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Common ancestor conflict-marker label",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The marker contains text."
+                },
+                "forms": [
+                  {
+                    "id": "label",
+                    "notation": "expression",
+                    "syntax": "LABEL",
+                    "grammar": "One string. Quote spaces to pass the label as one argument."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default label Stash base."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One label is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The Git option parser defines this value."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option uses no hardware-specific units."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/git/git/blob/v2.56.0/builtin/stash.c",
+                      "locator": "apply_stash and do_apply_stash"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -35,7 +252,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-stash",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Version-qualified manual coverage"
   }
 }

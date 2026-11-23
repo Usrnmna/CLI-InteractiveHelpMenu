@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "name": "Options",
       "options": [
         {
@@ -9,28 +9,28 @@
           "argument_optional": false,
           "flag": "-p",
           "summary": "Choose individual hunks to stash",
-          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged."
+          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged. Incompatible with -u and -a. --no-patch cancels interactive selection. Put -- before paths on Ubuntu 24.04. Ubuntu 26.04 also accepts paths directly after the patch flag."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--patch",
           "summary": "Choose individual hunks to stash",
-          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged."
+          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged. Incompatible with -u and -a. --no-patch cancels interactive selection. Put -- before paths on Ubuntu 24.04. Ubuntu 26.04 also accepts paths directly after the patch flag."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-S",
           "summary": "Stash only staged changes",
-          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a."
+          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a. --no-staged cancels staged-only selection."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--staged",
           "summary": "Stash only staged changes",
-          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a."
+          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a. --no-staged cancels staged-only selection."
         },
         {
           "argument": "",
@@ -146,7 +146,8 @@
               }
             ]
           },
-          "detail": "Quote a multiword message to pass it as one argument."
+          "detail": "Quote a multiword message to pass it as one argument. --no-message clears an earlier message.",
+          "attached": true
         },
         {
           "argument": "MESSAGE",
@@ -213,19 +214,21 @@
               }
             ]
           },
-          "detail": "Quote a multiword message to pass it as one argument."
+          "detail": "Quote a multiword message to pass it as one argument. --no-message clears an earlier message."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
         },
         {
           "argument": "FILE",
@@ -292,14 +295,172 @@
               }
             ]
           },
-          "detail": "Use - for standard input. Separate pathspecs with LF or CRLF, or use --pathspec-file-nul for NUL separators. Use the file instead of command-line pathspecs. Incompatible with --patch and --staged."
+          "detail": "Use - for standard input. Separate pathspecs with LF or CRLF, or use --pathspec-file-nul for NUL separators. Use the file instead of command-line pathspecs. Incompatible with --patch and --staged. --no-pathspec-from-file clears an earlier file selection."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--pathspec-file-nul",
           "summary": "Read NUL-separated pathspecs",
-          "detail": "Requires --pathspec-from-file. Newlines and quotes are ordinary characters within each element. Git still applies pathspec matching rules."
+          "detail": "Requires --pathspec-from-file. Newlines and quotes are ordinary characters within each element. Git still applies pathspec matching rules. --no-pathspec-file-nul restores newline delimiters."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help-all also prints built-in usage. Immediately after stash, --help opens the Git manual viewer."
+        },
+        {
+          "flag": "--no-include-untracked",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Leave untracked and ignored files in place",
+          "detail": "Cancels an earlier -u or -a. The parser also accepts --no-all for this reset."
+        },
+        {
+          "flag": "-U",
+          "argument": "LINES",
+          "argument_optional": false,
+          "summary": "Set context around each selectable hunk",
+          "detail": "Requires --patch and one integer, for example -U1 or --unified=1. With zero context, Git 2.53 can display a hunk and then fail to stash it. Ubuntu 24.04 lacks this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "patch-context"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--unified=",
+          "argument": "LINES",
+          "argument_optional": false,
+          "summary": "Set context around each selectable hunk",
+          "detail": "Requires --patch and one integer, for example -U1 or --unified=1. With zero context, Git 2.53 can display a hunk and then fail to stash it. Ubuntu 24.04 lacks this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "patch-context"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inter-hunk-context=",
+          "argument": "LINES",
+          "argument_optional": false,
+          "summary": "Join nearby changes into a single selectable hunk",
+          "detail": "Use --patch and a line count to select nearby changes together. Ubuntu 24.04 lacks this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "inter-hunk-context"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--auto-advance",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Advance after deciding every hunk in a file",
+          "detail": "The default in upstream Git 2.56 patch mode. Both Ubuntu clients reject this switch."
+        },
+        {
+          "flag": "--no-auto-advance",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow revisiting a file during hunk selection",
+          "detail": "Use with --patch in upstream Git 2.56. Move between files before finalizing the selection. Both Ubuntu clients reject this switch."
+        }
+      ]
+    },
+    {
+      "name": "Commands",
+      "description": "Stash operations.",
+      "options": [
+        {
+          "flag": "push",
+          "kind": "keyword",
+          "summary": "Save and roll back local changes",
+          "detail": "With no keyword, git stash also pushes. Use -- before pathspecs for portable implicit push. Unselected paths keep their changes."
+        },
+        {
+          "flag": "apply",
+          "kind": "keyword",
+          "summary": "Restore a stash and retain its entry",
+          "detail": "Defaults to the newest stash. Apply also accepts a stash-shaped commit that has no stash-list entry."
+        },
+        {
+          "flag": "pop",
+          "kind": "keyword",
+          "summary": "Restore a stash and drop it on success",
+          "detail": "Defaults to the newest entry. A conflicting pop keeps the entry for conflict resolution and a later manual drop."
+        },
+        {
+          "flag": "list",
+          "kind": "keyword",
+          "summary": "List saved entries from the stash reflog",
+          "detail": "The newest entry is stash@{0}. Log formatting and filtering options follow list."
+        },
+        {
+          "flag": "show",
+          "kind": "keyword",
+          "summary": "Compare a saved working tree with its original base",
+          "detail": "Supply a stash selector or use the newest entry. Diff options follow show."
+        },
+        {
+          "flag": "branch",
+          "kind": "keyword",
+          "summary": "Restore a stash on a new branch at its original base",
+          "detail": "Supply BRANCH and optionally STASH. Git checks out the new branch and restores the index and files. Success drops a selected stash-list entry."
+        },
+        {
+          "flag": "clear",
+          "kind": "keyword",
+          "summary": "Remove all entries from the stash list",
+          "detail": "The saved objects become eligible for pruning and can become impossible to recover."
+        },
+        {
+          "flag": "drop",
+          "kind": "keyword",
+          "summary": "Remove one entry from the stash list",
+          "detail": "Supply STASH or omit it for the latest entry. Use -q or --quiet after drop to suppress normal output."
+        },
+        {
+          "flag": "create",
+          "kind": "keyword",
+          "summary": "Create a stash object and print its ID",
+          "detail": "Accepts an optional message. Leaves the working tree and stash list in place. Use store to retain the resulting commit."
+        },
+        {
+          "flag": "store",
+          "kind": "keyword",
+          "summary": "Add a stash-shaped commit to the stash list",
+          "detail": "Supply the commit made by create. Use -m or --message for the reflog message and -q or --quiet to suppress normal output."
+        },
+        {
+          "flag": "save",
+          "kind": "keyword",
+          "summary": "Save changes using the deprecated message syntax",
+          "detail": "Remaining words form the message. For a path-limited stash, use push. Save supports the push selection flags except the pathspec options."
+        },
+        {
+          "flag": "export",
+          "kind": "keyword",
+          "summary": "Build a transferable commit chain of stashes",
+          "detail": "Git 2.53 and current upstream support export. Choose --print for the chain tip or --to-ref REF to retain it locally. Supply stash selectors or omit them for all entries. Ubuntu 24.04 lacks export."
+        },
+        {
+          "flag": "import",
+          "kind": "keyword",
+          "summary": "Append stashes from an exported commit chain",
+          "detail": "Supply the tip commit produced by export. Existing entries stay on the list. Git 2.53 and current upstream support import. Ubuntu 24.04 lacks it."
         }
       ]
     }
@@ -310,9 +471,153 @@
   ],
   "description": "Save local changes in a stash. For implicit push, put -- before pathspecs.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Version-qualified manual coverage",
+    "reviewed": "2026-11-23",
     "source": "https://git-scm.com/docs/git-stash"
   },
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "patch-context": {
+      "kind": "count",
+      "subject": "Lines of diff context",
+      "meaning": "Unchanged lines around a selected change",
+      "bare": {
+        "state": "accepted",
+        "form": "lines"
+      },
+      "forms": [
+        {
+          "id": "lines",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "An integer count of lines. Git's integer parser also accepts binary k, m and g multipliers. -1 selects the configured default. Smaller values fail.",
+          "special_values": [
+            {
+              "value": "-1",
+              "meaning": "Use the configured context instead of overriding it."
+            }
+          ]
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use diff.context, normally 3 lines."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The stash push parser requires one integer."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The Git option parser defines this value."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option uses no hardware-specific units."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/builtin/stash.c",
+            "locator": "push_stash context checks"
+          },
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/parse-options.c",
+            "locator": "do_get_value, OPTION_INTEGER"
+          },
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/Documentation/diff-context-options.adoc",
+            "locator": "Context and inter-hunk defaults"
+          }
+        ]
+      }
+    },
+    "inter-hunk-context": {
+      "kind": "count",
+      "subject": "Lines of diff context",
+      "meaning": "Maximum gap between hunks joined for selection",
+      "bare": {
+        "state": "accepted",
+        "form": "lines"
+      },
+      "forms": [
+        {
+          "id": "lines",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "An integer count of lines. Git's integer parser also accepts binary k, m and g multipliers. -1 selects the configured default. Smaller values fail.",
+          "special_values": [
+            {
+              "value": "-1",
+              "meaning": "Use the configured context instead of overriding it."
+            }
+          ]
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use diff.interHunkContext, normally 0 lines."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The stash push parser requires one integer."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The Git option parser defines this value."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option uses no hardware-specific units."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/builtin/stash.c",
+            "locator": "push_stash context checks"
+          },
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/parse-options.c",
+            "locator": "do_get_value, OPTION_INTEGER"
+          },
+          {
+            "source": "https://github.com/git/git/blob/v2.53.0/Documentation/diff-context-options.adoc",
+            "locator": "Context and inter-hunk defaults"
+          }
+        ]
+      }
+    }
+  }
 }

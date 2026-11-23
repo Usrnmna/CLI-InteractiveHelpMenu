@@ -2,6 +2,8 @@
 
 The bundled menus contain 58 stash entries across six profiles and 27 worktree entries across five profiles. The count includes selectable aliases, implicit and explicit stash push, and the four worktree keywords. The scope is the bundled menus with discovery disabled.
 
+The [manual-coverage revisit](git-stash-worktree-manual-coverage.md) records the expanded inventories and subsequent verification. The counts below describe the original selection.
+
 ## Reference manuals
 
 | Source | Version reviewed | Manuals |

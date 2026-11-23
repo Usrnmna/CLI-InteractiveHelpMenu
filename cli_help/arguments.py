@@ -37,6 +37,12 @@ def option_tokens(word, options, strict=True):
             if equal and not payload and not option.get("argument_optional"):
                 raise HelpError("Complete the attached argument before another option.", "option_value_required")
         return [(key, option, bool(equal))]
+    # Some commands spell a count directly as -NUMBER. Exact flags above
+    # retain priority (for example a literal -1), and no following word is consumed.
+    if word.startswith("-") and word[1:].isascii() and word[1:].isdigit():
+        for name, option in options.items():
+            if option.get("numeric_shorthand"):
+                return [(name, option, True)]
     attached = [[(name, option, True)] for name, option in options.items()
                 if option.get("argument") and "attached" in value_forms(option)
                 and word.startswith(name) and len(word) > len(name)]

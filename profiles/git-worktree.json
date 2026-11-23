@@ -7,13 +7,14 @@
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "options": [
         {
           "flag": "-h",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show worktree command usage"
+          "summary": "Show worktree command usage",
+          "detail": "--help-all also prints built-in usage. Immediately after worktree, --help opens the Git manual viewer."
         }
       ]
     },
@@ -25,7 +26,7 @@
           "flag": "add",
           "kind": "keyword",
           "summary": "Create a linked working tree",
-          "detail": "Supply a path and optionally a branch or commit. Each linked worktree has its own HEAD and index."
+          "detail": "Supply PATH and optionally BRANCH or COMMIT. With no start point, Git uses a branch named after the last path component, creating it at HEAD if needed. Each worktree has its own HEAD and index."
         },
         {
           "flag": "list",
@@ -44,6 +45,30 @@
           "kind": "keyword",
           "summary": "Clean up stale worktree registrations",
           "detail": "Use when the working directory is already gone. For a directory moved by hand, use worktree repair to reconnect it."
+        },
+        {
+          "flag": "lock",
+          "kind": "keyword",
+          "summary": "Protect a linked worktree while its directory is unavailable",
+          "detail": "Supply WORKTREE, optionally with --reason TEXT. A lock protects the registration from pruning and restricts moving or removing the worktree."
+        },
+        {
+          "flag": "unlock",
+          "kind": "keyword",
+          "summary": "Release a linked worktree lock",
+          "detail": "Supply WORKTREE. Its registration becomes eligible for ordinary pruning, moving and removal."
+        },
+        {
+          "flag": "move",
+          "kind": "keyword",
+          "summary": "Move a linked worktree to a new path",
+          "detail": "Supply WORKTREE NEW-PATH. The main worktree and worktrees with submodules cannot be moved here. A locked worktree needs --force twice. Git 2.53 and upstream also accept --[no-]relative-paths."
+        },
+        {
+          "flag": "repair",
+          "kind": "keyword",
+          "summary": "Reconnect worktrees after a manual move",
+          "detail": "Run in the moved worktree, or supply the new paths from the main repository. Git 2.53 and upstream can rewrite link paths with --relative-paths or --no-relative-paths."
         }
       ]
     }
@@ -51,7 +76,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-worktree",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Version-qualified manual coverage"
   }
 }

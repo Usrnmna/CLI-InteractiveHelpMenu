@@ -10,6 +10,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cli_help"))
 
+from arguments import value_forms
 from command_paths import help_route, load_driver_registry, resolve_path
 from core import HelpError, find_context, insert_option, validate_profile
 from discovery import Settings, build_profile, discover
@@ -159,14 +160,18 @@ class DevelopmentExpansionTests(unittest.TestCase):
             profile = profile_for(case)
             for entry in options(profile).values():
                 prefix = case["command"] + "\t  "
-                fragment = "ad" if entry.get("kind") == "keyword" else "--par"
+                fragment = entry["flag"][:2] if entry.get("kind") == "keyword" else "--par"
                 suffix = "  'café 日本 files'  \"literal value\""
                 line = prefix + fragment + suffix
                 with self.subTest(command=case["command"], flag=entry["flag"]):
                     context = context_for(line, len(prefix) + 1, profile)
                     edited, point = insert_option(context, entry)
-                    self.assertEqual(edited, prefix + entry["flag"] + suffix)
-                    self.assertEqual(point, len(prefix + entry["flag"]) + (not entry["flag"].endswith("=")))
+                    literal = entry["flag"]
+                    if entry.get("argument_style") == "equals" and not literal.endswith("="):
+                        literal += "="
+                    joined = literal.endswith("=") or entry.get("argument_style") == "attached_only"
+                    self.assertEqual(edited, prefix + literal + suffix)
+                    self.assertEqual(point, len(prefix + literal) + int(not joined))
                     self.assertNotIn(entry.get("argument", "PLACEHOLDER") or "PLACEHOLDER", edited)
 
     def test_required_values_attached_values_negative_values_and_incomplete_input(self):
@@ -182,11 +187,15 @@ class DevelopmentExpansionTests(unittest.TestCase):
                     incomplete = case["command"] + " " + flag + " "
                     with self.assertRaises(HelpError):
                         context_for(incomplete, len(incomplete), profile)
-                    for value in ("'日本 value'", "-1", "'--expression-flag'"):
-                        line = incomplete + value + " --"
-                        self.assertEqual(context_for(line, len(line), profile).query, "--")
-                    attached = case["command"] + " " + flag + "='quoted 日本' --"
-                    self.assertEqual(context_for(attached, len(attached), profile).query, "--")
+                    for form in value_forms(entry):
+                        separator = {"equals": "=", "attached": "", "separate": " "}[form]
+                        for value in ("'日本 value'", "-1", "'--expression-flag'"):
+                            line = case["command"] + " " + flag + separator + value + " --"
+                            if form == "separate" and entry.get("argument_style") and value.startswith("'--"):
+                                with self.assertRaises(HelpError):
+                                    context_for(line, len(line), profile)
+                            else:
+                                self.assertEqual(context_for(line, len(line), profile).query, "--")
 
     def test_runner_child_commands_and_end_markers_are_not_parent_options(self):
         runners = {"go run", "dotnet run", "yarn run", "bun run"}
@@ -233,7 +242,7 @@ class DevelopmentExpansionTests(unittest.TestCase):
         exclusions = {"git stash pop": {"--message", "--patch", "--include-untracked"},
                       "git stash apply": {"--message", "--pathspec-from-file"},
                       "git worktree remove": {"--porcelain", "--expire", "-b"},
-                      "git worktree list": {"--force", "--expire", "--detach"}}
+                      "git worktree list": {"--force", "--dry-run", "--detach"}}
         for command, excluded in exclusions.items():
             case = next(case for case in CASES if case["command"] == command)
             self.assertFalse(options(profile_for(case)).keys() & excluded)

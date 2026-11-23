@@ -4,72 +4,3305 @@
     "stash",
     "show"
   ],
-  "description": "Show the changes a stash saved against its base commit. Defaults to the latest stash.",
+  "description": "Compare one saved stash with its base commit. A separate non-option word selects the stash. Attach values directly to delegated diff options.",
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Stash contents and diff output.",
       "options": [
         {
           "flag": "-p",
           "argument": "",
           "argument_optional": false,
           "summary": "Show the stashed changes as a patch",
-          "detail": "Compare the saved working tree with the commit on which the stash was based."
+          "detail": "Compare the saved working tree with the commit on which the stash was based. Also spelled --patch."
         },
         {
           "flag": "--patch",
           "argument": "",
           "argument_optional": false,
           "summary": "Show the stashed changes as a patch",
-          "detail": "Compare the saved working tree with the commit on which the stash was based."
+          "detail": "Compare the saved working tree with the commit on which the stash was based. Also spelled -p."
         },
         {
           "flag": "--stat",
-          "argument": "",
-          "argument_optional": false,
+          "argument": "[=WIDTH[,NAME-WIDTH[,COUNT]]]",
+          "argument_optional": true,
           "summary": "Summarize changes by file",
-          "detail": "The default display is a diffstat unless stash.showStat or stash.showPatch changes it."
+          "detail": "Append =WIDTH[,NAME-WIDTH[,COUNT]] to set total columns, filename columns and maximum file rows. A space starts a stash selector. Without diff options, stash.showStat and stash.showPatch control the display.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Diffstat column widths and file-row limit",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --stat"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "stash.showStat normally enables the diffstat when no diff option is present."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use the terminal width or 80 columns for nonterminal output. Git chooses a filename width and includes all file rows unless configured otherwise."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "WIDTH[,NAME-WIDTH[,COUNT]]",
+                    "grammar": "WIDTH[,NAME-WIDTH[,COUNT]] in one attached argument. A single number sets total columns. The second number limits filename columns and the third limits file rows. Zero count leaves rows uncapped."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Numbers are interpreted within the option-specific syntax below."
+                },
+                "grammar": {
+                  "name": "Git diff diffstat column widths and file-row limit",
+                  "reference": {
+                    "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                    "locator": "OPTIONS, --stat"
+                  }
+                }
+              }
+            ]
+          }
         },
         {
           "flag": "--name-only",
           "argument": "",
           "argument_optional": false,
-          "summary": "List changed paths"
+          "summary": "List changed paths",
+          "detail": "Use -z for unquoted, NUL-terminated names."
         },
         {
           "flag": "--name-status",
           "argument": "",
           "argument_optional": false,
           "summary": "List changed paths with their status",
-          "detail": "Status letters distinguish additions, deletions and modifications."
+          "detail": "Status letters distinguish additions, deletions and modifications. Rename and copy records can carry two paths."
         },
         {
           "flag": "-u",
           "argument": "",
           "argument_optional": false,
           "summary": "Show saved untracked files too",
-          "detail": "Includes files recorded when the stash was created with -u or -a. stash.showIncludeUntracked can enable this by default."
+          "detail": "Includes files previously saved with push -u or -a. stash.showIncludeUntracked can enable this by default. Lowercase -u leaves the output format alone. Also spelled --include-untracked."
         },
         {
           "flag": "--include-untracked",
           "argument": "",
           "argument_optional": false,
           "summary": "Show saved untracked files too",
-          "detail": "Includes files recorded when the stash was created with -u or -a. stash.showIncludeUntracked can enable this by default."
+          "detail": "Includes files previously saved with push -u or -a. stash.showIncludeUntracked can enable this by default. Lowercase -u leaves the output format alone. Also spelled -u."
         },
         {
           "flag": "--only-untracked",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show only the saved untracked files"
+          "summary": "Show only the saved untracked files",
+          "detail": "Compares the saved untracked tree with an empty tree. A stash with no such files produces no file changes."
         },
         {
           "flag": "--binary",
           "argument": "",
           "argument_optional": false,
           "summary": "Include applicable binary patches",
-          "detail": "Implies --patch and includes binary changes in a form git apply can use."
+          "detail": "Enables patch output and full blob IDs. The binary patch can be applied with git apply."
+        }
+      ]
+    },
+    {
+      "name": "Contents and usage",
+      "description": "Saved untracked files and command help.",
+      "options": [
+        {
+          "flag": "--no-include-untracked",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Exclude the saved untracked files",
+          "detail": "Overrides stash.showIncludeUntracked and a preceding -u."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display stash show usage",
+          "detail": "Prints the short command synopsis and the stash-specific options, then exits. Also spelled --help, --help-all."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display stash show usage",
+          "detail": "Prints the short command synopsis and the stash-specific options, then exits. Also spelled -h, --help-all."
+        },
+        {
+          "flag": "--help-all",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display stash show usage",
+          "detail": "Prints the short command synopsis and the stash-specific options, then exits. Also spelled -h, --help."
+        }
+      ]
+    },
+    {
+      "name": "Patch output",
+      "description": "Patch generation, context and matching algorithms.",
+      "options": [
+        {
+          "flag": "-s",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress diff output",
+          "detail": "Cancels output selected by earlier options such as --patch and --stat. Also spelled --no-patch."
+        },
+        {
+          "flag": "--no-patch",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress diff output",
+          "detail": "Cancels output selected by earlier options such as --patch and --stat. Also spelled -s."
+        },
+        {
+          "flag": "-U",
+          "argument": "[LINES]",
+          "argument_optional": true,
+          "summary": "Show a patch with this many context lines",
+          "detail": "Use -U0 or --unified=0 for no context. Bare -U selects a patch with the configured context. A space before a number selects a stash. Also spelled --unified.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "unified-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--unified",
+          "argument": "LINES",
+          "argument_optional": true,
+          "summary": "Show a patch with this many context lines",
+          "detail": "Use -U0 or --unified=0 for no context. Bare -U selects a patch with the configured context. A space before a number selects a stash. Also spelled -U.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "unified-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write the diff to a file",
+          "detail": "Supply the filename with = and quote shell-sensitive text. The file receives the output normally sent to stdout.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Diff output destination",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --output"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write the diff to standard output."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "A path in the local filesystem. An existing file can be overwritten."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are pathname characters."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output-indicator-new",
+          "argument": "CHAR",
+          "argument_optional": false,
+          "summary": "Change the marker for added lines",
+          "detail": "Supply a single character with =. The default marker is +.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Marker for an added patch line",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --output-indicator-new"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the plus sign."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "CHAR",
+                    "grammar": "One byte replacing the leading plus sign."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output-indicator-old",
+          "argument": "CHAR",
+          "argument_optional": false,
+          "summary": "Change the marker for removed lines",
+          "detail": "Supply a single character with =. The default marker is -.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Marker for a removed patch line",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --output-indicator-old"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the minus sign."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "CHAR",
+                    "grammar": "One byte replacing the leading minus sign."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output-indicator-context",
+          "argument": "CHAR",
+          "argument_optional": false,
+          "summary": "Change the marker for context lines",
+          "detail": "Supply a single character with =. The default marker is a space.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Marker for an unchanged patch line",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --output-indicator-context"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use a space."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "CHAR",
+                    "grammar": "One byte replacing the leading space."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--raw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show file modes, object IDs, status and paths",
+          "detail": "Use -z to preserve unusual pathnames and --abbrev to control object ID length."
+        },
+        {
+          "flag": "-t",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include changed directory entries in the diff",
+          "detail": "With --raw or --name-status, list each changed tree alongside its changed files. Stash show already descends into subdirectories."
+        },
+        {
+          "flag": "--patch-with-raw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show raw change records and a patch",
+          "detail": "Equivalent to combining --raw with -p."
+        },
+        {
+          "flag": "--indent-heuristic",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Shift hunk boundaries for readability",
+          "detail": "Enabled by default. Shifts hunk boundaries toward natural indentation changes."
+        },
+        {
+          "flag": "--no-indent-heuristic",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable indentation-based hunk placement",
+          "detail": "Leaves the chosen diff algorithm in effect."
+        },
+        {
+          "flag": "--minimal",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Spend more time finding a smaller diff",
+          "detail": "Selects the minimal diff algorithm."
+        },
+        {
+          "flag": "--patience",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use the patience diff algorithm",
+          "detail": "Matches unique lines to anchor the comparison."
+        },
+        {
+          "flag": "--histogram",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use the histogram diff algorithm",
+          "detail": "Also considers lines that occur infrequently as potential anchors."
+        },
+        {
+          "flag": "--anchored",
+          "argument": "TEXT",
+          "argument_optional": false,
+          "summary": "Anchor the diff at matching lines",
+          "detail": "Repeat for multiple prefixes. A line that starts with TEXT and occurs exactly once on each side is a candidate anchor for the patience algorithm.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prefix of a candidate anchor line",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --anchored"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the selected diff algorithm without additional anchors."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "A literal line prefix. Repeat the switch to supply several anchors."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--diff-algorithm",
+          "argument": "ALGORITHM",
+          "argument_optional": false,
+          "summary": "Choose how Git matches changed lines",
+          "detail": "Choose myers (also default), minimal, patience or histogram. This overrides diff.algorithm.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Diff matching algorithm",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --diff-algorithm"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.algorithm or Myers."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "myers | default | minimal | patience | histogram",
+                    "tokens": [
+                      "myers",
+                      "default",
+                      "minimal",
+                      "patience",
+                      "histogram"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "myers or default selects the standard greedy algorithm. minimal spends more time reducing edits. patience aligns unique lines and histogram also uses low-frequency matches."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Change summaries",
+      "description": "Statistics, path fields and submodule summaries.",
+      "options": [
+        {
+          "flag": "--stat-width",
+          "argument": "WIDTH",
+          "argument_optional": false,
+          "summary": "Set the maximum width of a diffstat",
+          "detail": "Supply the total width in columns. Enables diffstat output.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Total columns for the diffstat",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --stat-width"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the available terminal width or 80 columns for nonterminal output."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "WIDTH",
+                    "grammar": "A decimal width in columns for the graph and filename together. A zero width leaves automatic layout in effect."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Total columns for the diffstat"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--stat-name-width",
+          "argument": "WIDTH",
+          "argument_optional": false,
+          "summary": "Limit the filename column in a diffstat",
+          "detail": "Supply a number of columns. Overrides diff.statNameWidth and enables diffstat output.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Columns for diffstat filenames",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --stat-name-width"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Follow diff.statNameWidth and automatic sizing."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "WIDTH",
+                    "grammar": "A decimal maximum filename width in columns. Positive values truncate long paths."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Columns for diffstat filenames"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--stat-graph-width",
+          "argument": "WIDTH",
+          "argument_optional": false,
+          "summary": "Limit the graph width in a diffstat",
+          "detail": "Supply a number of columns. Overrides diff.statGraphWidth and enables diffstat output.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Columns for the diffstat graph",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --stat-graph-width"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Follow diff.statGraphWidth and automatic sizing."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "WIDTH",
+                    "grammar": "A decimal maximum graph width in columns. Positive values cap the graph. The total width may impose a narrower limit."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Columns for the diffstat graph"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--stat-count",
+          "argument": "COUNT",
+          "argument_optional": false,
+          "summary": "Limit the number of files in a diffstat",
+          "detail": "Extra file rows become an ellipsis. The totals still cover all changes. Zero leaves file rows uncapped.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum file rows in the diffstat",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --stat-count"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Include all files in the diffstat unless a limit was supplied elsewhere."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "COUNT",
+                    "grammar": "A decimal file count. Zero imposes no file-row cap. Git appends an ellipsis for omitted files and retains the overall totals."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Maximum file rows in the diffstat"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--compact-summary",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include file and mode changes in the diffstat",
+          "detail": "Adds markers for creation, deletion, symlinks and executable-bit changes. Implies --stat."
+        },
+        {
+          "flag": "--numstat",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show added and deleted line counts per file",
+          "detail": "Tab-delimited counts and names support scripts. Binary files have a dash in each count column. Add -z for literal pathnames."
+        },
+        {
+          "flag": "--shortstat",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show only diffstat totals",
+          "detail": "Reports changed files, insertions and deletions across the comparison."
+        },
+        {
+          "flag": "-X",
+          "argument": "[PARAMETERS]",
+          "argument_optional": true,
+          "summary": "Report each directory's share of the changes",
+          "detail": "Choose changes, lines or files. Add cumulative to include child shares or noncumulative for separate shares. A numeric cutoff is a percentage. For example, -Xfiles,10,cumulative counts files and hides shares below 10%. Supply a numeric cutoff without a percent sign. Also spelled --dirstat.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "dirstat-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--dirstat",
+          "argument": "PARAMETERS",
+          "argument_optional": true,
+          "summary": "Report each directory's share of the changes",
+          "detail": "Choose changes, lines or files. Add cumulative to include child shares or noncumulative for separate shares. A numeric cutoff is a percentage. For example, -Xfiles,10,cumulative counts files and hides shares below 10%. Supply a numeric cutoff without a percent sign. Also spelled -X.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "dirstat-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cumulative",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include child directories in parent change shares",
+          "detail": "Equivalent to --dirstat=cumulative. Parent and child percentages can sum to more than 100%."
+        },
+        {
+          "flag": "--dirstat-by-file",
+          "argument": "PARAMETERS",
+          "argument_optional": true,
+          "summary": "Measure directory shares by changed file count",
+          "detail": "Equivalent to --dirstat=files. Optionally append a comma-separated percentage cutoff and cumulative or noncumulative. Supply a numeric cutoff without a percent sign.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "File-count directory statistics parameters",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --dirstat-by-file"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Directory statistics are not requested by this option."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Count changed files and use the configured cutoff and accumulation rules."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PARAMETERS",
+                    "grammar": "An attached comma-separated list of dirstat parameters. Each changed file initially counts equally. A number sets the minimum percentage for publication. cumulative adds child shares to parents."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Numbers are interpreted within the option-specific syntax below."
+                },
+                "grammar": {
+                  "name": "Git diff file-count directory statistics parameters",
+                  "reference": {
+                    "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                    "locator": "OPTIONS, --dirstat-by-file"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--summary",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Summarize file creation, renames and mode changes",
+          "detail": "Reports change headers. An ordinary edit can produce an empty summary."
+        },
+        {
+          "flag": "--patch-with-stat",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show a diffstat and a patch",
+          "detail": "Equivalent to combining --stat with -p."
+        },
+        {
+          "flag": "-z",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Terminate path fields with NUL",
+          "detail": "Use with --raw, --numstat, --name-only or --name-status to retain literal tabs and newlines within names."
+        },
+        {
+          "flag": "--submodule",
+          "argument": "FORMAT",
+          "argument_optional": true,
+          "summary": "Choose how changed submodule commits appear",
+          "detail": "short prints endpoint IDs, log lists commits and diff shows changes inline. Bare --submodule selects log.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Submodule change display",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --submodule"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.submodule or short."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "List commits using log format."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "short | log | diff",
+                    "tokens": [
+                      "short",
+                      "log",
+                      "diff"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "short shows old and new object names. log lists the commits between them. diff shows the changes inline."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Color and words",
+      "description": "Colors, moved lines and word-level differences.",
+      "options": [
+        {
+          "flag": "--color",
+          "argument": "WHEN",
+          "argument_optional": true,
+          "summary": "Control colored diff output",
+          "detail": "Use always, never or auto. Bare --color forces color even when output is redirected.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Diff color policy",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --color"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Honor diff and UI color settings."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Always emit colors."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "always | never | auto",
+                    "tokens": [
+                      "always",
+                      "never",
+                      "auto"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "always forces colors, never disables them and auto tests output destination suitability."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-color",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress colored output",
+          "detail": "Overrides color settings or an earlier --color."
+        },
+        {
+          "flag": "--color-moved",
+          "argument": "MODE",
+          "argument_optional": true,
+          "summary": "Highlight lines that moved within the diff",
+          "detail": "Modes include no, plain, blocks, zebra and dimmed-zebra (formerly dimmed_zebra). Bare --color-moved uses the configured mode or zebra. default currently also selects zebra. Combine with --color to see highlighting when redirected.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Moved-line display mode",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --color-moved"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Honor diff.colorMoved or leave moved-line highlighting off."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use diff.colorMoved when it selects a highlighting mode, otherwise zebra."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "no | plain | blocks | zebra | dimmed-zebra | dimmed_zebra | default",
+                    "tokens": [
+                      "no",
+                      "plain",
+                      "blocks",
+                      "zebra",
+                      "dimmed-zebra",
+                      "dimmed_zebra",
+                      "default"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "no disables coloring, plain highlights matching lines, blocks highlights runs of at least 20 alphanumeric characters and zebra alternates colors for adjacent blocks. dimmed-zebra dims less informative lines. default currently selects zebra. dimmed_zebra is a deprecated alias."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-color-moved",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Turn off moved-line highlighting",
+          "detail": "Overrides diff.colorMoved and earlier --color-moved."
+        },
+        {
+          "flag": "--color-moved-ws",
+          "argument": "MODES",
+          "argument_optional": false,
+          "summary": "Choose whitespace rules for moved lines",
+          "detail": "Use no, ignore-space-at-eol, ignore-space-change, ignore-all-space or allow-indentation-change. The last mode must stand alone.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Whitespace policy for detecting moved blocks",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --color-moved-ws"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Honor diff.colorMovedWS."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "MODES",
+                    "grammar": "Comma-separated modes no, ignore-space-at-eol, ignore-space-change or ignore-all-space. Use allow-indentation-change alone to detect blocks whose indentation shifts consistently."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Numbers are interpreted within the option-specific syntax below."
+                },
+                "grammar": {
+                  "name": "Git diff whitespace policy for detecting moved blocks",
+                  "reference": {
+                    "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                    "locator": "OPTIONS, --color-moved-ws"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-color-moved-ws",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Respect whitespace when detecting moved lines",
+          "detail": "Equivalent to --color-moved-ws=no."
+        },
+        {
+          "flag": "--word-diff",
+          "argument": "MODE",
+          "argument_optional": true,
+          "summary": "Show changes within lines word by word",
+          "detail": "Bare selects plain, with bracketed deletions and additions. color highlights changes, porcelain emits script-oriented runs and none disables word diff.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Word comparison output mode",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --word-diff"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "A normal line diff is used unless word comparison is enabled elsewhere."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Show differences in plain mode."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "plain | color | porcelain | none",
+                    "tokens": [
+                      "plain",
+                      "color",
+                      "porcelain",
+                      "none"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "plain encloses deleted and added runs in delimiters, color uses colors, porcelain prints script-readable runs and none turns off word comparison."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--word-diff-regex",
+          "argument": "REGEX",
+          "argument_optional": false,
+          "summary": "Choose what counts as a word",
+          "detail": "Each non-overlapping match is a word. Unmatched text is ignored. Quote the expression. Enables word diff.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Regular expression delimiting words",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --word-diff-regex"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured word pattern or whitespace-delimited words."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "REGEX",
+                    "grammar": "Each non-overlapping regex match is one word. Text between matches does not contribute to word differences. A newline truncates a match."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits belong to the regular expression."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color-words",
+          "argument": "REGEX",
+          "argument_optional": true,
+          "summary": "Show changed words in color",
+          "detail": "Equivalent to --word-diff=color. An attached regular expression also controls word boundaries.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Word pattern for colored word-diff output",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --color-words"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Color word comparison is not requested by this option."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Color changed words using the configured or default word boundaries."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "REGEX",
+                    "grammar": "Each non-overlapping regex match is one word. Shell quoting preserves metacharacters."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits belong to the regular expression."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Change detection",
+      "description": "Renames, copies, object names and whitespace checks.",
+      "options": [
+        {
+          "flag": "--no-renames",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Turn off rename and copy detection",
+          "detail": "Overrides diff.renames or previously requested detection."
+        },
+        {
+          "flag": "--rename-empty",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow empty blobs as rename sources",
+          "detail": "Affects rename and copy detection."
+        },
+        {
+          "flag": "--no-rename-empty",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Exclude empty blobs as rename sources",
+          "detail": "Affects rename and copy detection."
+        },
+        {
+          "flag": "--check",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report new whitespace errors and conflict markers",
+          "detail": "Checks added lines using core.whitespace and exits nonzero for problems. Use separately from --exit-code."
+        },
+        {
+          "flag": "--ws-error-highlight",
+          "argument": "KINDS",
+          "argument_optional": false,
+          "summary": "Choose which lines highlight whitespace errors",
+          "detail": "Use a comma-separated selection from old, new and context, or all, none or default. The default highlights new lines.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Patch lines checked for color highlighting",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --ws-error-highlight"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.wsErrorHighlight or highlight errors on new lines."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "KINDS",
+                    "grammar": "Comma-separated old, new, context, all, none or default. none clears the selection and default resets to new."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Numbers are interpreted within the option-specific syntax below."
+                },
+                "grammar": {
+                  "name": "Git diff patch lines checked for color highlighting",
+                  "reference": {
+                    "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                    "locator": "OPTIONS, --ws-error-highlight"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--full-index",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show complete blob IDs in patch index lines",
+          "detail": "Takes precedence over --abbrev for patch index lines."
+        },
+        {
+          "flag": "--abbrev",
+          "argument": "DIGITS",
+          "argument_optional": true,
+          "summary": "Set the minimum object ID abbreviation length",
+          "detail": "Git extends the prefix when necessary to identify an object uniquely. --full-index overrides this for patch index lines.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Minimum hexadecimal digits in an object ID prefix",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --abbrev"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use Git's configured or computed abbreviation length."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use Git's default abbreviation length."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "DIGITS",
+                    "grammar": "Decimal digit count. Git can lengthen a prefix to distinguish objects. The minimum usable abbreviation is four hexadecimal digits and the upper limit is the object format's full length."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Minimum hexadecimal digits in an object ID prefix"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-abbrev",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show complete object IDs in raw records",
+          "detail": "Use with --raw to display full before and after object IDs."
+        },
+        {
+          "flag": "-B",
+          "argument": "[N[/M]]",
+          "argument_optional": true,
+          "summary": "Split complete rewrites into deletions and creations",
+          "detail": "M sets the rewrite threshold (60% by default). With -M, N sets when a rewrite can be a rename source (50% by default). For example, -B/70% changes only M. Also spelled --break-rewrites.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "break-rewrites-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--break-rewrites",
+          "argument": "N[/M]",
+          "argument_optional": true,
+          "summary": "Split complete rewrites into deletions and creations",
+          "detail": "M sets the rewrite threshold (60% by default). With -M, N sets when a rewrite can be a rename source (50% by default). For example, -B/70% changes only M. Also spelled -B.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "break-rewrites-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-M",
+          "argument": "[SCORE]",
+          "argument_optional": true,
+          "summary": "Detect renamed files by content similarity",
+          "detail": "The default threshold is 50%. -M100% requires identical content. Without %, Git reads the digits as a decimal fraction. -M5 means 50% and -M05 means 5%. Also spelled --find-renames.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-renames-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-renames",
+          "argument": "SCORE",
+          "argument_optional": true,
+          "summary": "Detect renamed files by content similarity",
+          "detail": "The default threshold is 50%. -M100% requires identical content. Without %, Git reads the digits as a decimal fraction. -M5 means 50% and -M05 means 5%. Also spelled -M.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-renames-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-C",
+          "argument": "[SCORE]",
+          "argument_optional": true,
+          "summary": "Detect copied files as well as renames",
+          "detail": "Uses the rename similarity threshold. The default is 50%. Repeat -C or add --find-copies-harder to consider unchanged sources. Also spelled --find-copies.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-copies-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-copies",
+          "argument": "SCORE",
+          "argument_optional": true,
+          "summary": "Detect copied files as well as renames",
+          "detail": "Uses the rename similarity threshold. The default is 50%. Repeat -C or add --find-copies-harder to consider unchanged sources. Also spelled -C.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-copies-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-copies-harder",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Consider unchanged files as copy sources",
+          "detail": "Use with -C. Searching unmodified files can make the comparison considerably slower."
+        },
+        {
+          "flag": "-D",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Omit the deleted file's patch content",
+          "detail": "Only the deletion header remains. The resulting patch cannot restore the deleted contents in reverse. Also spelled --irreversible-delete."
+        },
+        {
+          "flag": "--irreversible-delete",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Omit the deleted file's patch content",
+          "detail": "Only the deletion header remains. The resulting patch cannot restore the deleted contents in reverse. Also spelled -D."
+        },
+        {
+          "flag": "-l",
+          "argument": "LIMIT",
+          "argument_optional": false,
+          "summary": "Limit exhaustive rename and copy detection",
+          "detail": "Exact matches can still be found. The limit controls the expensive fallback among remaining files. Zero means unlimited. The default comes from diff.renameLimit.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit on remaining rename or copy candidates",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, -l"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.renameLimit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "LIMIT",
+                    "grammar": "A decimal count. Git skips the expensive exhaustive step if the candidate pool is too large. Zero disables that limit."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Limit on remaining rename or copy candidates"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Filtering and ordering",
+      "description": "Change selection, relative paths and output order.",
+      "options": [
+        {
+          "flag": "--diff-filter",
+          "argument": "STATUS",
+          "argument_optional": false,
+          "summary": "Select paths by change status",
+          "detail": "Combine A, C, D, M, R, T, U, X or B. Lowercase letters exclude types. Append * to select the entire comparison if any requested type matches. Quote the asterisk.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Change-status filter",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --diff-filter"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Select all change types available in the comparison."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "STATUS",
+                    "grammar": "Concatenate status letters A, C, D, M, R, T, U, X or B. Lowercase excludes and uppercase includes. Append * for all-or-none selection. Some statuses cannot occur in an ordinary two-tree comparison."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Numbers are interpreted within the option-specific syntax below."
+                },
+                "grammar": {
+                  "name": "Git diff change-status filter",
+                  "reference": {
+                    "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                    "locator": "OPTIONS, --diff-filter"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-S",
+          "argument": "TEXT",
+          "argument_optional": false,
+          "summary": "Find files where a string's occurrence count changed",
+          "detail": "Attach the search text directly. --pickaxe-regex treats it as a regular expression. A moved occurrence within the same file can leave the count unchanged. Ubuntu 26.04 Git 2.53.0 accepted the operand but produced unreliable results in the packaged comparison.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Text whose occurrence count must change",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, -S"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not filter by change in occurrence count."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "A literal string including any quoted whitespace. With --pickaxe-regex the value is an extended regular expression."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-G",
+          "argument": "REGEX",
+          "argument_optional": false,
+          "summary": "Find files with matching added or removed lines",
+          "detail": "Attach the expression directly and quote shell metacharacters. Can match changes that leave the total number of matching strings unchanged. Ubuntu 26.04 Git 2.53.0 accepted the operand but produced unreliable results in the packaged comparison.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pattern for added or removed lines",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, -G"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not filter changes by matching added or removed lines."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "REGEX",
+                    "grammar": "A regular expression applied to added and removed lines. A file can match even when the same number of occurrences survives."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits belong to the regular expression."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-object",
+          "argument": "OBJECT",
+          "argument_optional": false,
+          "summary": "Find changes in the number of references to an object",
+          "detail": "Supply a blob or submodule commit object name. Git compares object occurrences rather than text.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Blob or submodule commit object",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --find-object"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not filter by changes in object occurrence count."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "OBJECT",
+                    "grammar": "An object name that Git can resolve in the repository, including an object ID. Digits are parts of the name."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the object name."
+                },
+                "subject": "Blob or submodule commit object"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--pickaxe-all",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the whole comparison when a pickaxe matches",
+          "detail": "Use with -S or -G to display otherwise nonmatching changes alongside a match."
+        },
+        {
+          "flag": "--pickaxe-regex",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Treat the -S string as an extended regular expression",
+          "detail": "The test still compares occurrence counts. Use -G to match individual added or deleted lines."
+        },
+        {
+          "flag": "-O",
+          "argument": "ORDERFILE",
+          "argument_optional": false,
+          "summary": "Read file display order from a pattern file",
+          "detail": "Attach the path directly. List one shell-style glob per line. Earlier matching patterns come first. -O/dev/null cancels diff.orderFile.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Diff orderfile",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, -O"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.orderFile or ordinary output order."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "ORDERFILE",
+                    "grammar": "A path to a file containing one shell-style ordering pattern per line. An empty file such as /dev/null cancels a configured ordering."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are pathname characters."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--skip-to",
+          "argument": "PATH",
+          "argument_optional": false,
+          "summary": "Start the output at a changed path",
+          "detail": "Omits earlier paths. Supply the target path with =.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "First changed path to retain",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --skip-to"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Begin with the first change in output order."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "A pathname in the diff output. Changes preceding it are omitted."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are pathname characters."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--rotate-to",
+          "argument": "PATH",
+          "argument_optional": false,
+          "summary": "Show a changed path first",
+          "detail": "Moves earlier paths to the end of the displayed sequence.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Changed path to list first",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --rotate-to"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Keep the normal path order."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "A pathname in the diff output. Earlier paths are moved to the end."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are pathname characters."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-R",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reverse the direction of the diff",
+          "detail": "Swaps before and after. Additions become deletions and removals become additions."
+        },
+        {
+          "flag": "--relative",
+          "argument": "PATH",
+          "argument_optional": true,
+          "summary": "Limit output to a directory and shorten pathnames",
+          "detail": "Bare uses the current subdirectory. An attached directory selects the prefix explicitly. Ubuntu 26.04 Git 2.53.0 accepted the operand but produced unreliable results in the packaged comparison.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Directory for relative paths",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --relative"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Honor diff.relative or use repository-wide paths."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use the current subdirectory."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "A directory prefix. Show only matching paths and remove the prefix from displayed names."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are pathname characters."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-relative",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use repository-wide paths and scope",
+          "detail": "Overrides diff.relative or a preceding --relative."
+        }
+      ]
+    },
+    {
+      "name": "Comparison rules",
+      "description": "Text conversion, whitespace and submodule comparison.",
+      "options": [
+        {
+          "flag": "-a",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Treat binary files as text for comparison",
+          "detail": "Enables a line-based patch for content Git would otherwise classify as binary. Also spelled --text."
+        },
+        {
+          "flag": "--text",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Treat binary files as text for comparison",
+          "detail": "Enables a line-based patch for content Git would otherwise classify as binary. Also spelled -a."
+        },
+        {
+          "flag": "--ignore-cr-at-eol",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore carriage returns at line ends",
+          "detail": "Useful when comparing CRLF and LF line endings."
+        },
+        {
+          "flag": "--ignore-space-at-eol",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore changes in trailing whitespace",
+          "detail": "Whitespace elsewhere remains significant."
+        },
+        {
+          "flag": "-b",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore changes in the amount of whitespace",
+          "detail": "Treats nonempty whitespace runs as equivalent and ignores trailing whitespace. Also spelled --ignore-space-change."
+        },
+        {
+          "flag": "--ignore-space-change",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore changes in the amount of whitespace",
+          "detail": "Treats nonempty whitespace runs as equivalent and ignores trailing whitespace. Also spelled -b."
+        },
+        {
+          "flag": "-w",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore whitespace when comparing lines",
+          "detail": "Also ignores insertion or removal of whitespace between non-whitespace characters. Also spelled --ignore-all-space."
+        },
+        {
+          "flag": "--ignore-all-space",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore whitespace when comparing lines",
+          "detail": "Also ignores insertion or removal of whitespace between non-whitespace characters. Also spelled -w."
+        },
+        {
+          "flag": "--ignore-blank-lines",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore changes made up only of blank lines",
+          "detail": "Changes to nonblank lines still appear."
+        },
+        {
+          "flag": "-I",
+          "argument": "REGEX",
+          "argument_optional": false,
+          "summary": "Ignore changes whose lines all match a pattern",
+          "detail": "Repeat to supply more patterns. Attach the short-form expression or use = with the long spelling. Also spelled --ignore-matching-lines.",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "ignore-matching-lines-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ignore-matching-lines",
+          "argument": "REGEX",
+          "argument_optional": false,
+          "summary": "Ignore changes whose lines all match a pattern",
+          "detail": "Repeat to supply more patterns. Attach the short-form expression or use = with the long spelling. Also spelled -I.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "ignore-matching-lines-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inter-hunk-context",
+          "argument": "LINES",
+          "argument_optional": false,
+          "summary": "Join nearby patch hunks",
+          "detail": "Includes the intervening lines when the gap is at most LINES. The default is diff.interHunkContext or zero.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum separating lines to include between hunks",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --inter-hunk-context"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.interHunkContext or zero."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "LINES",
+                    "grammar": "Nonnegative integer in lines. Hunks at most this far apart merge. Zero adds no extra context between hunks."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Maximum separating lines to include between hunks"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-W",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include the surrounding function in patch context",
+          "detail": "Uses Git's hunk-header rules for the file type. Also spelled --function-context."
+        },
+        {
+          "flag": "--function-context",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include the surrounding function in patch context",
+          "detail": "Uses Git's hunk-header rules for the file type. Also spelled -W."
+        },
+        {
+          "flag": "--exit-code",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Signal differences with the exit status",
+          "detail": "Returns 1 for differences and 0 for no differences. Ordinary diff output remains visible."
+        },
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Test for differences without displaying them",
+          "detail": "Implies --exit-code. A changed stash returns 1 with no diff output."
+        },
+        {
+          "flag": "--ext-diff",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow configured external diff helpers",
+          "detail": "A configured driver can run when Git generates the diff."
+        },
+        {
+          "flag": "--no-ext-diff",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable external diff helpers",
+          "detail": "Keeps comparison output within Git's built-in diff machinery."
+        },
+        {
+          "flag": "--textconv",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow configured text conversion for comparison",
+          "detail": "A one-way conversion can make binary content readable. The resulting patch may be unsuitable for applying."
+        },
+        {
+          "flag": "--no-textconv",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable text conversion filters",
+          "detail": "Compares the stored file content directly."
+        },
+        {
+          "flag": "--ignore-submodules",
+          "argument": "WHEN",
+          "argument_optional": true,
+          "summary": "Control which submodule changes are hidden",
+          "detail": "Bare selects all, suppressing recorded gitlink changes. none shows changes. dirty and untracked distinguish local state in working-tree comparisons. Stash show ordinarily compares saved trees.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Submodule change filter",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --ignore-submodules"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured submodule ignore rules."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Ignore all submodule changes."
+                },
+                "forms": [
+                  {
+                    "id": "modes",
+                    "notation": "literal",
+                    "syntax": "none | untracked | dirty | all",
+                    "tokens": [
+                      "none",
+                      "untracked",
+                      "dirty",
+                      "all"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "all suppresses submodule changes. none includes recorded changes. dirty and untracked affect working directory checks, which have limited relevance to saved trees."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Select a named policy."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Paths and depth",
+      "description": "Patch prefixes and tree depth.",
+      "options": [
+        {
+          "flag": "--src-prefix",
+          "argument": "PREFIX",
+          "argument_optional": false,
+          "summary": "Set the before-side pathname prefix",
+          "detail": "Replaces the usual a/ in patch headers. Quote spaces as part of the same value. Ubuntu 26.04 Git 2.53.0 accepted the operand but produced unreliable results in the packaged comparison.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prefix for before-side patch paths",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --src-prefix"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured prefix or a/."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PREFIX",
+                    "grammar": "Literal text placed before each old path. Quote whitespace."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--dst-prefix",
+          "argument": "PREFIX",
+          "argument_optional": false,
+          "summary": "Set the after-side pathname prefix",
+          "detail": "Replaces the usual b/ in patch headers. Quote spaces as part of the same value. Ubuntu 26.04 Git 2.53.0 accepted the operand but produced unreliable results in the packaged comparison.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prefix for after-side patch paths",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --dst-prefix"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured prefix or b/."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PREFIX",
+                    "grammar": "Literal text placed before each new path. Quote whitespace."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-prefix",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Remove both patch pathname prefixes",
+          "detail": "Drops the usual a/ and b/ prefixes in patch headers."
+        },
+        {
+          "flag": "--default-prefix",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Restore the standard patch pathname prefixes",
+          "detail": "Uses a/ and b/, overriding configured or mnemonic prefixes."
+        },
+        {
+          "flag": "--line-prefix",
+          "argument": "PREFIX",
+          "argument_optional": false,
+          "summary": "Prepend text to each line of diff output",
+          "detail": "Attach the prefix with = and quote spaces.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prefix for diff output lines",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --line-prefix"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Leave output lines without an additional prefix."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "argument",
+                    "notation": "expression",
+                    "syntax": "PREFIX",
+                    "grammar": "Literal text prepended to each output line. Quote whitespace."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Digits are part of the literal text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--max-depth",
+          "argument": "DEPTH",
+          "argument_optional": false,
+          "summary": "Limit how far the tree comparison descends",
+          "detail": "Ubuntu 26.04 and upstream accept zero for top-level entries and -1 for unlimited recursion. Ubuntu 24.04 rejects this option. On 26.04 use --only-untracked for the saved untracked tree. Combining -u with a stash containing untracked files uses an index diff and fails.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum directory descent from top-level entries",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Grammar of the versioned Git option"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Independent of processor type"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-diff/2.56.0",
+                      "locator": "OPTIONS, --max-depth"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Recurse without a depth limit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Requires a value in the same option token."
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "DEPTH",
+                    "grammar": "Signed decimal depth. Zero shows top-level entries. -1 is unlimited. Tree comparisons support this on Resolute and upstream. An index comparison cannot apply it."
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "subject": "Maximum directory descent from top-level entries"
+              }
+            ]
+          }
         }
       ]
     }
@@ -77,7 +3310,380 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-stash",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Versioned Git stash and applicable diff options"
+  },
+  "value_definitions": {
+    "unified-operand": {
+      "kind": "count",
+      "meaning": "Patch context lines on each side",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -U --unified"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use diff.context or three lines when a patch is generated."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Generate a patch using the configured or default context."
+      },
+      "forms": [
+        {
+          "id": "number",
+          "notation": "number",
+          "syntax": "LINES",
+          "grammar": "Supply a nonnegative decimal line count. Zero omits context. Ubuntu 24.04 and 26.04 accept a negative integer but can produce malformed patch ranges. Git 2.56.0 rejects a negative value."
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "number"
+      },
+      "subject": "Patch context lines on each side"
+    },
+    "dirstat-operand": {
+      "kind": "delegated",
+      "meaning": "Directory statistics parameters",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -X --dirstat"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Directory statistics are not requested by this option."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Use diff.dirstat or the built-in settings."
+      },
+      "forms": [
+        {
+          "id": "argument",
+          "notation": "expression",
+          "syntax": "PARAMETERS",
+          "grammar": "Comma-separated changes, lines or files, cumulative or noncumulative, and a numerical cutoff in percent. A bare numeric parameter is the minimum share to display. Child shares can also count toward their parents. The built-in settings are changes, noncumulative and a 3% cutoff."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Numbers are interpreted within the option-specific syntax below."
+      },
+      "grammar": {
+        "name": "Git diff directory statistics parameters",
+        "reference": {
+          "source": "https://git-scm.com/docs/git-diff/2.56.0",
+          "locator": "OPTIONS, -X --dirstat"
+        }
+      }
+    },
+    "break-rewrites-operand": {
+      "kind": "delegated",
+      "meaning": "Rewrite and rename-source thresholds",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -B --break-rewrites"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not split complete rewrites through this option."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Use the standard 50% source-eligibility and 60% rewrite thresholds."
+      },
+      "forms": [
+        {
+          "id": "argument",
+          "notation": "expression",
+          "syntax": "N[/M]",
+          "grammar": "N[/M], or /M to keep the first threshold. M is the dissimilarity threshold for a complete rewrite (default 60%). N is the rewrite threshold for rename-source eligibility with -M (default 50%). Use % for explicit percentages. Bare score digits use an implied leading decimal point."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Numbers are interpreted within the option-specific syntax below."
+      },
+      "grammar": {
+        "name": "Git diff rewrite and rename-source thresholds",
+        "reference": {
+          "source": "https://git-scm.com/docs/git-diff/2.56.0",
+          "locator": "OPTIONS, -B --break-rewrites"
+        }
+      }
+    },
+    "find-renames-operand": {
+      "kind": "delegated",
+      "meaning": "Rename similarity threshold",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -M --find-renames"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured rename detection policy."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Detect renames with the default 50% similarity threshold."
+      },
+      "forms": [
+        {
+          "id": "argument",
+          "notation": "expression",
+          "syntax": "SCORE",
+          "grammar": "Use an explicit percent or a sequence of digits interpreted with an implied leading decimal point. 5 corresponds to 50%, 05 to 5% and 100% requests identical content."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Numbers are interpreted within the option-specific syntax below."
+      },
+      "grammar": {
+        "name": "Git diff rename similarity threshold",
+        "reference": {
+          "source": "https://git-scm.com/docs/git-diff/2.56.0",
+          "locator": "OPTIONS, -M --find-renames"
+        }
+      }
+    },
+    "find-copies-operand": {
+      "kind": "delegated",
+      "meaning": "Copy similarity threshold",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -C --find-copies"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured rename and copy detection policy."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Detect copies with the default 50% similarity threshold."
+      },
+      "forms": [
+        {
+          "id": "argument",
+          "notation": "expression",
+          "syntax": "SCORE",
+          "grammar": "Use an explicit percent or digits with an implied leading decimal point, as for rename detection. 5 means 50%, 05 means 5% and 100% requests identical content."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Numbers are interpreted within the option-specific syntax below."
+      },
+      "grammar": {
+        "name": "Git diff copy similarity threshold",
+        "reference": {
+          "source": "https://git-scm.com/docs/git-diff/2.56.0",
+          "locator": "OPTIONS, -C --find-copies"
+        }
+      }
+    },
+    "ignore-matching-lines-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Patterns for ignoring matching changes",
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Grammar of the versioned Git option"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Independent of processor type"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-diff/2.56.0",
+            "locator": "OPTIONS, -I --ignore-matching-lines"
+          }
+        ]
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not ignore changes on the basis of a line pattern."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Requires a value in the same option token."
+      },
+      "forms": [
+        {
+          "id": "argument",
+          "notation": "expression",
+          "syntax": "REGEX",
+          "grammar": "A POSIX extended regular expression. When every changed line in a hunk matches an ignore pattern, Git can omit that change. Repeat to supply multiple patterns."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Digits belong to the regular expression."
+      }
+    }
   }
 }

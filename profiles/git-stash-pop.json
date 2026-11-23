@@ -8,26 +8,42 @@
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Options for this command path.",
       "options": [
         {
           "flag": "--index",
           "argument": "",
           "argument_optional": false,
           "summary": "Try to restore the saved staging state",
-          "detail": "Restore the saved index as well as working-tree changes. Conflicts can prevent the index from being restored."
+          "detail": "Restore the saved index as well as working-tree changes. Conflicts can prevent the index from being restored. On Git 2.53 and current upstream, stash.index=true enables this by default. Git 2.43 requires the switch."
         },
         {
           "flag": "-q",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
         },
         {
           "flag": "--quiet",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress stash feedback"
+          "summary": "Suppress stash feedback",
+          "detail": "Errors are still reported. --no-quiet cancels quiet mode."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the command usage",
+          "detail": "--help prints the same usage after this subcommand. --help-all requests the full option list. Both Ubuntu packages print the same text for all three spellings."
+        },
+        {
+          "flag": "--no-index",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Restore changes without recreating the saved staging state",
+          "detail": "Overrides --index and, on Git 2.53 and current upstream, stash.index=true. A conflict can still leave unmerged index entries."
         }
       ]
     }
@@ -35,7 +51,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-stash",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Version-qualified manual coverage"
   }
 }
