@@ -17,7 +17,7 @@ from ui import ellipsize_cells
 # Original selectable literals, in display order. A colon separates a required placeholder.
 PUSH = ("-p --patch -S --staged -k --keep-index --no-keep-index -u --include-untracked "
         "-a --all -m:MESSAGE --message:MESSAGE -q --quiet --pathspec-from-file:FILE --pathspec-file-nul")
-ORIGINAL = {
+STASH_WORKTREE = {
     "stash": PUSH,
     "stash push": PUSH,
     "stash apply": "--index -q --quiet",
@@ -29,6 +29,13 @@ ORIGINAL = {
     "worktree list": "--porcelain -z -v --verbose",
     "worktree prune": "-n --dry-run -v --verbose --expire:TIME",
     "worktree remove": "-f --force",
+}
+
+ORIGINAL = {
+    **STASH_WORKTREE,
+    "commit": "--message:MESSAGE --file:FILE --edit --all --patch --amend --dry-run --verbose --short",
+    "log": ("--oneline --graph --decorate --stat --patch --max-count=:COUNT "
+            "--author=:PATTERN --grep=:PATTERN --since=:DATE --all"),
 }
 
 
@@ -44,7 +51,7 @@ def options(data):
 
 class GitInventoryTests(unittest.TestCase):
     def test_original_literals_placeholders_order_and_cursor(self):
-        """Pin the original 85 edits independently of additions and new optional operands."""
+        """Pin the original edits independently of additions and new optional operands."""
         for path, declarations in ORIGINAL.items():
             data = profile(path)
             original = dict(declaration.partition(":")[::2] for declaration in declarations.split())
@@ -65,11 +72,11 @@ class GitInventoryTests(unittest.TestCase):
 
     def test_release_usage_and_root_dispatch(self):
         """Compare root keywords with captured synopses, then follow every promoted keyword."""
-        profiles = [profile(path) for path in ORIGINAL]
+        profiles = [profile(path) for path in STASH_WORKTREE]
         for release in ("noble", "resolute"):
             capture = json.loads((ROOT / "tests/fixtures/git-stash-worktree" /
                                   (release + "-usage.json")).read_text(encoding="utf-8"))
-            for path in ORIGINAL:
+            for path in STASH_WORKTREE:
                 item = capture["usage"][path]
                 self.assertEqual(item["argv"], ["git", *path.split(), "-h"])
                 self.assertEqual(item["status"], 129)
@@ -106,41 +113,53 @@ class GitMenuTests(TerminalTestCase):
         return shell
 
     def test_all_rows_summaries_and_complete_details(self):
+        for path in STASH_WORKTREE:
+            self.check_rendered_rows(path)
+
+    def test_commit_rows_and_details(self):
+        self.check_rendered_rows("commit")
+
+    def test_log_rows_and_details(self):
+        self.check_rendered_rows("log")
+
+    def check_rendered_rows(self, path):
         """Read the selected row and every visible Details line, including formatted value guidance."""
-        for path in ORIGINAL:
-            data = profile(path)
-            prefix, suffix = f"git {path} ", ' "quoted suffix"'
-            shell = self.pending(prefix, suffix, 240, 150)
-            self.assertEqual(shell.open_menu().cells[0], "Interactive help | git " + path)
-            for category_index, category in enumerate(data["categories"]):
-                if category_index:
-                    shell.keys("Right")
-                for index, row in enumerate(category["options"]):
-                    if index:
-                        shell.keys("Down")
-                    label = option_label(row)
-                    with self.subTest(path=path, label=label):
-                        # The option declaration acknowledges this specific keystroke.
-                        # Poll the pane directly so the walk costs one redraw per row.
-                        deadline = time.monotonic() + 8
-                        while True:
-                            screen = shell.capture()
-                            if "Option: " + label in screen.cells:
+        data = profile(path)
+        prefix, suffix = f"git {path} ", ' "quoted suffix"'
+        shell = self.pending(prefix, suffix, 240, 150)
+        self.assertEqual(shell.open_menu().cells[0], "Interactive help | git " + path)
+        for category_index, category in enumerate(data["categories"]):
+            if category_index:
+                shell.keys("Right")
+            for index, row in enumerate(category["options"]):
+                if index:
+                    shell.keys("Down")
+                label = option_label(row)
+                with self.subTest(path=path, label=label):
+                    # tmux can capture a redraw after the label but before the final
+                    # Details lines. Poll for the whole pane and diagnose any missing text.
+                    expected = [" ".join(text.split()) for text in option_text(data, category, row).details]
+                    deadline = time.monotonic() + 8
+                    while True:
+                        screen = shell.capture()
+                        if "Option: " + label in screen.cells:
+                            divider = next(i for i, line in enumerate(screen.cells) if line.startswith("Category "))
+                            panel = " ".join(" ".join(screen.cells[divider + 1:-3]).split())
+                            missing = [text for text in expected if text not in panel]
+                            if not missing:
                                 break
-                            self.assertLess(time.monotonic(), deadline, label)
-                            time.sleep(0.03)
-                        divider = next(i for i, line in enumerate(screen.cells) if line.startswith("Category "))
-                        selected = next(line for line in screen.cells[4:divider] if line[26:].startswith("> "))
-                        self.assertIn(ellipsize_cells(label, 40), selected)
-                        self.assertIn(row["summary"], selected)
-                        first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
-                        self.assertEqual((first, last), (1, total))
-                        panel = " ".join(" ".join(screen.cells[divider + 1:-3]).split())
-                        for paragraph in option_text(data, category, row).details:
-                            self.assertIn(" ".join(paragraph.split()), panel)
-            shell.cancel()
-            self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
-            self.assertFalse(shell.executed.exists())
+                        else:
+                            missing = ["Option: " + label]
+                        self.assertLess(time.monotonic(), deadline, (label, missing))
+                        time.sleep(0.03)
+                    selected = next(line for line in screen.cells[4:divider] if line[26:].startswith("> "))
+                    self.assertIn(ellipsize_cells(label, 40), selected)
+                    self.assertIn(row["summary"], selected)
+                    first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
+                    self.assertEqual((first, last), (1, total))
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertFalse(shell.executed.exists())
 
     def test_root_keyword_and_end_of_options_in_readline(self):
         """Select a child command, open its own menu and stop at the pathspec separator."""
@@ -159,36 +178,73 @@ class GitMenuTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (line, len(line)))
         self.assertFalse(shell.executed.exists())
 
+    def test_log_original_bare_optional_insertions(self):
+        """Select the two original optional flags before an existing revision and path."""
+        for flag in ("--decorate", "--stat"):
+            prefix, suffix = "git log ", ' HEAD -- "quoted suffix"'
+            shell = self.pending(prefix + flag, suffix, 60, 16)
+            screen = shell.open_menu()
+            self.assertIn("> " + flag, screen.cells[4])
+            shell.cancel("Enter")
+            self.assertEqual(shell.read_buffer(), (prefix + flag + suffix, len(prefix + flag) + 1))
+            self.assertFalse(shell.executed.exists())
+
+    def test_log_count_optional_arguments_and_path_boundary(self):
+        """Open log after complete options and reject edits inside its path operands."""
+        prefix = "git log -2 --decorate=full --stat=30 HEAD "
+        suffix = ' -- "quoted suffix"'
+        shell = self.pending(prefix, suffix, 60, 16)
+        self.assertEqual(shell.open_menu().cells[0], "Interactive help | git log")
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        shell.keys("C-e", "Space", "Escape", "h")
+        shell.wait_for(lambda state: state.alternate == 0 and "end_of_options" in " ".join(state.cells))
+        line = prefix + suffix + " "
+        self.assertEqual(shell.read_buffer(), (line, len(line)))
+        self.assertFalse(shell.executed.exists())
+
+    def test_commit_pathspec_input_file(self):
+        self.check_search_and_insert("commit", "pathspec input file", "--pathspec-from-file=",
+                                     "Omit command-line pathspecs.", ' "names list"')
+
+    def test_log_line_history(self):
+        self.check_search_and_insert("log", "line history", "-L",
+                                     "Pathspec arguments are incompatible.", ' "1,3:file name"')
+
     def test_new_manual_terms_scroll_cancel_and_literal_operands(self):
-        """Reach a release or side-effect qualification before inserting each value option."""
         cases = (
             ("worktree list", "list annotation", "--expire", "No registrations are deleted.", ' "2 weeks ago"'),
             ("stash show", "tree comparison descends", "--max-depth=", "Ubuntu 24.04 rejects this option.", ' "stash@{0}"'),
         )
         for path, query, literal, qualification, suffix in cases:
-            prefix = f"git {path} "
-            shell = self.pending(prefix, suffix, 60, 16)
-            for action in ("Escape", "Enter"):
-                with self.subTest(path=path, action=action):
-                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
-                    shell.keys("/")
-                    shell.text(query)
-                    shell.keys("Enter")
-                    screen = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
-                    self.assertIn("> " + literal.rstrip("="), screen.cells[4])
-                    while True:
-                        first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
-                        panel = " ".join(" ".join(screen.cells[8:-3]).split())
-                        if first > 1 and qualification in panel:
-                            break
-                        self.assertLess(last, total, qualification)
-                        previous = screen.cells[-3]
-                        shell.keys("]")
-                        screen = shell.wait_for(lambda state: state.cells[-3] != previous)
-                    shell.cancel(action)
-                    if action == "Escape":
-                        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
-                    else:
-                        point = len(prefix + literal) + int(not literal.endswith("="))
-                        self.assertEqual(shell.read_buffer(), (prefix + literal + suffix, point))
-            self.assertFalse(shell.executed.exists())
+            self.check_search_and_insert(path, query, literal, qualification, suffix)
+
+    def check_search_and_insert(self, path, query, literal, qualification, suffix):
+        """Scroll to a qualification before cancelling and selecting the same option."""
+        prefix = f"git {path} "
+        shell = self.pending(prefix, suffix, 60, 16)
+        for action in ("Escape", "Enter"):
+            with self.subTest(path=path, action=action):
+                self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                shell.keys("/")
+                shell.text(query)
+                shell.keys("Enter")
+                screen = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
+                # The minimum-size option list fits 17 cells of the declaration.
+                self.assertIn("> " + ellipsize_cells(literal.rstrip("="), 17), screen.cells[4])
+                while True:
+                    first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
+                    panel = " ".join(" ".join(screen.cells[8:-3]).split())
+                    if first > 1 and qualification in panel:
+                        break
+                    self.assertLess(last, total, qualification)
+                    previous = screen.cells[-3]
+                    shell.keys("]")
+                    screen = shell.wait_for(lambda state: state.cells[-3] != previous)
+                shell.cancel(action)
+                if action == "Escape":
+                    self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                else:
+                    point = len(prefix + literal) + int(not literal.endswith("="))
+                    self.assertEqual(shell.read_buffer(), (prefix + literal + suffix, point))
+        self.assertFalse(shell.executed.exists())

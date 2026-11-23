@@ -116,7 +116,15 @@ class StashShowPackagedTests(unittest.TestCase):
             self.assertEqual(show("-U", "0").stdout, show("-U").stdout)
             self.assertIn(b"...\n", show("--stat=30,10,1").stdout)
             self.assertEqual(show("--stat", "30", check=False).returncode, 128)
-            self.assertEqual(show("--output", "nonexistent", check=False).returncode, 1)
+            # The separate word selects a stash. Compare with the same lookup
+            # directly because Git releases assign different failure statuses.
+            direct = show("nonexistent", check=False)
+            separate = show("--output", "nonexistent", check=False)
+            self.assertNotEqual(direct.returncode, 0)
+            self.assertIn(b"nonexistent is not a valid reference", direct.stderr)
+            self.assertEqual((separate.returncode, separate.stdout, separate.stderr),
+                             (direct.returncode, b"", direct.stderr))
+            self.assertFalse((repo / "nonexistent").exists())
             self.assertNotEqual(show("--", "top", check=False).returncode, 0)
             show("--output=diff.txt", "-p")
             self.assertIn(b"diff --git", (repo / "diff.txt").read_bytes())

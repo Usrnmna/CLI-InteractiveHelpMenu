@@ -1,6 +1,6 @@
 # Git commit and log option audit
 
-The [commit menu](../profiles/git-commit.json) contains nine entries and the [log menu](../profiles/git-log.json) contains ten. The audit covers the bundled profiles, including their structured value guides, search text, argument spelling and rendered Details.
+The [commit menu](../profiles/git-commit.json) originally contained nine entries and the [log menu](../profiles/git-log.json) contained ten. The [manual-coverage revisit](git-commit-log-manual-coverage.md) records the expanded menus. The audit covers the bundled profiles, including their structured value guides, search text, argument spelling and rendered Details.
 
 ## Reference manuals
 
@@ -59,7 +59,7 @@ The offline sandbox used Git 2.43.0 on Ubuntu 24.04 and Git 2.53.0 on Ubuntu 26.
 | Staged, unstaged, deleted and untracked paths | Both `commit --short` and `commit --dry-run --all` preserved HEAD. Short status distinguished staged, unstaged and untracked paths. A subsequent `commit --all` included the three tracked changes and left the untracked file outside the index. |
 | Commit messages and editor | Two `--message` arguments produced two paragraphs. Amending with `--file -` used standard input and retained the parent and author. With `-vv --edit`, the editor saw both diffs and the saved message contained only the supplied text. |
 | Nonmonotonic committer dates | From a 2011 tip through a 2000 parent to a 2010 ancestor, a 2005 cutoff with `--since` returned only the tip. `--since-as-filter` also found the 2010 ancestor. All three author dates were in 1999. A cutoff equal to the tip timestamp included the tip. |
-| Counts, filtering and refs | Zero returned no commits and `-2` returned the unrestricted selection. A limit of one followed by reversal returned the newest commit. Author and repeated message filters matched the expected commits, including the narrower `--all-match` result. `--all` included a separate branch's history and bare `--decorate` printed its name through a pipe. |
+| Counts, filtering and refs | Zero returned no commits and `--max-count=-2` returned the unrestricted selection. The separate shorthand `-2` requests two commits. A limit of one followed by reversal returned the newest commit. Author and repeated message filters matched the expected commits, including the narrower `--all-match` result. `--all` included a separate branch's history and bare `--decorate` printed its name through a pipe. |
 | Two-parent merge with different files on each branch | `log -1 --patch` displayed the merge header without a diff. Adding `--diff-merges=first-parent` displayed the change introduced from the other branch. |
 
 ## Rendered menus and sandbox checks

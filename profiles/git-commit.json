@@ -6,7 +6,7 @@
       "options": [
         {
           "argument": "MESSAGE",
-          "detail": "Quote a multiword message as one argument. Repeat -m for separate paragraphs. Choose either a message or a file with -F.",
+          "detail": "Quote multiword text. Repeating -m starts a separate paragraph. Choose one message source among -m, -F, -C and -c. Also spelled -m.",
           "flag": "--message",
           "summary": "Supply the commit message",
           "value_semantics": {
@@ -134,12 +134,526 @@
               }
             ]
           },
-          "detail": "Use - as the file name to read the message from standard input. Add --edit to revise the message before committing."
+          "detail": "Use - to read standard input. Add --edit to revise the message. Choose one source among -F, -m, -C and -c. Also spelled -F."
         },
         {
           "flag": "--edit",
           "summary": "Edit the proposed commit message",
-          "detail": "Opens the editor even when a message was supplied with -m, read with -F or reused with -C."
+          "detail": "Opens the editor even when a message was supplied with -m, read with -F or reused with -C. Also spelled -e."
+        },
+        {
+          "flag": "-m",
+          "summary": "Supply the commit message",
+          "detail": "Quote multiword text. Repeating -m starts a separate paragraph. Choose one message source among -m, -F, -C and -c. Also spelled --message.",
+          "bundle": true,
+          "argument": "MESSAGE",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit message text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Literal message string; repeated message options form separate paragraphs."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the other selected message source or Git's normal message-editor workflow."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-commit.txt",
+                      "locator": "--message"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-F",
+          "summary": "Read the commit message from a file",
+          "detail": "Use - to read standard input. Add --edit to revise the message. Choose one source among -F, -m, -C and -c. Also spelled --file.",
+          "bundle": true,
+          "argument": "FILE",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Commit message source file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a message file; a literal - reads the message from standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use another selected message source or Git's normal message-editor workflow."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.48.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.48.0/Documentation/git-commit.txt",
+                      "locator": "--file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-e",
+          "summary": "Edit the proposed commit message",
+          "detail": "Opens the editor even when a message was supplied with -m, read with -F or reused with -C. Also spelled --edit.",
+          "bundle": true
+        },
+        {
+          "flag": "--no-edit",
+          "summary": "Use the prepared message without editing",
+          "detail": "For example, --amend --no-edit keeps the current tip message while replacing its commit."
+        },
+        {
+          "flag": "-C",
+          "summary": "Reuse a commit’s message and authorship",
+          "detail": "Copy the message, author identity and author timestamp. Add --edit to open the editor or --reset-author to assign new authorship. Choose one source among -C, -c, -m and -F. Also spelled --reuse-message.",
+          "bundle": true,
+          "argument": "COMMIT",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "message-source"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--reuse-message=",
+          "summary": "Reuse a commit’s message and authorship",
+          "detail": "Copy the message, author identity and author timestamp. Add --edit to open the editor or --reset-author to assign new authorship. Choose one source among -C, -c, -m and -F. Also spelled -C.",
+          "argument": "COMMIT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "message-source"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-c",
+          "summary": "Edit a reused commit message",
+          "detail": "Copy the message, author identity and author date from COMMIT, then open the editor. Choose one source among -c, -C, -m and -F. Also spelled --reedit-message.",
+          "bundle": true,
+          "argument": "COMMIT",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "message-source"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--reedit-message=",
+          "summary": "Edit a reused commit message",
+          "detail": "Copy the message, author identity and author date from COMMIT, then open the editor. Choose one source among -c, -C, -m and -F. Also spelled -c.",
+          "argument": "COMMIT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "message-source"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--fixup=",
+          "summary": "Create an autosquash correction for an earlier commit",
+          "detail": "COMMIT makes a fixup! commit with staged changes. Extra -m text is discarded during autosquash. amend:COMMIT also opens the copied target message for replacement. reword:COMMIT changes only the message and leaves staged content untouched. Apply with git rebase --autosquash. The target keeps its author. -F, -C, -c and --squash conflict with --fixup. Only the plain form accepts -m.",
+          "argument": "TARGET",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Autosquash target and operation",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "COMMIT, amend:COMMIT or reword:COMMIT identifies a target for git rebase --autosquash."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Prepare an ordinary commit without a fixup prefix."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --fixup"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--squash=",
+          "summary": "Create an autosquash commit with a squash! title",
+          "detail": "Supply the target COMMIT. Rebase with --autosquash to combine changes and edit the combined message. Additional text may come from -m, -F, -C or -c. --fixup is incompatible.",
+          "argument": "COMMIT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Autosquash target commit",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A revision naming the commit whose subject supplies the squash! title."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Prepare an ordinary commit without a squash prefix."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --squash"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-t",
+          "summary": "Start the editor with a message template",
+          "detail": "Overrides commit.template. Leaving the template unedited normally aborts the commit. Supplying a message with -m or -F bypasses the template. Also spelled --template.",
+          "bundle": true,
+          "argument": "FILE",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "template"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--template=",
+          "summary": "Start the editor with a message template",
+          "detail": "Overrides commit.template. Leaving the template unedited normally aborts the commit. Supplying a message with -m or -F bypasses the template. Also spelled -t.",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "template"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--trailer=",
+          "summary": "Add a trailer to the commit message",
+          "detail": "Quote a token and value as one argument, for example --trailer=\"Reviewed-by: A Reviewer <a@example.org>\". Repeat for multiple trailers. trailer.* configuration controls placement and duplicate handling.",
+          "argument": "TRAILER",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Message trailer",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A trailer token, optionally followed by =VALUE or :VALUE, as one shell argument. Repetition adds trailers subject to trailer configuration."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request an additional trailer through this option."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --trailer"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cleanup=",
+          "summary": "Choose how Git cleans the commit message",
+          "detail": "strip removes commentary and normalizes whitespace. whitespace keeps commentary. verbatim preserves the message. scissors trims at the cut line when editing. default uses strip with an editor and whitespace otherwise. commit.cleanup changes the default.",
+          "argument": "MODE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Message cleanup mode",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Use strip, whitespace, verbatim, scissors or default."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use commit.cleanup or the editing-dependent default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --cleanup"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--allow-empty-message",
+          "summary": "Permit an empty commit message",
+          "detail": "An unchanged tree still requires --allow-empty when Git would ordinarily refuse an empty commit."
         }
       ]
     },
@@ -150,17 +664,246 @@
         {
           "flag": "--all",
           "summary": "Commit tracked modifications and deletions",
-          "detail": "Also includes changes already staged. New untracked files must be added first."
+          "detail": "Also includes changes already staged. New untracked files must be added first. Omit pathspecs, --include, --only and interactive selection. Also spelled -a."
         },
         {
           "flag": "--patch",
           "summary": "Choose additional hunks to commit",
-          "detail": "Starts with the changes already staged. Selected hunks from the working tree are added to this commit."
+          "detail": "Starts with the changes already staged. Selected hunks from the working tree are added to this commit. Optional paths narrow interactive selection. Also spelled -p."
         },
         {
-          "detail": "Uses the previous message as a starting point. Use --no-edit to keep it. The replacement retains the parents and, by default, the author. Amending a published tip rewrites its history.",
+          "detail": "Prepare content as usual. Use --no-edit to keep the prior message. The replacement retains the parents and, by default, the author. Amending a published tip rewrites its history.",
           "flag": "--amend",
           "summary": "Replace the tip commit"
+        },
+        {
+          "flag": "-a",
+          "summary": "Commit tracked modifications and deletions",
+          "detail": "Also includes changes already staged. New untracked files must be added first. Omit pathspecs, --include, --only and interactive selection. Also spelled --all.",
+          "bundle": true
+        },
+        {
+          "flag": "-p",
+          "summary": "Choose additional hunks to commit",
+          "detail": "Starts with the changes already staged. Selected hunks from the working tree are added to this commit. Optional paths narrow interactive selection. Also spelled --patch.",
+          "bundle": true
+        },
+        {
+          "flag": "--interactive",
+          "summary": "Stage changes interactively for this commit",
+          "detail": "Inspect and select additional changes before committing the resulting index. Optional pathspecs narrow the selection. Existing staged changes are included."
+        },
+        {
+          "flag": "-o",
+          "summary": "Commit working-tree changes for the named paths",
+          "detail": "Explicit pathspecs use this mode by default. Git reads the named tracked paths from the working tree and leaves unrelated staged changes in the index. With --amend or --allow-empty, omit paths to keep all existing staging out of the new commit. Also spelled --only.",
+          "bundle": true
+        },
+        {
+          "flag": "--only",
+          "summary": "Commit working-tree changes for the named paths",
+          "detail": "Explicit pathspecs use this mode by default. Git reads the named tracked paths from the working tree and leaves unrelated staged changes in the index. With --amend or --allow-empty, omit paths to keep all existing staging out of the new commit. Also spelled -o."
+        },
+        {
+          "flag": "-i",
+          "summary": "Add named tracked paths to the staged snapshot",
+          "detail": "Supply pathspecs. Git stages their working-tree contents along with whatever is already staged. On Ubuntu 24.04, an unmatched path is ignored and unrelated staged changes can still be committed. Ubuntu 26.04 and upstream reject an unmatched path. Plain git commit PATH uses --only semantics. Also spelled --include.",
+          "bundle": true
+        },
+        {
+          "flag": "--include",
+          "summary": "Add named tracked paths to the staged snapshot",
+          "detail": "Supply pathspecs. Git stages their working-tree contents along with whatever is already staged. On Ubuntu 24.04, an unmatched path is ignored and unrelated staged changes can still be committed. Ubuntu 26.04 and upstream reject an unmatched path. Plain git commit PATH uses --only semantics. Also spelled -i."
+        },
+        {
+          "flag": "--pathspec-from-file=",
+          "summary": "Read a pathspec input file",
+          "detail": "Use - for standard input. Separate pathspecs with LF or CRLF. Quote unusual names using Git’s path quoting rules. Use --pathspec-file-nul for NUL-delimited input. Incompatible with --all, --interactive and --patch. Omit command-line pathspecs.",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pathspec list file",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A path to the file of pathspecs. A single dash reads standard input."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read pathspecs from command-line operands."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --pathspec-from-file"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--pathspec-file-nul",
+          "summary": "Read NUL-delimited pathspecs",
+          "detail": "Requires --pathspec-from-file. Names can contain literal quotes or newlines. Pathspec matching still applies. For literal matching, place Git’s global --literal-pathspecs before commit."
+        },
+        {
+          "flag": "-U",
+          "summary": "Set the context around each interactive hunk",
+          "detail": "With --patch or --interactive, specify the number of lines around changes. The default is diff.context or 3. An explicit count is required, including with -U. Ubuntu 24.04 rejects this option. Also spelled --unified.",
+          "bundle": true,
+          "argument": "LINES",
+          "argument_style": "attached",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "unified-context"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--unified=",
+          "summary": "Set the context around each interactive hunk",
+          "detail": "With --patch or --interactive, specify the number of lines around changes. The default is diff.context or 3. An explicit count is required, including with -U. Ubuntu 24.04 rejects this option. Also spelled -U.",
+          "argument": "LINES",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "unified-context"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inter-hunk-context=",
+          "summary": "Join interactive hunks separated by a short gap",
+          "detail": "With --patch or --interactive, specify the maximum gap in lines. The default is diff.interHunkContext or 0. Ubuntu 24.04 rejects this option.",
+          "argument": "LINES",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "subject": "Lines of diff context",
+                "meaning": "Maximum gap between hunks joined for selection",
+                "bare": {
+                  "state": "accepted",
+                  "form": "lines"
+                },
+                "forms": [
+                  {
+                    "id": "lines",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "An integer count of lines. Git's integer parser also accepts binary k, m and g multipliers. -1 selects the configured default. Smaller values fail.",
+                    "special_values": [
+                      {
+                        "value": "-1",
+                        "meaning": "Use the configured context instead of overriding it."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use diff.interHunkContext, normally 0 lines."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The commit parser requires one integer."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The Git option parser defines this value."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option uses no hardware-specific units."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.53.0/builtin/commit.c",
+                      "locator": "cmd_commit and prepare_index, interactive context validation"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/git/git/v2.53.0/parse-options.c",
+                      "locator": "do_get_value, OPTION_INTEGER"
+                    },
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, diff context defaults"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--allow-empty",
+          "summary": "Allow a commit with an unchanged tree",
+          "detail": "Normally Git refuses a commit with the same tree as its sole parent. With --only and no pathspecs, existing staged changes are excluded."
         }
       ]
     },
@@ -171,17 +914,517 @@
         {
           "flag": "--dry-run",
           "summary": "Preview the commit without creating it",
-          "detail": "Shows the paths that would be committed, changes left unstaged and untracked files. Use the same options and paths as the intended commit."
+          "detail": "Shows proposed changes, changes left unstaged and untracked paths. Use the same selection options and paths as for the intended commit."
         },
         {
           "flag": "--verbose",
           "summary": "Show the proposed diff in the editor",
-          "detail": "The diff stays out of the saved commit message. Specify -v twice to also show unstaged changes to tracked files."
+          "detail": "The diff stays out of the saved message. Specify -v twice to also show unstaged changes to tracked files. commit.verbose can enable verbosity by default. Also spelled -v."
         },
         {
           "flag": "--short",
           "summary": "Preview the commit in short status format",
           "detail": "Implies --dry-run, so no commit is created. For ordinary tracked paths, the two status columns describe the index and working tree."
+        },
+        {
+          "flag": "-v",
+          "summary": "Show the proposed diff in the editor",
+          "detail": "The diff stays out of the saved message. Specify -v twice to also show unstaged changes to tracked files. commit.verbose can enable verbosity by default. Also spelled --verbose.",
+          "bundle": true
+        },
+        {
+          "flag": "--porcelain",
+          "summary": "Preview the commit in machine-readable format",
+          "detail": "Implies --dry-run and uses stable porcelain v1 status records. git commit rejects --porcelain=v2. Add -z for NUL-delimited paths."
+        },
+        {
+          "flag": "--long",
+          "summary": "Preview the commit in detailed status format",
+          "detail": "Implies --dry-run. Uses the usual long status format. Combining --long with -z fails."
+        },
+        {
+          "flag": "-z",
+          "summary": "Terminate status paths with NUL bytes",
+          "detail": "Use with short or porcelain status for verbatim path names. Alone it selects porcelain and implies dry-run. --long is incompatible. Also spelled --null.",
+          "bundle": true
+        },
+        {
+          "flag": "--null",
+          "summary": "Terminate status paths with NUL bytes",
+          "detail": "Use with short or porcelain status for verbatim path names. Alone it selects porcelain and implies dry-run. --long is incompatible. Also spelled -z."
+        },
+        {
+          "flag": "--branch",
+          "summary": "Show branch and tracking information in status",
+          "detail": "Use with --short or --porcelain for a branch header. Alone, --branch can still create a commit."
+        },
+        {
+          "flag": "--ahead-behind",
+          "summary": "Count commits ahead of or behind the upstream branch",
+          "detail": "Affects tracking information when an upstream exists, for example with --short --branch. Alone it permits a normal commit."
+        },
+        {
+          "flag": "--no-ahead-behind",
+          "summary": "Skip detailed ahead/behind counts",
+          "detail": "Avoid counting the full difference for a tracking branch. Use with --short --branch to view the abbreviated tracking state."
+        },
+        {
+          "flag": "-u",
+          "summary": "Choose which untracked names appear in status",
+          "detail": "Bare -u requests all. Use -uno or --untracked-files=no to hide entries, normal to group directories or all to expand them. Attach the mode. Without this option, status.showUntrackedFiles defaults to normal. Noble rejects Boolean aliases such as true and false. Resolute and upstream map them to normal and no. Also spelled --untracked-files.",
+          "argument": "MODE",
+          "argument_optional": true,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "untracked"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--untracked-files=",
+          "summary": "Choose which untracked names appear in status",
+          "detail": "Bare -u requests all. Use -uno or --untracked-files=no to hide entries, normal to group directories or all to expand them. Attach the mode. Without this option, status.showUntrackedFiles defaults to normal. Noble rejects Boolean aliases such as true and false. Resolute and upstream map them to normal and no. Also spelled -u.",
+          "argument": "MODE",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "untracked"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-q",
+          "summary": "Suppress the commit success summary",
+          "detail": "Applies after a successful commit. Git still reports failures. Also spelled --quiet.",
+          "bundle": true
+        },
+        {
+          "flag": "--quiet",
+          "summary": "Suppress the commit success summary",
+          "detail": "Applies after a successful commit. Git still reports failures. Also spelled -q."
+        },
+        {
+          "flag": "--status",
+          "summary": "Include status in the message editor template",
+          "detail": "Enabled by default. Overrides commit.status. This controls the editor template and does not imply --dry-run."
+        },
+        {
+          "flag": "--no-status",
+          "summary": "Omit status from the message editor template",
+          "detail": "Overrides commit.status and an earlier --status. The commit may proceed normally."
+        },
+        {
+          "flag": "-h",
+          "summary": "Print the built-in commit usage",
+          "detail": "Prints option syntax. Use --help-all to include hidden options. The Ubuntu packages return 129 for built-in help. Git 2.56.1 returns 0.",
+          "bundle": true
+        },
+        {
+          "flag": "--help-all",
+          "summary": "Print built-in usage including hidden options",
+          "detail": "Includes hidden options such as --allow-empty-message. The Ubuntu packages return 129 for built-in help. Git 2.56.1 returns 0."
+        },
+        {
+          "flag": "--help",
+          "summary": "Open the git-commit manual",
+          "detail": "Git handles git commit --help before commit option parsing. Use -h for the built-in usage text."
+        }
+      ]
+    },
+    {
+      "name": "Authorship",
+      "description": "Set author information, certification and signing.",
+      "options": [
+        {
+          "flag": "--author=",
+          "summary": "Override the commit author identity",
+          "detail": "Quote \"Name <email>\" as one argument. Otherwise Git searches prior author headers case-insensitively and copies the first match. The committer identity is separate. --reset-author is incompatible.",
+          "argument": "AUTHOR",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Author identity or search pattern",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "An explicit Name <email> or a pattern matched against existing author identities."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal author identity or the author carried over during message reuse or amendment."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --author"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--reset-author",
+          "summary": "Assign authorship to the current committer",
+          "detail": "Use with -C, -c, --amend or when completing a conflicting cherry-pick. Renews the author timestamp. Incompatible with --author."
+        },
+        {
+          "flag": "--date=",
+          "summary": "Override the author date",
+          "detail": "Quote a date containing spaces. An explicit timezone avoids local-time ambiguity. The separate committer timestamp is unaffected.",
+          "argument": "DATE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Author timestamp",
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Supply an absolute date with a timezone, or a relative date such as \"yesterday\". Git internal dates use Unix seconds followed by a signed HHMM timezone offset. RFC 2822 and ISO 8601 forms are accepted."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand has its own text grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal author date, including any date carried forward during reuse or amendment."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "One explicit operand is required."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git-scm.com/docs/git-commit/2.55.0",
+                      "locator": "OPTIONS, --date and DATE FORMATS"
+                    }
+                  ]
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Git"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.43.0",
+                      "2.53.0",
+                      "2.56.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The commit parser defines the operand."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No hardware unit is involved."
+                  }
+                },
+                "time_basis": "Absolute times identify an instant. Relative expressions use the current time. An unzoned calendar time uses local time."
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-s",
+          "summary": "Append the committer’s Signed-off-by trailer",
+          "detail": "This records a textual certification with the project’s stated meaning. Use -S or --gpg-sign for a cryptographic signature. Also spelled --signoff.",
+          "bundle": true
+        },
+        {
+          "flag": "--signoff",
+          "summary": "Append the committer’s Signed-off-by trailer",
+          "detail": "This records a textual certification with the project’s stated meaning. Use -S or --gpg-sign for a cryptographic signature. Also spelled -s."
+        },
+        {
+          "flag": "--no-signoff",
+          "summary": "Cancel an earlier signoff request",
+          "detail": "Disables automatic addition by -s or --signoff. Existing trailer text can remain in the supplied message."
+        },
+        {
+          "flag": "-S",
+          "summary": "Cryptographically sign the commit",
+          "detail": "Bare -S uses the configured key or committer identity. Attach a key as -SKEY or --gpg-sign=KEY. The backend follows gpg.format. Also spelled --gpg-sign.",
+          "argument": "KEY",
+          "argument_optional": true,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "signing"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--gpg-sign=",
+          "summary": "Cryptographically sign the commit",
+          "detail": "Bare -S uses the configured key or committer identity. Attach a key as -SKEY or --gpg-sign=KEY. The backend follows gpg.format. Also spelled -S.",
+          "argument": "KEY",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "signing"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-gpg-sign",
+          "summary": "Disable signing for this commit",
+          "detail": "Overrides commit.gpgSign and an earlier -S or --gpg-sign."
+        }
+      ]
+    },
+    {
+      "name": "Hooks",
+      "description": "Control commit and rewrite hooks.",
+      "options": [
+        {
+          "flag": "-n",
+          "summary": "Skip the pre-commit and commit-msg hooks",
+          "detail": "Other hooks, including prepare-commit-msg, remain eligible to run. --verify restores normal verification. Also spelled --no-verify.",
+          "bundle": true
+        },
+        {
+          "flag": "--no-verify",
+          "summary": "Skip the pre-commit and commit-msg hooks",
+          "detail": "Other hooks, including prepare-commit-msg, remain eligible to run. --verify restores normal verification. Also spelled -n."
+        },
+        {
+          "flag": "--verify",
+          "summary": "Restore normal commit-hook verification",
+          "detail": "Reverses an earlier -n or --no-verify, allowing pre-commit and commit-msg to reject the commit."
+        },
+        {
+          "flag": "--no-post-rewrite",
+          "summary": "Skip the post-rewrite hook when amending",
+          "detail": "Controls the hook notified about rewritten commits. The pre-commit and commit-msg hooks have a separate bypass."
+        },
+        {
+          "flag": "--post-rewrite",
+          "summary": "Restore the post-rewrite hook after a bypass",
+          "detail": "Cancels an earlier --no-post-rewrite for this amendment."
+        }
+      ]
+    },
+    {
+      "name": "Overrides",
+      "description": "Clear an earlier choice on this invocation.",
+      "options": [
+        {
+          "flag": "--no-message",
+          "summary": "Clear earlier message paragraphs",
+          "detail": "Discards all preceding -m text. A later -m starts a new message."
+        },
+        {
+          "flag": "--no-file",
+          "summary": "Cancel the message file selection",
+          "detail": "Clears an earlier -F or --file. Supply another message source or use the editor."
+        },
+        {
+          "flag": "--no-author",
+          "summary": "Cancel the author identity override",
+          "detail": "Clears an earlier --author. Normal authorship rules apply."
+        },
+        {
+          "flag": "--no-date",
+          "summary": "Cancel the author date override",
+          "detail": "Clears an earlier --date. Normal author-date rules apply."
+        },
+        {
+          "flag": "--no-reuse-message",
+          "summary": "Cancel reuse of a commit message",
+          "detail": "Clears an earlier -C or --reuse-message."
+        },
+        {
+          "flag": "--no-reedit-message",
+          "summary": "Cancel editing of a reused message",
+          "detail": "Clears an earlier -c or --reedit-message."
+        },
+        {
+          "flag": "--no-fixup",
+          "summary": "Cancel the autosquash correction request",
+          "detail": "Clears an earlier --fixup before Git chooses a message source or content mode."
+        },
+        {
+          "flag": "--no-squash",
+          "summary": "Cancel the squash title request",
+          "detail": "Clears an earlier --squash."
+        },
+        {
+          "flag": "--no-reset-author",
+          "summary": "Cancel the authorship reset",
+          "detail": "Clears an earlier --reset-author. An amended or reused commit can retain its author."
+        },
+        {
+          "flag": "--no-template",
+          "summary": "Clear the selected message template",
+          "detail": "Clears the template path, including a configured commit.template."
+        },
+        {
+          "flag": "--no-cleanup",
+          "summary": "Cancel the cleanup mode override",
+          "detail": "Clears an earlier --cleanup. The configured or editing-dependent default applies."
+        },
+        {
+          "flag": "--no-all",
+          "summary": "Cancel automatic staging of tracked files",
+          "detail": "Clears an earlier -a or --all. Previously staged changes remain eligible."
+        },
+        {
+          "flag": "--no-include",
+          "summary": "Cancel explicit inclusion of paths",
+          "detail": "Clears -i or --include. With pathspecs and no other selection mode, Git applies the ordinary path-only rule."
+        },
+        {
+          "flag": "--no-interactive",
+          "summary": "Cancel interactive staging",
+          "detail": "Clears an earlier --interactive. A separate --patch request still selects interactive patch mode."
+        },
+        {
+          "flag": "--no-patch",
+          "summary": "Cancel interactive hunk selection",
+          "detail": "Clears an earlier -p or --patch. A separate --interactive request still opens interactive staging."
+        },
+        {
+          "flag": "--no-only",
+          "summary": "Cancel explicit path-only selection",
+          "detail": "Clears -o or --only. Naming paths still selects path-only semantics by default."
+        },
+        {
+          "flag": "--no-dry-run",
+          "summary": "Cancel an explicit preview request",
+          "detail": "Clears --dry-run. A selected status format can still imply a preview."
+        },
+        {
+          "flag": "--no-short",
+          "summary": "Clear the selected status format",
+          "detail": "Clears an earlier status format and its implied dry-run. An explicit --dry-run still previews. Without a preview request Git can create a commit."
+        },
+        {
+          "flag": "--no-porcelain",
+          "summary": "Clear the selected status format",
+          "detail": "Clears an earlier status format and its implied dry-run. An explicit --dry-run still previews. Without a preview request Git can create a commit."
+        },
+        {
+          "flag": "--no-long",
+          "summary": "Clear the selected status format",
+          "detail": "Clears an earlier status format and its implied dry-run. An explicit --dry-run still previews. Without a preview request Git can create a commit."
+        },
+        {
+          "flag": "--no-branch",
+          "summary": "Omit the optional short-status branch header",
+          "detail": "Overrides the short-status branch-header setting. Long status retains its ordinary branch information."
+        },
+        {
+          "flag": "--no-null",
+          "summary": "Cancel NUL-terminated status output",
+          "detail": "Cancels an earlier -z or --null. If that was the only preview request, Git can create a commit."
+        },
+        {
+          "flag": "--no-amend",
+          "summary": "Cancel tip replacement",
+          "detail": "Clears an earlier --amend. An ordinary commit creates a new child of the tip."
+        },
+        {
+          "flag": "--no-untracked-files",
+          "summary": "Clear the untracked display override",
+          "detail": "Falls back to status.showUntrackedFiles or normal. To hide untracked paths explicitly, use -uno."
+        },
+        {
+          "flag": "--no-pathspec-from-file",
+          "summary": "Cancel the pathspec input source",
+          "detail": "Clears an earlier --pathspec-from-file. Clear --pathspec-file-nul too if it was requested."
+        },
+        {
+          "flag": "--no-pathspec-file-nul",
+          "summary": "Restore line-delimited pathspec input",
+          "detail": "Clears --pathspec-file-nul. The selected pathspec file then uses LF or CRLF delimiters."
+        },
+        {
+          "flag": "--no-verbose",
+          "summary": "Omit the verbose editor diff",
+          "detail": "Resets verbosity, including an earlier -vv or configured commit.verbose."
+        },
+        {
+          "flag": "--no-quiet",
+          "summary": "Restore the commit success summary",
+          "detail": "Clears an earlier -q or --quiet."
+        },
+        {
+          "flag": "--no-allow-empty",
+          "summary": "Restore the unchanged-tree check",
+          "detail": "Clears an earlier --allow-empty."
+        },
+        {
+          "flag": "--no-allow-empty-message",
+          "summary": "Restore the empty-message check",
+          "detail": "Clears an earlier --allow-empty-message."
         }
       ]
     }
@@ -190,5 +1433,306 @@
     "git",
     "commit"
   ],
-  "description": "Record the staged snapshot by default, or select content for this commit."
+  "description": "Record the staged snapshot by default. With named paths, commit their working-tree contents and keep unrelated staging.",
+  "value_definitions": {
+    "message-source": {
+      "kind": "nonnumerical",
+      "meaning": "Source commit for message and author information",
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "A revision naming one existing commit, such as HEAD~2."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand has its own text grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the message and author selected by the ordinary commit workflow."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "One explicit operand is required."
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-commit/2.55.0",
+            "locator": "OPTIONS, -C and -c"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The commit parser defines the operand."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No hardware unit is involved."
+        }
+      }
+    },
+    "template": {
+      "kind": "nonnumerical",
+      "meaning": "Commit message template",
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Path to the initial editor contents."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand has its own text grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Consult commit.template. Without a template, use the ordinary editor contents."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "One explicit operand is required."
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-commit/2.55.0",
+            "locator": "OPTIONS, --template"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The commit parser defines the operand."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No hardware unit is involved."
+        }
+      }
+    },
+    "unified-context": {
+      "kind": "count",
+      "subject": "Lines of diff context",
+      "meaning": "Unchanged lines around a selected change",
+      "bare": {
+        "state": "accepted",
+        "form": "lines"
+      },
+      "forms": [
+        {
+          "id": "lines",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "An integer count of lines. Git's integer parser also accepts binary k, m and g multipliers. -1 selects the configured default. Smaller values fail.",
+          "special_values": [
+            {
+              "value": "-1",
+              "meaning": "Use the configured context instead of overriding it."
+            }
+          ]
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use diff.context, normally 3 lines."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The commit parser requires one integer."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The Git option parser defines this value."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option uses no hardware-specific units."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/git/git/v2.53.0/builtin/commit.c",
+            "locator": "cmd_commit and prepare_index, interactive context validation"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/git/git/v2.53.0/parse-options.c",
+            "locator": "do_get_value, OPTION_INTEGER"
+          },
+          {
+            "source": "https://git-scm.com/docs/git-commit/2.55.0",
+            "locator": "OPTIONS, diff context defaults"
+          }
+        ]
+      }
+    },
+    "untracked": {
+      "kind": "enumeration",
+      "meaning": "Untracked status mode",
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "no hides entries, normal lists untracked directories as units, and all expands their contents. Resolute and upstream also accept Git Boolean spellings for normal or no."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand has its own text grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use status.showUntrackedFiles or normal."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Show all untracked files, including files inside untracked directories."
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-commit/2.55.0",
+            "locator": "OPTIONS, --untracked-files"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The commit parser defines the operand."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No hardware unit is involved."
+        }
+      }
+    },
+    "signing": {
+      "kind": "nonnumerical",
+      "meaning": "Signing key selector",
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Use a key identity accepted by the configured signing backend. Attach a short option value directly or use = with the long option."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand has its own text grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Follow commit.gpgSign. The default is unsigned."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Use the configured signing key or the committer identity."
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://git-scm.com/docs/git-commit/2.55.0",
+            "locator": "OPTIONS, --gpg-sign"
+          }
+        ]
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Git"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.43.0",
+            "2.53.0",
+            "2.56.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The commit parser defines the operand."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No hardware unit is involved."
+        }
+      }
+    }
+  }
 }

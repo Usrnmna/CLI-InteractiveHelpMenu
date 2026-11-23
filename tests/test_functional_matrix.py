@@ -65,9 +65,8 @@ ORIGINAL_RSYNC_FLAGS = {
     "--timeout=", "--update", "--verbose", "--xattrs"
 }
 
-# Exact option surfaces, by source of truth: bundled profiles for curated
-# commands, maintained fixtures for discovered commands.
-PROFILE_SURFACES = {
+# Original Git spellings. The manual inventories cover additions and aliases.
+ORIGINAL_GIT_FLAGS = {
     "git commit": ["--amend", "--all", "--dry-run", "--edit", "--file", "--message", "--patch", "--verbose", "--short"],
     "git log": ["--all", "--author=", "--decorate", "--grep=", "--graph", "--max-count=", "--oneline", "--patch", "--since=", "--stat"],
 }
@@ -178,7 +177,7 @@ class PrioritizedInventoryTests(unittest.TestCase):
         self.assertEqual(len(original), 59)
         self.assertEqual(len({case["command"].split()[0] for case in original}), 34)
         self.assertEqual({case["tier"] for case in MATRIX}, {"essential", "next", "extended"})
-        self.assertTrue(set(PROFILE_SURFACES) <= {" ".join(profile["command"]) for profile in BUNDLED})
+        self.assertTrue(set(ORIGINAL_GIT_FLAGS) <= {" ".join(profile["command"]) for profile in BUNDLED})
         for case in MATRIX:
             with self.subTest(command=case["command"]):
                 self.assertTrue((FIXTURES / case["fixture"]).is_file())
@@ -220,9 +219,9 @@ class PrioritizedInventoryTests(unittest.TestCase):
                 self.assertTrue(flags)
 
     def test_bundled_surfaces_are_pinned(self):
-        for command, expected in PROFILE_SURFACES.items():
+        for command, expected in ORIGINAL_GIT_FLAGS.items():
             with self.subTest(command=command):
-                self.assertEqual(sorted(options_of(profile_for(command))), sorted(expected))
+                self.assertLessEqual(set(expected), options_of(profile_for(command)).keys())
         # Each manual inventory independently pins the expanded set of spellings.
         self.assertLessEqual(ORIGINAL_GREP_FLAGS, options_of(profile_for("grep")).keys())
         ls_flags = options_of(profile_for("ls"))
