@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Test selection, execution, reporting and build options.",
       "name": "Options",
       "options": [
         {
           "argument": "REGEXP",
           "argument_optional": false,
           "flag": "-run",
-          "summary": "Select tests by regular expression",
+          "summary": "Select tests, examples and fuzz seeds by name",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Unanchored regular expression selecting tests/examples/fuzz tests; unbracketed slashes split hierarchical test-name patterns."
+                    "grammar": "Unanchored regular expression for tests, examples and fuzz tests. Unbracketed slashes separate name components."
                   }
                 ],
                 "when_absent": {
@@ -68,13 +68,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use an unanchored regular expression. A slash separates subtest levels. A matching parent runs to discover its children, as in -run '^TestAPI$/^Read$'."
         },
         {
           "argument": "REGEXP",
           "argument_optional": false,
           "flag": "-bench",
-          "summary": "Select benchmarks",
+          "summary": "Run benchmarks matching a name pattern",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -90,7 +91,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Unanchored regular expression selecting benchmarks, with slash-separated sub-benchmark patterns; a literal . selects all benchmarks."
+                    "grammar": "Unanchored benchmark expression. Unbracketed slashes separate name components. The pattern . matches all benchmark names."
                   }
                 ],
                 "when_absent": {
@@ -134,14 +135,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Benchmarks are off by default. Use -bench . for all benchmarks or -run '^$' -bench . to skip ordinary tests. A slash selects sub-benchmarks."
         },
         {
           "argument": "N",
           "argument_optional": false,
-          "detail": "Go 1.24.0: N is a repetition count, default 1; it is not a time interval. With -cpu, repetitions occur for each GOMAXPROCS value. Examples run once, and -count does not apply to fuzz targets selected by -fuzz. Zero is not an unlimited repetition request. The unsigned Go flag parser also accepts base-prefixed integers; these still count repetitions.",
+          "detail": "The default is one run. Explicit -count=1 bypasses cached test results. With -cpu the count applies to each setting. Examples run once and -fuzz targets ignore the count.",
           "flag": "-count",
-          "summary": "Repeat tests, benchmarks and fuzz seeds N times",
+          "summary": "Repeat tests, benchmarks and fuzz seeds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -231,9 +233,9 @@
         {
           "argument": "DURATION",
           "argument_optional": false,
-          "detail": "Go 1.24.0: the timeout is per test binary; the default is 10m. Use case-sensitive ns, us/µs/μs, ms, s, m or h, including combinations such as 1m30s. Bare nonzero numbers are not seconds and are rejected by duration parsing. Literal 0 and signed zero disable the timeout. The pinned testing implementation also disables the alarm for negative unit-bearing durations; that implementation behavior is not asserted for other releases.",
+          "detail": "The binary panics after 10m by default. Supply a duration like 30s or 1m30s, or use 0 to disable the alarm. Some versions also disable it for negative unit-bearing durations.",
           "flag": "-timeout",
-          "summary": "Set timeout with units, such as 30s; 0 disables",
+          "summary": "Limit how long each test binary can run",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -446,13 +448,14 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-cover",
-          "summary": "Enable coverage"
+          "summary": "Measure statement coverage",
+          "detail": "By default each test measures its own package. Use -coverpkg to include other packages."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "-coverprofile",
-          "summary": "Write a coverage profile",
+          "summary": "Write statement coverage to a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -512,25 +515,28 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Enables -cover. Read the profile with go tool cover, as in go tool cover -func=coverage.out."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-json",
-          "summary": "Emit JSON events"
+          "summary": "Stream test events as JSON",
+          "detail": "Includes verbose test output. Go 1.24 and later also emit build output and failures as JSON events. With Ubuntu 24.04’s default Go 1.22, build diagnostics can appear on stderr as text."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-failfast",
-          "summary": "Stop scheduling after a failure"
+          "summary": "Stop starting tests after the first failure",
+          "detail": "Tests already running in parallel can finish."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output path",
+          "summary": "Save a copy of the test binary",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -546,12 +552,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Filename or directory path for the resulting binary/output according to the selected build/test mode."
+                    "grammar": "File or directory for a copy of the test executable."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use the mode's ordinary output location or temporary test binary handling."
+                  "meaning": "Run the temporary test binary by default. With -c, write pkg.test to the current directory."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -590,13 +596,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Tests still run. Add -c to compile without running them. An existing directory or a path ending in / receives a pkg.test file per package."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Print verbose test output"
+          "summary": "Show each test and its log output",
+          "detail": "Includes messages from Log and Logf even when a test passes."
         },
         {
           "argument": "",
@@ -614,14 +622,15 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-race",
-          "summary": "Enable race detection"
+          "summary": "Enable data race detection",
+          "detail": "The detector reports races on code paths that execute. On Ubuntu it requires a supported architecture, cgo and a C compiler."
         },
         {
           "argument": "LIST",
           "argument_optional": false,
-          "detail": "Go 1.24.0: a comma-separated list of build tags, not a numerical count. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Pass comma-separated tags, as in -tags debug,integration. They can include files whose build constraints would otherwise exclude them.",
           "flag": "-tags",
-          "summary": "Set build tags",
+          "summary": "Enable additional build tags",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -654,7 +663,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: a comma-separated list of build tags, not a numerical count",
+                    "grammar": "Comma-separated build tag names. The older space-separated form is deprecated.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -693,9 +702,9 @@
         {
           "argument": "FLAGS",
           "argument_optional": false,
-          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Quote multiple arguments as one value, as in -ldflags '-s -w'. An optional package pattern limits which link steps receive them.",
           "flag": "-ldflags",
-          "summary": "Pass linker arguments",
+          "summary": "Pass arguments to the Go linker",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -728,7 +737,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value",
+                    "grammar": "[pattern=]arg list. Quote a list containing spaces as a single shell argument. With repeated flags the last matching package pattern wins.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -767,9 +776,9 @@
         {
           "argument": "FLAGS",
           "argument_optional": false,
-          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Use -gcflags 'all=-N -l' to disable optimization and inlining for the named packages and their dependencies. Without a pattern the flags apply to packages named on the command line.",
           "flag": "-gcflags",
-          "summary": "Pass compiler arguments",
+          "summary": "Pass arguments to the Go compiler",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -802,7 +811,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value",
+                    "grammar": "[pattern=]arg list. Quote a list containing spaces as a single shell argument. With repeated flags the last matching package pattern wins.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -842,7 +851,7 @@
           "argument": "MODE",
           "argument_optional": false,
           "flag": "-mod",
-          "summary": "Set module download mode",
+          "summary": "Choose how Go resolves module dependencies",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -926,13 +935,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "readonly permits downloads but fails if go.mod needs edits. vendor reads vendored packages. mod permits module-file updates. A module declaring Go 1.14 or newer with a vendor directory normally uses vendor."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-trimpath",
-          "summary": "Remove local paths from output"
+          "summary": "Remove local source paths from the binary",
+          "detail": "Recorded source filenames use import paths or module paths with versions, so stack traces omit local build directories."
         }
       ]
     }
@@ -941,11 +952,11 @@
     "go",
     "test"
   ],
-  "description": "Options for go test. Parent options are supported before and after package paths. Arguments after -args or -- are outside parent option editing.",
+  "description": "Build and run package tests. Test flags can follow packages. Use -args to pass the remaining arguments to the test binary.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://pkg.go.dev/cmd/go"
+    "reviewed": "2026-11-22",
+    "source": "https://pkg.go.dev/cmd/go@go1.27.4"
   },
   "stop_at_options": [
     "-args"

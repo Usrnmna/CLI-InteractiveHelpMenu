@@ -4,41 +4,44 @@
     "mod",
     "tidy"
   ],
-  "description": "Options for go mod tidy.",
+  "description": "Update go.mod and go.sum to match imports, including test dependencies.",
   "categories": [
     {
       "name": "Options",
-      "description": "Selected documented options for this command path.",
+      "description": "Module requirements, compatibility and change reporting.",
       "options": [
         {
           "flag": "-e",
           "argument": "",
           "argument_optional": false,
-          "summary": "Continue despite package loading errors"
+          "summary": "Continue despite package loading errors",
+          "detail": "Tidy attempts the remaining work and can still change module files."
         },
         {
           "flag": "-v",
           "argument": "",
           "argument_optional": false,
-          "summary": "Print removed modules"
+          "summary": "List removed modules on stderr"
         },
         {
           "flag": "-x",
           "argument": "",
           "argument_optional": false,
-          "summary": "Print download commands"
+          "summary": "Show commands used for module downloads",
+          "detail": "Downloads still take place when needed."
         },
         {
           "flag": "-diff",
           "argument": "",
           "argument_optional": false,
-          "summary": "Display changes without writing"
+          "summary": "Preview changes to go.mod and go.sum",
+          "detail": "Prints a unified diff and exits nonzero if edits are needed. Both files stay untouched. Requires Go 1.23 or newer. Ubuntu 24.04’s default Go 1.22 rejects this flag."
         },
         {
           "flag": "-go",
           "argument": "VERSION",
           "argument_optional": false,
-          "summary": "Set the module Go version",
+          "summary": "Set the go directive in go.mod",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -100,13 +103,13 @@
               }
             ]
           },
-          "detail": "Go 1.24.0 reference: VERSION is a Go release selector, not seconds or a decimal quantity. Update the go.mod go directive to the given Go version. No explicit go-directive version override is supplied; module and Go release rules apply. Version components must not be rescaled."
+          "detail": "The version can change which indirect requirements tidy keeps for module graph pruning and lazy loading."
         },
         {
           "flag": "-compat",
           "argument": "VERSION",
           "argument_optional": false,
-          "summary": "Set compatibility version",
+          "summary": "Check dependency resolution for a Go release",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -118,7 +121,15 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
-                      "locator": "go mod tidy: -compat purpose and default"
+                      "locator": "go mod tidy: explicit compatibility version and checksum policy"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/modload/load.go",
+                      "locator": "LoadPackages derives the effective TidyCompatibleVersion"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/gover/version.go",
+                      "locator": "GoStrictVersion is 1.21"
                     }
                   ]
                 },
@@ -158,7 +169,7 @@
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use the Go release prior to the version in the go.mod go directive"
+                  "meaning": "Use the go directive for Go 1.21 and newer. For earlier directives use the preceding Go release."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -168,15 +179,15 @@
               }
             ]
           },
-          "detail": "Go 1.24.0 reference: VERSION is a Go release selector, not seconds or a decimal quantity. Preserve module-graph checksums and checks for the selected Go release. Use the Go release prior to the version in the go.mod go directive. Version components must not be rescaled."
+          "detail": "Keeps the checksums the selected release needs and reports imports that would resolve to a different module version. The default follows the go directive for Go 1.21 and newer and uses the previous release for older directives."
         }
       ]
     }
   ],
   "stop_at_positional": false,
   "documentation": {
-    "source": "https://pkg.go.dev/cmd/go",
-    "reviewed": "2026-10-23",
+    "source": "https://pkg.go.dev/cmd/go@go1.27.4",
+    "reviewed": "2026-11-22",
     "kind": "curated subset; not an installed-version guarantee"
   }
 }

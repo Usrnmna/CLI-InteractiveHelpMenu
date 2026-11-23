@@ -4,7 +4,7 @@
     "stash",
     "pop"
   ],
-  "description": "Options for git stash pop.",
+  "description": "Restore a stash and drop it on success. Conflicts leave the entry in the list.",
   "categories": [
     {
       "name": "Options",
@@ -14,19 +14,20 @@
           "flag": "--index",
           "argument": "",
           "argument_optional": false,
-          "summary": "Restore index state"
+          "summary": "Try to restore the saved staging state",
+          "detail": "Restore the saved index as well as working-tree changes. Conflicts can prevent the index from being restored."
         },
         {
           "flag": "-q",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress progress messages"
+          "summary": "Suppress stash feedback"
         },
         {
           "flag": "--quiet",
           "argument": "",
           "argument_optional": false,
-          "summary": "Suppress progress messages"
+          "summary": "Suppress stash feedback"
         }
       ]
     }
@@ -34,7 +35,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-stash",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "kind": "curated subset; not an installed-version guarantee"
   }
 }

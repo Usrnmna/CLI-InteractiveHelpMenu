@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Certificate input, output and checks.",
       "name": "Arguments",
       "options": [
         {
@@ -67,12 +67,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to standard input. With -req, the input is a certificate signing request."
         },
         {
           "argument": "FILE",
           "flag": "-out",
-          "summary": "Write the output certificate",
+          "summary": "Write output to a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -88,7 +89,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Output filename; output-format options determine serialization."
+                    "grammar": "Filename for encoded certificate output or requested display text."
                   }
                 ],
                 "when_absent": {
@@ -132,12 +133,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to standard output. Requested text such as -subject is also written here."
         },
         {
           "argument": "FORMAT",
           "flag": "-inform",
-          "summary": "Select the input format",
+          "summary": "Require the specified input encoding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -172,7 +174,7 @@
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use PEM input by default."
+                  "meaning": "Detect the certificate encoding automatically."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -206,17 +208,22 @@
                     {
                       "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-x509.pod.in",
                       "locator": "-inform"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-format-options.pod",
+                      "locator": "Automatic decoding for individual certificates"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Use PEM or DER. Omit -inform to let OpenSSL recognize the input, including a single certificate in PKCS#12."
         },
         {
           "argument": "FORMAT",
           "flag": "-outform",
-          "summary": "Select the output format",
+          "summary": "Choose the output certificate encoding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -290,43 +297,50 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "PEM is the default. Use DER for binary output. Display options such as -text still produce text."
         },
         {
           "argument": "",
           "flag": "-text",
-          "summary": "Display certificate details"
+          "summary": "Print the certificate fields in detail",
+          "detail": "Includes names, public key, signature algorithms and extensions. Add -noout to display only the requested information."
         },
         {
           "argument": "",
           "flag": "-noout",
-          "summary": "Omit encoded certificate output"
+          "summary": "Omit encoded certificate output",
+          "detail": "Requested fields still print. Use -noout -dates to see just the validity dates."
         },
         {
           "argument": "",
           "flag": "-subject",
-          "summary": "Display the subject"
+          "summary": "Print the certificate subject name",
+          "detail": "Use -noout to omit the encoded certificate. DNS names for hostname matching can appear in the subject alternative name extension."
         },
         {
           "argument": "",
           "flag": "-issuer",
-          "summary": "Display the issuer"
+          "summary": "Print the certificate issuer name",
+          "detail": "This reads the issuer field. Establishing trust requires certificate verification."
         },
         {
           "argument": "",
           "flag": "-dates",
-          "summary": "Display validity dates"
+          "summary": "Print the start and expiry dates",
+          "detail": "Shows both notBefore and notAfter. Use -checkend for a scriptable expiry check."
         },
         {
           "argument": "",
           "flag": "-fingerprint",
-          "summary": "Display the fingerprint"
+          "summary": "Print a digest of the entire certificate",
+          "detail": "Hashes the DER encoding, so the same certificate has the same fingerprint in PEM or DER. The default is SHA-1. Add -sha256 to request SHA-256."
         },
         {
           "argument": "SECONDS",
-          "detail": "Signed base-autodetected C integer in seconds, without unit suffix: decimal, 0x hexadecimal and leading-zero octal. Must fit ossl_intmax_t and time_t on the build. Negative intervals move the comparison into the past; zero checks expiry at the current instant. Very large offsets can exceed representable time and are not a portable interval. Reference scope: OpenSSL 3.0.16.",
+          "detail": "For a readable certificate, exit status is nonzero if it expires by the cutoff and zero if its expiry is later. Use 0 to check expiry now. This tests the expiry time alone.",
           "flag": "-checkend",
-          "summary": "Check certificate expiry within the next N seconds",
+          "summary": "Test whether the certificate expires within N seconds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -409,5 +423,5 @@
     "openssl",
     "x509"
   ],
-  "description": "openssl x509 shell argument reference."
+  "description": "Inspect an X.509 certificate or write it in another encoding."
 }

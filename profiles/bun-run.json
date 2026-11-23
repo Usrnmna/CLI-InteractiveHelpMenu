@@ -1,44 +1,49 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Runtime, package scripts and startup files.",
       "name": "Options",
       "options": [
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--watch",
-          "summary": "Restart on file changes"
+          "summary": "Restart Bun when source files change",
+          "detail": "Bun watches the entry file and its imports. Each restart runs the program again with fresh global state."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--hot",
-          "summary": "Enable hot reloading"
+          "summary": "Reload code in the running Bun process",
+          "detail": "An edit to the entry file or an imported source file reruns the modules. Values stored on globalThis survive the reload."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--bun",
-          "summary": "Use Bun for Node.js scripts"
+          "summary": "Use Bun for Node.js scripts",
+          "detail": "Package scripts and executables that invoke node through PATH, including a #!/usr/bin/env node shebang, use the Bun runtime."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--silent",
-          "summary": "Suppress the script command"
+          "summary": "Hide the package script’s command line",
+          "detail": "The script still runs and can write to stdout and stderr."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--if-present",
-          "summary": "Succeed when the script does not exist"
+          "summary": "Succeed if the requested entry point is missing",
+          "detail": "Bun still looks for a file or executable when no package script matches. A command it finds can still exit with an error."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--cwd",
-          "summary": "Set working directory",
+          "summary": "Run from another directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -98,13 +103,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Bun resolves the entry point from this directory. Use an absolute path with --watch so a restart can find the directory again."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "--env-file",
-          "summary": "Load an environment file",
+          "summary": "Load variables from a chosen env file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -120,12 +126,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to a file containing environment assignments; file contents have variable-specific meanings."
+                    "grammar": "A path to a file containing environment variable assignments."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No explicit env-file override; normal environment/configuration loading remains applicable."
+                  "meaning": "Use Bun’s automatic .env file selection by default."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -164,13 +170,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "This replaces automatic .env file selection. Relative paths start at the working directory set by --cwd. Repeat the flag for more files. Later files take precedence for keys they share."
         },
         {
           "argument": "MODULE",
           "argument_optional": false,
           "flag": "--preload",
-          "summary": "Preload a module",
+          "summary": "Import a module before the entry point",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -186,12 +193,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Module/path specifier imported before the entry module by Bun; not a numerical module count."
+                    "grammar": "A module name or path to import before the entry module."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "No CLI preload module is appended; configuration preloads remain applicable."
+                  "meaning": "Use any preloads configured in bunfig.toml."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -230,7 +237,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a module specifier such as ./setup.ts. Repeat the flag to load several modules in order. The short spelling is -r."
         }
       ]
     }
@@ -239,10 +247,10 @@
     "bun",
     "run"
   ],
-  "description": "Options for bun run.",
+  "description": "Run a package script, source file or executable. Put Bun flags before its name.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://bun.sh/docs/runtime"
   },
   "stop_at_positional": true

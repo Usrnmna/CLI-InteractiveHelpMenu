@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Build inputs, base images and output.",
       "name": "Arguments",
       "options": [
         {
@@ -67,7 +67,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "An image name without a registry gets the localhost prefix."
         },
         {
           "argument": "NAME",
@@ -133,12 +134,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "An image name without a registry gets the localhost prefix."
         },
         {
           "argument": "FILE",
           "flag": "--file",
-          "summary": "Select a Containerfile",
+          "summary": "Read instructions from a chosen Containerfile",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -154,7 +156,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to a Containerfile/Dockerfile; - selects standard input where the command supports it."
+                    "grammar": "Local Containerfile or Dockerfile path, HTTP(S) URL, or - for standard input."
                   }
                 ],
                 "when_absent": {
@@ -198,13 +200,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use -f - to read instructions from standard input. With one local file and no context argument, its parent directory supplies the build context."
         },
         {
           "argument": "FILE",
           "attached": true,
           "flag": "-f",
-          "summary": "Select a Containerfile",
+          "summary": "Read instructions from a chosen Containerfile",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -220,7 +223,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to a Containerfile/Dockerfile; - selects standard input where the command supports it."
+                    "grammar": "Local Containerfile or Dockerfile path, HTTP(S) URL, or - for standard input."
                   }
                 ],
                 "when_absent": {
@@ -264,13 +267,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use -f - to read instructions from standard input. With one local file and no context argument, its parent directory supplies the build context."
         },
         {
           "argument": "KEY=VALUE",
-          "detail": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "ARG makes the value available to build instructions. Setting a build argument alone does not add it to the resulting image’s environment.",
           "flag": "--build-arg",
-          "summary": "Set a build argument",
+          "summary": "Set a Containerfile build argument",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -303,7 +307,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Podman 5.4.2: arg=value is interpolated into Containerfile instructions; numerical meaning belongs to those instructions and is not one universal unit",
+                    "grammar": "KEY=VALUE supplies a value for a Containerfile ARG instruction.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -342,13 +346,14 @@
         {
           "argument": "",
           "flag": "--no-cache",
-          "summary": "Disable build cache"
+          "summary": "Rebuild layers without using cached layers",
+          "detail": "The base-image pull policy is independent. Use --pull=always to request a fresh pull."
         },
         {
           "argument": "POLICY",
           "argument_optional": true,
-          "flag": "--pull",
-          "summary": "Select the image pull policy",
+          "flag": "--pull=",
+          "summary": "Choose when to pull base images",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -367,7 +372,7 @@
                     "tokens": [
                       "always"
                     ],
-                    "case": "sensitive",
+                    "case": "insensitive",
                     "meaning": "Attempt to pull the image"
                   },
                   {
@@ -387,7 +392,7 @@
                     "tokens": [
                       "never"
                     ],
-                    "case": "sensitive",
+                    "case": "insensitive",
                     "meaning": "Use only local images"
                   },
                   {
@@ -398,7 +403,7 @@
                       "newer"
                     ],
                     "case": "sensitive",
-                    "meaning": "Pull when a newer image is available"
+                    "meaning": "The manual compares registry and local digests. Podman 5.4.2 maps newer to missing."
                   }
                 ],
                 "when_absent": {
@@ -407,7 +412,7 @@
                 },
                 "when_value_omitted": {
                   "state": "known",
-                  "meaning": "A supplied --pull without POLICY selects always."
+                  "meaning": "Bare --pull selects missing in upstream Podman 5.4.2."
                 },
                 "applicability": {
                   "implementation": {
@@ -437,17 +442,26 @@
                     {
                       "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-build.1.html",
                       "locator": "--pull"
+                    },
+                    {
+                      "source": "https://github.com/containers/podman/blob/v5.4.2/cmd/podman/common/build.go",
+                      "locator": "DefineBuildFlags and buildFlagsWrapperToOptions pull policy selection"
+                    },
+                    {
+                      "source": "https://github.com/containers/podman/blob/v5.4.2/vendor/github.com/containers/buildah/pkg/cli/common.go",
+                      "locator": "GetBudFlags pull NoOptDefVal"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Use --pull=never for local images only. Omitting the flag selects missing. Ubuntu 24.04 and 26.04 select always for a bare --pull. Both Ubuntu clients treat newer as missing."
         },
         {
           "argument": "STAGE",
           "flag": "--target",
-          "summary": "Select the final build stage",
+          "summary": "Stop at a named build stage",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -507,12 +521,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Give the name from FROM … AS name to build an intermediate stage as the result."
         },
         {
           "argument": "PLATFORM",
           "flag": "--platform",
-          "summary": "Select the target platform",
+          "summary": "Choose the target OS and architecture",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -573,12 +588,14 @@
                 "subject": "OCI image platforms"
               }
             ]
-          }
+          },
+          "detail": "Use OS/ARCH[/VARIANT], such as linux/arm64. For multiple platforms use --manifest. RUN instructions for a foreign architecture may need emulation."
         },
         {
           "argument": "",
           "flag": "--quiet",
-          "summary": "Reduce build output"
+          "summary": "Hide build steps and progress messages",
+          "detail": "Suppresses progress for image pulls and writes. Errors remain visible."
         }
       ]
     }
@@ -587,6 +604,6 @@
     "podman",
     "build"
   ],
-  "description": "podman build shell argument reference.",
+  "description": "Build an image from a Containerfile and a build context.",
   "stop_at_positional": true
 }

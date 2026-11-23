@@ -5,7 +5,7 @@
       "options": [
         {
           "argument": "URL",
-          "detail": "Input filename, URL or - for standard input. The protocol/demuxer owns embedded addresses, ports, sizes and timeouts; numeric URL fields have protocol-specific units. Protocol and demuxer availability depends on the build. Reference scope: FFmpeg 7.1.",
+          "detail": "Use - for standard input. Repeat -i for each source, with its input options before it. Give the output filename separately.",
           "flag": "-i",
           "summary": "Read an input file or URL",
           "value_semantics": {
@@ -78,9 +78,9 @@
         },
         {
           "argument": "INPUT:STREAM",
-          "detail": "FFmpeg 7.1: input files and numeric stream indices start at zero. Typed stream specifiers, view selectors and filtergraph labels are alternatives. A leading minus removes an existing mapping; ? makes an unmatched mapping optional, not a numerical unit.",
+          "detail": "Explicit maps replace automatic selection for this output. Use -map 0 for the whole first input. Repeated maps set stream order. Use -map -0:a to remove its audio from earlier maps. Quote '0:a?' for optional audio. The input number must still exist.",
           "flag": "-map",
-          "summary": "Select an input stream for the output",
+          "summary": "Choose streams for the next output",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -280,7 +280,7 @@
                       },
                       "forms": [
                         {
-                          "grammar": "Optional multiview selector; view indices/IDs follow the documented view grammar",
+                          "grammar": "Ubuntu 26.04 documents view selection when transcoding multiview video. Stream copy retains all views. The Ubuntu 24.04 manual omits this selector.",
                           "id": "text",
                           "notation": "expression",
                           "syntax": "VIEW"
@@ -371,7 +371,7 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "FFmpeg 7.1: input files and numeric stream indices start at zero. Typed stream specifiers, view selectors and filtergraph labels are alternatives. A leading minus removes an existing mapping; ? makes an unmatched mapping optional, not a numerical unit.",
+                    "grammar": "Input and stream indices start at zero. An input may be followed by a stream specifier and an optional multiview selector in FFmpeg 7.1. Alternatively, use a bracketed complex-filter output label.",
                     "id": "joined",
                     "notation": "expression",
                     "syntax": "[-]INPUT[:STREAM][:VIEW][?] | [LINKLABEL]"
@@ -390,7 +390,7 @@
                 },
                 "slots": 1,
                 "when_absent": {
-                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "meaning": "FFmpeg normally selects streams automatically for this output. Unlabeled complex filter outputs go to the first output.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -403,17 +403,19 @@
         },
         {
           "flag": "-y",
-          "summary": "Overwrite output files without prompting"
+          "summary": "Overwrite output files without prompting",
+          "detail": "Applies to all output files in this invocation."
         },
         {
           "flag": "-n",
-          "summary": "Refuse to overwrite output files"
+          "summary": "Exit if an output file already exists",
+          "detail": "Applies to all output files. FFmpeg stops at a collision instead of skipping that file and continuing."
         },
         {
           "argument": "TIME",
-          "detail": "FFmpeg 7.1: accept signed decimal seconds, literal s/ms/us suffixes, or [-][HH:]MM:SS[.fraction]. For example, 200ms is 0.2 seconds. The option applies to an input before -i, or to an output before its URL. Syntax permitting a sign does not establish a special negative-value effect for every input/output mode.",
+          "detail": "Before -i, seeking can land before the requested time. Accurate seeking discards the lead-in when transcoding. Stream copy can keep it. Before an output, transcoding discards input until the requested timestamp.",
           "flag": "-ss",
-          "summary": "Seek to a position; bare values are seconds",
+          "summary": "Seek to a position in seconds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -534,9 +536,9 @@
         },
         {
           "argument": "DURATION",
-          "detail": "FFmpeg 7.1: accept signed decimal seconds, literal s/ms/us suffixes, or [-][HH:]MM:SS[.fraction]. For example, 200ms is 0.2 seconds. The option applies to an input before -i, or to an output before its URL. Syntax permitting a sign does not establish a special negative-value effect for every input/output mode.",
+          "detail": "Before -i, limit how much input is read. Before an output, stop writing after that duration. Use 200ms for 0.2 seconds. If -to is also set, -t takes priority.",
           "flag": "-t",
-          "summary": "Limit duration; bare values are seconds",
+          "summary": "Limit input or output duration in seconds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -658,13 +660,13 @@
       ]
     },
     {
-      "description": "The colon selector is part of the option name. These entries specify all video or audio streams, or stream index zero. Other concrete selectors can be added to custom profiles.",
+      "description": "A stream specifier limits an option to matching streams in the next file.",
       "name": "Stream codecs",
       "options": [
         {
           "argument": "CODEC",
           "flag": "-c:v",
-          "summary": "Choose the video codec or copy",
+          "summary": "Choose the codec for video streams",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -680,12 +682,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Codec name from the configured encoder registry, or literal copy for stream copy. Video/audio stream specifiers scope this selection; digits in codec names are identifiers, not bitrates."
+                    "grammar": "Use an available decoder name for input. For output, use an encoder name or the literal copy."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use the output format's automatic codec selection."
+                  "meaning": "FFmpeg normally detects the input codec and uses the output format's default encoder unless another codec option matches."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -724,12 +726,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Before -i, name a decoder. Before an output, name an encoder or use copy to pass packets through without re-encoding. The last matching codec option wins."
         },
         {
           "argument": "CODEC",
           "flag": "-c:a",
-          "summary": "Choose the audio codec or copy",
+          "summary": "Choose the codec for audio streams",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -745,12 +748,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Codec name from the configured encoder registry, or literal copy for stream copy. Video/audio stream specifiers scope this selection; digits in codec names are identifiers, not bitrates."
+                    "grammar": "Use an available decoder name for input. For output, use an encoder name or the literal copy."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use the output format's automatic codec selection."
+                  "meaning": "FFmpeg normally detects the input codec and uses the output format's default encoder unless another codec option matches."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -789,13 +792,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Before -i, name a decoder. Before an output, name an encoder or use copy to pass packets through without re-encoding. The last matching codec option wins."
         },
         {
           "argument": "CODEC",
-          "detail": "FFmpeg 7.1: the final :0 in this option name selects the first video stream (zero-based). CODEC is a codec name or copy, not a stream number.",
+          "detail": "The :0 counts only video streams in the next file. Before -i, name a decoder. Before an output, name an encoder or use copy. Place a specific override after a broader codec option.",
           "flag": "-c:v:0",
-          "summary": "Choose the codec for video stream zero",
+          "summary": "Choose the codec for the first video stream",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -828,7 +832,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "A codec name or copy; the zero-based stream selector is in the literal option name",
+                    "grammar": "Use an available decoder name for input. For output, use an encoder name or the literal copy.",
                     "id": "codec",
                     "notation": "expression",
                     "syntax": "CODEC | copy"
@@ -850,7 +854,7 @@
                   "status": "verified"
                 },
                 "when_absent": {
-                  "meaning": "Normal codec selection applies without this override",
+                  "meaning": "FFmpeg normally detects the input codec and uses the output format's default encoder unless another codec option matches.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -863,9 +867,9 @@
         },
         {
           "argument": "CODEC",
-          "detail": "FFmpeg 7.1: the final :0 in this option name selects the first audio stream (zero-based). CODEC is a codec name or copy, not a stream number.",
+          "detail": "The :0 counts only audio streams in the next file. Before -i, name a decoder. Before an output, name an encoder or use copy. Place a specific override after a broader codec option.",
           "flag": "-c:a:0",
-          "summary": "Choose the codec for audio stream zero",
+          "summary": "Choose the codec for the first audio stream",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -898,7 +902,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "A codec name or copy; the zero-based stream selector is in the literal option name",
+                    "grammar": "Use an available decoder name for input. For output, use an encoder name or the literal copy.",
                     "id": "codec",
                     "notation": "expression",
                     "syntax": "CODEC | copy"
@@ -920,7 +924,7 @@
                   "status": "verified"
                 },
                 "when_absent": {
-                  "meaning": "Normal codec selection applies without this override",
+                  "meaning": "FFmpeg normally detects the input codec and uses the output format's default encoder unless another codec option matches.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -933,9 +937,9 @@
         },
         {
           "argument": "BITRATE",
-          "detail": "FFmpeg 7.1: bare numbers are bits/second. K or k, M and G use decimal powers of 1000; adding i selects powers of 1024, and a final B multiplies the value by 8. Thus 128k means 128000 bits/second, while 1MiB means 8388608 bits/second. Do not append /s. The selected encoder determines useful bounds, zero-value effects and defaults; zero is not universally an unlimited-rate sentinel.",
+          "detail": "Use 2M for 2,000,000 bits/s. Enter the number and suffix without /s. An i after the prefix uses powers of 1024. A final B multiplies by eight. Rate control depends on the encoder.",
           "flag": "-b:v",
-          "summary": "Set video bitrate in bits/s",
+          "summary": "Set the target video bitrate in bits/s",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1147,9 +1151,9 @@
         },
         {
           "argument": "BITRATE",
-          "detail": "FFmpeg 7.1: bare numbers are bits/second. K or k, M and G use decimal powers of 1000; adding i selects powers of 1024, and a final B multiplies the value by 8. Thus 128k means 128000 bits/second, while 1MiB means 8388608 bits/second. Do not append /s. The selected encoder determines useful bounds, zero-value effects and defaults; zero is not universally an unlimited-rate sentinel.",
+          "detail": "Use 128k for 128,000 bits/s. Enter the number and suffix without /s. An i after the prefix uses powers of 1024. A final B multiplies by eight. Rate control depends on the encoder.",
           "flag": "-b:a",
-          "summary": "Set audio bitrate in bits/s",
+          "summary": "Set the target audio bitrate in bits/s",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1361,9 +1365,9 @@
         },
         {
           "argument": "FILTERGRAPH",
-          "detail": "Filter names, optional @instance IDs, argument lists, links and chains use FFmpeg filtergraph quoting/escaping. Numerical parameters are interpreted by each selected filter; there is no global filtergraph unit, range or zero meaning. Reference scope: FFmpeg 7.1.",
+          "detail": "Use a simple filtergraph with one video input and one video output, such as 'scale=320:180'. Filtering requires re-encoding that stream. Use -filter_complex for multiple inputs or outputs.",
           "flag": "-filter:v",
-          "summary": "Apply a video filtergraph",
+          "summary": "Filter video before encoding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1434,9 +1438,9 @@
         },
         {
           "argument": "FILTERGRAPH",
-          "detail": "Filter names, optional @instance IDs, argument lists, links and chains use FFmpeg filtergraph quoting/escaping. Numerical parameters are interpreted by each selected filter; there is no global filtergraph unit, range or zero meaning. Reference scope: FFmpeg 7.1.",
+          "detail": "Use a simple filtergraph with one audio input and one audio output, such as 'volume=0.5'. Filtering requires re-encoding that stream. Use -filter_complex for multiple inputs or outputs.",
           "flag": "-filter:a",
-          "summary": "Apply an audio filtergraph",
+          "summary": "Filter audio before encoding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1507,11 +1511,13 @@
         },
         {
           "flag": "-vn",
-          "summary": "Disable video output"
+          "summary": "Exclude video from an input or output",
+          "detail": "Before -i, block video from that input for all outputs. Before an output, skip selected or mapped video for that file. Complex filtergraph outputs are an exception."
         },
         {
           "flag": "-an",
-          "summary": "Disable audio output"
+          "summary": "Exclude audio from an input or output",
+          "detail": "Before -i, block audio from that input for all outputs. Before an output, skip selected or mapped audio for that file. Complex filtergraph outputs are an exception."
         }
       ]
     }
@@ -1519,5 +1525,5 @@
   "command": [
     "ffmpeg"
   ],
-  "description": "FFmpeg input, output, stream selection and codec options. Concrete stream selectors are literal option names; values are entered separately."
+  "description": "Convert media files. Place file-specific options before the input or output they affect."
 }

@@ -174,7 +174,9 @@ class NumericalMigrationTests(unittest.TestCase):
         durations = self.node("pytest", "--durations")
         self.assertEqual(durations["kind"], "count")
         self.assertNotIn("unit", durations["forms"][0])
-        self.assertIn("0", {item["value"] for item in durations["forms"][0]["special_values"]})
+        self.assertEqual(durations["subject"], self.sources["pytest"]["durations_subject"])
+        specials = {item["value"]: item["meaning"] for item in durations["forms"][0]["special_values"]}
+        self.assertEqual(specials["0"], self.sources["pytest"]["zero"])
         nth = self.node("fzf", "--nth")
         self.assertEqual(nth["origin"], self.sources["fzf"]["origin"])
         self.assertEqual(nth["bare"]["state"], "accepted")
@@ -199,15 +201,27 @@ class NumericalMigrationTests(unittest.TestCase):
             baud = self.node(profile, "--baud")
             self.assert_unit(baud["forms"][0], "baud", "1")
             self.assertIn(self.sources["platformio"]["baud_default"], baud["when_absent"]["meaning"])
-        ruff = self.node("ruff-format", "--line-length")
-        self.assertEqual(ruff["forms"][0]["bounds"], {"min": self.sources["ruff"]["minimum"], "max": self.sources["ruff"]["maximum"]})
-        self.assertEqual(ruff["forms"][0]["unit"]["base"], "custom")
-        self.assertIn("Unicode", ruff["forms"][0]["unit"]["definition"])
+
+    def test_ruff_widths_and_targets_match_each_release(self):
+        """Check each declared version against the parser and CLI reference for that release."""
+        facts = {source["version"]: source for source in
+                 (self.sources["ruff"], self.sources["ruff_0_17_6"])}
+        widths = self.option("ruff-format", "--line-length")["value_semantics"]["variants"]
+        self.assertCountEqual([node["applicability"]["version"]["values"][0] for node in widths], facts)
+        for node in widths:
+            source = facts[node["applicability"]["version"]["values"][0]]
+            width = node["forms"][0]
+            self.assertEqual(width["bounds"], {"min": source["minimum"], "max": source["maximum"]})
+            self.assertEqual(width["unit"]["base"], "custom")
+            self.assertIn("Unicode", width["unit"]["definition"])
         for profile in ("ruff-check", "ruff-format"):
-            target = self.node(profile, "--target-version")
-            self.assertEqual(target["kind"], "identifier")
-            self.assertEqual(target["forms"][0]["tokens"], self.sources["ruff"]["python_tokens"])
-            self.assertEqual(target["bare"]["state"], "not_accepted")
+            targets = self.option(profile, "--target-version")["value_semantics"]["variants"]
+            self.assertCountEqual([node["applicability"]["version"]["values"][0] for node in targets], facts)
+            for target in targets:
+                source = facts[target["applicability"]["version"]["values"][0]]
+                self.assertEqual(target["kind"], "identifier")
+                self.assertEqual(target["forms"][0]["tokens"], source["python_tokens"])
+                self.assertEqual(target["bare"]["state"], "not_accepted")
 
     def test_composites_delegated_values_and_dates_preserve_distinctions(self):
         for name in ("esptool-write-flash", "esptool.py-write-flash", "esptool.py-write_flash"):

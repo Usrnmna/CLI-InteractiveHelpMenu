@@ -1,38 +1,44 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Container settings, mounts and published ports.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--detach",
-          "summary": "Run in the background"
+          "summary": "Start the container in the background",
+          "detail": "Prints the new container ID. Use podman attach to reconnect."
         },
         {
           "argument": "",
           "flag": "-d",
-          "summary": "Run in the background"
+          "summary": "Start the container in the background",
+          "detail": "Prints the new container ID. Use podman attach to reconnect."
         },
         {
           "argument": "",
           "flag": "--interactive",
-          "summary": "Keep standard input open"
+          "summary": "Keep standard input open",
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
         },
         {
           "argument": "",
           "flag": "-i",
-          "summary": "Keep standard input open"
+          "summary": "Keep standard input open",
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
         },
         {
           "argument": "",
           "flag": "--tty",
-          "summary": "Allocate a pseudo-terminal"
+          "summary": "Allocate a pseudo-terminal",
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
         },
         {
           "argument": "",
           "flag": "-t",
-          "summary": "Allocate a pseudo-terminal"
+          "summary": "Allocate a pseudo-terminal",
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
         },
         {
           "argument": "NAME",
@@ -53,7 +59,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Container name string, not a container count."
+                    "grammar": "A name that identifies the container."
                   }
                 ],
                 "when_absent": {
@@ -98,13 +104,14 @@
                 "subject": "Podman containers"
               }
             ]
-          }
+          },
+          "detail": "Podman generates a name if none is supplied. The name can identify the container in later commands."
         },
         {
           "argument": "KEY=VALUE",
-          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
           "flag": "--env",
-          "summary": "Set an environment value",
+          "summary": "Set a container environment variable",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -117,9 +124,9 @@
         {
           "argument": "KEY=VALUE",
           "attached": true,
-          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
           "flag": "-e",
-          "summary": "Set an environment value",
+          "summary": "Set a container environment variable",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -131,9 +138,9 @@
         },
         {
           "argument": "PORT",
-          "detail": "Podman 5.4.2: port numbers identify endpoints. Inclusive host/container port ranges must have matching lengths. An omitted host port is assigned randomly. TCP is default; UDP and supported rootful SCTP are alternatives. Network-driver restrictions apply.",
+          "detail": "For a host-only TCP listener, use 127.0.0.1:8080:80. Omitting the host IP normally binds all host addresses. Without a host port, Podman chooses one. Use podman port to see the mapping.",
           "flag": "--publish",
-          "summary": "Publish a container port",
+          "summary": "Map a container port to the host",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -146,9 +153,9 @@
         {
           "argument": "PORT",
           "attached": true,
-          "detail": "Podman 5.4.2: port numbers identify endpoints. Inclusive host/container port ranges must have matching lengths. An omitted host port is assigned randomly. TCP is default; UDP and supported rootful SCTP are alternatives. Network-driver restrictions apply.",
+          "detail": "For a host-only TCP listener, use 127.0.0.1:8080:80. Omitting the host IP normally binds all host addresses. Without a host port, Podman chooses one. Use podman port to see the mapping.",
           "flag": "-p",
-          "summary": "Publish a container port",
+          "summary": "Map a container port to the host",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -160,9 +167,9 @@
         },
         {
           "argument": "VOLUME",
-          "detail": "Podman 5.4.2: [SOURCE-VOLUME|HOST-DIR:]CONTAINER-DIR[:OPTIONS] is a volume/path and mount-options specification, not a numerical storage capacity. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Use an existing host path such as ./data, or a volume name such as data. The container path must be absolute. A destination alone creates an anonymous volume. Mounts are writable by default. Add :ro for read-only access.",
           "flag": "--volume",
-          "summary": "Mount a volume",
+          "summary": "Mount a host path or volume in the container",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -175,9 +182,9 @@
         {
           "argument": "VOLUME",
           "attached": true,
-          "detail": "Podman 5.4.2: [SOURCE-VOLUME|HOST-DIR:]CONTAINER-DIR[:OPTIONS] is a volume/path and mount-options specification, not a numerical storage capacity. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Use an existing host path such as ./data, or a volume name such as data. The container path must be absolute. A destination alone creates an anonymous volume. Mounts are writable by default. Add :ro for read-only access.",
           "flag": "-v",
-          "summary": "Mount a volume",
+          "summary": "Mount a host path or volume in the container",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -190,12 +197,13 @@
         {
           "argument": "",
           "flag": "--rm",
-          "summary": "Remove the container after exit"
+          "summary": "Remove the container after exit",
+          "detail": "Podman also removes its anonymous volumes. Named volumes and bind-mounted host files remain."
         },
         {
           "argument": "DIR",
           "flag": "--workdir",
-          "summary": "Set the working directory",
+          "summary": "Set the working directory inside the container",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -255,13 +263,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Overrides the image’s WORKDIR. The default is / when the image sets none."
         },
         {
           "argument": "USER",
-          "detail": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults.",
+          "detail": "USER[:GROUP] accepts names or numeric IDs. A user namespace can map those IDs to different IDs on the host.",
           "flag": "--user",
-          "summary": "Select the container user",
+          "summary": "Choose the container user and group",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -467,7 +476,7 @@
     "podman",
     "run"
   ],
-  "description": "podman run shell argument reference.",
+  "description": "Start a new container from an image.",
   "stop_at_positional": true,
   "value_definitions": {
     "environment-value": {
@@ -499,7 +508,7 @@
       },
       "forms": [
         {
-          "grammar": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar",
+          "grammar": "KEY=VALUE assigns a string. KEY alone copies a host variable if set. A quoted prefix such as \"APP_*\" copies matching variables.",
           "id": "grammar",
           "notation": "expression",
           "syntax": "VALUE"
@@ -817,7 +826,7 @@
       ],
       "forms": [
         {
-          "grammar": "Podman 5.4.2: port numbers identify endpoints. Inclusive host/container port ranges must have matching lengths. An omitted host port is assigned randomly. TCP is default; UDP and supported rootful SCTP are alternatives. Network-driver restrictions apply.",
+          "grammar": "Host and container port ranges are inclusive and must have equal lengths. TCP is the default. Use /udp for UDP, or /sctp where rootful networking supports it.",
           "id": "joined",
           "notation": "expression",
           "syntax": "[[IP:][HOSTPORT]:]CONTAINERPORT[/PROTOCOL]"
@@ -873,7 +882,7 @@
       },
       "forms": [
         {
-          "grammar": "Podman 5.4.2: [SOURCE-VOLUME|HOST-DIR:]CONTAINER-DIR[:OPTIONS] is a volume/path and mount-options specification, not a numerical storage capacity",
+          "grammar": "[SOURCE:]CONTAINER-DIR[:OPTIONS] accepts a named volume or host path as its source.",
           "id": "grammar",
           "notation": "expression",
           "syntax": "VALUE"

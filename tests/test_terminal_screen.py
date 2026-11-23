@@ -55,6 +55,11 @@ class TmuxShell:
             f"PS1={shlex.quote(PROMPT)}; PS2='> '; set +o history\n"
             + "source " + shlex.quote(str(runtime / "bash/interactive-help.bash")) + "\n"
             + "rsync() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
+            + "tar() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
+            + "grep() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
+            + "ls() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
+            + "ssh() { printf executed > " + shlex.quote(str(self.executed)) + "; }\n"
+            + "scp() { ssh; }\nsftp() { ssh; }\n"
             + "_screen_snapshot() { printf '%s\\0%s\\0' \"$READLINE_POINT\" \"$READLINE_LINE\" > "
             + shlex.quote(str(self.buffer_file)) + "; }\n"
             + "bind -x '\"\\C-x\\C-g\":_screen_snapshot'\n"
@@ -167,6 +172,117 @@ class TerminalTestCase(unittest.TestCase):
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class OptionsLayoutTests(TerminalTestCase):
+    def test_openssh_forwarding_and_recursive_copy_guidance(self):
+        """Distinguish forwarding direction and each transfer client's symlink policy."""
+        cases = (("ssh", "remote listener", "-R", "remote SOCKS proxy."),
+                 ("scp", "symbolic links", "-r", "their targets can be copied too."),
+                 ("sftp", "symbolic links", "-r", "skip symbolic links encountered during traversal."))
+        for command, query, flag, guidance in cases:
+            with self.subTest(command=command):
+                shell = self.start()
+                prefix, suffix = command + " ", " destination"
+                shell.text(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.resize(60, 16)
+                for action in ("Escape", "Enter"):
+                    menu = shell.open_menu()
+                    self.assertEqual(menu.cells[2].rstrip(), "Filter:")
+                    shell.keys("/")
+                    shell.text(query)
+                    shell.keys("Enter")
+                    found = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
+                    self.assertIn("> " + flag + " ", found.cells[4])
+                    shell.keys(*(["]"] * 100))
+                    shell.wait_for(lambda state: guidance in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.cancel(action)
+                    if action == "Escape":
+                        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                self.assertEqual(shell.read_buffer(), (prefix + flag + suffix, len(prefix + flag) + 1))
+                self.assertFalse(shell.executed.exists())
+
+    def test_ls_allocated_space_search_and_midline_hide_insertion(self):
+        """Read the sparse-file distinction and insert a pattern flag before an operand."""
+        shell = self.start()
+        prefix, suffix = "ls ", " existing-dir"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        initial = shell.open_menu()
+        self.assertIn("except the . and .. entries", initial.cells[5])
+        initial = shell.resize(60, 16)
+        self.assertEqual(initial.cells[2].rstrip(), "Filter:")
+        self.assertIn("> --all ", initial.cells[4])
+        shell.keys("/")
+        shell.text("allocated")
+        shell.keys("Enter")
+        found = shell.wait_for(lambda state: state.cells[2] == "Filter: allocated")
+        self.assertIn("> --size ", found.cells[4])
+        self.assertNotIn("little allocated space.", " ".join(found.cells[:-3]))
+        shell.keys(*(["]"] * 32))
+        shell.wait_for(lambda state: "large file length but little allocated space."
+                       in " ".join(" ".join(state.cells[:-3]).split()))
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+
+        shell.open_menu()
+        shell.keys("/")
+        shell.text("--hide")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: "> --hide=PATTERN" in state.cells[4])
+        shell.cancel("Enter")
+        inserted = prefix + "--hide="
+        self.assertEqual(shell.read_buffer(), (inserted + suffix, len(inserted)))
+        self.assertFalse(shell.executed.exists())
+
+    def test_grep_context_search_scroll_and_midline_edit(self):
+        """Find context guidance by meaning and insert only its option spelling."""
+        shell = self.start()
+        prefix, suffix = "grep --c", " needle input.txt"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        initial = shell.open_menu()
+        self.assertIn("> --count", initial.cells[4])
+        shell.keys("/", "C-u")
+        shell.text("group separator")
+        shell.keys("Enter")
+        found = shell.wait_for(lambda state: state.cells[2] == "Filter: group separator")
+        self.assertIn("> --context=LINES", found.cells[4])
+        shell.resize(60, 16)
+        shell.keys(*(["]"] * 32))
+        shell.wait_for(lambda state: "With -o, grep omits context lines." in state.cells)
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        shell.open_menu()
+        shell.keys("Down")
+        shell.wait_for(lambda state: any("> --context=" in row for row in state.cells))
+        shell.cancel("Enter")
+        inserted = "grep --context="
+        self.assertEqual(shell.read_buffer(), (inserted + suffix, len(inserted)))
+        self.assertFalse(shell.executed.exists())
+
+    def test_tar_directory_scope_search_cancel_and_insertion(self):
+        """Find the archive-path exception at minimum size and edit a midline option."""
+        shell = self.start()
+        prefix, suffix = "tar --dir", " member.txt"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.open_menu()
+        shell.keys("/", "C-u")
+        shell.text("original working directory")
+        shell.keys("Enter")
+        wide = shell.wait_for(lambda state: "--directory=DIR" in state.cells[4])
+        self.assertIn("Change directory for following file names", wide.cells[4])
+        shell.resize(60, 16)
+        shell.keys(*(["]"] * 20))
+        narrow = shell.wait_for(lambda state: "original working directory." in " ".join(state.cells[:-3]))
+        self.assertIn("archive path given to -f", " ".join(narrow.cells[:-3]))
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        shell.open_menu()
+        shell.cancel("Enter")
+        completed = "tar --directory="
+        self.assertEqual(shell.read_buffer(), (completed + suffix, len(completed)))
+        self.assertFalse(shell.executed.exists())
+
     def test_rsync_preview_and_deletion_guidance_is_readable(self):
         """Read the actual Details pane, including the last page at minimum size."""
         shell = self.start()

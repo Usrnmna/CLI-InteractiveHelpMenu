@@ -6,19 +6,23 @@
       "options": [
         {
           "flag": "--create",
-          "summary": "Create a new archive"
+          "summary": "Create a new archive",
+          "detail": "An existing archive at the output path is replaced. Named directories are archived recursively by default."
         },
         {
           "flag": "--extract",
-          "summary": "Extract files from an archive"
+          "summary": "Extract files from an archive",
+          "detail": "With no member names, extract all members. To select files, use their stored names. Extraction writes under the current directory by default and can replace existing files."
         },
         {
           "flag": "--list",
-          "summary": "List archive contents"
+          "summary": "List archive contents",
+          "detail": "Supply stored member names to limit the listing. Add -v to see sizes, permissions and modification times."
         },
         {
           "flag": "--diff",
-          "summary": "Compare archive members with filesystem files"
+          "summary": "Compare archive members with filesystem files",
+          "detail": "Checks contents and metadata against files with the same names on disk. Extra files on disk are ignored. Exit status 1 indicates differences."
         }
       ]
     },
@@ -29,7 +33,7 @@
         {
           "argument": "ARCHIVE",
           "flag": "--file=",
-          "summary": "Specify the archive file",
+          "summary": "Specify the archive to read or write",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -89,12 +93,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Give member names separately. For a local archive name containing a colon, use --force-local to disable remote archive handling."
         },
         {
           "argument": "DIRECTORY",
           "flag": "--directory=",
-          "summary": "Change directory during processing",
+          "summary": "Change directory for following file names",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -154,12 +159,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Place -C before the names it affects. Successive relative -C paths start from the previous directory. A relative archive path given to -f still starts in the original working directory."
         },
         {
           "argument": "PATTERN",
           "flag": "--exclude=",
-          "summary": "Exclude matching files",
+          "summary": "Skip names matching a wildcard pattern",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -219,7 +225,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote the pattern so the shell passes it to tar unchanged. When creating an archive, put exclusions before the file names they apply to."
         }
       ]
     },
@@ -229,15 +236,18 @@
       "options": [
         {
           "flag": "--gzip",
-          "summary": "Use gzip compression"
+          "summary": "Compress or decompress with gzip",
+          "detail": "When reading a regular archive file, tar normally detects gzip automatically. Specify the method for compressed input from a pipe or non-seekable tape."
         },
         {
           "flag": "--xz",
-          "summary": "Use xz compression"
+          "summary": "Compress or decompress with xz",
+          "detail": "When reading a regular archive file, tar normally detects xz automatically. Specify the method for compressed input from a pipe or non-seekable tape."
         },
         {
           "flag": "--bzip2",
-          "summary": "Use bzip2 compression"
+          "summary": "Compress or decompress with bzip2",
+          "detail": "When reading a regular archive file, tar normally detects bzip2 automatically. Specify the method for compressed input from a pipe or non-seekable tape."
         }
       ]
     },
@@ -247,11 +257,13 @@
       "options": [
         {
           "flag": "--verbose",
-          "summary": "List processed files"
+          "summary": "List processed files",
+          "detail": "With a listing, -v adds file metadata. During creation or extraction it shows member names."
         },
         {
           "flag": "--totals",
-          "summary": "Print total bytes processed"
+          "summary": "Print total bytes processed at completion",
+          "detail": "The optional --totals=SIGNAL form reports the running total when tar receives that signal."
         }
       ]
     }

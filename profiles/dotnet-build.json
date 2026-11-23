@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Build targets, outputs and dependency handling.",
       "name": "Options",
       "options": [
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -69,13 +69,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "--configuration",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -91,7 +92,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -136,13 +137,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Select target framework",
+          "summary": "Choose a target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -158,7 +160,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -203,13 +205,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Supply a target framework moniker declared in the project, such as net9.0."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "--framework",
-          "summary": "Select target framework",
+          "summary": "Choose a target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -225,7 +228,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -270,13 +273,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Supply a target framework moniker declared in the project, such as net9.0."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "-r",
-          "summary": "Select runtime identifier",
+          "summary": "Target an OS and architecture",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -292,7 +296,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -337,13 +341,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Supply a runtime identifier (RID), such as linux-x64."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "--runtime",
-          "summary": "Select runtime identifier",
+          "summary": "Target an OS and architecture",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -359,7 +364,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -404,13 +409,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Supply a runtime identifier (RID), such as linux-x64."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output directory",
+          "summary": "Write binaries to a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -426,7 +432,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the OutputPath property."
                   }
                 ],
                 "when_absent": {
@@ -464,19 +470,20 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "locator": "OutputPath option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "A relative path starts at the working directory. For a multi-targeted project, select one framework with -f. A solution-wide directory can mix files from different projects."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output directory",
+          "summary": "Write binaries to a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -492,7 +499,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the OutputPath property."
                   }
                 ],
                 "when_absent": {
@@ -530,25 +537,27 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "locator": "OutputPath option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "A relative path starts at the working directory. For a multi-targeted project, select one framework with -f. A solution-wide directory can mix files from different projects."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-restore",
-          "summary": "Skip package restore"
+          "summary": "Skip the implicit NuGet restore",
+          "detail": "Restore first with the same target framework and runtime so the required assets are available."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -731,13 +740,14 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -920,31 +930,35 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--nologo",
-          "summary": "Suppress the startup banner"
+          "summary": "Hide the MSBuild startup banner"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-incremental",
-          "summary": "Disable incremental compilation"
+          "summary": "Rebuild without incremental compilation",
+          "detail": "Rebuilds the project and its dependency graph even when outputs appear up to date."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-dependencies",
-          "summary": "Build only the selected project"
+          "summary": "Skip building referenced projects",
+          "detail": "Project-to-project references need usable build outputs. NuGet restore still runs unless --no-restore is given."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--force",
-          "summary": "Resolve dependencies again"
+          "summary": "Resolve package dependencies again",
+          "detail": "Repeats dependency resolution even after a successful restore, as if obj/project.assets.json had been removed."
         }
       ]
     }
@@ -953,11 +967,11 @@
     "dotnet",
     "build"
   ],
-  "description": "Options for dotnet build.",
+  "description": "Compile a project or solution and its dependencies.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+    "reviewed": "2026-11-22",
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build"
   },
   "stop_at_positional": false
 }

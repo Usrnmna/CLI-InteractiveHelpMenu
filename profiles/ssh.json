@@ -7,9 +7,8 @@
         {
           "argument": "",
           "bundle": true,
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
           "flag": "-4",
-          "summary": "Use IPv4 addresses",
+          "summary": "Use IPv4 addresses only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -78,9 +77,8 @@
         {
           "argument": "",
           "bundle": true,
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
           "flag": "-6",
-          "summary": "Use IPv6 addresses",
+          "summary": "Use IPv6 addresses only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -149,14 +147,16 @@
         {
           "argument": "",
           "bundle": true,
+          "detail": "Includes session input and output and forwarded connections.",
           "flag": "-C",
-          "summary": "Request compression"
+          "summary": "Request compression for SSH traffic"
         },
         {
           "argument": "CONFIGFILE",
           "attached": true,
+          "detail": "The named file replaces the usual user configuration and bypasses the system configuration file. Use -F none to skip both.",
           "flag": "-F",
-          "summary": "Read the specified SSH configuration",
+          "summary": "Use an alternate SSH client configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -172,7 +172,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to an SSH client configuration file; defaults/override behavior follows OpenSSH's -F configuration rules."
+                    "grammar": "Path to the alternate user configuration file, or none to skip configuration files."
                   }
                 ],
                 "when_absent": {
@@ -221,8 +221,9 @@
         {
           "argument": "IDENTITY_FILE",
           "attached": true,
+          "detail": "Repeat -i to offer multiple identities. A public key file can select its matching private key held by ssh-agent.",
           "flag": "-i",
-          "summary": "Select a private identity file",
+          "summary": "Select an identity file for authentication",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -238,7 +239,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to an authentication private-key/identity file; digits in a filename are not key lengths."
+                    "grammar": "Identity file path. A public key file can select a private key loaded in ssh-agent."
                   }
                 ],
                 "when_absent": {
@@ -287,9 +288,9 @@
         {
           "argument": "DESTINATION",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements.",
+          "detail": "List hops in order, separated by commas. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
           "flag": "-J",
-          "summary": "Connect through a jump host",
+          "summary": "Connect through one or more jump hosts",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -538,7 +539,7 @@
         {
           "argument": "OPTION",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 9.9p2.",
+          "detail": "Pass one ssh_config setting per -o, such as Port=2222. The keyword determines the value and its units.",
           "flag": "-o",
           "summary": "Set an SSH configuration option",
           "value_semantics": {
@@ -613,19 +614,20 @@
           "argument": "",
           "bundle": true,
           "flag": "-q",
-          "summary": "Reduce diagnostic output"
+          "summary": "Suppress most SSH warnings and diagnostics"
         },
         {
           "argument": "",
           "bundle": true,
+          "detail": "Repeat up to three times for more detail about connection, authentication and configuration.",
           "flag": "-v",
-          "summary": "Display diagnostic output"
+          "summary": "Show SSH connection diagnostics"
         },
         {
           "argument": "PORT",
           "attached": true,
           "bundle": true,
-          "detail": "OpenSSH Portable 9.9p2: PORT identifies a remote TCP port; it is unitless, not bytes or seconds. Matching SSH configuration applies when absent, with Port defaulting to 22. Forwarding port components have their own rules.",
+          "detail": "Defaults to 22 unless the SSH configuration selects another Port.",
           "flag": "-p",
           "summary": "Select the remote TCP port",
           "value_semantics": {
@@ -763,9 +765,9 @@
         {
           "argument": "ADDRESS",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements.",
+          "detail": "Connections arrive on the client. The server connects to the specified destination. Either endpoint can be a TCP port or a Unix socket.",
           "flag": "-L",
-          "summary": "Configure local port forwarding",
+          "summary": "Forward a local listener to a destination",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1102,10 +1104,10 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "OpenSSH Portable 9.9p2: local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements.",
+                    "grammar": "Give the listener and destination as one colon-separated argument. Enclose IPv6 addresses in brackets.",
                     "id": "joined",
                     "notation": "expression",
-                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives"
+                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | [BIND:]PORT:REMOTE_SOCKET | LOCAL_SOCKET:HOST:HOSTPORT | LOCAL_SOCKET:REMOTE_SOCKET"
                   }
                 ],
                 "kind": "composite",
@@ -1135,9 +1137,9 @@
         {
           "argument": "ADDRESS",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form.",
+          "detail": "Connections arrive on the server. The client connects to the destination. TCP and Unix sockets are supported. A remote listening port of 0 requests an assigned port. Omit the destination for a remote SOCKS proxy.",
           "flag": "-R",
-          "summary": "Configure remote port forwarding",
+          "summary": "Forward a remote listener to the client side",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1480,10 +1482,10 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "OpenSSH Portable 9.9p2: remote forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. Remote listening port 0 requests dynamic allocation; omitting the destination enables the documented SOCKS proxy form.",
+                    "grammar": "Give one colon-separated argument. Enclose IPv6 addresses in brackets. A TCP listener normally binds to server loopback. Other bind addresses depend on the server GatewayPorts setting.",
                     "id": "joined",
                     "notation": "expression",
-                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | socket alternatives"
+                    "syntax": "[BIND:]PORT:HOST:HOSTPORT | [BIND:]PORT:LOCAL_SOCKET | REMOTE_SOCKET:HOST:HOSTPORT | REMOTE_SOCKET:LOCAL_SOCKET | [BIND:]PORT"
                   }
                 ],
                 "kind": "composite",
@@ -1513,9 +1515,9 @@
         {
           "argument": "ADDRESS",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations.",
+          "detail": "Use [bind_address:]port. Bracket an IPv6 bind address. SOCKS4 or SOCKS5 clients choose the destination for each connection.",
           "flag": "-D",
-          "summary": "Configure dynamic forwarding",
+          "summary": "Open a local SOCKS proxy",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1671,7 +1673,7 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "OpenSSH Portable 9.9p2: dynamic local forwarding uses TCP-port identifiers and documented Unix-socket alternatives, joined by colons in one argument. Bracket IPv6 addresses. Ports are not counts or measurements. This port is a local SOCKS listener; SOCKS requests determine destinations.",
+                    "grammar": "Documented TCP listener port with an optional bind address. Enclose an IPv6 address in brackets.",
                     "id": "joined",
                     "notation": "expression",
                     "syntax": "[BIND:]PORT"
@@ -1703,8 +1705,9 @@
         },
         {
           "argument": "",
+          "detail": "Useful for a forwarding-only connection.",
           "flag": "-N",
-          "summary": "Do not execute a remote command"
+          "summary": "Skip the remote shell and command"
         },
         {
           "argument": "",
@@ -1713,19 +1716,22 @@
         },
         {
           "argument": "",
+          "detail": "Use -tt to force allocation even when the client has no local terminal.",
           "flag": "-t",
-          "summary": "Request a pseudo-terminal"
+          "summary": "Force pseudo-terminal allocation"
         },
         {
           "argument": "",
+          "detail": "Use for background sessions or to leave a loop's input available to the calling shell.",
           "flag": "-n",
-          "summary": "Redirect standard input from the null device"
+          "summary": "Prevent SSH from reading standard input"
         },
         {
           "argument": "LOG_FILE",
           "attached": true,
+          "detail": "Replaces standard error as the log destination.",
           "flag": "-E",
-          "summary": "Append diagnostic output to a file",
+          "summary": "Append SSH diagnostics to a log file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1793,6 +1799,6 @@
   "command": [
     "ssh"
   ],
-  "description": "ssh shell argument reference.",
+  "description": "Log in to a remote host or run a command over SSH.",
   "stop_at_positional": true
 }

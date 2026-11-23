@@ -44,9 +44,9 @@ class SystemDependencyFollowupTests(unittest.TestCase):
         profile = self.profile("podman-build")
         options = {option["flag"]: option for category in profile["categories"]
                    for option in category["options"]}
-        self.assertTrue(options["--pull"]["argument_optional"])
-        self.assertEqual(options["--pull"]["argument"], "POLICY")
-        for text in ("podman build --pull ", "podman build --pull=never "):
+        self.assertTrue(options["--pull="]["argument_optional"])
+        self.assertEqual(options["--pull="]["argument"], "POLICY")
+        for text in ("podman build --pull ", "podman build --pull=never ", "podman build --quiet=true --pull=never "):
             context = self.context(text, profile)
             edited = text + "--quiet "
             self.assertEqual(insert_option(context, options["--quiet"]), (edited, len(edited)))

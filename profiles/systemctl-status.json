@@ -1,18 +1,20 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Unit selection, status reports and journal excerpts.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--user",
-          "summary": "Use the user service manager"
+          "summary": "Use the current user’s service manager",
+          "detail": "Selects units managed for the calling user."
         },
         {
           "argument": "",
           "flag": "--system",
-          "summary": "Use the system service manager"
+          "summary": "Use the system service manager",
+          "detail": "This is the default manager."
         },
         {
           "argument": "",
@@ -22,22 +24,25 @@
         {
           "argument": "",
           "flag": "--no-legend",
-          "summary": "Omit column legends"
+          "summary": "Applies to table legends only",
+          "detail": "The status report has no table legend. Its unit heading and journal excerpt remain visible."
         },
         {
           "argument": "",
           "flag": "--full",
-          "summary": "Display complete unit names and descriptions"
+          "summary": "Show status text at full width",
+          "detail": "Preserve long unit names, descriptions, process tree entries and journal messages."
         },
         {
           "argument": "",
           "flag": "--all",
-          "summary": "Include inactive units"
+          "summary": "Show status for all units in memory",
+          "detail": "With no operands or unit filters, print the manager overview followed by unit reports. A named unit still selects that unit."
         },
         {
           "argument": "TYPE",
           "flag": "--type=",
-          "summary": "Filter units by type",
+          "summary": "Show status for matching unit types",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -97,12 +102,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "With no operand or a unit glob, select types such as service,timer. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "STATE",
           "flag": "--state=",
-          "summary": "Filter units by state",
+          "summary": "Show status for units in selected states",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -162,18 +168,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use --state=failed without a unit name to inspect failed units. Explicit unit names bypass this filter. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "",
           "flag": "--plain",
-          "summary": "Use plain output"
+          "summary": "Applies to listing symbols only",
+          "detail": "The unit status heading and process tree keep their usual formatting."
         },
         {
           "argument": "LINES",
-          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows.",
+          "detail": "The default is 10 per unit. Use --lines=0 to hide the journal excerpt while keeping the status report.",
           "flag": "--lines=",
-          "summary": "Set status journal-line count; 0 hides journal output",
+          "summary": "Set the number of recent journal entries",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -251,7 +259,7 @@
         {
           "argument": "FORMAT",
           "flag": "--output=",
-          "summary": "Select journal output format",
+          "summary": "Choose the format of the journal excerpt",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -322,6 +330,16 @@
                     ],
                     "case": "sensitive",
                     "meaning": "Monotonic timestamps"
+                  },
+                  {
+                    "id": "short-delta",
+                    "notation": "literal",
+                    "syntax": "short-delta",
+                    "tokens": [
+                      "short-delta"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Monotonic timestamps with time since the preceding entry"
                   },
                   {
                     "id": "choice-7",
@@ -448,14 +466,19 @@
                   "status": "verified",
                   "references": [
                     {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "Output modes, including short-delta"
+                    },
+                    {
                       "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--output only affects journal output"
+                      "locator": "--output= and status"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "The default is short. Use cat for message text or json for structured entries. The status heading keeps its usual format."
         }
       ]
     }
@@ -464,5 +487,5 @@
     "systemctl",
     "status"
   ],
-  "description": "systemctl status shell argument reference."
+  "description": "Show runtime status for the manager, a unit or the unit containing a PID."
 }

@@ -70,9 +70,9 @@
     "pytest": {
       "url": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/runner.py",
       "version": "8.3.5",
-      "locator": "--durations and --durations-min registration",
-      "durations_subject": "Slowest test durations",
-      "zero": "Display all collected durations"
+      "locator": "pytest_terminal_summary sorts, slices and filters duration records",
+      "durations_subject": "Setup, call and teardown duration records",
+      "zero": "Select all measured durations before applying the display threshold"
     },
     "fzf": {
       "url": "https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/man/man1/fzf.1",
@@ -130,11 +130,24 @@
     "ruff": {
       "url": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
       "version": "0.11.13",
-      "locator": "line_length setting and Unicode width definition",
+      "locator": "line_length setting and Unicode width definition; target-version default",
+      "cli": "https://github.com/astral-sh/ruff/blob/0.11.13/docs/configuration.md",
+      "bounds_source": "https://github.com/astral-sh/ruff/blob/0.11.13/crates/ruff_linter/src/line_width.rs",
       "minimum": "1",
       "maximum": "320",
       "default": "88",
-      "python_tokens": ["py37", "py38", "py39", "py310", "py311", "py312", "py313"]
+      "python_tokens": ["py37", "py38", "py39", "py310", "py311", "py312", "py313", "py314"]
+    },
+    "ruff_0_17_6": {
+      "url": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff_workspace/src/options.rs",
+      "version": "0.17.6",
+      "locator": "line_length setting and Unicode width definition; target-version default",
+      "cli": "https://github.com/astral-sh/ruff/blob/0.17.6/docs/configuration.md",
+      "bounds_source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff_linter/src/line_width.rs",
+      "minimum": "1",
+      "maximum": "65535",
+      "default": "88",
+      "python_tokens": ["py37", "py38", "py39", "py310", "py311", "py312", "py313", "py314", "py315"]
     },
     "platformio": {
       "url": "https://raw.githubusercontent.com/platformio/platformio-core/v6.1.18/platformio/project/options.py",

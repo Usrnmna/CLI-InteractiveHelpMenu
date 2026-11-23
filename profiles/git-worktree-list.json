@@ -4,7 +4,7 @@
     "worktree",
     "list"
   ],
-  "description": "Options for git worktree list.",
+  "description": "List the main worktree and its linked working trees.",
   "categories": [
     {
       "name": "Options",
@@ -14,25 +14,29 @@
           "flag": "--porcelain",
           "argument": "",
           "argument_optional": false,
-          "summary": "Use stable machine-readable formatting"
+          "summary": "Show stable, machine-readable worktree fields",
+          "detail": "Attributes appear on separate lines with a blank line between worktrees. Use -z to handle paths containing newlines."
         },
         {
           "flag": "-z",
           "argument": "",
           "argument_optional": false,
-          "summary": "Terminate records with NUL"
+          "summary": "Terminate each porcelain field with NUL",
+          "detail": "Requires --porcelain. Each attribute ends with NUL, with an extra NUL between worktree records. Paths can contain newlines."
         },
         {
           "flag": "-v",
           "argument": "",
           "argument_optional": false,
-          "summary": "Include worktree details"
+          "summary": "Show why worktrees are locked or prunable",
+          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output."
         },
         {
           "flag": "--verbose",
           "argument": "",
           "argument_optional": false,
-          "summary": "Include worktree details"
+          "summary": "Show why worktrees are locked or prunable",
+          "detail": "Adds available reasons to the human-readable listing. Use --porcelain separately for machine-readable output."
         }
       ]
     }
@@ -40,7 +44,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-worktree",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "kind": "curated subset; not an installed-version guarantee"
   }
 }

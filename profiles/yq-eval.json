@@ -1,38 +1,44 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Use - as a filename to read standard input.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--inplace",
-          "summary": "Update input files in place"
+          "summary": "Write results back to the first input file",
+          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents."
         },
         {
           "argument": "",
           "flag": "-i",
-          "summary": "Update input files in place"
+          "summary": "Write results back to the first input file",
+          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents."
         },
         {
           "argument": "",
           "flag": "--null-input",
-          "summary": "Evaluate without input documents"
+          "summary": "Evaluate once with null as the input",
+          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -."
         },
         {
           "argument": "",
           "flag": "-n",
-          "summary": "Evaluate without input documents"
+          "summary": "Evaluate once with null as the input",
+          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -."
         },
         {
           "argument": "",
           "flag": "--exit-status",
-          "summary": "Set failure status for null, false, or missing results"
+          "summary": "Fail on no matches or only null and lowercase false",
+          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches."
         },
         {
           "argument": "",
           "flag": "-e",
-          "summary": "Set status from the result"
+          "summary": "Fail on no matches or only null and lowercase false",
+          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches."
         },
         {
           "argument": "FORMAT",
@@ -53,12 +59,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                    "grammar": "auto/a enables automatic selection. Encoders in 4.44.3 accept yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l and shell/s/sh. TOML output in this release supports only scalars."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                  "meaning": "Auto follows the detected input format. Explicit -p selects YAML output by default."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -96,12 +102,21 @@
                     {
                       "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
                       "locator": "auto/a CLI defaults and format selection"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_toml.go",
+                      "locator": "Encode supports scalar nodes in 4.44.3"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "initCommand handles automatic and explicit formats"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set."
         },
         {
           "argument": "FORMAT",
@@ -123,12 +138,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                    "grammar": "auto/a enables automatic selection. Encoders in 4.44.3 accept yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l and shell/s/sh. TOML output in this release supports only scalars."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                  "meaning": "Auto follows the detected input format. Explicit -p selects YAML output by default."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -166,12 +181,21 @@
                     {
                       "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
                       "locator": "auto/a CLI defaults and format selection"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_toml.go",
+                      "locator": "Encode supports scalar nodes in 4.44.3"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "initCommand handles automatic and explicit formats"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set."
         },
         {
           "argument": "FORMAT",
@@ -192,12 +216,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                    "grammar": "auto/a enables automatic selection. Decoders in 4.44.3 accept yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml and lua/l. The shell format is output-only."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                  "meaning": "Auto detects the format from the first input filename and otherwise uses YAML."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -235,12 +259,17 @@
                     {
                       "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
                       "locator": "auto/a CLI defaults and format selection"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "initCommand handles automatic and explicit formats"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding."
         },
         {
           "argument": "FORMAT",
@@ -262,12 +291,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "auto/a uses filename/context detection; named formats/aliases are resolved by the pinned format registry (yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml, lua/l, with shell/s/sh output-only). A format must have the relevant encoder or decoder; no numeric scale is selected."
+                    "grammar": "auto/a enables automatic selection. Decoders in 4.44.3 accept yaml/y/yml, json/j, props/p/properties, csv/c, tsv/t, xml/x, base64, uri, toml and lua/l. The shell format is output-only."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use auto format selection; YAML is the fallback for unknown filenames/standard input, and output follows the established input/context rules."
+                  "meaning": "Auto detects the format from the first input filename and otherwise uses YAML."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -305,18 +334,23 @@
                     {
                       "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
                       "locator": "auto/a CLI defaults and format selection"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "initCommand handles automatic and explicit formats"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding."
         },
         {
           "argument": "NUMBER",
-          "detail": "Integer space count, without unit suffix. Positive values select that many spaces. YAML zero uses the pinned yaml.v3 encoder's four-space default and negative values are rejected by SetIndent. JSON and XML nonpositive values build an empty indentation string; this does not promise one-line XML or remove string/document content. The CLI sets this preference only for YAML/JSON/XML; other encoders do not acquire an indentation unit or rule from it. Reference scope: mikefarah/yq 4.44.3.",
+          "detail": "The default is 2. Use --indent 0 for compact JSON. For YAML, 4.44.3 uses four spaces at zero. Version 4.54.3 limits YAML indentation to 2 through 9 spaces and rejects negative input for every format.",
           "flag": "--indent",
-          "summary": "Set indentation spaces; zero depends on output encoder",
+          "summary": "Set output indentation in spaces",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -332,11 +366,11 @@
                     "id": "count",
                     "notation": "number",
                     "syntax": "N",
-                    "grammar": "Integer space count, without unit suffix. Positive values select that many spaces. YAML zero uses the pinned yaml.v3 encoder's four-space default and negative values are rejected by SetIndent. JSON and XML nonpositive values build an empty indentation string; this does not promise one-line XML or remove string/document content. The CLI sets this preference only for YAML/JSON/XML; other encoders do not acquire an indentation unit or rule from it.",
+                    "grammar": "With 4.44.3, YAML zero uses a four-space indent. Positive YAML widths outside 2 through 9 use two spaces. Negative YAML indentation is rejected by the encoder. JSON and XML use no indentation spaces for nonpositive values. This does not promise one-line XML. Other encoders ignore this setting in 4.44.3.",
                     "special_values": [
                       {
                         "value": "0",
-                        "meaning": "YAML uses four spaces; JSON/XML use no indentation spaces; this is encoder-specific"
+                        "meaning": "For 4.44.3, zero gives four spaces in YAML and no indentation spaces in JSON or XML."
                       }
                     ]
                   }
@@ -405,6 +439,10 @@
                     {
                       "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/encode.go",
                       "locator": "encoder.init maps zero to 4"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/emitterc.go",
+                      "locator": "yaml_emitter_emit_stream_start resets positive widths outside 2 through 9 to 2"
                     }
                   ]
                 },
@@ -416,23 +454,26 @@
         {
           "argument": "",
           "flag": "--prettyPrint",
-          "summary": "Use pretty output"
+          "summary": "Reset YAML styles for block output",
+          "detail": "After evaluating the expression, yq resets styles on the result. Inline maps and lists expand across lines in YAML output."
         },
         {
           "argument": "",
           "flag": "--unwrapScalar",
-          "summary": "Print scalar values without wrappers"
+          "summary": "Print a scalar as its raw value",
+          "detail": "A selected YAML string prints without its quotes, color or inline comment. YAML enables this by default. Use --unwrapScalar=false to keep scalar formatting."
         },
         {
           "argument": "",
           "flag": "--no-colors",
-          "summary": "Disable colored output"
+          "summary": "Disable colored output",
+          "detail": "Use for plain terminal output. Redirected output is normally plain already. An explicit --colors takes precedence."
         },
         {
           "argument": "EXPRESSION",
-          "detail": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 4.44.3.",
+          "detail": "Use when an expression also names an existing file. Pass the whole expression as one argument, such as --expression '.items[] | .name'.",
           "flag": "--expression",
-          "summary": "Supply an expression as one option value",
+          "summary": "Set the expression explicitly",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -465,7 +506,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "mikefarah/yq 4.44.3: a yq expression supplied as one option value; numbers inside expressions retain operator-dependent meaning",
+                    "grammar": "One yq expression. Operators determine the meaning of numbers within it.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -474,8 +515,8 @@
                 "grammar": {
                   "name": "mikefarah/yq expression grammar",
                   "reference": {
-                    "locator": "--indent integer flag/default 2 and compact JSON note",
-                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go"
+                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                    "locator": "processArgs uses the explicit expression before positional expression detection"
                   }
                 },
                 "kind": "delegated",
@@ -483,14 +524,18 @@
                 "review": {
                   "references": [
                     {
-                      "locator": "--indent integer flag/default 2 and compact JSON note",
-                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go"
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "processArgs uses the explicit expression before positional expression detection"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--expression flag"
                     }
                   ],
                   "status": "verified"
                 },
                 "when_absent": {
-                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "meaning": "Positional arguments determine the expression and input files.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -508,7 +553,7 @@
     "yq",
     "eval"
   ],
-  "description": "yq eval shell argument reference.",
+  "description": "Mike Farah's yq v4 evaluates each document in file order.",
   "identity": "mikefarah-yq-v4",
   "stop_at_positional": true
 }

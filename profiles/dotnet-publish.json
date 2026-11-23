@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Deployment targets, outputs and runtime selection.",
       "name": "Options",
       "options": [
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select build configuration",
+          "summary": "Choose the publish configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -69,13 +69,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "SDK 8 and later default to Release for projects targeting net8.0 or newer. Earlier targets normally use Debug. Project settings can override the default."
         },
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "--configuration",
-          "summary": "Select build configuration",
+          "summary": "Choose the publish configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -91,7 +92,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -136,13 +137,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "SDK 8 and later default to Release for projects targeting net8.0 or newer. Earlier targets normally use Debug. Project settings can override the default."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Select target framework",
+          "summary": "Publish for one target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -158,7 +160,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -203,13 +205,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Choose a framework declared in the project. Use -f to select which target of a multi-targeted project to publish."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "--framework",
-          "summary": "Select target framework",
+          "summary": "Publish for one target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -225,7 +228,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -270,13 +273,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Choose a framework declared in the project. Use -f to select which target of a multi-targeted project to publish."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "-r",
-          "summary": "Select runtime identifier",
+          "summary": "Publish for an OS and architecture",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -292,7 +296,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -337,13 +341,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Use a runtime identifier such as linux-x64. For apps targeting .NET 8 or newer, a RID alone does not bundle .NET. Add --self-contained to include it."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "--runtime",
-          "summary": "Select runtime identifier",
+          "summary": "Publish for an OS and architecture",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -359,7 +364,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -404,13 +409,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Use a runtime identifier such as linux-x64. For apps targeting .NET 8 or newer, a RID alone does not bundle .NET. Add --self-contained to include it."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output directory",
+          "summary": "Write deployment files to a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -426,7 +432,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the PublishDir property."
                   }
                 ],
                 "when_absent": {
@@ -463,20 +469,21 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-publish/PublishCommandParser.cs",
+                      "locator": "PublishDir option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative paths start at the working directory. Use separate folders for solution projects. In web projects, custom output outside the project tree avoids nested publish folders on later runs."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output directory",
+          "summary": "Write deployment files to a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -492,7 +499,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the PublishDir property."
                   }
                 ],
                 "when_absent": {
@@ -529,26 +536,28 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-publish/PublishCommandParser.cs",
+                      "locator": "PublishDir option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative paths start at the working directory. Use separate folders for solution projects. In web projects, custom output outside the project tree avoids nested publish folders on later runs."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-restore",
-          "summary": "Skip package restore"
+          "summary": "Skip the implicit NuGet restore",
+          "detail": "Restore first with the same target framework and runtime so the required assets are available."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -731,13 +740,14 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -920,25 +930,27 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--nologo",
-          "summary": "Suppress the startup banner"
+          "summary": "Hide the MSBuild startup banner"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-build",
-          "summary": "Skip compilation"
+          "summary": "Publish an existing build",
+          "detail": "Also skips restore. Build the same configuration, framework and runtime first."
         },
         {
           "argument": "[BOOL]",
           "argument_optional": true,
           "flag": "--self-contained",
-          "summary": "Include the runtime",
+          "summary": "Bundle the .NET runtime with the app",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1012,19 +1024,22 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "With no value this selects true. Use false for a framework-dependent deployment. The bundled runtime is specific to the target OS and architecture."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-self-contained",
-          "summary": "Omit the runtime"
+          "summary": "Publish a framework-dependent app",
+          "detail": "The target machine needs a compatible .NET runtime. A runtime identifier can still select platform-specific files."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--use-current-runtime",
-          "summary": "Use the current runtime identifier"
+          "summary": "Target the runtime of the SDK host",
+          "detail": "Uses the current runtime identifier. To publish for a different OS or architecture, supply its RID with --runtime."
         }
       ]
     }
@@ -1033,11 +1048,11 @@
     "dotnet",
     "publish"
   ],
-  "description": "Options for dotnet publish.",
+  "description": "Prepare application files for deployment.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+    "reviewed": "2026-11-22",
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-publish"
   },
   "stop_at_positional": false
 }

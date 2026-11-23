@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Project selection, build settings and launch profiles.",
       "name": "Options",
       "options": [
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -69,13 +69,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "--configuration",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -91,7 +92,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -136,13 +137,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Select target framework",
+          "summary": "Run one of the project’s target frameworks",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -158,7 +160,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -203,13 +205,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "A project targeting multiple frameworks requires -f. Use a declared moniker such as net9.0."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "--framework",
-          "summary": "Select target framework",
+          "summary": "Run one of the project’s target frameworks",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -225,7 +228,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -270,13 +273,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "A project targeting multiple frameworks requires -f. Use a declared moniker such as net9.0."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "-r",
-          "summary": "Select runtime identifier",
+          "summary": "Select runtime-specific assets for the app",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -292,7 +296,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -337,13 +341,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Use a runtime identifier such as linux-x64. The resulting application must be runnable on this machine."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "--runtime",
-          "summary": "Select runtime identifier",
+          "summary": "Select runtime-specific assets for the app",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -359,7 +364,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -404,13 +409,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Use a runtime identifier such as linux-x64. The resulting application must be runnable on this machine."
         },
         {
           "argument": "PROJECT",
           "argument_optional": false,
           "flag": "--project",
-          "summary": "Select project path",
+          "summary": "Choose the project to launch",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -470,13 +476,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass a project file or its directory. Without this option the SDK looks in the current directory."
         },
         {
           "argument": "NAME",
           "argument_optional": false,
           "flag": "--launch-profile",
-          "summary": "Select launch profile",
+          "summary": "Apply a named launch profile",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -492,7 +499,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Named launchSettings.json profile; digits are part of its name."
+                    "grammar": "A profile name from launchSettings.json."
                   }
                 ],
                 "when_absent": {
@@ -536,31 +543,35 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a profile from Properties/launchSettings.json to supply launch settings such as environment variables."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-launch-profile",
-          "summary": "Ignore launch profiles"
+          "summary": "Ignore launchSettings.json",
+          "detail": "Runs without the environment variables and other settings supplied by a launch profile."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-build",
-          "summary": "Skip compilation"
+          "summary": "Launch an existing build",
+          "detail": "Also skips restore. Build the selected configuration and target framework first."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-restore",
-          "summary": "Skip package restore"
+          "summary": "Skip the implicit NuGet restore",
+          "detail": "Restore first with the same target framework and runtime so the required assets are available."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Set logging detail",
+          "summary": "Set SDK logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -743,13 +754,14 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Controls CLI and build messages. Arguments for the application itself go after --."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Set SDK logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -932,7 +944,8 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Controls CLI and build messages. Arguments for the application itself go after --."
         }
       ]
     }
@@ -941,11 +954,11 @@
     "dotnet",
     "run"
   ],
-  "description": "Options for dotnet run.",
+  "description": "Build and launch an application. Place application arguments after --.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+    "reviewed": "2026-11-22",
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run"
   },
   "stop_at_positional": true
 }

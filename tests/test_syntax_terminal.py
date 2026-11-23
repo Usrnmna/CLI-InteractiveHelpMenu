@@ -59,6 +59,39 @@ class SyntaxScreenTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (expected, len(expected)))
         self.assertFalse(shell.executed.exists())
 
+    def test_extraction_overwrite_and_attached_destination_at_minimum_size(self):
+        """Find the collision policy and insert a destination before an archive operand."""
+        for executable in ("7z", "7zz"):
+            with self.subTest(executable=executable):
+                shell = self.start()
+                shell.text(executable + "() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                prefix, suffix = executable + " x ", " sample.zip"
+                shell.text(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.resize(60, 16)
+                shell.open_menu()
+                shell.keys("/")
+                shell.text("overwrite")
+                shell.keys("Enter")
+                found = shell.wait_for(lambda state: state.cells[2] == "Filter: overwrite")
+                self.assertIn("> -y ", found.cells[4])
+                shell.keys(*(["]"] * 16))
+                shell.wait_for(lambda state: "Use -aos to skip existing files." in " ".join(" ".join(state.cells[8:-3]).split()))
+                shell.cancel()
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+
+                menu = shell.open_menu()
+                self.assertIn("> -oDirectory", menu.cells[4])
+                shell.keys(*(["]"] * 32))
+                shell.wait_for(lambda state: "named after each archive." in " ".join(" ".join(state.cells[8:-3]).split()))
+                shell.cancel("Enter")
+                self.assertEqual(shell.read_buffer(), (prefix + "-o" + suffix, len(prefix + "-o")))
+                shell.text("'out dir'")
+                self.assertEqual(shell.read_buffer(), (prefix + "-o'out dir'" + suffix, len(prefix + "-o'out dir'")))
+                self.assertFalse(shell.executed.exists())
+
     def test_attached_only_insertion_retains_payload_and_does_not_execute(self):
         shell = self.start()
         profile = json.loads((ROOT / "profiles/7z-x.json").read_text())

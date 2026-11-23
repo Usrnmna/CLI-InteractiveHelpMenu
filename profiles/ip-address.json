@@ -1,20 +1,21 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Use show before listing filters.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "show",
           "kind": "keyword",
-          "summary": "Display the selected objects"
+          "summary": "List interface addresses",
+          "detail": "With no arguments, ip address lists addresses on all interfaces. Use show before listing filters."
         },
         {
           "argument": "IFNAME",
           "flag": "dev",
           "kind": "keyword",
-          "summary": "Select the network interface",
+          "summary": "Show addresses on one interface",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -75,14 +76,15 @@
                 "subject": "Network interfaces"
               }
             ]
-          }
+          },
+          "detail": "Use dev lo to list addresses assigned to the loopback interface."
         },
         {
           "argument": "SCOPE",
-          "detail": "iproute2 6.13.0: the numeric form identifies address-scope ids, not a count, percentage or measurement. Alternatives include scope names such as global, link and host. Name mappings are configuration-dependent.",
+          "detail": "Use host for this host, link for the attached link, or global for wider scope. A numeric scope ID also works.",
           "flag": "scope",
           "kind": "keyword",
-          "summary": "Filter address scope",
+          "summary": "Match the scope of an address",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -155,10 +157,10 @@
         },
         {
           "argument": "PREFIX",
-          "detail": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+          "detail": "With to 192.0.2.0/24, any local address in that subnet matches. A bare IP address matches that host address.",
           "flag": "to",
           "kind": "keyword",
-          "summary": "Filter the address prefix",
+          "summary": "Show local addresses within a prefix",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -325,7 +327,7 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
                     "id": "joined",
                     "notation": "expression",
                     "syntax": "ADDRESS[/PREFIXLEN]"
@@ -359,13 +361,13 @@
           "argument": "PATTERN",
           "flag": "label",
           "kind": "keyword",
-          "summary": "Match interface labels",
+          "summary": "Match an address label",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "nonnumerical",
-                "meaning": "Interface label pattern",
+                "meaning": "Address label pattern",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -419,25 +421,29 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a shell-style pattern. Quote it, as in label 'eth0:*', so Bash passes the wildcard to ip."
         },
         {
           "argument": "",
           "flag": "up",
           "kind": "keyword",
-          "summary": "Select running interfaces"
+          "summary": "Show addresses on administratively up interfaces",
+          "detail": "An interface can be up even when it has no carrier."
         },
         {
           "argument": "",
           "flag": "dynamic",
           "kind": "keyword",
-          "summary": "Select dynamically configured addresses"
+          "summary": "Show addresses without the permanent flag",
+          "detail": "IPv6 stateless autoconfiguration is one source of dynamic addresses. The flag alone does not identify how the address was assigned."
         },
         {
           "argument": "",
           "flag": "permanent",
           "kind": "keyword",
-          "summary": "Select permanent addresses"
+          "summary": "Show addresses marked permanent",
+          "detail": "This selects the opposite set from dynamic. Use ip -6 address show permanent to limit the listing to IPv6."
         }
       ]
     }
@@ -446,6 +452,6 @@
     "ip",
     "address"
   ],
-  "description": "ip address listing and filter argument reference.",
+  "description": "List IPv4 and IPv6 addresses assigned to interfaces.",
   "stop_at_positional": true
 }

@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "VSTest selection, execution and reports.",
       "name": "Options",
       "options": [
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -69,13 +69,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "CONFIGURATION",
           "argument_optional": false,
           "flag": "--configuration",
-          "summary": "Select build configuration",
+          "summary": "Choose the build configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -91,7 +92,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Project-defined Configuration property, commonly Debug or Release; it is an open project property rather than a fixed numerical level."
+                    "grammar": "An MSBuild Configuration name defined by the project, such as Debug or Release."
                   }
                 ],
                 "when_absent": {
@@ -136,13 +137,14 @@
                 "subject": "MSBuild configurations"
               }
             ]
-          }
+          },
+          "detail": "Most projects default to Debug. Use Release or another configuration defined by the project."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Select target framework",
+          "summary": "Test one target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -158,7 +160,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -203,13 +205,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Use a framework declared in the project. By default VSTest runs all target frameworks of a multi-targeted project."
         },
         {
           "argument": "FRAMEWORK",
           "argument_optional": false,
           "flag": "--framework",
-          "summary": "Select target framework",
+          "summary": "Test one target framework",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -225,7 +228,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Target framework moniker supplied as TargetFramework, for example net9.0; version digits identify a framework and are not a decimal measurement."
+                    "grammar": "A target framework moniker from the project, such as net9.0."
                   }
                 ],
                 "when_absent": {
@@ -270,13 +273,14 @@
                 "subject": "Target framework monikers"
               }
             ]
-          }
+          },
+          "detail": "Use a framework declared in the project. By default VSTest runs all target frameworks of a multi-targeted project."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "-r",
-          "summary": "Select runtime identifier",
+          "summary": "Select the target runtime for tests",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -292,7 +296,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -337,13 +341,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Supply a RID such as linux-x64. Since SDK 7, -r selects the runtime. Use --results-directory for test reports."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "--runtime",
-          "summary": "Select runtime identifier",
+          "summary": "Select the target runtime for tests",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -359,7 +364,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "An OS and architecture identifier, such as linux-x64, passed as RuntimeIdentifier."
                   }
                 ],
                 "when_absent": {
@@ -404,13 +409,14 @@
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Supply a RID such as linux-x64. Since SDK 7, -r selects the runtime. Use --results-directory for test reports."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output directory",
+          "summary": "Set the test binary directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -426,7 +432,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the OutputPath property."
                   }
                 ],
                 "when_absent": {
@@ -463,20 +469,21 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "OutputPath option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "VSTest runs the assemblies from this directory. Use -f for multi-targeted projects. To move reports, use --results-directory."
         },
         {
           "argument": "OUTPUT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output directory",
+          "summary": "Set the test binary directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -492,7 +499,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path forwarded to the relevant build/publish/test output property; project structure and command restrictions still apply."
+                    "grammar": "A directory path forwarded to the OutputPath property."
                   }
                 ],
                 "when_absent": {
@@ -529,26 +536,28 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-build/BuildCommandParser.cs",
-                      "locator": "OutputOption forwarding; publish/test command parser equivalents"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "OutputPath option forwarding"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "VSTest runs the assemblies from this directory. Use -f for multi-targeted projects. To move reports, use --results-directory."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-restore",
-          "summary": "Skip package restore"
+          "summary": "Skip the implicit NuGet restore",
+          "detail": "Restore first with the same target framework and runtime so the required assets are available."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Set logging detail",
+          "summary": "Set test command logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -731,13 +740,14 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "For console test output, configure the logger separately, as in --logger \"console;verbosity=detailed\"."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Set test command logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -920,26 +930,28 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "For console test output, configure the logger separately, as in --logger \"console;verbosity=detailed\"."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--nologo",
-          "summary": "Suppress the startup banner"
+          "summary": "Hide the VSTest startup banner"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-build",
-          "summary": "Skip compilation"
+          "summary": "Run previously built test assemblies",
+          "detail": "Also skips restore. The selected configuration, framework and output path must contain the test binaries."
         },
         {
           "argument": "EXPRESSION",
           "argument_optional": false,
-          "detail": "The pinned SDK forwards the expression as MSBuild VSTestTestCaseFilter. The selected test adapter defines properties; VSTest expressions use property/operator/value clauses, =, !=, ~ or !~, and &/| grouping. Property values are names or adapter-defined values, without one numerical unit. Alternative project/test-runner integrations retain their own interpretation of the forwarded property. Reference scope: .NET SDK 9.0.200.",
+          "detail": "Quote compound expressions, as in --filter 'FullyQualifiedName~Parser&TestCategory!=Slow'. Available properties depend on the test adapter.",
           "flag": "--filter",
-          "summary": "Filter test cases",
+          "summary": "Run tests matching a VSTest expression",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -955,7 +967,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "The pinned SDK forwards the expression as MSBuild VSTestTestCaseFilter. The selected test adapter defines properties; VSTest expressions use property/operator/value clauses, =, !=, ~ or !~, and &/| grouping. Property values are names or adapter-defined values, without one numerical unit. Alternative project/test-runner integrations retain their own interpretation of the forwarded property."
+                    "grammar": "The SDK forwards VSTestTestCaseFilter. The adapter defines the properties. Compare values with =, !=, ~ or !~. Combine clauses with & or | and group them with parentheses."
                   }
                 ],
                 "when_absent": {
@@ -996,7 +1008,7 @@
                       "locator": "FilterOption forwarding to VSTestTestCaseFilter"
                     },
                     {
-                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=dotnet-test-with-vstest#filter-option-details",
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest#filter-option-details",
                       "locator": "Filter option details and adapter-specific properties; pinned SDK forwarding is the applicability boundary"
                     }
                   ]
@@ -1016,7 +1028,7 @@
           "argument": "LOGGER",
           "argument_optional": false,
           "flag": "--logger",
-          "summary": "Select a test logger",
+          "summary": "Choose a test-results logger",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1032,7 +1044,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Logger name or URI with optional semicolon-separated logger parameters; parameter values follow that logger's grammar, without one universal unit."
+                    "grammar": "A logger name or URI followed by optional semicolon-separated parameters."
                   }
                 ],
                 "when_absent": {
@@ -1083,13 +1095,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use --logger \"trx;LogFilePrefix=tests\" for separate TRX files per target framework. A fixed LogFileName can overwrite earlier results. Repeat the option for multiple loggers."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--results-directory",
-          "summary": "Set results directory",
+          "summary": "Write test results to a directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1149,13 +1162,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "VSTest creates the directory if needed. The default is TestResults under the test project. Use --logger trx to write a TRX report."
         },
         {
           "argument": "COLLECTOR",
           "argument_optional": false,
           "flag": "--collect",
-          "summary": "Enable a data collector",
+          "summary": "Enable a VSTest data collector",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1222,13 +1236,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote names containing spaces. Use --collect \"XPlat Code Coverage\" with the Coverlet collector installed in the test project."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--list-tests",
-          "summary": "List discovered tests"
+          "summary": "List discovered tests without running them",
+          "detail": "VSTest loads the test assembly and adapter during discovery. Add --no-build to use an existing assembly."
         }
       ]
     }
@@ -1237,11 +1253,11 @@
     "dotnet",
     "test"
   ],
-  "description": "Options for dotnet test. VSTest command syntax. Microsoft.Testing.Platform mode has different options and requires installed help review.",
+  "description": "Build and run tests with VSTest. Microsoft.Testing.Platform mode uses different options.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+    "reviewed": "2026-11-22",
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest"
   },
   "stop_at_positional": false
 }

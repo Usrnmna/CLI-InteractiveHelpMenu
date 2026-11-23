@@ -1,33 +1,37 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Digest algorithm, output and signatures.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "-sha256",
-          "summary": "Select SHA-256"
+          "summary": "Use the SHA-256 digest",
+          "detail": "The default for ordinary hashing. Produces 32 bytes, or 64 hexadecimal digits."
         },
         {
           "argument": "",
           "flag": "-sha512",
-          "summary": "Select SHA-512"
+          "summary": "Use the SHA-512 digest",
+          "detail": "Produces 64 bytes, or 128 hexadecimal digits."
         },
         {
           "argument": "",
           "flag": "-hex",
-          "summary": "Use hexadecimal output"
+          "summary": "Write the result in hexadecimal",
+          "detail": "The default for an ordinary digest. For -signature, supply the original binary signature bytes."
         },
         {
           "argument": "",
           "flag": "-binary",
-          "summary": "Use binary output"
+          "summary": "Write raw digest or signature bytes",
+          "detail": "Signing normally produces binary output. Use -out FILE to save the bytes."
         },
         {
           "argument": "FILE",
           "flag": "-out",
-          "summary": "Write the output",
+          "summary": "Write the digest or signature to a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -87,18 +91,19 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Without -out, the result goes to standard output."
         },
         {
           "argument": "FILE",
           "flag": "-sign",
-          "summary": "Sign using a private key",
+          "summary": "Sign one input with a private key",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "nonnumerical",
-                "meaning": "Signing private-key file",
+                "meaning": "Signing private key",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -108,7 +113,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Private-key filename for signature creation; not a numeric signing level."
+                    "grammar": "Private-key file or supported key URI for signature creation."
                   }
                 ],
                 "when_absent": {
@@ -152,12 +157,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Give the private key file or URI and use -out to save the binary signature. For Ed25519 or Ed448, Ubuntu 26.04 accepts the message with no digest flag. Ubuntu 24.04 requires pkeyutl instead."
         },
         {
           "argument": "FILE",
           "flag": "-verify",
-          "summary": "Verify using a public key",
+          "summary": "Verify a signature with a public key",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -217,12 +223,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply the binary signature with -signature and the original message as input. A match prints Verified OK and exits zero. This checks the signature only."
         },
         {
           "argument": "FILE",
           "flag": "-signature",
-          "summary": "Read the signature",
+          "summary": "Read the binary signature to verify",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -282,12 +289,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass the signature file here and the original message as a separate input. Convert a hex dump back to bytes before verification."
         },
         {
           "argument": "KEY",
           "flag": "-hmac",
-          "summary": "Compute an HMAC",
+          "summary": "Compute a keyed digest with HMAC",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -347,12 +355,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The argument is the literal key text. A value such as ab12 supplies four characters. Use the same key and digest to reproduce the result."
         },
         {
           "argument": "",
           "flag": "-r",
-          "summary": "Use coreutils output format"
+          "summary": "Print a coreutils-style checksum line",
+          "detail": "For file input, the hexadecimal digest is followed by a space, an asterisk and the filename."
         }
       ]
     }
@@ -361,5 +371,5 @@
     "openssl",
     "dgst"
   ],
-  "description": "openssl dgst shell argument reference."
+  "description": "Hash input data, compute an HMAC or sign and verify a message."
 }

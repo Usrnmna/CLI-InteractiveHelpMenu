@@ -4,7 +4,7 @@
     "stash",
     "show"
   ],
-  "description": "Options for git stash show.",
+  "description": "Show the changes a stash saved against its base commit. Defaults to the latest stash.",
   "categories": [
     {
       "name": "Options",
@@ -14,19 +14,22 @@
           "flag": "-p",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show a patch"
+          "summary": "Show the stashed changes as a patch",
+          "detail": "Compare the saved working tree with the commit on which the stash was based."
         },
         {
           "flag": "--patch",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show a patch"
+          "summary": "Show the stashed changes as a patch",
+          "detail": "Compare the saved working tree with the commit on which the stash was based."
         },
         {
           "flag": "--stat",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show change statistics"
+          "summary": "Summarize changes by file",
+          "detail": "The default display is a diffstat unless stash.showStat or stash.showPatch changes it."
         },
         {
           "flag": "--name-only",
@@ -38,31 +41,35 @@
           "flag": "--name-status",
           "argument": "",
           "argument_optional": false,
-          "summary": "List paths and change status"
+          "summary": "List changed paths with their status",
+          "detail": "Status letters distinguish additions, deletions and modifications."
         },
         {
           "flag": "-u",
           "argument": "",
           "argument_optional": false,
-          "summary": "Include untracked changes"
+          "summary": "Show saved untracked files too",
+          "detail": "Includes files recorded when the stash was created with -u or -a. stash.showIncludeUntracked can enable this by default."
         },
         {
           "flag": "--include-untracked",
           "argument": "",
           "argument_optional": false,
-          "summary": "Include untracked changes"
+          "summary": "Show saved untracked files too",
+          "detail": "Includes files recorded when the stash was created with -u or -a. stash.showIncludeUntracked can enable this by default."
         },
         {
           "flag": "--only-untracked",
           "argument": "",
           "argument_optional": false,
-          "summary": "Show only untracked changes"
+          "summary": "Show only the saved untracked files"
         },
         {
           "flag": "--binary",
           "argument": "",
           "argument_optional": false,
-          "summary": "Generate binary patches"
+          "summary": "Include applicable binary patches",
+          "detail": "Implies --patch and includes binary changes in a form git apply can use."
         }
       ]
     }
@@ -70,7 +77,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-stash",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "kind": "curated subset; not an installed-version guarantee"
   }
 }

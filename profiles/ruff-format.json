@@ -1,27 +1,29 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Formatting style, input files and change reporting.",
       "name": "Options",
       "options": [
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--check",
-          "summary": "Check formatting without writing"
+          "summary": "Check formatting without writing",
+          "detail": "Exit 1 if any file would change, 0 if all are formatted, or 2 on an error. Use --diff to see the edits as a patch."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--diff",
-          "summary": "Display formatting changes"
+          "summary": "Show a formatting diff without writing",
+          "detail": "Print a unified diff to standard output. Exit 1 when formatting would change a file and 0 when no changes are needed."
         },
         {
           "argument": "LENGTH",
           "argument_optional": false,
-          "detail": "Ruff 0.11.13: LENGTH is an integer from 1 through 320; the default is 88 unless configured. Most characters count as one, while East Asian characters and emoji use Unicode width. This is not a UTF-8 byte count. The formatter treats it as a preferred width, not a hard upper bound.",
+          "detail": "The default is 88. Long lines can remain. Ruff 0.11.13 accepts 1 through 320. Ruff 0.17.6 accepts 1 through 65535. Width uses characters and their Unicode display widths.",
           "flag": "--line-length",
-          "summary": "Set preferred line width using Unicode character widths",
+          "summary": "Set the preferred Unicode line width",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -74,8 +76,80 @@
                 "review": {
                   "references": [
                     {
-                      "locator": "Options.line_length: Unicode width, 1-320, default 88",
-                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs"
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_linter/src/line_width.rs",
+                      "locator": "LineLength integer bounds and default"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+                      "locator": "line-length Unicode width and wrapping preference"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use configured line-length, default 88 in this reference",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "width",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "bounds": {
+                      "max": "65535",
+                      "min": "1"
+                    },
+                    "id": "width",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "custom",
+                      "definition": "Characters normally count as one; East Asian characters and emoji use Unicode display width",
+                      "multiplier": "1",
+                      "name": "Ruff width units"
+                    }
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "Preferred formatted line width",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_linter/src/line_width.rs",
+                      "locator": "LineLength integer bounds and default"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_workspace/src/options.rs",
+                      "locator": "line-length Unicode width and wrapping preference"
                     }
                   ],
                   "status": "verified"
@@ -95,9 +169,9 @@
         {
           "argument": "VERSION",
           "argument_optional": false,
-          "detail": "Ruff 0.11.13: use the literal Python release IDs py37, py38, py39, py310, py311, py312 or py313. For example, py310 identifies Python 3.10; it is not a decimal value or physical quantity. Without this override, configuration/project inference applies; the documented setting default is py39.",
+          "detail": "Use py310 for Python 3.10. Ruff 0.11.13 accepts py37 through py314 and defaults to py39. Ruff 0.17.6 adds py315 and defaults to py311. Project configuration or requires-python can supply the target.",
           "flag": "--target-version",
-          "summary": "Select Python target version",
+          "summary": "Set the oldest Python version to support",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -132,9 +206,9 @@
                   {
                     "case": "sensitive",
                     "id": "python-version",
-                    "meaning": "Python 3.7 through 3.13 release identifiers; py310 means Python 3.10, not a scaled number",
+                    "meaning": "Minimum Python language release, for example py310 for Python 3.10",
                     "notation": "literal",
-                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313",
+                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313 | py314",
                     "tokens": [
                       "py37",
                       "py38",
@@ -142,7 +216,8 @@
                       "py310",
                       "py311",
                       "py312",
-                      "py313"
+                      "py313",
+                      "py314"
                     ]
                   }
                 ],
@@ -151,15 +226,91 @@
                 "review": {
                   "references": [
                     {
-                      "locator": "target_version setting, accepted py37-py313 values, py39 default and project inference",
-                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs"
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/docs/configuration.md",
+                      "locator": "CLI possible values for --target-version and Python version inference"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+                      "locator": "target-version default"
                     }
                   ],
                   "status": "verified"
                 },
                 "subject": "Python language versions",
                 "when_absent": {
-                  "meaning": "Use configuration/project-version inference; the documented setting default is py39",
+                  "meaning": "Use the configured or inferred project target. The fallback in Ruff 0.11.13 is py39.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Use one of the literal py-prefixed release identifiers",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "python-version",
+                    "meaning": "Minimum Python language release, for example py310 for Python 3.10",
+                    "notation": "literal",
+                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313 | py314 | py315",
+                    "tokens": [
+                      "py37",
+                      "py38",
+                      "py39",
+                      "py310",
+                      "py311",
+                      "py312",
+                      "py313",
+                      "py314",
+                      "py315"
+                    ]
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Minimum Python language version targeted by Ruff",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/docs/configuration.md",
+                      "locator": "CLI possible values for --target-version and Python version inference"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_workspace/src/options.rs",
+                      "locator": "target-version default"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Python language versions",
+                "when_absent": {
+                  "meaning": "Use the configured or inferred project target. The fallback in Ruff 0.17.6 is py311.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -174,7 +325,7 @@
           "argument": "EXTENSION",
           "argument_optional": false,
           "flag": "--extension",
-          "summary": "Associate an extension with a language",
+          "summary": "Choose a language for a file extension",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -239,15 +390,78 @@
                     "locator": "ExtensionPair::from_str and Language::from_str"
                   }
                 }
+              },
+              {
+                "kind": "delegated",
+                "meaning": "Extension-to-language mapping",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated extension:language pairs, such as ipy:ipynb. Ruff 0.17.6 accepts python, pyi, ipynb and md (Markdown). Language names are case-insensitive."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the standard file-extension mapping plus configured extensions."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_linter/src/settings/types.rs",
+                      "locator": "Language::from_str and ExtensionPair::from_str"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Extension-to-language mapping",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_linter/src/settings/types.rs",
+                    "locator": "Language::from_str and ExtensionPair::from_str"
+                  }
+                }
               }
             ]
-          }
+          },
+          "detail": "Use colon-separated pairs such as ipy:ipynb or tmpl:python. The Python language token is python, not py. Ruff 0.17.6 also accepts md for Markdown code blocks."
         },
         {
           "argument": "PATTERNS",
           "argument_optional": false,
           "flag": "--exclude",
-          "summary": "Exclude paths",
+          "summary": "Skip paths matching these glob patterns",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -307,13 +521,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use comma-separated globs. Quote them so the shell passes them to Ruff. An explicitly named file still runs unless --force-exclude is set. Use --extend-exclude to add to existing exclusions."
         },
         {
           "argument": "PATH",
           "argument_optional": false,
           "flag": "--stdin-filename",
-          "summary": "Set the standard input filename",
+          "summary": "Give standard input a filename for formatting",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -373,20 +588,22 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use --stdin-filename module.pyi - to format piped text as a stub. The filename supplies context and formatted text goes to standard output."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable caching"
+          "summary": "Skip reading cached results",
+          "detail": "Process the selected files again. Existing cache files are left in place."
         },
         {
           "argument": "CONFIG",
           "argument_optional": false,
-          "detail": "Ruff 0.11.13: a configuration-file path or a TOML KEY=VALUE override; numerical meaning belongs to the selected setting. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 0.11.13.",
+          "detail": "Pass a file path or a quoted TOML assignment such as --config \"line-length = 100\". Assignments override configuration files. A dedicated command-line flag takes precedence.",
           "flag": "--config",
-          "summary": "Set configuration path or a setting",
+          "summary": "Load a TOML file or override a setting",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -459,31 +676,36 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--isolated",
-          "summary": "Ignore configuration files"
+          "summary": "Ignore configuration files",
+          "detail": "Use Ruff’s defaults and any explicit command-line settings. Inline --config assignments still apply."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Reduce output"
+          "summary": "Suppress the formatting summary",
+          "detail": "Formatting checks can still report files that need changes, and --diff still prints patches."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Reduce output"
+          "summary": "Suppress the formatting summary",
+          "detail": "Formatting checks can still report files that need changes, and --diff still prints patches."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Increase output detail"
+          "summary": "Show detailed logging",
+          "detail": "Include debug messages about configuration and file discovery."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "Show detailed logging",
+          "detail": "Include debug messages about configuration and file discovery."
         }
       ]
     }
@@ -492,10 +714,10 @@
     "ruff",
     "format"
   ],
-  "description": "Options for ruff format.",
+  "description": "Format Python files in place or preview the changes.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface"
   },
   "stop_at_positional": false

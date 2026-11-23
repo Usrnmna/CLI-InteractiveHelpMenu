@@ -4,7 +4,7 @@
     "worktree",
     "remove"
   ],
-  "description": "Options for git worktree remove.",
+  "description": "Delete a linked working directory and its registration.",
   "categories": [
     {
       "name": "Options",
@@ -14,13 +14,15 @@
           "flag": "-f",
           "argument": "",
           "argument_optional": false,
-          "summary": "Allow removal of unclean or locked worktrees"
+          "summary": "Allow removal of a dirty linked worktree",
+          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice."
         },
         {
           "flag": "--force",
           "argument": "",
           "argument_optional": false,
-          "summary": "Allow removal of unclean or locked worktrees"
+          "summary": "Allow removal of a dirty linked worktree",
+          "detail": "Removal deletes the working directory, including uncommitted files. Force is also required for a worktree with submodules. A locked worktree requires --force twice."
         }
       ]
     }
@@ -28,7 +30,7 @@
   "stop_at_positional": false,
   "documentation": {
     "source": "https://git-scm.com/docs/git-worktree",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "kind": "curated subset; not an installed-version guarantee"
   }
 }

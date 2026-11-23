@@ -83,7 +83,8 @@ class NumericalDebtResolutionTests(unittest.TestCase):
         node = self.node("openssl-s_client", "-verify")
         self.assertEqual(node["forms"][0]["bounds"]["min"], fact["minimum"])
         self.assertFalse(any(value["value"] == "0" for form in node["forms"] for value in form.get("special_values", [])))
-        self.assert_accessible("openssl-s_client", "-verify", ["zero", "rejected", fact["subject"], *fact["excluded_certificates"]], search_only=[fact["version"]])
+        self.assertEqual(node["subject"], fact["subject"])
+        self.assert_accessible("openssl-s_client", "-verify", ["zero", "rejected", "decimal", fact["chain_limit_option"], *fact["excluded_certificates"]], search_only=[fact["version"]])
         profile, _, option = self.entry("openssl-s_client", "-verify")
         browser = Browser(profile, "-verify")
         screen = FakeScreen(24, 160)
@@ -169,7 +170,9 @@ class NumericalDebtResolutionTests(unittest.TestCase):
             node = self.node("dotnet-build", flag)
             self.assertEqual(node["kind"], self.facts["dotnet"][kind])
             self.assertTrue(all("unit" not in form for form in node["forms"]))
-        self.assert_accessible("dotnet-test", "--filter", [self.facts["dotnet"]["filter_property"], "adapter", "without one numerical unit"])
+        self.assertEqual(self.node("dotnet-test", "--filter")["kind"], "delegated")
+        self.assert_accessible("dotnet-test", "--filter",
+                               [self.facts["dotnet"]["filter_property"], "adapter", "!~", "FullyQualifiedName~Parser"])
         self.assert_accessible("az-account-show", "--query", ["zero", "negative", "installed JMESPath library", "physical unit"])
         ruff = self.facts["ruff"]
         self.assert_accessible("ruff-format", "--extension", [*ruff["extension_languages"], "not py", "colon-separated"])

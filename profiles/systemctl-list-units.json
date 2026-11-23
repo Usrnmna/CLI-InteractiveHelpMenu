@@ -1,18 +1,20 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Unit selection and table output.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--user",
-          "summary": "Use the user service manager"
+          "summary": "Use the current user’s service manager",
+          "detail": "Selects units managed for the calling user."
         },
         {
           "argument": "",
           "flag": "--system",
-          "summary": "Use the system service manager"
+          "summary": "Use the system service manager",
+          "detail": "This is the default manager."
         },
         {
           "argument": "",
@@ -22,22 +24,25 @@
         {
           "argument": "",
           "flag": "--no-legend",
-          "summary": "Omit column legends"
+          "summary": "Hide the table header and footer",
+          "detail": "Equivalent to --legend=no. The unit rows remain visible."
         },
         {
           "argument": "",
           "flag": "--full",
-          "summary": "Display complete unit names and descriptions"
+          "summary": "Print full unit names and descriptions",
+          "detail": "Long text can extend beyond the terminal width."
         },
         {
           "argument": "",
           "flag": "--all",
-          "summary": "Include inactive units"
+          "summary": "Include inactive units held in memory",
+          "detail": "Also includes units that follow another unit. Use list-unit-files to see installed files, including uninstantiated templates."
         },
         {
           "argument": "TYPE",
           "flag": "--type=",
-          "summary": "Filter units by type",
+          "summary": "List units of the selected types",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -97,12 +102,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Give a comma-separated list such as service,timer. Use help for the installed type names. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "STATE",
           "flag": "--state=",
-          "summary": "Filter units by state",
+          "summary": "List units matching any selected state",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -162,18 +168,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a load state (masked), active state (failed) or substate (running). Separate alternatives with commas. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "",
           "flag": "--plain",
-          "summary": "Use plain output"
+          "summary": "Omit the status symbols beside unit names",
+          "detail": "The text columns still show load, active and substate values."
         },
         {
           "argument": "LINES",
-          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows.",
+          "detail": "The unit table has no row limit controlled by --lines=.",
           "flag": "--lines=",
-          "summary": "Set status journal-line count; 0 hides journal output",
+          "summary": "Set the journal count for status only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -251,13 +259,13 @@
         {
           "argument": "FORMAT",
           "flag": "--output=",
-          "summary": "Select journal output format",
+          "summary": "Choose JSON output for the unit table",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "enumeration",
-                "meaning": "Status journal output representation",
+                "meaning": "Unit table output format",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -271,7 +279,7 @@
                       "short"
                     ],
                     "case": "sensitive",
-                    "meaning": "Classic syslog-style output"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-2",
@@ -281,7 +289,7 @@
                       "short-full"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output with complete timestamp"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-3",
@@ -291,7 +299,7 @@
                       "short-iso"
                     ],
                     "case": "sensitive",
-                    "meaning": "ISO-style timestamps"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-4",
@@ -301,7 +309,7 @@
                       "short-iso-precise"
                     ],
                     "case": "sensitive",
-                    "meaning": "ISO timestamps with microsecond precision"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-5",
@@ -311,7 +319,7 @@
                       "short-precise"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output with microsecond timestamps"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-6",
@@ -321,7 +329,17 @@
                       "short-monotonic"
                     ],
                     "case": "sensitive",
-                    "meaning": "Monotonic timestamps"
+                    "meaning": "Standard text unit table"
+                  },
+                  {
+                    "id": "short-delta",
+                    "notation": "literal",
+                    "syntax": "short-delta",
+                    "tokens": [
+                      "short-delta"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-7",
@@ -331,7 +349,7 @@
                       "short-unix"
                     ],
                     "case": "sensitive",
-                    "meaning": "Epoch-second timestamps"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-8",
@@ -341,7 +359,7 @@
                       "verbose"
                     ],
                     "case": "sensitive",
-                    "meaning": "All journal fields"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-9",
@@ -351,7 +369,7 @@
                       "export"
                     ],
                     "case": "sensitive",
-                    "meaning": "Journal export serialization"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-10",
@@ -361,7 +379,7 @@
                       "json"
                     ],
                     "case": "sensitive",
-                    "meaning": "JSON records"
+                    "meaning": "Compact JSON array of units"
                   },
                   {
                     "id": "choice-11",
@@ -371,7 +389,7 @@
                       "json-pretty"
                     ],
                     "case": "sensitive",
-                    "meaning": "Indented JSON"
+                    "meaning": "Indented JSON array of units"
                   },
                   {
                     "id": "choice-12",
@@ -381,7 +399,7 @@
                       "json-sse"
                     ],
                     "case": "sensitive",
-                    "meaning": "Server-sent-event JSON"
+                    "meaning": "Unit table in a JSON server-sent event"
                   },
                   {
                     "id": "choice-13",
@@ -391,7 +409,7 @@
                       "json-seq"
                     ],
                     "case": "sensitive",
-                    "meaning": "JSON text sequences"
+                    "meaning": "Unit table in a JSON text sequence"
                   },
                   {
                     "id": "choice-14",
@@ -401,7 +419,7 @@
                       "cat"
                     ],
                     "case": "sensitive",
-                    "meaning": "Message text only"
+                    "meaning": "Standard text unit table"
                   },
                   {
                     "id": "choice-15",
@@ -411,12 +429,12 @@
                       "with-unit"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output including unit identity"
+                    "meaning": "Standard text unit table"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use short journal output where the command displays journal lines; other output is unaffected."
+                  "meaning": "Print the standard text unit table."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -448,14 +466,23 @@
                   "status": "verified",
                   "references": [
                     {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "Output modes, including short-delta"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/systemctl/systemctl-util.c",
+                      "locator": "output_table"
+                    },
+                    {
                       "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--output only affects journal output"
+                      "locator": "--output= and status"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Use --output=json for machine-readable rows or json-pretty for indented output. Journal text modes leave the ordinary table in place."
         }
       ]
     }
@@ -464,5 +491,5 @@
     "systemctl",
     "list-units"
   ],
-  "description": "systemctl list-units shell argument reference."
+  "description": "List units in memory. By default, show active units, failed units and units with pending jobs."
 }

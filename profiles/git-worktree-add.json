@@ -8,25 +8,28 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Allow a normally refused worktree"
+          "summary": "Override checks on the branch or path",
+          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--force",
-          "summary": "Allow a normally refused worktree"
+          "summary": "Override checks on the branch or path",
+          "detail": "Allows a branch checked out elsewhere or a registered path whose directory is missing. Reusing a missing, locked path requires --force twice."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--detach",
-          "summary": "Detach the new HEAD"
+          "summary": "Check out a commit with detached HEAD",
+          "detail": "Use the specified commit, or HEAD by default, without checking out a branch."
         },
         {
           "argument": "BRANCH",
           "argument_optional": false,
           "flag": "-b",
-          "summary": "Create a new branch",
+          "summary": "Create and check out a new branch",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -87,13 +90,14 @@
                 "subject": "Git branch references"
               }
             ]
-          }
+          },
+          "detail": "Starts at the supplied commit or HEAD. The branch name must be new."
         },
         {
           "argument": "BRANCH",
           "argument_optional": false,
           "flag": "-B",
-          "summary": "Create or reset a branch",
+          "summary": "Create or reset a branch and check it out",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -154,31 +158,35 @@
                 "subject": "Git branch references"
               }
             ]
-          }
+          },
+          "detail": "An existing branch is reset to the supplied start point, or to HEAD if omitted."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--checkout",
-          "summary": "Populate the new working tree"
+          "summary": "Populate the new working tree",
+          "detail": "Initial checkout is the default."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-checkout",
-          "summary": "Skip initial checkout"
+          "summary": "Skip the initial checkout",
+          "detail": "Creates the worktree without populating its files, allowing setup such as sparse checkout first."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--lock",
-          "summary": "Lock the new working tree"
+          "summary": "Lock the worktree as it is created",
+          "detail": "Protects its registration against pruning while the directory is unavailable. Use --reason to record why."
         },
         {
           "argument": "REASON",
           "argument_optional": false,
           "flag": "--reason",
-          "summary": "Describe why the worktree is locked",
+          "summary": "Record a reason for the worktree lock",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -238,19 +246,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Requires --lock on add. Quote a multiword reason as one argument."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Suppress progress messages"
+          "summary": "Suppress worktree creation feedback"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Suppress progress messages"
+          "summary": "Suppress worktree creation feedback"
         }
       ]
     }
@@ -260,10 +269,10 @@
     "worktree",
     "add"
   ],
-  "description": "Options for git worktree add.",
+  "description": "Create a linked working tree at the specified path.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://git-scm.com/docs/git-worktree"
   },
   "stop_at_positional": false

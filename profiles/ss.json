@@ -1,24 +1,26 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Socket selection and output options.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--all",
-          "summary": "Display listening and connected sockets"
+          "summary": "Show listening and non-listening sockets",
+          "detail": "Listeners are normally omitted. Add --tcp or --udp to limit the socket tables."
         },
         {
           "argument": "",
           "flag": "--listening",
-          "summary": "Display listening sockets"
+          "summary": "Display listening sockets",
+          "detail": "Also includes unconnected UDP sockets when used with --udp."
         },
         {
           "argument": "",
-          "detail": "iproute2 6.13.0: printed addresses and ports identify endpoints, not speeds or sizes. The flag takes no numerical operand.",
+          "detail": "Also prints exact bandwidth values when rate information is displayed. Hostname lookup has a separate switch, --resolve.",
           "flag": "--numeric",
-          "summary": "Display numeric addresses and ports",
+          "summary": "Show port numbers instead of service names",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -55,7 +57,7 @@
                   {
                     "case": "sensitive",
                     "id": "selected",
-                    "meaning": "Display numerical endpoint identifiers",
+                    "meaning": "Print numeric ports and exact bandwidth values",
                     "notation": "literal",
                     "syntax": "--numeric",
                     "tokens": [
@@ -64,7 +66,7 @@
                   }
                 ],
                 "kind": "enumeration",
-                "meaning": "Display numerical endpoint identifiers",
+                "meaning": "Print numeric ports and exact bandwidth values",
                 "review": {
                   "references": [
                     {
@@ -89,21 +91,24 @@
         {
           "argument": "",
           "flag": "--tcp",
-          "summary": "Display TCP sockets"
+          "summary": "Display TCP sockets",
+          "detail": "Add --listening for TCP listeners or --all to include listeners alongside other TCP sockets."
         },
         {
           "argument": "",
           "flag": "--udp",
-          "summary": "Display UDP sockets"
+          "summary": "Display UDP sockets",
+          "detail": "Add --all to include unconnected UDP sockets."
         },
         {
           "argument": "",
           "flag": "--processes",
-          "summary": "Display processes using sockets"
+          "summary": "Display processes using sockets",
+          "detail": "Where permissions allow, the users field shows process names, PIDs and file descriptors."
         },
         {
           "argument": "",
-          "detail": "iproute2 6.13.0: this is an address-family selector, not a quantity; no numerical operand is entered.",
+          "detail": "Add --tcp or --udp to narrow the IPv4 listing by transport.",
           "flag": "--ipv4",
           "summary": "Display IPv4 sockets",
           "value_semantics": {
@@ -175,7 +180,7 @@
         },
         {
           "argument": "",
-          "detail": "iproute2 6.13.0: this is an address-family selector, not a quantity; no numerical operand is entered.",
+          "detail": "Add --tcp or --udp to narrow the IPv6 listing by transport.",
           "flag": "--ipv6",
           "summary": "Display IPv6 sockets",
           "value_semantics": {
@@ -248,7 +253,8 @@
         {
           "argument": "",
           "flag": "--extended",
-          "summary": "Display extended socket information"
+          "summary": "Show socket ownership and identifiers",
+          "detail": "Extended fields can include the owner UID, socket inode (ino) and socket cookie (sk)."
         },
         {
           "argument": "",
@@ -257,7 +263,7 @@
         },
         {
           "argument": "QUERY",
-          "detail": "iproute2 6.13.0: comma-separated socket-table names such as tcp or udp, optionally excluded with !; protocol-name digits are not measured input. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.13.0.",
+          "detail": "Give a comma-separated list such as tcp,udp. Prefix a table with ! to exclude it. In Bash, quote the list as in --query='all,!tcp'.",
           "flag": "--query=",
           "summary": "Select socket tables",
           "value_semantics": {
@@ -294,7 +300,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "iproute2 6.13.0: comma-separated socket-table names such as tcp or udp, optionally excluded with !; protocol-name digits are not measured input",
+                    "grammar": "Comma-separated socket-table names. A leading ! excludes a table.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -333,7 +339,7 @@
         {
           "argument": "FILE",
           "flag": "--filter=",
-          "summary": "Read a filter from a file",
+          "summary": "Read a socket filter from a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -393,7 +399,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a filter expression such as sport = :443 in the file. Use --filter=- to read the filter from standard input."
         }
       ]
     }
@@ -401,6 +408,6 @@
   "command": [
     "ss"
   ],
-  "description": "ss shell argument reference.",
+  "description": "Inspect sockets, their endpoints and their state.",
   "stop_at_positional": true
 }

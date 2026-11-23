@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Connection, client credentials and peer verification.",
       "name": "Arguments",
       "options": [
         {
           "argument": "HOST:PORT",
-          "detail": "One token: host with optional :service, [IPv6]:service, or :service using the backend's empty-host handling. A service can be a numeric port or backend service name; a host without :service retains the separately selected/default port, normally 4433. Endpoint parsing does not treat a bare host string as a numerical index. Host and service have independent identifier meanings; no numerical port is a transfer rate or size. Reference scope: OpenSSL 3.0.16.",
+          "detail": "Use one argument, such as localhost:4433 or [::1]:4433. A host alone keeps the selected port. Without a destination the default is localhost:4433.",
           "flag": "-connect",
-          "summary": "Select the remote endpoint",
+          "summary": "Choose the server host and port",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "endpoint",
                     "notation": "expression",
                     "syntax": "HOST[:SERVICE]",
-                    "grammar": "One token: host with optional :service, [IPv6]:service, or :service using the backend's empty-host handling. A service can be a numeric port or backend service name; a host without :service retains the separately selected/default port, normally 4433. Endpoint parsing does not treat a bare host string as a numerical index."
+                    "grammar": "One argument accepts a host, host:service, [IPv6]:service or :service. The service can be a port number or service name. An omitted port retains the selected port, normally 4433."
                   }
                 ],
                 "when_absent": {
@@ -202,7 +202,7 @@
         {
           "argument": "NAME",
           "flag": "-servername",
-          "summary": "Set TLS SNI",
+          "summary": "Send a server name in the TLS handshake",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -262,12 +262,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "SNI lets the server select a certificate. A DNS name in -connect normally supplies SNI. Use -verify_hostname NAME to check the certificate against that name."
         },
         {
           "argument": "FILE",
           "flag": "-CAfile",
-          "summary": "Read trusted certificates",
+          "summary": "Load trusted CA certificates from a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -327,12 +328,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a PEM file containing one or more trusted certificates. Add -verify_return_error to stop on verification errors."
         },
         {
           "argument": "FILE",
           "flag": "-cert",
-          "summary": "Select a client certificate",
+          "summary": "Choose the client certificate to present",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -392,12 +394,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The client sends a certificate when the server requests one. Supply its matching private key with -key or include the key in the certificate file."
         },
         {
           "argument": "FILE",
           "flag": "-key",
-          "summary": "Select a private key",
+          "summary": "Choose the client certificate’s private key",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -413,12 +416,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Private-key filename; passphrase and provider configuration follow their own options."
+                    "grammar": "Private-key filename or supported key URI."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use the key associated with the selected certificate/default key handling."
+                  "meaning": "Read the key from the client certificate file if one was selected."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -457,19 +460,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a key file or supported URI. When omitted, the client looks for the key in the file given to -cert."
         },
         {
           "argument": "DEPTH",
-          "detail": "Positive C int, with base-autodetected decimal, 0x hexadecimal or leading-zero octal spelling. Zero and negatives are rejected by this option's 'p' parser; the upper bound is the build's INT_MAX. A depth of N permits up to N intermediate CAs, plus leaf and trust anchor. Reference scope: OpenSSL 3.0.16.",
+          "detail": "Use a positive decimal depth for handling verification errors. To limit intermediate CAs, use -verify_depth N, which excludes the leaf and trust anchor. Add -verify_return_error to stop on errors.",
           "flag": "-verify",
-          "summary": "Set positive intermediate-CA depth; zero is invalid",
+          "summary": "Enable peer verification with a positive depth",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "count",
-                "meaning": "Positive certificate verification depth",
+                "meaning": "Diagnostic peer verification depth",
                 "bare": {
                   "state": "accepted",
                   "form": "count"
@@ -479,7 +483,7 @@
                     "id": "count",
                     "notation": "number",
                     "syntax": "N",
-                    "grammar": "Positive C int, with base-autodetected decimal, 0x hexadecimal or leading-zero octal spelling. Zero and negatives are rejected by this option's 'p' parser; the upper bound is the build's INT_MAX. A depth of N permits up to N intermediate CAs, plus leaf and trust anchor.",
+                    "grammar": "Use a positive decimal C int up to INT_MAX. Zero and negative inputs are rejected. On OpenSSL 3.0.16 the final conversion reads decimal digits, so hexadecimal and leading-zero forms do not reliably give the intended depth.",
                     "bounds": {
                       "min": "1"
                     }
@@ -520,19 +524,19 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/s_client.c",
-                      "locator": "verify option valtype p"
+                      "locator": "OPT_VERIFY option type p and assignment to verify_args.depth"
                     },
                     {
                       "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c",
-                      "locator": "opt_int/opt_long and valtype p requires >0"
+                      "locator": "positive integer validation and OPT_V_VERIFY_DEPTH"
                     },
                     {
-                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-verification-options.pod",
-                      "locator": "verify_depth intermediate CA definition"
+                      "source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/s_cb.c",
+                      "locator": "verify_callback compares depth when verification reports an error"
                     }
                   ]
                 },
-                "subject": "Intermediate CA certificates, excluding the leaf and trust anchor"
+                "subject": "Depth of a certificate verification error"
               }
             ]
           }
@@ -540,17 +544,19 @@
         {
           "argument": "",
           "flag": "-verify_return_error",
-          "summary": "Stop on certificate verification errors"
+          "summary": "Stop the handshake on certificate verification errors",
+          "detail": "Enables peer verification. Add -verify_hostname NAME when the server certificate must match a particular DNS name."
         },
         {
           "argument": "",
           "flag": "-showcerts",
-          "summary": "Show sent certificates"
+          "summary": "Print the certificates the server sent",
+          "detail": "Displays the peer’s list in wire order. It can omit the root or an intermediate. Use verification to establish a trusted chain."
         },
         {
           "argument": "PROTOCOL",
           "flag": "-starttls",
-          "summary": "Negotiate TLS for a supported protocol",
+          "summary": "Upgrade a plaintext protocol connection to TLS",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -610,22 +616,26 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Choose the protocol spoken on the port, such as smtp or imap. Set the endpoint separately with -connect."
         },
         {
           "argument": "",
           "flag": "-quiet",
-          "summary": "Reduce output"
+          "summary": "Suppress session and certificate output",
+          "detail": "Also ignores end-of-file on standard input, so a pipe can leave the client waiting. Put -no_ign_eof after -quiet to close on EOF."
         },
         {
           "argument": "",
           "flag": "-tls1_2",
-          "summary": "Use TLS 1.2"
+          "summary": "Require TLS 1.2",
+          "detail": "The handshake fails if the server cannot negotiate this version."
         },
         {
           "argument": "",
           "flag": "-tls1_3",
-          "summary": "Use TLS 1.3"
+          "summary": "Require TLS 1.3",
+          "detail": "The handshake fails if the server cannot negotiate this version."
         }
       ]
     }
@@ -634,5 +644,5 @@
     "openssl",
     "s_client"
   ],
-  "description": "openssl s_client shell argument reference."
+  "description": "Connect to a TLS server and inspect the handshake."
 }

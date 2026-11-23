@@ -12,6 +12,487 @@ sys.path.insert(0, str(ROOT / "cli_help"))
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class ExpansionScreenTests(TerminalTestCase):
+    def test_podman_build_pull_policy_at_minimum_size(self):
+        """Find the version caveat and enter a pull policy before the build context."""
+        shell = self.start()
+        shell.text("podman() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "podman build ", " ./context"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("local images only")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: local images only")
+            self.assertIn("> --pull=POLICY", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "clients treat newer as missing." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--pull=" + suffix, len(prefix + "--pull=")))
+        shell.text("never")
+        self.assertEqual(shell.read_buffer(), (prefix + "--pull=never" + suffix, len(prefix + "--pull=never")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_bun_watch_working_directory_at_minimum_size(self):
+        """Find the restart caveat and insert --cwd ahead of the script name."""
+        shell = self.start()
+        shell.text("bun() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "bun run --watch ", " ./app.ts"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("absolute path")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: absolute path")
+            self.assertIn("> --cwd DIRECTORY", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "restart can find the directory again." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--cwd" + suffix, len(prefix + "--cwd ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_dotnet_restore_http_cache_at_minimum_size(self):
+        """Find the hidden restore spelling and its global packages behavior at 60×16."""
+        shell = self.start()
+        shell.text("dotnet() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "dotnet restore ", " Sample.csproj"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("--no-http-cache")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: --no-http-cache")
+            self.assertIn("> --no-cache", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "from the global packages folder." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--no-cache" + suffix, len(prefix + "--no-cache ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_go_tidy_diff_version_at_minimum_size(self):
+        """Find the read-only preview and its Go version requirement at 60×16."""
+        shell = self.start()
+        shell.text("go() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "go mod tidy ", " -v"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("unified diff")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: unified diff")
+            self.assertIn("> -diff", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "Go 1.22 rejects this flag." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "-diff" + suffix, len(prefix + "-diff ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_pytest_basetemp_at_minimum_size(self):
+        """Find the cleanup warning and supply a temporary base before a pending test path."""
+        shell = self.start()
+        shell.text("pytest() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "pytest ", " test_sample.py"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("dedicated directory")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: dedicated directory")
+            self.assertIn("> --basetemp DIR", found.cells[4])
+            count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * count))
+            shell.wait_for(lambda state: "recreates the directory." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--basetemp" + suffix, len(prefix + "--basetemp ")))
+        shell.text("scratch ")
+        self.assertEqual(shell.read_buffer(), (prefix + "--basetemp scratch" + suffix, len(prefix + "--basetemp scratch ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_ruff_check_diff_exit_status_at_minimum_size(self):
+        """Find the fix-only exit rule and insert --diff before a pending filename."""
+        shell = self.start()
+        shell.text("ruff() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "ruff check ", " sample.py"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("unfixable violation")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: unfixable violation")
+            self.assertIn("> --diff", found.cells[4])
+            count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * count))
+            shell.wait_for(lambda state: "produces no diff and exits 0." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--diff" + suffix, len(prefix + "--diff ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_uv_sync_frozen_explains_stale_lock_at_minimum_size(self):
+        """Find the stale-lock warning and insert the flag before an existing extra."""
+        shell = self.start()
+        shell.text("uv() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "uv sync ", " --extra docs"
+        shell.resize(60, 16)
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("skip the freshness check")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: skip the freshness check")
+            self.assertIn("> --frozen", found.cells[4])
+            count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * count))
+            shell.wait_for(lambda state: "A missing lockfile is an error." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--frozen" + suffix, len(prefix + "--frozen ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_openssl_client_verification_depth_at_minimum_size(self):
+        """Find the chain-limit distinction and insert the client depth before a suffix."""
+        shell = self.start()
+        shell.text("openssl() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "openssl s_client ", " -showcerts"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        for key in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("to limit intermediate")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: to limit intermediate")
+            self.assertIn("> -verify DEPTH", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "-verify_return_error to stop on errors." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(key)
+            if key == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "-verify" + suffix, len(prefix + "-verify ")))
+        shell.text("2 ")
+        self.assertEqual(shell.read_buffer(), (prefix + "-verify 2" + suffix, len(prefix + "-verify 2 ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_journalctl_boot_offset_before_existing_filter(self):
+        """Reach the version-specific boot rule and fill its joined value at 60×16."""
+        shell = self.start()
+        shell.text("journalctl() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "journalctl ", " --no-pager"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        for key in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("ignores the offset")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: ignores the offset")
+            self.assertIn("> --boot=ID", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "ignores the offset in ID+offset." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(key)
+            if key == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--boot=" + suffix, len(prefix + "--boot=")))
+        shell.text("-1")
+        self.assertEqual(shell.read_buffer(), (prefix + "--boot=-1" + suffix, len(prefix + "--boot=-1")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_ip_route_prefix_modifiers_at_minimum_size(self):
+        """Find the routing-table match rule and insert to before an existing filter."""
+        shell = self.start()
+        shell.text("ip() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "ip route show ", " table local"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("covering routes")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: covering routes")
+            self.assertIn("> to PREFIX", found.cells[4])
+            line_count = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * line_count))
+            shell.wait_for(lambda state: "to match PREFIX to include covering routes." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "to" + suffix, len(prefix + "to ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_yq_first_file_warning_and_explicit_expression(self):
+        """Read the multi-file write rule and insert an expression before two filenames."""
+        shell = self.start()
+        # The bundled profile requires an identified v4 executable. Only the two
+        # fixed discovery requests can succeed, even if a pending line is submitted.
+        executable = shell.folder / "yq"
+        fixture = ROOT / "tests/fixtures/help/yq-eval.txt"
+        executable.write_text(
+            "#!/bin/sh\n"
+            'if [ "$#" = 1 ] && [ "$1" = --version ]; then\n'
+            "  echo 'yq (https://github.com/mikefarah/yq/) version v4.44.3'\n"
+            'elif [ "$#" = 2 ] && [ "$1" = eval ] && [ "$2" = --help ]; then\n'
+            "  cat " + shlex.quote(str(fixture)) + "\n"
+            "else\n  echo executed > " + shlex.quote(str(shell.executed)) + "\n  exit 1\nfi\n"
+        )
+        executable.chmod(0o755)
+        shell.text("export CLI_HELP_DISCOVERY=auto CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example"))
+                   + " PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"')
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "yq eval ", " first.yml second.yml"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        shell.open_menu()
+        shell.keys("/")
+        shell.text("combined results")
+        shell.keys("Enter")
+        found = shell.wait_for(lambda state: state.cells[2] == "Filter: combined results")
+        self.assertIn("> --inplace", found.cells[4])
+        shell.keys(*(["]"] * 12))
+        shell.wait_for(lambda state: "Later files keep their original contents." in
+                       " ".join(" ".join(state.cells[8:-3]).split()))
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+
+        shell.open_menu()
+        shell.keys("/")
+        shell.text("existing file")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: "> --expression" in state.cells[4])
+        shell.cancel("Enter")
+        self.assertEqual(shell.read_buffer(), (prefix + "--expression" + suffix, len(prefix + "--expression ")))
+        shell.text("'.items[] | .name' ")
+        self.assertEqual(shell.read_buffer(), (prefix + "--expression '.items[] | .name'" + suffix,
+                                               len(prefix + "--expression '.items[] | .name' ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_ffmpeg_optional_audio_map_at_minimum_size(self):
+        """Reach the input-index rule and insert an optional map before the output."""
+        shell = self.start()
+        shell.text("ffmpeg() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "ffmpeg -i input.mkv ", " output.mkv"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("optional audio")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: optional audio")
+            self.assertIn("> -map", found.cells[4])
+            total_lines = int(found.cells[-3].split()[1].split("/")[1])
+            shell.keys(*(["]"] * total_lines))
+            shell.wait_for(lambda state: "The input number must still exist." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "-map" + suffix, len(prefix + "-map ")))
+        shell.text("'0:a?' ")
+        self.assertEqual(shell.read_buffer(), (prefix + "-map '0:a?'" + suffix, len(prefix + "-map '0:a?' ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_fzf_literal_dot_delimiter_at_minimum_size(self):
+        """Read both delimiter interpretations and insert a portable field separator."""
+        shell = self.start()
+        shell.text("fzf() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "fzf ", " --nth 2"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.resize(60, 16)
+        for action in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/")
+            shell.text("literal dot")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: literal dot")
+            self.assertIn("> --delimiter", found.cells[4])
+            shell.keys(*(["]"] * 24))
+            shell.wait_for(lambda state: "a literal dot in 0.67.0." in
+                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--delimiter" + suffix, len(prefix + "--delimiter ")))
+        shell.text("'[.]' ")
+        self.assertEqual(shell.read_buffer(), ("fzf --delimiter '[.]' --nth 2", len("fzf --delimiter '[.]' ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_fd_hidden_directory_guidance_and_midline_exclusion(self):
+        """Read the version-specific .git rule and insert an exclusion before a pattern."""
+        for command in ("fd", "fdfind"):
+            with self.subTest(command=command):
+                shell = self.start()
+                shell.text(command + "() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                prefix, suffix = command + " ", " needle"
+                shell.text(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.resize(60, 16)
+                shell.open_menu()
+                shell.keys("/")
+                shell.text("fd 9.0")
+                shell.keys("Enter")
+                selected = shell.wait_for(lambda state: state.cells[2] == "Filter: fd 9.0")
+                self.assertIn("> --hidden", selected.cells[4])
+                shell.keys(*(["]"] * 16))
+                shell.wait_for(lambda state: "use --exclude .git to omit it." in
+                               " ".join(" ".join(state.cells[8:-3]).split()))
+                shell.cancel()
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+
+                shell.open_menu()
+                shell.keys("/")
+                shell.text("quote wildcards")
+                shell.keys("Enter")
+                selected = shell.wait_for(lambda state: state.cells[2] == "Filter: quote wildcards")
+                self.assertIn("> --exclude", selected.cells[4])
+                shell.cancel("Enter")
+                self.assertEqual(shell.read_buffer(), (prefix + "--exclude" + suffix, len(prefix + "--exclude ")))
+                shell.text("'*.log' ")
+                self.assertEqual(shell.read_buffer(), (prefix + "--exclude '*.log'" + suffix,
+                                                       len(prefix + "--exclude '*.log' ")))
+                self.assertFalse(shell.executed.exists())
+
+    def test_commit_preview_and_log_date_filter_at_minimum_size(self):
+        """Reach the dry-run and history-walk qualifications before a midline edit."""
+        cases = (("git commit", "short status format", "--short", "no commit is created."),
+                 ("git log", "committer timestamp", "--since=", "when timestamps are out of order."))
+        for command, query, flag, qualification in cases:
+            with self.subTest(command=command):
+                shell = self.start()
+                shell.text("git() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                prefix, suffix = command + " ", " -- tracked.txt"
+                shell.text(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.resize(60, 16)
+                for action in ("Escape", "Enter"):
+                    shell.open_menu()
+                    shell.keys("/")
+                    shell.text(query)
+                    shell.keys("Enter")
+                    selected = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
+                    self.assertIn("> " + flag, selected.cells[4])
+                    shell.keys(*(["]"] * 32))
+                    shell.wait_for(lambda state: qualification in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.cancel(action)
+                    if action == "Escape":
+                        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                point = len(prefix + flag) + (0 if flag.endswith("=") else 1)
+                self.assertEqual(shell.read_buffer(), (prefix + flag + suffix, point))
+                self.assertFalse(shell.executed.exists())
+
+    def test_git_stash_count_and_locked_worktree_guidance(self):
+        """Find the negative-count and double-force rules before editing a pending command."""
+        cases = (("git stash list", "negative count", "--max-count=", "Omit the option for no limit."),
+                 ("git worktree remove", "locked worktree", "--force", "requires --force twice."))
+        for command, query, flag, guidance in cases:
+            with self.subTest(command=command):
+                shell = self.start()
+                shell.text("git() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
+                shell.keys("Enter")
+                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+                prefix, suffix = command + " ", " existing"
+                shell.text(prefix + suffix)
+                shell.keys(*(["Left"] * len(suffix)))
+                shell.resize(60, 16)
+                for action in ("Escape", "Enter"):
+                    shell.open_menu()
+                    shell.keys("/")
+                    shell.text(query)
+                    shell.keys("Enter")
+                    shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
+                    shell.keys("Down")  # Each search returns the short alias, then the long one.
+                    shell.wait_for(lambda state: any("> " + flag in row for row in state.cells[4:7]))
+                    shell.keys(*(["]"] * 32))
+                    shell.wait_for(lambda state: guidance in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.cancel(action)
+                    if action == "Escape":
+                        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                point = len(prefix + flag) + (0 if flag.endswith("=") else 1)
+                self.assertEqual(shell.read_buffer(), (prefix + flag + suffix, point))
+                self.assertFalse(shell.executed.exists())
+
     def test_attached_parent_value_rejection_preserves_midline_cursor_and_history(self):
         for flag in ("-f", "-p"):
             with self.subTest(flag=flag):

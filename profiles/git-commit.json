@@ -6,7 +6,7 @@
       "options": [
         {
           "argument": "MESSAGE",
-          "detail": "After insertion, enter a quoted message if it contains spaces.",
+          "detail": "Quote a multiword message as one argument. Repeat -m for separate paragraphs. Choose either a message or a file with -F.",
           "flag": "--message",
           "summary": "Supply the commit message",
           "value_semantics": {
@@ -133,11 +133,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use - as the file name to read the message from standard input. Add --edit to revise the message before committing."
         },
         {
           "flag": "--edit",
-          "summary": "Open the message editor"
+          "summary": "Edit the proposed commit message",
+          "detail": "Opens the editor even when a message was supplied with -m, read with -F or reused with -C."
         }
       ]
     },
@@ -147,16 +149,18 @@
       "options": [
         {
           "flag": "--all",
-          "summary": "Stage modified and deleted tracked files"
+          "summary": "Commit tracked modifications and deletions",
+          "detail": "Also includes changes already staged. New untracked files must be added first."
         },
         {
           "flag": "--patch",
-          "summary": "Interactively choose changes"
+          "summary": "Choose additional hunks to commit",
+          "detail": "Starts with the changes already staged. Selected hunks from the working tree are added to this commit."
         },
         {
-          "detail": "This changes commit identity when the command is subsequently executed.",
+          "detail": "Uses the previous message as a starting point. Use --no-edit to keep it. The replacement retains the parents and, by default, the author. Amending a published tip rewrites its history.",
           "flag": "--amend",
-          "summary": "Replace the current branch's tip commit"
+          "summary": "Replace the tip commit"
         }
       ]
     },
@@ -166,15 +170,18 @@
       "options": [
         {
           "flag": "--dry-run",
-          "summary": "Show what would be committed"
+          "summary": "Preview the commit without creating it",
+          "detail": "Shows the paths that would be committed, changes left unstaged and untracked files. Use the same options and paths as the intended commit."
         },
         {
           "flag": "--verbose",
-          "summary": "Include a diff in the message template"
+          "summary": "Show the proposed diff in the editor",
+          "detail": "The diff stays out of the saved commit message. Specify -v twice to also show unstaged changes to tracked files."
         },
         {
           "flag": "--short",
-          "summary": "Show short status in dry-run output"
+          "summary": "Preview the commit in short status format",
+          "detail": "Implies --dry-run, so no commit is created. For ordinary tracked paths, the two status columns describe the index and working tree."
         }
       ]
     }
@@ -183,5 +190,5 @@
     "git",
     "commit"
   ],
-  "description": "Record staged changes in a Git commit."
+  "description": "Record the staged snapshot by default, or select content for this commit."
 }

@@ -1,39 +1,44 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Input, terminal and process settings.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--interactive",
-          "summary": "Keep standard input open"
+          "summary": "Keep standard input open",
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
         },
         {
           "argument": "",
           "flag": "-i",
-          "summary": "Keep standard input open"
+          "summary": "Keep standard input open",
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
         },
         {
           "argument": "",
           "flag": "--tty",
-          "summary": "Allocate a pseudo-terminal"
+          "summary": "Allocate a pseudo-terminal",
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
         },
         {
           "argument": "",
           "flag": "-t",
-          "summary": "Allocate a pseudo-terminal"
+          "summary": "Allocate a pseudo-terminal",
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
         },
         {
           "argument": "",
           "flag": "--detach",
-          "summary": "Run in the background"
+          "summary": "Start the command in the background",
+          "detail": "Prints the exec session ID. The session is removed when the command finishes."
         },
         {
           "argument": "KEY=VALUE",
-          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
           "flag": "--env",
-          "summary": "Set an environment value",
+          "summary": "Set an environment variable for this command",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -46,9 +51,9 @@
         {
           "argument": "KEY=VALUE",
           "attached": true,
-          "detail": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 5.4.2.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
           "flag": "-e",
-          "summary": "Set an environment value",
+          "summary": "Set an environment variable for this command",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -61,7 +66,7 @@
         {
           "argument": "DIR",
           "flag": "--workdir",
-          "summary": "Set the working directory",
+          "summary": "Set this command’s directory inside the container",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -121,13 +126,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Overrides the container’s working directory for this exec session."
         },
         {
           "argument": "USER",
-          "detail": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults.",
+          "detail": "USER[:GROUP] accepts names or numeric IDs. A user namespace can map those IDs to different IDs on the host.",
           "flag": "--user",
-          "summary": "Select the container user",
+          "summary": "Choose the container user and group",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -333,7 +339,8 @@
         {
           "argument": "",
           "flag": "--privileged",
-          "summary": "Request extended container privileges"
+          "summary": "Run the command with extended privileges",
+          "detail": "On Linux this requests all available capabilities for the exec process’s bounding set. Rootless Podman remains limited to the privileges of the host user who launched it."
         }
       ]
     }
@@ -342,7 +349,7 @@
     "podman",
     "exec"
   ],
-  "description": "podman exec shell argument reference.",
+  "description": "Run a command in an existing, running container.",
   "stop_at_positional": true,
   "value_definitions": {
     "environment-value": {
@@ -374,7 +381,7 @@
       },
       "forms": [
         {
-          "grammar": "Podman 5.4.2: KEY=VALUE supplies an environment value; KEY alone can copy from the client environment. Numerical values belong to the receiving program's grammar",
+          "grammar": "KEY=VALUE assigns a string. KEY alone copies a host variable if set. A quoted prefix such as \"APP_*\" copies matching variables.",
           "id": "grammar",
           "notation": "expression",
           "syntax": "VALUE"

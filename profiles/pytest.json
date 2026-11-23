@@ -1,15 +1,15 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Test selection, session settings and reports.",
       "name": "Options",
       "options": [
         {
           "argument": "EXPRESSION",
           "argument_optional": false,
-          "detail": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5.",
+          "detail": "Matches case-insensitive substrings in test and parent names, parameter IDs and marker names. Quote expressions such as \"fast and not network\".",
           "flag": "-k",
-          "summary": "Select tests by name expression",
+          "summary": "Select by test name or keyword",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -42,7 +42,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "pytest 8.3.5: a boolean name/keyword expression, not a numeric limit",
+                    "grammar": "Names may be combined with and, or, not and parentheses. Each name matches a case-insensitive keyword substring.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -51,18 +51,14 @@
                 "grammar": {
                   "name": "pytest name-expression grammar",
                   "reference": {
-                    "locator": "Command-line flags --durations, --durations-min and --maxfail",
-                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
+                    "locator": "pytest_addoption and expression selection for -k",
+                    "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
                   }
                 },
                 "kind": "delegated",
                 "meaning": "Value interpreted by pytest name-expression grammar",
                 "review": {
                   "references": [
-                    {
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
-                    },
                     {
                       "locator": "pytest_addoption and expression selection for -k",
                       "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
@@ -85,9 +81,9 @@
         {
           "argument": "MARKEXPR",
           "argument_optional": false,
-          "detail": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 8.3.5.",
+          "detail": "Marker names are exact and case-sensitive. Quote boolean expressions such as \"slow and not network\". Ubuntu 26.04’s pytest 9.0.2 also matches keyword arguments like \"slow(phase=1)\". Ubuntu 24.04’s pytest 7.4.4 matches marker names only.",
           "flag": "-m",
-          "summary": "Select tests by marker expression",
+          "summary": "Select by marker expression",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -120,7 +116,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "pytest 8.3.5: a boolean marker expression; any marker argument values retain their own meaning",
+                    "grammar": "Combine marker names with and, or, not and parentheses. In pytest 8.3.5 keyword arguments match the named marker’s stored values.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -129,18 +125,14 @@
                 "grammar": {
                   "name": "pytest marker-expression grammar",
                   "reference": {
-                    "locator": "Command-line flags --durations, --durations-min and --maxfail",
-                    "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
+                    "locator": "pytest_addoption and expression selection for -m",
+                    "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
                   }
                 },
                 "kind": "delegated",
                 "meaning": "Value interpreted by pytest marker-expression grammar",
                 "review": {
                   "references": [
-                    {
-                      "locator": "Command-line flags --durations, --durations-min and --maxfail",
-                      "source": "https://docs.pytest.org/en/8.3.x/reference/reference.html"
-                    },
                     {
                       "locator": "pytest_addoption and expression selection for -m",
                       "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/mark/__init__.py"
@@ -164,20 +156,22 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-x",
-          "summary": "Stop after the first failure"
+          "summary": "Stop at the first failure or error",
+          "detail": "Equivalent to --maxfail=1. A collection or fixture error can stop the run before later tests execute."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--exitfirst",
-          "summary": "Stop after the first failure"
+          "summary": "Stop at the first failure or error",
+          "detail": "Equivalent to --maxfail=1. A collection or fixture error can stop the run before later tests execute."
         },
         {
           "argument": "NUM",
           "argument_optional": false,
-          "detail": "pytest 8.3: NUM counts failures or errors before stopping; it is not a duration. Zero leaves the maximum-failure stop limit disabled. Configuration can supply default command-line options.",
+          "detail": "Use 1 to stop at the first failure or error. Zero disables the limit.",
           "flag": "--maxfail",
-          "summary": "Stop after the specified failure count",
+          "summary": "Stop after N failures or errors",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -210,10 +204,7 @@
                 },
                 "forms": [
                   {
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "grammar": "Nonnegative decimal integer count",
+                    "grammar": "Use a positive integer for the failure limit or 0 to disable it. The signed integer parser also accepts negative values, which stop at the first failure or error.",
                     "id": "number",
                     "notation": "number",
                     "special_values": [
@@ -257,37 +248,42 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Reduce output"
+          "summary": "Reduce terminal output",
+          "detail": "Repeat as -qq for less output. With --collect-only, -q lists test node IDs."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Reduce output"
+          "summary": "Reduce terminal output",
+          "detail": "Repeat as -qq for less output. With --collect-only, -q lists test node IDs."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Increase output detail"
+          "summary": "Show individual test results",
+          "detail": "Use -v to see test names and outcomes. Repeat as -vv for more detail in assertion comparisons."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "Show individual test results",
+          "detail": "Use -v to see test names and outcomes. Repeat as -vv for more detail in assertion comparisons."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--collect-only",
-          "summary": "Collect tests without running them"
+          "summary": "List collected tests without running test bodies",
+          "detail": "Collection still imports test modules and conftest.py and runs collection hooks. Add -q for a list of node IDs."
         },
         {
           "argument": "STYLE",
           "argument_optional": false,
           "flag": "--tb",
-          "summary": "Select traceback formatting",
+          "summary": "Choose how failure tracebacks are displayed",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -401,13 +397,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "auto is the default. Use short for compact tracebacks, line for one line per failure or no to hide tracebacks. Failures still count."
         },
         {
           "argument": "METHOD",
           "argument_optional": false,
           "flag": "--capture",
-          "summary": "Select output capture method",
+          "summary": "Choose how stdout and stderr are captured",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -457,7 +454,7 @@
                       "tee-sys"
                     ],
                     "case": "sensitive",
-                    "meaning": "Capture Python sys streams and also display writes"
+                    "meaning": "Capture Python stdout and stderr and also show their writes live"
                   }
                 ],
                 "when_absent": {
@@ -501,13 +498,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "fd captures file descriptors 1 and 2, including subprocess output. sys captures Python streams. tee-sys also displays Python writes live. no disables capture, like -s."
         },
         {
           "argument": "DIR",
           "argument_optional": false,
           "flag": "--rootdir",
-          "summary": "Set the root directory",
+          "summary": "Set the root used for test node IDs",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -560,20 +558,25 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/__init__.py",
-                      "locator": "--rootdir"
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py",
+                      "locator": "--rootdir option registration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/findpaths.py",
+                      "locator": "determine_setup chooses the configuration file and root path"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Also anchors the default .pytest_cache directory. It leaves the working directory and Python import path unchanged. Give a test path separately to limit collection."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select a configuration file",
+          "summary": "Load a specific pytest configuration file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -626,20 +629,25 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/__init__.py",
-                      "locator": "-c"
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py",
+                      "locator": "-c option registration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/findpaths.py",
+                      "locator": "determine_setup chooses the configuration file and root path"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "The file replaces automatic config discovery. Its directory becomes the root unless --rootdir overrides it."
         },
         {
           "argument": "NAME",
           "argument_optional": false,
           "flag": "-p",
-          "summary": "Load or disable a plugin",
+          "summary": "Load or disable a named plugin",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -699,13 +707,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass an importable module or entry-point name to load it early. Use -p no:doctest to disable the doctest plugin. Repeat -p to name more plugins."
         },
         {
           "argument": "DIR",
           "argument_optional": false,
           "flag": "--basetemp",
-          "summary": "Select temporary directory",
+          "summary": "Set a temporary base that pytest clears",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -721,7 +730,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Directory path used for temporary test data; pytest may clear this directory for the run, so it is not a retention-count argument."
+                    "grammar": "Path for temporary test data. An empty path, the working directory and its ancestors are rejected."
                   }
                 ],
                 "when_absent": {
@@ -759,20 +768,25 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/tmpdir.py",
-                      "locator": "--basetemp"
+                      "locator": "TempPathFactory.getbasetemp clears and recreates a supplied directory on first use"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py",
+                      "locator": "validate_basetemp rejects the working directory and its ancestors"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Choose a dedicated directory. On first use pytest removes its existing contents and recreates the directory."
         },
         {
           "argument": "N",
           "argument_optional": false,
-          "detail": "pytest 8.3 reference: N is a count of duration records, not seconds. Zero includes all measured durations. The separate --durations-min option is a seconds threshold and can still filter the report; it defaults to 0.005 seconds in this reference.",
+          "detail": "N is a count of individual setup, call and teardown records. Zero selects all records. The default display hides durations below 0.005 seconds at normal verbosity. Use --durations-min=0 to include even the fastest phases.",
           "flag": "--durations",
-          "summary": "Report N slowest setup/test durations; 0 selects all",
+          "summary": "Report the slowest test phases",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -805,15 +819,12 @@
                 },
                 "forms": [
                   {
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "grammar": "Nonnegative decimal integer count",
+                    "grammar": "Use a positive integer for the number of phase records or 0 for all. In pytest 8.3.5 a negative integer omits that many of the shortest records before display filtering.",
                     "id": "number",
                     "notation": "number",
                     "special_values": [
                       {
-                        "meaning": "Report all measured durations",
+                        "meaning": "Select all measured durations before applying the display threshold",
                         "value": "0"
                       }
                     ],
@@ -821,7 +832,7 @@
                   }
                 ],
                 "kind": "count",
-                "meaning": "Slowest setup/test durations included in the report",
+                "meaning": "Slowest individual test phases to report",
                 "review": {
                   "references": [
                     {
@@ -835,7 +846,7 @@
                   ],
                   "status": "verified"
                 },
-                "subject": "Slowest setup/test duration records",
+                "subject": "Setup, call and teardown duration records",
                 "when_absent": {
                   "meaning": "No slow-duration list is requested by this option",
                   "state": "known"
@@ -852,7 +863,7 @@
           "argument": "PATH",
           "argument_optional": false,
           "flag": "--junit-xml",
-          "summary": "Write an XML report",
+          "summary": "Write test results to a JUnit XML file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -912,7 +923,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Give the output file path, such as reports/tests.xml. The XML report can accompany the normal terminal report."
         }
       ]
     }
@@ -920,10 +932,10 @@
   "command": [
     "pytest"
   ],
-  "description": "Options for pytest. Core pytest options; installed plugins may add options.",
+  "description": "Collect and run Python tests. Plugins can add options.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags"
   },
   "stop_at_positional": false

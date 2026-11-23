@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Tool dependencies, executable replacement and interpreter selection.",
       "name": "Options",
       "options": [
         {
           "argument": "PACKAGE",
           "argument_optional": false,
           "flag": "--with",
-          "summary": "Include additional dependencies",
+          "summary": "Install an extra requirement alongside the tool",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -75,13 +75,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The added package goes into the tool’s isolated environment. A requirement can include a version constraint."
         },
         {
           "argument": "PACKAGE",
           "argument_optional": false,
           "flag": "--with-editable",
-          "summary": "Include an editable dependency",
+          "summary": "Link a local package into the tool environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -141,32 +142,36 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a package directory. Python source edits are visible to the installed tool."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--force",
-          "summary": "Replace existing entry points"
+          "summary": "Replace conflicting tool executables",
+          "detail": "uv 0.13.9 recreates the tool environment and overwrites same-named entry points in the tool executable directory."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--reinstall",
-          "summary": "Reinstall packages"
+          "summary": "Reinstall every package in the tool environment",
+          "detail": "Refresh cached data even for packages already installed at the selected version."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--upgrade",
-          "summary": "Allow upgrades"
+          "summary": "Allow newer compatible tool packages",
+          "detail": "Refresh cached data and reconsider existing versions within the requested constraints."
         },
         {
           "argument": "PYTHON",
           "argument_optional": false,
-          "detail": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy. Reference scope: uv 0.6.14.",
+          "detail": "Supply a version such as 3.12 or an interpreter path. The tool is installed separately from project dependencies.",
           "flag": "--python",
-          "summary": "Select a Python interpreter",
+          "summary": "Choose Python for the isolated tool environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -243,19 +248,21 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--offline",
-          "summary": "Disable network access"
+          "summary": "Use only local files and cached data",
+          "detail": "Network requests are disabled. A required package or interpreter must already be available locally."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable caching"
+          "summary": "Use a temporary cache for this command",
+          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--directory",
-          "summary": "Change working directory",
+          "summary": "Change the working directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -315,13 +322,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative command-line paths are resolved from this directory."
         },
         {
           "argument": "PROJECT",
           "argument_optional": false,
           "flag": "--project",
-          "summary": "Select project directory",
+          "summary": "Start project discovery in this directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -381,7 +389,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative arguments still use the working directory. The tool has its own installation environment."
         }
       ]
     }
@@ -391,11 +400,11 @@
     "tool",
     "install"
   ],
-  "description": "Options for uv tool install.",
+  "description": "Install a command-line tool in its own environment and expose its executables.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://docs.astral.sh/uv/reference/cli/"
+    "reviewed": "2026-11-22",
+    "source": "https://docs.astral.sh/uv/reference/cli/#uv-tool-install"
   },
   "stop_at_positional": false
 }

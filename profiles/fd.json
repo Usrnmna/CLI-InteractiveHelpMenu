@@ -7,27 +7,31 @@
         {
           "argument": "",
           "flag": "--hidden",
-          "summary": "Search hidden files and directories"
+          "summary": "Search hidden files and directories",
+          "detail": "Ignore files still apply. With --hidden alone, fd 9.0 skips .git/ by default. From fd 10.0 onward, use --exclude .git to omit it."
         },
         {
           "argument": "",
           "flag": "-H",
-          "summary": "Search hidden files and directories"
+          "summary": "Search hidden files and directories",
+          "detail": "Ignore files still apply. With --hidden alone, fd 9.0 skips .git/ by default. From fd 10.0 onward, use --exclude .git to omit it."
         },
         {
           "argument": "",
           "flag": "--no-ignore",
-          "summary": "Include ignored paths"
+          "summary": "Disable standard ignore files",
+          "detail": "Includes paths excluded by .gitignore, .ignore and .fdignore. Add --hidden to include dot-prefixed paths. Explicit --exclude patterns still apply."
         },
         {
           "argument": "",
           "flag": "-I",
-          "summary": "Include ignored paths"
+          "summary": "Disable standard ignore files",
+          "detail": "Includes paths excluded by .gitignore, .ignore and .fdignore. Add --hidden to include dot-prefixed paths. Explicit --exclude patterns still apply."
         },
         {
           "argument": "TYPE",
           "flag": "--type",
-          "summary": "Select the entry type",
+          "summary": "Filter by filesystem entry type",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -43,7 +47,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Type names/aliases: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe and b/block-device, c/char-device where supported; repeat type selection as documented. These are entry kinds, not numerical levels."
+                    "grammar": "Types: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe, b/block-device and c/char-device where supported. The dir alias for directory requires fd 10.0 or later."
                   }
                 ],
                 "when_absent": {
@@ -82,18 +86,23 @@
                     {
                       "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
                       "locator": "--type"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/src/cli.rs",
+                      "locator": "FileType::Directory aliases d and dir"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Combine ordinary types to include either, as in -tf -tl for files and symlinks. Use -tx for executable files or -te -td for empty directories."
         },
         {
           "argument": "TYPE",
           "attached": true,
           "flag": "-t",
-          "summary": "Select the entry type",
+          "summary": "Filter by filesystem entry type",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -109,7 +118,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Type names/aliases: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe and b/block-device, c/char-device where supported; repeat type selection as documented. These are entry kinds, not numerical levels."
+                    "grammar": "Types: f/file, d/directory, l/symlink, x/executable, e/empty, s/socket, p/pipe, b/block-device and c/char-device where supported. The dir alias for directory requires fd 10.0 or later."
                   }
                 ],
                 "when_absent": {
@@ -148,17 +157,22 @@
                     {
                       "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/doc/fd.1",
                       "locator": "--type"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/sharkdp/fd/v10.2.0/src/cli.rs",
+                      "locator": "FileType::Directory aliases d and dir"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Combine ordinary types to include either, as in -tf -tl for files and symlinks. Use -tx for executable files or -te -td for empty directories."
         },
         {
           "argument": "EXT",
           "flag": "--extension",
-          "summary": "Select a filename extension",
+          "summary": "Filter names by extension",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -218,13 +232,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Matches extensions regardless of case, including on directories. Repeat -e to allow multiple extensions. Add -tf to select only regular files."
         },
         {
           "argument": "EXT",
           "attached": true,
           "flag": "-e",
-          "summary": "Select a filename extension",
+          "summary": "Filter names by extension",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -284,13 +299,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Matches extensions regardless of case, including on directories. Repeat -e to allow multiple extensions. Add -tf to select only regular files."
         },
         {
           "argument": "DEPTH",
-          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited.",
+          "detail": "Count levels from each search root. A depth of 1 searches its immediate children. A depth of 0 returns no entries. Omit the option for unlimited depth.",
           "flag": "--max-depth",
-          "summary": "Limit traversal depth",
+          "summary": "Limit search depth",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -303,9 +319,9 @@
         {
           "argument": "DEPTH",
           "attached": true,
-          "detail": "fd 10.2.0 (including distributions naming it fdfind): DEPTH counts directory traversal levels relative to the search root, not file count, path length or bytes. No --max-depth means no depth limit. Zero does not mean unlimited.",
+          "detail": "Count levels from each search root. A depth of 1 searches its immediate children. A depth of 0 returns no entries. Omit the option for unlimited depth.",
           "flag": "-d",
-          "summary": "Limit traversal depth",
+          "summary": "Limit search depth",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -318,7 +334,7 @@
         {
           "argument": "PATTERN",
           "flag": "--exclude",
-          "summary": "Exclude a glob pattern",
+          "summary": "Exclude paths matching a glob",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -378,13 +394,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote wildcards, as in -E '*.log'. Matching directories and their contents are skipped. Repeat -E for more patterns. Exclusions apply even with --no-ignore."
         },
         {
           "argument": "PATTERN",
           "attached": true,
           "flag": "-E",
-          "summary": "Exclude a glob pattern",
+          "summary": "Exclude paths matching a glob",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -444,42 +461,50 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote wildcards, as in -E '*.log'. Matching directories and their contents are skipped. Repeat -E for more patterns. Exclusions apply even with --no-ignore."
         },
         {
           "argument": "",
           "flag": "--full-path",
-          "summary": "Match against full paths"
+          "summary": "Match the pattern against the absolute path",
+          "detail": "Normally only the entry name is matched. Use --absolute-path to print absolute paths as well."
         },
         {
           "argument": "",
           "flag": "--absolute-path",
-          "summary": "Display absolute paths"
+          "summary": "Display absolute paths",
+          "detail": "Changes how results are printed. To match the pattern against the absolute path, add --full-path."
         },
         {
           "argument": "",
           "flag": "--glob",
-          "summary": "Interpret the search pattern as a glob"
+          "summary": "Match the whole name with a glob",
+          "detail": "Quote shell wildcards, as in '*.txt'. With --full-path, ** can span multiple directories."
         },
         {
           "argument": "",
           "flag": "--fixed-strings",
-          "summary": "Interpret the search pattern literally"
+          "summary": "Match a literal substring",
+          "detail": "Punctuation such as a dot matches itself. A longer name can contain the same substring. For a whole name without wildcards, use --glob."
         },
         {
           "argument": "",
           "flag": "--case-sensitive",
-          "summary": "Match case sensitively"
+          "summary": "Match case sensitively",
+          "detail": "Override smart case to distinguish uppercase and lowercase even for a lowercase pattern."
         },
         {
           "argument": "",
           "flag": "--ignore-case",
-          "summary": "Match without case sensitivity"
+          "summary": "Match without case sensitivity",
+          "detail": "Override smart case to ignore case even when the pattern contains uppercase letters."
         },
         {
           "argument": "",
           "flag": "--print0",
-          "summary": "Separate paths with NUL bytes"
+          "summary": "Separate paths with NUL bytes",
+          "detail": "Pipe to xargs -0 to preserve filenames containing spaces or newlines."
         }
       ]
     }
@@ -487,7 +512,7 @@
   "command": [
     "fd"
   ],
-  "description": "fd shell argument reference.",
+  "description": "Find filesystem entries by name using a regular expression by default.",
   "stop_at_positional": true,
   "value_definitions": {
     "maximum-depth": {

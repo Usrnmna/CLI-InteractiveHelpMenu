@@ -8,67 +8,78 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-p",
-          "summary": "Interactively select changes"
+          "summary": "Choose individual hunks to stash",
+          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--patch",
-          "summary": "Interactively select changes"
+          "summary": "Choose individual hunks to stash",
+          "detail": "Choose changes between HEAD and the working tree. Patch mode keeps staged changes by default and takes precedence over --staged."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-S",
-          "summary": "Store only staged changes"
+          "summary": "Stash only staged changes",
+          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--staged",
-          "summary": "Store only staged changes"
+          "summary": "Stash only staged changes",
+          "detail": "Leave unstaged changes in the working tree. This can fail if unstaged edits overlap the staged changes. Incompatible with -u and -a."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-k",
-          "summary": "Keep staged changes in the worktree"
+          "summary": "Keep staged changes ready to commit",
+          "detail": "The stash still records the index. With an ordinary push, staged changes stay in the index and working tree after the stash is made."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--keep-index",
-          "summary": "Keep staged changes in the worktree"
+          "summary": "Keep staged changes ready to commit",
+          "detail": "The stash still records the index. With an ordinary push, staged changes stay in the index and working tree after the stash is made."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-keep-index",
-          "summary": "Revert staged changes"
+          "summary": "Roll back staged changes after saving them",
+          "detail": "Overrides the keep-index behavior implied by --patch. The stash retains the saved index state."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-u",
-          "summary": "Include untracked files"
+          "summary": "Stash and remove untracked files",
+          "detail": "Includes untracked files alongside tracked changes. Ignored files stay in the working tree."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--include-untracked",
-          "summary": "Include untracked files"
+          "summary": "Stash and remove untracked files",
+          "detail": "Includes untracked files alongside tracked changes. Ignored files stay in the working tree."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-a",
-          "summary": "Include ignored files"
+          "summary": "Stash untracked and ignored files too",
+          "detail": "Git also removes the saved untracked and ignored files from the working tree."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--all",
-          "summary": "Include ignored files"
+          "summary": "Stash untracked and ignored files too",
+          "detail": "Git also removes the saved untracked and ignored files from the working tree."
         },
         {
           "argument": "MESSAGE",
@@ -134,7 +145,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote a multiword message to pass it as one argument."
         },
         {
           "argument": "MESSAGE",
@@ -200,19 +212,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote a multiword message to pass it as one argument."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Suppress progress messages"
+          "summary": "Suppress stash feedback"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Suppress progress messages"
+          "summary": "Suppress stash feedback"
         },
         {
           "argument": "FILE",
@@ -278,13 +291,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use - for standard input. Separate pathspecs with LF or CRLF, or use --pathspec-file-nul for NUL separators. Use the file instead of command-line pathspecs. Incompatible with --patch and --staged."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--pathspec-file-nul",
-          "summary": "Use NUL-separated pathspecs"
+          "summary": "Read NUL-separated pathspecs",
+          "detail": "Requires --pathspec-from-file. Newlines and quotes are ordinary characters within each element. Git still applies pathspec matching rules."
         }
       ]
     }
@@ -294,10 +309,10 @@
     "stash",
     "push"
   ],
-  "description": "Options for git stash push.",
+  "description": "Save matching changes in a stash and roll them back to HEAD.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://git-scm.com/docs/git-stash"
   },
   "stop_at_positional": false

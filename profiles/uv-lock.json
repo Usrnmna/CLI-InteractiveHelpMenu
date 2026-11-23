@@ -1,20 +1,21 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Version selection and lockfile checks.",
       "name": "Options",
       "options": [
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--upgrade",
-          "summary": "Allow dependency upgrades"
+          "summary": "Allow all locked packages to upgrade",
+          "detail": "Refresh cached package data and select versions allowed by the project’s constraints."
         },
         {
           "argument": "PACKAGE",
           "argument_optional": false,
           "flag": "--upgrade-package",
-          "summary": "Upgrade a selected package",
+          "summary": "Allow an upgrade for one named package",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -81,25 +82,28 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Refresh this package and reconsider its locked version. An optional version constraint narrows the choice."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--check",
-          "summary": "Check that the lockfile is current"
+          "summary": "Check that the lockfile is current",
+          "detail": "Exit with an error if uv.lock is missing or stale. Equivalent to --locked."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--check-exists",
-          "summary": "Require a lockfile"
+          "summary": "Check only that the lockfile exists",
+          "detail": "A stale lockfile passes this check. Use --check to verify freshness."
         },
         {
           "argument": "STRATEGY",
           "argument_optional": false,
           "flag": "--resolution",
-          "summary": "Select dependency resolution strategy",
+          "summary": "Choose which compatible versions to prefer",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -183,13 +187,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "highest prefers newer versions. lowest prefers older ones. lowest-direct prefers older direct dependencies and newer transitive ones."
         },
         {
           "argument": "STRATEGY",
           "argument_optional": false,
           "flag": "--prerelease",
-          "summary": "Set prerelease policy",
+          "summary": "Choose when prereleases may be selected",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -229,7 +234,7 @@
                       "if-necessary"
                     ],
                     "case": "sensitive",
-                    "meaning": "Allow if no stable version is available"
+                    "meaning": "Prefer stable candidates, then allow prereleases when no compatible stable candidate works"
                   },
                   {
                     "id": "choice-4",
@@ -239,7 +244,106 @@
                       "explicit"
                     ],
                     "case": "sensitive",
-                    "meaning": "Allow for explicitly requested prerelease constraints"
+                    "meaning": "Permit prerelease fallback only for first-party packages with explicit prerelease specifiers"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "if-necessary-or-explicit",
+                    "tokens": [
+                      "if-necessary-or-explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Deprecated alias for if-necessary"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "In uv 0.13.9 the built-in default is if-necessary."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/uv/blob/0.13.9/crates/uv-configuration/src/prerelease.rs",
+                      "locator": "PrereleaseMode default, stable-candidate fallback and deprecated alias"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Prerelease dependency policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "disallow",
+                    "tokens": [
+                      "disallow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Reject prereleases"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "allow",
+                    "tokens": [
+                      "allow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow prereleases"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "if-necessary",
+                    "tokens": [
+                      "if-necessary"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow if the package publishes only prereleases"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "explicit",
+                    "tokens": [
+                      "explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow first-party requirements with an explicit prerelease specifier"
                   },
                   {
                     "id": "choice-5",
@@ -254,7 +358,7 @@
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use configured policy; the built-in default is if-necessary-or-explicit."
+                  "meaning": "In uv 0.6.14 the built-in default is if-necessary-or-explicit."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -293,14 +397,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "In uv 0.13.9 the default, if-necessary, tries stable candidates first. In 0.6.14 the default was if-necessary-or-explicit."
         },
         {
           "argument": "PYTHON",
           "argument_optional": false,
-          "detail": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy. Reference scope: uv 0.6.14.",
+          "detail": "Used to build source distributions for metadata and as the minimum Python version when requires-python is absent.",
           "flag": "--python",
-          "summary": "Select a Python interpreter",
+          "summary": "Choose Python for dependency resolution",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -377,19 +482,21 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--offline",
-          "summary": "Disable network access"
+          "summary": "Use only local files and cached data",
+          "detail": "Network requests are disabled. A required package or interpreter must already be available locally."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable caching"
+          "summary": "Use a temporary cache for this command",
+          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--directory",
-          "summary": "Change working directory",
+          "summary": "Change the working directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -449,13 +556,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative command-line paths are resolved from this directory."
         },
         {
           "argument": "PROJECT",
           "argument_optional": false,
           "flag": "--project",
-          "summary": "Select project directory",
+          "summary": "Start project discovery in this directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -515,7 +623,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "uv searches this directory and its parents. Relative command-line paths still use the working directory."
         }
       ]
     }
@@ -524,11 +633,11 @@
     "uv",
     "lock"
   ],
-  "description": "Options for uv lock.",
+  "description": "Create, update or check the project lockfile.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://docs.astral.sh/uv/reference/cli/"
+    "reviewed": "2026-11-22",
+    "source": "https://docs.astral.sh/uv/reference/cli/#uv-lock"
   },
   "stop_at_positional": false
 }

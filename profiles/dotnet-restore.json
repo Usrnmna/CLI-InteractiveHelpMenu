@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Package sources, cache locations and dependency locks.",
       "name": "Options",
       "options": [
         {
           "argument": "SOURCE",
           "argument_optional": false,
           "flag": "-s",
-          "summary": "Select a package source",
+          "summary": "Choose the NuGet package feeds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -24,7 +24,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Package feed URI or filesystem source path, not a number of package sources."
+                    "grammar": "A NuGet feed URI or local package directory."
                   }
                 ],
                 "when_absent": {
@@ -68,13 +68,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supplying a source replaces the configured feed list. Repeat the option for each feed URL or local package directory to search."
         },
         {
           "argument": "SOURCE",
           "argument_optional": false,
           "flag": "--source",
-          "summary": "Select a package source",
+          "summary": "Choose the NuGet package feeds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -90,7 +91,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Package feed URI or filesystem source path, not a number of package sources."
+                    "grammar": "A NuGet feed URI or local package directory."
                   }
                 ],
                 "when_absent": {
@@ -134,13 +135,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supplying a source replaces the configured feed list. Repeat the option for each feed URL or local package directory to search."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--packages",
-          "summary": "Set package directory",
+          "summary": "Set the global packages folder for this restore",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -200,13 +202,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "NuGet reads and extracts packages here. On Ubuntu the usual location is ~/.nuget/packages unless configuration or the environment overrides it."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "--configfile",
-          "summary": "Select NuGet configuration",
+          "summary": "Read settings from one NuGet config file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -266,49 +269,55 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Only the settings in the named file are used in place of the usual configuration hierarchy."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--disable-parallel",
-          "summary": "Disable concurrent restores"
+          "summary": "Restore projects one at a time"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--ignore-failed-sources",
-          "summary": "Continue past unavailable sources"
+          "summary": "Treat unavailable feeds as warnings when possible",
+          "detail": "Restore still fails if the required package version cannot be found."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable package caching"
+          "summary": "Bypass the NuGet HTTP cache",
+          "detail": "Current help lists --no-http-cache. The SDK also accepts this older spelling. Restore can still reuse installed packages from the global packages folder."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--force",
-          "summary": "Resolve dependencies again"
+          "summary": "Resolve package dependencies again",
+          "detail": "Repeats dependency resolution even after a successful restore, as if obj/project.assets.json had been removed."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--locked-mode",
-          "summary": "Require an unchanged lockfile"
+          "summary": "Fail if an existing dependency lock needs changes",
+          "detail": "Generate packages.lock.json with --use-lock-file first. Locked mode alone does not enable lockfile generation."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--use-lock-file",
-          "summary": "Write a dependency lockfile"
+          "summary": "Generate and use a dependency lockfile",
+          "detail": "NuGet records the resolved graph in packages.lock.json. Use --locked-mode when changes to the lockfile must fail."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "-r",
-          "summary": "Select runtime identifier",
+          "summary": "Restore packages for a target runtime",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -324,12 +333,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "One runtime identifier per occurrence. Repeated values populate the RuntimeIdentifiers property."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                  "meaning": "Use the runtime targets selected by the project and SDK."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -361,21 +370,22 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
-                      "locator": "RuntimeOption and RuntimeArgFunc"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "runtimeOption and RestoreRuntimeArgFunc collect one RID per occurrence"
                     }
                   ]
                 },
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Pass one runtime identifier per option. Repeat -r to restore assets for multiple targets, including RIDs outside the project’s RuntimeIdentifiers list."
         },
         {
           "argument": "RUNTIME",
           "argument_optional": false,
           "flag": "--runtime",
-          "summary": "Select runtime identifier",
+          "summary": "Restore packages for a target runtime",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -391,12 +401,12 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "RID string such as linux-x64 identifying an OS/architecture runtime target; the SDK forwards it as RuntimeIdentifier, not a numeric scale."
+                    "grammar": "One runtime identifier per occurrence. Repeated values populate the RuntimeIdentifiers property."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use project/SDK runtime selection without an explicit RuntimeIdentifier override."
+                  "meaning": "Use the runtime targets selected by the project and SDK."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -428,21 +438,22 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
-                      "locator": "RuntimeOption and RuntimeArgFunc"
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-restore/RestoreCommandParser.cs",
+                      "locator": "runtimeOption and RestoreRuntimeArgFunc collect one RID per occurrence"
                     }
                   ]
                 },
                 "subject": ".NET runtime identifiers"
               }
             ]
-          }
+          },
+          "detail": "Pass one runtime identifier per option. Repeat -r to restore assets for multiple targets, including RIDs outside the project’s RuntimeIdentifiers list."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -625,13 +636,14 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Set MSBuild logging detail",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -814,7 +826,8 @@
                 "ordering": "quiet/q, minimal/m, normal/n, detailed/d, diagnostic/diag from least to most logging detail; numeric alias codes are not a count or five-step level scale"
               }
             ]
-          }
+          },
+          "detail": "Use quiet, minimal, normal, detailed or diagnostic. Each accepts a short name, from q to diag."
         }
       ]
     }
@@ -823,11 +836,11 @@
     "dotnet",
     "restore"
   ],
-  "description": "Options for dotnet restore.",
+  "description": "Resolve project dependencies and download missing NuGet packages.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/"
+    "reviewed": "2026-11-22",
+    "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore"
   },
   "stop_at_positional": false
 }

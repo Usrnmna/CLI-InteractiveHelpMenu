@@ -6,23 +6,28 @@
       "options": [
         {
           "flag": "--oneline",
-          "summary": "Show each commit on one line"
+          "summary": "Show an abbreviated ID and commit subject",
+          "detail": "Use for compact commit headers. Patches and graph lines can still take additional lines."
         },
         {
           "flag": "--graph",
-          "summary": "Draw the commit graph"
+          "summary": "Draw the history graph beside commits",
+          "detail": "Uses topological order by default. The graph can add lines between commits."
         },
         {
           "flag": "--decorate",
-          "summary": "Show reference names"
+          "summary": "Show ref names beside the commits they point to",
+          "detail": "Bare --decorate selects short names. Use --decorate=full for full ref names or --decorate=auto for terminal output only."
         },
         {
           "flag": "--stat",
-          "summary": "Show change statistics"
+          "summary": "Summarize changes per file",
+          "detail": "Shows a diffstat for each displayed diff. The optional attached form --stat=WIDTH,NAMEWIDTH,COUNT controls the layout and file limit."
         },
         {
           "flag": "--patch",
-          "summary": "Show each commit's patch"
+          "summary": "Show changes as a patch",
+          "detail": "Merge commits normally omit their diff. Use --diff-merges=first-parent to compare a merge with its first parent."
         }
       ]
     },
@@ -32,9 +37,9 @@
       "options": [
         {
           "argument": "COUNT",
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "detail": "Zero shows none. A negative count or an omitted limit leaves the count uncapped. Git limits the selection before applying --reverse.",
           "flag": "--max-count=",
-          "summary": "Limit the number of commits",
+          "summary": "Limit the number of matching commits",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -47,7 +52,7 @@
         {
           "argument": "PATTERN",
           "flag": "--author=",
-          "summary": "Filter by author",
+          "summary": "Match the author name or email",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -107,12 +112,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The pattern is a regular expression matched against the author header. Repeat --author to accept any matching author. Use --committer for the committer."
         },
         {
           "argument": "PATTERN",
           "flag": "--grep=",
-          "summary": "Filter commit messages",
+          "summary": "Match commit messages by regular expression",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -172,13 +178,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeated patterns match any by default. Add --all-match to require every pattern. Enabled commit notes are also searched."
         },
         {
           "argument": "DATE",
-          "detail": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression. Reference scope: Git 2.48.0.",
+          "detail": "Uses the committer timestamp. An older commit can stop the history walk. Use --since-as-filter to visit the entire range when timestamps are out of order.",
           "flag": "--since=",
-          "summary": "Filter by a Git date/time expression",
+          "summary": "Show commits from a date onward",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -247,7 +254,8 @@
         },
         {
           "flag": "--all",
-          "summary": "Include all references"
+          "summary": "Walk history from all refs and HEAD",
+          "detail": "Includes history reachable from local branches, remote-tracking branches and tags. A commit reachable only through a reflog needs a separate starting point."
         }
       ]
     }
@@ -256,7 +264,7 @@
     "git",
     "log"
   ],
-  "description": "Inspect Git commit history.",
+  "description": "Show commits reachable from the selected revisions, starting at HEAD by default.",
   "value_definitions": {
     "output-count": {
       "applicability": {
@@ -287,10 +295,7 @@
       },
       "forms": [
         {
-          "bounds": {
-            "min": "0"
-          },
-          "grammar": "Nonnegative integer output count",
+          "grammar": "Signed decimal integer. A negative count leaves the output uncapped.",
           "id": "entries",
           "notation": "number",
           "special_values": [
@@ -309,6 +314,10 @@
           {
             "locator": "Commit limiting: --max-count and --since",
             "source": "https://git-scm.com/docs/git-log/2.48.0"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/git/git/v2.48.0/revision.c",
+            "locator": "parse_count, handle_revision_opt and get_revision_internal: signed count; only positive counts decrement"
           }
         ],
         "status": "verified"

@@ -1,18 +1,20 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Manager selection and property output.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "--user",
-          "summary": "Use the user service manager"
+          "summary": "Use the current user’s service manager",
+          "detail": "Selects units managed for the calling user."
         },
         {
           "argument": "",
           "flag": "--system",
-          "summary": "Use the system service manager"
+          "summary": "Use the system service manager",
+          "detail": "This is the default manager."
         },
         {
           "argument": "",
@@ -22,22 +24,25 @@
         {
           "argument": "",
           "flag": "--no-legend",
-          "summary": "Omit column legends"
+          "summary": "Applies to table legends only",
+          "detail": "Property output has no table legend. Use --value to omit property names."
         },
         {
           "argument": "",
           "flag": "--full",
-          "summary": "Display complete unit names and descriptions"
+          "summary": "Applies to width-limited listings and status",
+          "detail": "Property values from show are printed independently of the status display width."
         },
         {
           "argument": "",
           "flag": "--all",
-          "summary": "Include inactive units"
+          "summary": "Include properties with empty values",
+          "detail": "Without a unit or job, show prints manager properties. Use --property=NAME to request a specific property even when it is empty."
         },
         {
           "argument": "TYPE",
           "flag": "--type=",
-          "summary": "Filter units by type",
+          "summary": "Show properties for matching unit types",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -97,12 +102,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "With no operand or a unit glob, select units by type. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "STATE",
           "flag": "--state=",
-          "summary": "Filter units by state",
+          "summary": "Show properties for units in selected states",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -162,18 +168,20 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "With no operand or a unit glob, match load, active or substate names. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =."
         },
         {
           "argument": "",
           "flag": "--plain",
-          "summary": "Use plain output"
+          "summary": "Applies to listing symbols only",
+          "detail": "Property output already uses NAME=value lines."
         },
         {
           "argument": "LINES",
-          "detail": "systemd 257: --lines counts recent journal lines for status, default 10; 0 disables that journal output. This documented effect applies to status, not a limit on show properties or list-units rows.",
+          "detail": "The property listing has no journal entries to limit. Use --property= to select fields.",
           "flag": "--lines=",
-          "summary": "Set status journal-line count; 0 hides journal output",
+          "summary": "Set the journal count for status only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -251,13 +259,13 @@
         {
           "argument": "FORMAT",
           "flag": "--output=",
-          "summary": "Select journal output format",
+          "summary": "Applies to journal and table formatting",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
                 "kind": "enumeration",
-                "meaning": "Status journal output representation",
+                "meaning": "Output mode for other systemctl commands",
                 "bare": {
                   "state": "not_applicable",
                   "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
@@ -271,7 +279,7 @@
                       "short"
                     ],
                     "case": "sensitive",
-                    "meaning": "Classic syslog-style output"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-2",
@@ -281,7 +289,7 @@
                       "short-full"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output with complete timestamp"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-3",
@@ -291,7 +299,7 @@
                       "short-iso"
                     ],
                     "case": "sensitive",
-                    "meaning": "ISO-style timestamps"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-4",
@@ -301,7 +309,7 @@
                       "short-iso-precise"
                     ],
                     "case": "sensitive",
-                    "meaning": "ISO timestamps with microsecond precision"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-5",
@@ -311,7 +319,7 @@
                       "short-precise"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output with microsecond timestamps"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-6",
@@ -321,7 +329,17 @@
                       "short-monotonic"
                     ],
                     "case": "sensitive",
-                    "meaning": "Monotonic timestamps"
+                    "meaning": "Property output keeps its usual format"
+                  },
+                  {
+                    "id": "short-delta",
+                    "notation": "literal",
+                    "syntax": "short-delta",
+                    "tokens": [
+                      "short-delta"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-7",
@@ -331,7 +349,7 @@
                       "short-unix"
                     ],
                     "case": "sensitive",
-                    "meaning": "Epoch-second timestamps"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-8",
@@ -341,7 +359,7 @@
                       "verbose"
                     ],
                     "case": "sensitive",
-                    "meaning": "All journal fields"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-9",
@@ -351,7 +369,7 @@
                       "export"
                     ],
                     "case": "sensitive",
-                    "meaning": "Journal export serialization"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-10",
@@ -361,7 +379,7 @@
                       "json"
                     ],
                     "case": "sensitive",
-                    "meaning": "JSON records"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-11",
@@ -371,7 +389,7 @@
                       "json-pretty"
                     ],
                     "case": "sensitive",
-                    "meaning": "Indented JSON"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-12",
@@ -381,7 +399,7 @@
                       "json-sse"
                     ],
                     "case": "sensitive",
-                    "meaning": "Server-sent-event JSON"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-13",
@@ -391,7 +409,7 @@
                       "json-seq"
                     ],
                     "case": "sensitive",
-                    "meaning": "JSON text sequences"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-14",
@@ -401,7 +419,7 @@
                       "cat"
                     ],
                     "case": "sensitive",
-                    "meaning": "Message text only"
+                    "meaning": "Property output keeps its usual format"
                   },
                   {
                     "id": "choice-15",
@@ -411,12 +429,12 @@
                       "with-unit"
                     ],
                     "case": "sensitive",
-                    "meaning": "Short output including unit identity"
+                    "meaning": "Property output keeps its usual format"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use short journal output where the command displays journal lines; other output is unaffected."
+                  "meaning": "Print properties in their usual format."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -448,19 +466,28 @@
                   "status": "verified",
                   "references": [
                     {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+                      "locator": "Output modes, including short-delta"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/systemctl/systemctl-show.c",
+                      "locator": "show_one property output and print_status_info"
+                    },
+                    {
                       "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--output only affects journal output"
+                      "locator": "--output= and status"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Property output keeps its NAME=value format even with --output=json. Use --value to print just the values."
         },
         {
           "argument": "NAME",
           "flag": "--property=",
-          "summary": "Select properties for show",
+          "summary": "Choose which properties to print",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -520,12 +547,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a comma-separated list or repeat the option. An explicitly requested property can be empty."
         },
         {
           "argument": "",
           "flag": "--value",
-          "summary": "Display property values only"
+          "summary": "Display property values only",
+          "detail": "Use --property=MainPID --value to print the process ID without the MainPID= prefix."
         }
       ]
     }
@@ -534,5 +563,5 @@
     "systemctl",
     "show"
   ],
-  "description": "systemctl show shell argument reference."
+  "description": "Show properties of a unit, a numeric job ID or the manager itself."
 }

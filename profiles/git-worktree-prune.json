@@ -8,32 +8,32 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-n",
-          "summary": "Show records that would be removed"
+          "summary": "Preview stale registrations without removing them"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--dry-run",
-          "summary": "Show records that would be removed"
+          "summary": "Preview stale registrations without removing them"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Report removed records"
+          "summary": "Report each registration removed"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Report removed records"
+          "summary": "Report each registration removed"
         },
         {
           "argument": "TIME",
           "argument_optional": false,
-          "detail": "Git 2.48.0 date grammar accepts calendar/ISO/RFC-style times, explicit epoch-second raw dates with timezone, and relative expressions such as '2 weeks ago'. Unzoned calendar values use local time; relative values use the current wall clock. Bare numerals are heuristic: values >=100000000 can be treated as epoch seconds while smaller values can be calendar fields; they are not uniformly seconds or milliseconds. Use an explicit unambiguous date/expression. Use a zero cutoff, preventing ordinary expiry by age Use TIME_MAX as the cutoff, imposing no additional age restriction Reference scope: Git 2.48.0.",
+          "detail": "Quote relative dates such as \"2 weeks ago\" as one argument. Direct prune has no age delay by default. Locked worktrees are protected.",
           "flag": "--expire",
-          "summary": "Set a Git expiry date/time cutoff",
+          "summary": "Prune missing worktrees older than a cutoff",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -132,10 +132,10 @@
     "worktree",
     "prune"
   ],
-  "description": "Options for git worktree prune.",
+  "description": "Remove stale administrative records for missing working trees.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://git-scm.com/docs/git-worktree"
   },
   "stop_at_positional": false

@@ -6,11 +6,13 @@
       "version": "3.0.16",
       "minimum": "1",
       "zero_rejected": true,
-      "subject": "Intermediate CA certificates",
+      "subject": "Depth of a certificate verification error",
+      "chain_limit_option": "-verify_depth",
       "excluded_certificates": ["leaf", "trust anchor"],
       "references": [
-        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/s_client.c", "locator": "verify option uses valtype p"},
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/s_client.c", "locator": "verify uses valtype p followed by atoi"},
         {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/opt.c", "locator": "opt_int/opt_long; p rejects ival <= 0"},
+        {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/apps/lib/s_cb.c", "locator": "verify_callback checks the diagnostic depth on errors"},
         {"source": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.16/doc/man1/openssl-verification-options.pod", "locator": "verify_depth excludes leaf and trust anchor"}
       ]
     },

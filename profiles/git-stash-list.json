@@ -8,32 +8,35 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--oneline",
-          "summary": "Show one line per stash"
+          "summary": "Show a compact entry with its commit ID"
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--stat",
-          "summary": "Show change statistics"
+          "summary": "Show change statistics for each stash",
+          "detail": "Summarize changes relative to each stash commit's first parent. The menu inserts the bare --stat flag."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-p",
-          "summary": "Show patches"
+          "summary": "Show a patch for each listed stash",
+          "detail": "Compare the saved tracked files with the first parent of each stash commit."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--patch",
-          "summary": "Show patches"
+          "summary": "Show a patch for each listed stash",
+          "detail": "Compare the saved tracked files with the first parent of each stash commit."
         },
         {
           "argument": "COUNT",
           "argument_optional": false,
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "detail": "A positive count caps matching entries. Zero shows none. Omit the option for no limit.",
           "flag": "-n",
-          "summary": "Limit listed entries",
+          "summary": "Limit the number of listed stashes",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -46,9 +49,9 @@
         {
           "argument": "COUNT",
           "argument_optional": false,
-          "detail": "Git 2.48.0: the value is a maximum output count, not seconds or bytes. Other filters still apply. Zero selects no entries; omitting this option imposes no count limit.",
+          "detail": "A positive count caps matching entries. Zero shows none. Omit the option for no limit.",
           "flag": "--max-count=",
-          "summary": "Limit listed entries",
+          "summary": "Limit the number of listed stashes",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -62,7 +65,7 @@
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--format=",
-          "summary": "Set commit presentation",
+          "summary": "Choose how each stash entry is displayed",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -129,13 +132,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a named pretty format or placeholders. %gd shows the reflog selector and %gs shows its message."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--date=",
-          "summary": "Select date presentation",
+          "summary": "Choose the date format for stash entries",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -195,13 +199,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "In the default listing, an explicit date format replaces the numeric index inside each stash selector with a date."
         },
         {
           "argument": "PATTERN",
           "argument_optional": false,
           "flag": "--grep=",
-          "summary": "Filter stash messages",
+          "summary": "Match stash commit messages",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -261,7 +266,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a regular expression. Use --grep-reflog to search the reflog message shown in the default listing."
         }
       ]
     }
@@ -271,10 +277,10 @@
     "stash",
     "list"
   ],
-  "description": "Options for git stash list.",
+  "description": "List stash entries, newest first. stash@{0} is the latest.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://git-scm.com/docs/git-stash"
   },
   "stop_at_positional": false,
@@ -308,10 +314,7 @@
       },
       "forms": [
         {
-          "bounds": {
-            "min": "0"
-          },
-          "grammar": "Nonnegative integer output count",
+          "grammar": "Signed decimal integer. A negative count leaves the output uncapped.",
           "id": "entries",
           "notation": "number",
           "special_values": [
@@ -330,6 +333,10 @@
           {
             "locator": "Commit limiting: --max-count and --since",
             "source": "https://git-scm.com/docs/git-log/2.48.0"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/git/git/v2.48.0/revision.c",
+            "locator": "parse_count, handle_revision_opt and get_revision_internal: signed count; only positive counts decrement"
           }
         ],
         "status": "verified"

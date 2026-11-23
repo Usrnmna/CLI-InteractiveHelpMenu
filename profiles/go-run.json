@@ -1,15 +1,15 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Program launcher and build options.",
       "name": "Options",
       "options": [
         {
           "argument": "COMMAND",
           "argument_optional": false,
-          "detail": "Go 1.24.0: an external wrapper command used when Go later runs the compiled program; it is not run by help browsing. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "The wrapper receives the built executable followed by the program arguments. Place -exec before the package. Flags after the package go to the program.",
           "flag": "-exec",
-          "summary": "Select the program launcher",
+          "summary": "Run the compiled program through a wrapper",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -42,7 +42,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: an external wrapper command used when Go later runs the compiled program; it is not run by help browsing",
+                    "grammar": "A wrapper program with optional arguments, supplied as one flag value.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -100,14 +100,15 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-race",
-          "summary": "Enable race detection"
+          "summary": "Enable data race detection",
+          "detail": "The detector reports races on code paths that execute. On Ubuntu it requires a supported architecture, cgo and a C compiler."
         },
         {
           "argument": "LIST",
           "argument_optional": false,
-          "detail": "Go 1.24.0: a comma-separated list of build tags, not a numerical count. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Pass comma-separated tags, as in -tags debug,integration. They can include files whose build constraints would otherwise exclude them.",
           "flag": "-tags",
-          "summary": "Set build tags",
+          "summary": "Enable additional build tags",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -140,7 +141,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: a comma-separated list of build tags, not a numerical count",
+                    "grammar": "Comma-separated build tag names. The older space-separated form is deprecated.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -179,9 +180,9 @@
         {
           "argument": "FLAGS",
           "argument_optional": false,
-          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Quote multiple arguments as one value, as in -ldflags '-s -w'. An optional package pattern limits which link steps receive them.",
           "flag": "-ldflags",
-          "summary": "Pass linker arguments",
+          "summary": "Pass arguments to the Go linker",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -214,7 +215,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool link; quote the list as one option value",
+                    "grammar": "[pattern=]arg list. Quote a list containing spaces as a single shell argument. With repeated flags the last matching package pattern wins.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -253,9 +254,9 @@
         {
           "argument": "FLAGS",
           "argument_optional": false,
-          "detail": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 1.24.0.",
+          "detail": "Use -gcflags 'all=-N -l' to disable optimization and inlining for the named packages and their dependencies. Without a pattern the flags apply to packages named on the command line.",
           "flag": "-gcflags",
-          "summary": "Pass compiler arguments",
+          "summary": "Pass arguments to the Go compiler",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -288,7 +289,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Go 1.24.0: [pattern=]arg list passed to go tool compile; quote the list as one option value",
+                    "grammar": "[pattern=]arg list. Quote a list containing spaces as a single shell argument. With repeated flags the last matching package pattern wins.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -328,7 +329,7 @@
           "argument": "MODE",
           "argument_optional": false,
           "flag": "-mod",
-          "summary": "Set module download mode",
+          "summary": "Choose how Go resolves module dependencies",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -412,13 +413,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "readonly permits downloads but fails if go.mod needs edits. vendor reads vendored packages. mod permits module-file updates. A module declaring Go 1.14 or newer with a vendor directory normally uses vendor."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-trimpath",
-          "summary": "Remove local paths from output"
+          "summary": "Remove local source paths from the binary",
+          "detail": "Recorded source filenames use import paths or module paths with versions, so stack traces omit local build directories."
         }
       ]
     }
@@ -427,11 +430,11 @@
     "go",
     "run"
   ],
-  "description": "Options for go run.",
+  "description": "Compile and run a main package. Arguments after the package go to the program.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://pkg.go.dev/cmd/go"
+    "reviewed": "2026-11-22",
+    "source": "https://pkg.go.dev/cmd/go@go1.27.4"
   },
   "stop_at_positional": true
 }

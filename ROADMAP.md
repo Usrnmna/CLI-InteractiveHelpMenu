@@ -1,11 +1,9 @@
 # Project roadmap
 
-**Next task — audit the 12 bundled GNU `tar` options.** Start with `--directory`
-and the effect of argument order, then check archive selection, extraction,
-exclusion patterns and compression. Continue with `grep` (14 entries) and
-`ls` (19). The [tar profile](profiles/tar.json) contains the current menu text.
-The [completed rsync pilot](docs/rsync-option-audit.md) shows the expected audit
-and terminal evidence.
+**Next task — revisit `podman run` for manual coverage.** Start with its missing
+options and volume-mount Details, then finish `podman build`, `exec` and `logs`.
+Revisit GNU tar next, then the other previously audited families in table order.
+Resume [the 21-entry `psql` menu](profiles/psql.json) after the revisits are verified.
 
 ## Purpose and scope
 
@@ -23,24 +21,74 @@ a batch finishes, a source discrepancy blocks work, or the scope changes.
 
 ## Bundled menu progress
 
-At the pilot baseline the [bundled profiles](profiles/) contained 942 selectable
-entries across 76 profiles. The rsync review covered 29 entries, leaving 913
-across 75 profiles. Counts include command-specific keywords and separate
-alias profiles. Related spellings can share source research, but each menu
-still needs a rendering and insertion check.
+The first pass reviewed 718 of the 942 entries originally bundled, covering 60
+of 76 profiles. The remaining 224 original entries span 16 profiles. These are
+baseline counts. The number of options documented in the manuals must be
+established separately for each command.
 
-| Command family or commands | Profiles | Entries | Review status |
-| --- | ---: | ---: | --- |
-| `rsync` | 1 | 29 | Complete locally. [Manual comparison and sandbox results](docs/rsync-option-audit.md) |
-| GNU `tar` | 1 | 12 | Next |
-| GNU `grep`, `ls` | 2 | 33 | Queued after tar |
-| OpenSSH — `ssh`, `scp`, `sftp` | 3 | 51 | Planned |
-| Git — stash, worktree, commit and log | 13 | 104 | Planned, starting with stash and worktree |
-| `7z`, `7zz`, `fd`, `fdfind`, `fzf`, `ffmpeg`, `yq` | 7 | 94 | Pending |
-| `ip`, `ss`, `systemctl`, `journalctl`, `openssl` | 11 | 119 | Pending |
-| `uv`, `ruff`, `pytest`, `go`, `dotnet`, `bun` | 18 | 232 | Pending |
-| `podman`, `psql`, `ansible-playbook`, `az`, `gcloud` | 12 | 155 | Pending |
-| `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending |
+The last two columns track the revisit of the 60 previously audited profiles.
+Record each family’s option counts, detail gaps and test evidence in its linked
+audit. For a partial family, name the next command or option there and at the
+top of this page. Record new selectable rows separately from the baseline.
+
+| Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
+| --- | ---: | ---: | --- | --- | --- |
+| `rsync` | 1 | 29 | Complete locally. [Manual comparison and sandbox results](docs/rsync-option-audit.md) | Pending | Pending |
+| GNU `tar` | 1 | 12 | Complete locally. [Manual comparison and sandbox results](docs/tar-option-audit.md) | Pending | Pending |
+| GNU `grep` | 1 | 14 | Complete locally. [Manual comparison and sandbox results](docs/grep-option-audit.md) | Pending | Pending |
+| GNU `ls` | 1 | 19 | Complete locally. [Manual comparison and sandbox results](docs/ls-option-audit.md) | Pending | Pending |
+| OpenSSH — `ssh`, `scp`, `sftp` | 3 | 51 | Complete locally. [Manual comparison and sandbox results](docs/openssh-option-audit.md) | Pending | Pending |
+| Git — stash and worktree | 11 | 85 | Complete locally. [Manual comparison and sandbox results](docs/git-stash-worktree-option-audit.md) | Pending | Pending |
+| Git — commit and log | 2 | 19 | Complete locally. [Manual comparison and sandbox results](docs/git-commit-log-option-audit.md) | Pending | Pending |
+| `7z x`, `7zz x` | 2 | 8 | Complete locally. [Manual comparison and sandbox results](docs/7zip-extraction-option-audit.md) | Pending | Pending |
+| `fd`, `fdfind` | 2 | 38 | Complete locally. [Manual comparison and sandbox results](docs/fd-option-audit.md) | Pending | Pending |
+| `fzf` | 1 | 17 | Complete locally. [Manual comparison and sandbox results](docs/fzf-option-audit.md) | Pending | Pending |
+| `ffmpeg` | 1 | 16 | Complete locally. [Manual comparison and sandbox results](docs/ffmpeg-option-audit.md) | Pending | Pending |
+| `yq eval` | 1 | 15 | Complete locally. [Manual comparison and sandbox results](docs/yq-eval-option-audit.md) | Pending | Pending |
+| iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Pending | Pending |
+| systemd — `systemctl`, `journalctl` | 4 | 50 | Complete locally. [Manual comparison and sandbox results](docs/systemd-option-audit.md) | Pending | Pending |
+| OpenSSL — `s_client`, `x509`, `dgst` | 3 | 33 | Complete locally. [Manual comparison and sandbox results](docs/openssl-option-audit.md) | Pending | Pending |
+| `uv` | 5 | 56 | Complete locally. [Manual comparison and sandbox results](docs/uv-option-audit.md) | Pending | Pending |
+| Ruff — `ruff check`, `ruff format` | 2 | 30 | Complete locally. [Manual comparison and sandbox results](docs/ruff-option-audit.md) | Pending | Pending |
+| `pytest` | 1 | 18 | Complete locally. [Manual comparison and sandbox results](docs/pytest-option-audit.md) | Pending | Pending |
+| Go — `go build`, `go test`, `go run`, `go mod tidy` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/go-option-audit.md) | Pending | Pending |
+| .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Pending | Pending |
+| `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Pending | Pending |
+| Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | Next · `run` | Next · `run` |
+| `psql` | 1 | 21 | After revisits | — | — |
+| `ansible-playbook`, `az`, `gcloud` | 7 | 90 | Pending | — | — |
+| `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending | — | — |
+
+## Manual-coverage revisit
+
+1. **Inventory the manual before editing the profile.** For each exact command
+   path, list the options in the upstream and both Ubuntu release references
+   described below. Record aliases, argument forms, applicable versions and
+   source sections. Map each spelling to its current menu entry or mark it
+   missing. Use the previous audit’s manual-only list as a starting point.
+   The [Podman audit](docs/podman-option-audit.md) gives examples, while the
+   [tar audit](docs/tar-option-audit.md#manual-only-coverage) lists 157 Ubuntu
+   long spellings outside its original 12 rows. That list includes aliases.
+2. **Add the missing options.** Give each distinct applicable option a
+   selectable entry. Account for every documented alias and check that its
+   relationship to the option is discoverable. Preserve existing literal
+   spellings, value guidance and command boundaries. Qualify version- or
+   mode-specific options where they apply. If a command path cannot represent
+   an option faithfully, record the exact blocker and keep that item open.
+3. **Revisit Details on existing and new rows.** Keep the summary to one short
+   statement of what the option does. Put syntax, defaults, interactions,
+   units, side effects and version differences in Details when they change what
+   someone would type or expect. For the Podman pilot, inventory options such
+   as `--mount` and `--network`. Revisit `--volume` for the `:U` suffix’s
+   recursive ownership change on host files and the shared versus private
+   SELinux labels requested by `:z` and `:Z`.
+4. **Close each family against its inventory.** Record the distinct options
+   found, options already covered, rows added, aliases accounted for and
+   remaining gaps. Record material detail gaps fixed or still open separately.
+   Verify the added and revised entries using the terminal and sandbox checks
+   below. Mark each coverage column verified only when its inventory reconciles,
+   its open gaps are resolved and its checks pass. Apply the same coverage
+   standard when the first pass resumes with `psql`.
 
 ## Discovered command help
 
@@ -76,11 +124,10 @@ See the [fixture provenance guide](tests/fixtures/help/README.md).
    limits. Remove duplicated wording and generic menu instructions. Keep useful
    manual terms searchable. Preserve precise numerical and argument guidance
    when changing prose. An entry can pass review with its existing wording.
-3. **Account for gaps.** Record each material omission or conflict and its
-   resolution. Identify documented options outside the curated selection so a
-   future reviewer can distinguish a deliberate subset from an overlooked entry.
-   Flag proposed additions separately for a scope decision.
-4. **Verify the rendered result.** Inspect every revised row and its Details
+3. **Account for gaps.** Use the [manual-coverage revisit](#manual-coverage-revisit)
+   to add missing options and restore material details. Record exact blockers
+   and affected versions in the family audit so unfinished work remains visible.
+4. **Verify the rendered result.** Inspect every added or revised row and its Details
    pane in a real terminal. At the 60×16 minimum, scroll to a consequential
    qualification and check that it is reachable. Search for a familiar manual
    term. Verify cancellation preserves the buffer and cursor, and selection
@@ -100,8 +147,8 @@ path. Split a grouped row when that makes the remaining work clearer. Update
 the **Next task** at the top. If profiles or matrix routes change, reconcile the
 counts against the two linked inventories.
 
-The audit is complete when every bundled entry and maintained discovery path
-has a source-backed disposition, every material omission has been corrected or
-documented with its remaining limitation, and the rendered-menu checks and
-three sandbox configurations pass for the completed changes. Keep a link to
-the final evidence here so the result can be checked from a fresh checkout.
+Bundled manual coverage is complete when each applicable documented option
+and alias is accounted for, each distinct option is selectable, material details
+are reachable in the menu, and the terminal and three sandbox checks pass.
+The overall project also requires a source-backed review of every maintained
+discovery path. Link the verification evidence from each family or route here.

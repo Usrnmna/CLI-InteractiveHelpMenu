@@ -1,20 +1,21 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Use show before listing filters.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "show",
           "kind": "keyword",
-          "summary": "Display the selected objects"
+          "summary": "List network interfaces",
+          "detail": "With no arguments, ip link lists the interfaces in the current network namespace. Use show before listing filters."
         },
         {
           "argument": "IFNAME",
           "flag": "dev",
           "kind": "keyword",
-          "summary": "Select the network interface",
+          "summary": "Show one interface by name",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -67,27 +68,29 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
-                      "locator": "dev"
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in",
+                      "locator": "ip link show, dev NAME"
                     }
                   ]
                 },
                 "subject": "Network interfaces"
               }
             ]
-          }
+          },
+          "detail": "Use dev lo to inspect the loopback device and its flags."
         },
         {
           "argument": "",
           "flag": "up",
           "kind": "keyword",
-          "summary": "Select running interfaces"
+          "summary": "Show administratively up interfaces",
+          "detail": "An interface can be up even when it has no carrier."
         },
         {
           "argument": "TYPE",
           "flag": "type",
           "kind": "keyword",
-          "summary": "Select the link type",
+          "summary": "Match the link kind",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -147,13 +150,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use type bridge to list bridges themselves. An unknown type can return an empty listing."
         },
         {
           "argument": "DEVICE",
           "flag": "master",
           "kind": "keyword",
-          "summary": "Select links with this master",
+          "summary": "List interfaces attached to a master",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -214,20 +218,22 @@
                 "subject": "Network interfaces"
               }
             ]
-          }
+          },
+          "detail": "Use master br0 to list the ports attached to bridge br0."
         },
         {
           "argument": "",
           "flag": "nomaster",
           "kind": "keyword",
-          "summary": "Select links without a master"
+          "summary": "List interfaces with no master",
+          "detail": "Use ip link show nomaster to inspect membership. The same keyword after ip link set detaches a device."
         },
         {
           "argument": "GROUP",
-          "detail": "iproute2 6.13.0: the numeric form identifies network-device groups, not a count, percentage or measurement. Alternatives include group names from configured mapping files. Name mappings are configuration-dependent.",
+          "detail": "Supply the numeric group ID or its configured name. Devices in a group can have different masters.",
           "flag": "group",
           "kind": "keyword",
-          "summary": "Select the device group",
+          "summary": "List interfaces in a device group",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -305,6 +311,6 @@
     "ip",
     "link"
   ],
-  "description": "ip link listing and filter argument reference.",
+  "description": "List network interfaces and their attributes.",
   "stop_at_positional": true
 }

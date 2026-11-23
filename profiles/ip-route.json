@@ -1,20 +1,21 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Use show before listing filters.",
       "name": "Arguments",
       "options": [
         {
           "argument": "",
           "flag": "show",
           "kind": "keyword",
-          "summary": "Display the selected objects"
+          "summary": "List routes in the routing table",
+          "detail": "By default, ip route shows IPv4 routes in the main table. Use ip -6 route for IPv6 or ip route get ADDRESS for a lookup."
         },
         {
           "argument": "IFNAME",
           "flag": "dev",
           "kind": "keyword",
-          "summary": "Select the network interface",
+          "summary": "Match the outgoing interface",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -67,22 +68,23 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in",
-                      "locator": "dev"
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
+                      "locator": "ip route show, dev NAME"
                     }
                   ]
                 },
                 "subject": "Network interfaces"
               }
             ]
-          }
+          },
+          "detail": "Use dev eth0 to list routes that send packets through eth0."
         },
         {
           "argument": "TABLE",
-          "detail": "iproute2 6.13.0: the numeric form identifies routing tables, not a count, percentage or measurement. Alternatives include named tables and documented main/default/local/all selectors. Name mappings are configuration-dependent.",
+          "detail": "The usual table is main. Use local for local and broadcast routes or all to search every table. The table named default is separate from main.",
           "flag": "table",
           "kind": "keyword",
-          "summary": "Select the routing table",
+          "summary": "Choose the routing table to list",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -155,10 +157,10 @@
         },
         {
           "argument": "PROTOCOL",
-          "detail": "iproute2 6.13.0: the numeric form identifies routing-protocol ids, not a count, percentage or measurement. Alternatives include protocol names from routing-protocol mappings. Name mappings are configuration-dependent.",
+          "detail": "Use an origin such as kernel, boot or static, or its numeric protocol ID. TCP and UDP are transport protocols.",
           "flag": "proto",
           "kind": "keyword",
-          "summary": "Select a routing protocol",
+          "summary": "Match the protocol that installed the route",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -231,10 +233,10 @@
         },
         {
           "argument": "SCOPE",
-          "detail": "iproute2 6.13.0: the numeric form identifies route-scope ids, not a count, percentage or measurement. Alternatives include scope names such as global, link and host. Name mappings are configuration-dependent.",
+          "detail": "Use scope link for destinations on the attached link. Other scopes include host and global. A numeric scope ID also works.",
           "flag": "scope",
           "kind": "keyword",
-          "summary": "Select the route scope",
+          "summary": "Match the reach of a route",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -309,7 +311,7 @@
           "argument": "TYPE",
           "flag": "type",
           "kind": "keyword",
-          "summary": "Select the route type",
+          "summary": "Match the route type",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -369,14 +371,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use type local for local delivery or type blackhole for silent discard. Add table local or table all to include local-table entries."
         },
         {
           "argument": "PREFIX",
-          "detail": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+          "detail": "A bare address selects a host route. Use to root PREFIX to include more-specific routes within it, or to match PREFIX to include covering routes.",
           "flag": "to",
           "kind": "keyword",
-          "summary": "Select the destination prefix",
+          "summary": "Match an exact destination prefix",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -543,7 +546,7 @@
                 ],
                 "forms": [
                   {
-                    "grammar": "iproute2 6.13.0: a network address with optional /length. Length counts leading address bits, not bytes: IPv4 0-32, IPv6 0-128. Address-family and selector grammar determine omitted-length behavior.",
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
                     "id": "joined",
                     "notation": "expression",
                     "syntax": "ADDRESS[/PREFIXLEN]"
@@ -575,10 +578,10 @@
         },
         {
           "argument": "ADDRESS",
-          "detail": "iproute2 6.13.0: identifies next-hop addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters.",
+          "detail": "Give a gateway address or a prefix covering several gateways. An optional family such as inet6 goes before the address.",
           "flag": "via",
           "kind": "keyword",
-          "summary": "Select the next hop address",
+          "summary": "Match the next-hop gateway",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -645,10 +648,10 @@
         },
         {
           "argument": "ADDRESS",
-          "detail": "iproute2 6.13.0: identifies preferred-source addresses/prefixes. Any accepted /prefix length counts leading address bits, not bytes. These options select listing filters.",
+          "detail": "Supply an address or prefix. The route’s preferred source is the address it suggests for locally generated traffic.",
           "flag": "src",
           "kind": "keyword",
-          "summary": "Select the preferred source address",
+          "summary": "Match the route’s preferred source address",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -720,6 +723,6 @@
     "ip",
     "route"
   ],
-  "description": "ip route listing and filter argument reference.",
+  "description": "List routing-table entries and filter their attributes.",
   "stop_at_positional": true
 }

@@ -7,7 +7,7 @@
           "argument": "Directory",
           "argument_style": "attached_only",
           "flag": "-o",
-          "summary": "Set the output directory (attached value).",
+          "summary": "Choose the extraction directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -67,13 +67,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Attach the path, as in -o'out dir'. The default is the current directory. Use '-o*' for a subdirectory named after each archive."
         },
         {
           "argument": "Type",
           "argument_style": "attached_only",
           "flag": "-t",
-          "summary": "Set the archive type (attached value).",
+          "summary": "Choose the archive format to read",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -133,11 +134,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Attach the type, as in -tzip. By default, detection uses the archive name extension. Run 7zz i to list the formats this build supports."
         },
         {
           "flag": "-y",
-          "summary": "Assume yes for prompts."
+          "summary": "Answer yes to overwrite prompts",
+          "detail": "By default, existing files with matching paths are replaced without asking. Use -aos to skip existing files."
         },
         {
           "flag": "-bd",
@@ -150,5 +153,5 @@
     "7zz",
     "x"
   ],
-  "description": "7-Zip extraction option subset; selecting an option never extracts data."
+  "description": "Extract files with their archived directory structure."
 }

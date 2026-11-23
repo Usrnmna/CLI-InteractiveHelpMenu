@@ -1,32 +1,35 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Lint rules, fixes, reports and file selection.",
       "name": "Options",
       "options": [
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--fix",
-          "summary": "Apply available fixes"
+          "summary": "Apply available lint fixes to files",
+          "detail": "Safe fixes are enabled by default. Remaining violations are still reported and normally give exit status 1."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--unsafe-fixes",
-          "summary": "Include unsafe fixes"
+          "summary": "Allow fixes that may change behavior",
+          "detail": "Use with --fix to apply them or --diff to inspect them. Enabling unsafe fixes alone does not turn on fixing."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--diff",
-          "summary": "Display proposed changes"
+          "summary": "Show lint fixes without writing files",
+          "detail": "Implies --fix-only. Exit 1 if a fix would change a file. An unfixable violation alone produces no diff and exits 0."
         },
         {
           "argument": "RULES",
           "argument_optional": false,
           "flag": "--select",
-          "summary": "Select rule codes",
+          "summary": "Set the base lint rules",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -87,13 +90,14 @@
                 "subject": "Ruff lint rules"
               }
             ]
-          }
+          },
+          "detail": "Use comma-separated codes or prefixes such as E,F401. ALL selects all rules. Use --extend-select to add to the current selection. Ruff 0.17.6 also accepts rule names in preview mode."
         },
         {
           "argument": "RULES",
           "argument_optional": false,
           "flag": "--ignore",
-          "summary": "Ignore rule codes",
+          "summary": "Disable matching lint rules",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -154,13 +158,14 @@
                 "subject": "Ruff lint rules"
               }
             ]
-          }
+          },
+          "detail": "Use comma-separated codes or prefixes. The more specific selector wins. At equal specificity, ignore takes precedence over select."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--output-format",
-          "summary": "Select report format",
+          "summary": "Choose the diagnostic report format",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -224,14 +229,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The default full report includes source context. Use concise for a short listing or json for machine-readable output."
         },
         {
           "argument": "VERSION",
           "argument_optional": false,
-          "detail": "Ruff 0.11.13: use the literal Python release IDs py37, py38, py39, py310, py311, py312 or py313. For example, py310 identifies Python 3.10; it is not a decimal value or physical quantity. Without this override, configuration/project inference applies; the documented setting default is py39.",
+          "detail": "Use py310 for Python 3.10. Ruff 0.11.13 accepts py37 through py314 and defaults to py39. Ruff 0.17.6 adds py315 and defaults to py311. Project configuration or requires-python can supply the target.",
           "flag": "--target-version",
-          "summary": "Select Python target version",
+          "summary": "Set the oldest Python version to support",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -266,9 +272,9 @@
                   {
                     "case": "sensitive",
                     "id": "python-version",
-                    "meaning": "Python 3.7 through 3.13 release identifiers; py310 means Python 3.10, not a scaled number",
+                    "meaning": "Minimum Python language release, for example py310 for Python 3.10",
                     "notation": "literal",
-                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313",
+                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313 | py314",
                     "tokens": [
                       "py37",
                       "py38",
@@ -276,7 +282,8 @@
                       "py310",
                       "py311",
                       "py312",
-                      "py313"
+                      "py313",
+                      "py314"
                     ]
                   }
                 ],
@@ -285,15 +292,91 @@
                 "review": {
                   "references": [
                     {
-                      "locator": "target_version setting, accepted py37-py313 values, py39 default and project inference",
-                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs"
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/docs/configuration.md",
+                      "locator": "CLI possible values for --target-version and Python version inference"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+                      "locator": "target-version default"
                     }
                   ],
                   "status": "verified"
                 },
                 "subject": "Python language versions",
                 "when_absent": {
-                  "meaning": "Use configuration/project-version inference; the documented setting default is py39",
+                  "meaning": "Use the configured or inferred project target. The fallback in Ruff 0.11.13 is py39.",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Use one of the literal py-prefixed release identifiers",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "python-version",
+                    "meaning": "Minimum Python language release, for example py310 for Python 3.10",
+                    "notation": "literal",
+                    "syntax": "py37 | py38 | py39 | py310 | py311 | py312 | py313 | py314 | py315",
+                    "tokens": [
+                      "py37",
+                      "py38",
+                      "py39",
+                      "py310",
+                      "py311",
+                      "py312",
+                      "py313",
+                      "py314",
+                      "py315"
+                    ]
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Minimum Python language version targeted by Ruff",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/docs/configuration.md",
+                      "locator": "CLI possible values for --target-version and Python version inference"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_workspace/src/options.rs",
+                      "locator": "target-version default"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Python language versions",
+                "when_absent": {
+                  "meaning": "Use the configured or inferred project target. The fallback in Ruff 0.17.6 is py311.",
                   "state": "known"
                 },
                 "when_value_omitted": {
@@ -308,7 +391,7 @@
           "argument": "PATTERNS",
           "argument_optional": false,
           "flag": "--exclude",
-          "summary": "Exclude paths",
+          "summary": "Skip paths matching these glob patterns",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -368,26 +451,29 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use comma-separated globs. Quote them so the shell passes them to Ruff. An explicitly named file still runs unless --force-exclude is set. Use --extend-exclude to add to existing exclusions."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable caching"
+          "summary": "Skip reading cached results",
+          "detail": "Process the selected files again. Existing cache files are left in place."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--exit-zero",
-          "summary": "Return success despite findings"
+          "summary": "Return success for lint violations",
+          "detail": "Diagnostics still print. Invalid options, invalid configuration and internal errors still return exit status 2."
         },
         {
           "argument": "CONFIG",
           "argument_optional": false,
-          "detail": "Ruff 0.11.13: a configuration-file path or a TOML KEY=VALUE override; numerical meaning belongs to the selected setting. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 0.11.13.",
+          "detail": "Pass a file path or a quoted TOML assignment such as --config \"line-length = 100\". Assignments override configuration files. A dedicated command-line flag takes precedence.",
           "flag": "--config",
-          "summary": "Set configuration path or a setting",
+          "summary": "Load a TOML file or override a setting",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -460,31 +546,36 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--isolated",
-          "summary": "Ignore configuration files"
+          "summary": "Ignore configuration files",
+          "detail": "Use Ruff’s defaults and any explicit command-line settings. Inline --config assignments still apply."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-q",
-          "summary": "Reduce output"
+          "summary": "Show diagnostics without the summary",
+          "detail": "Lint violations remain visible and the exit status is unchanged."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Reduce output"
+          "summary": "Show diagnostics without the summary",
+          "detail": "Lint violations remain visible and the exit status is unchanged."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Increase output detail"
+          "summary": "Show detailed logging",
+          "detail": "Include debug messages about configuration and file discovery."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "Show detailed logging",
+          "detail": "Include debug messages about configuration and file discovery."
         }
       ]
     }
@@ -493,10 +584,10 @@
     "ruff",
     "check"
   ],
-  "description": "Options for ruff check.",
+  "description": "Find lint violations in Python files and optionally fix them.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "reviewed": "2026-11-22",
     "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface"
   },
   "stop_at_positional": false

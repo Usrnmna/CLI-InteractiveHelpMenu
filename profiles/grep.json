@@ -6,23 +6,28 @@
       "options": [
         {
           "flag": "--ignore-case",
-          "summary": "Ignore case distinctions"
+          "summary": "Match without regard to case",
+          "detail": "Matching is case-sensitive by default. Some Unicode letters have special case relationships, so matching can depend on the locale."
         },
         {
           "flag": "--extended-regexp",
-          "summary": "Interpret extended regular expressions"
+          "summary": "Use extended regular expressions",
+          "detail": "Use | for alternatives and parentheses for grouping without backslashes. Quote the pattern so the shell passes these characters to grep."
         },
         {
           "flag": "--fixed-strings",
-          "summary": "Interpret patterns as literal strings"
+          "summary": "Match literal strings",
+          "detail": "Dots, stars and brackets match themselves. A fixed string can match part of a line."
         },
         {
           "flag": "--word-regexp",
-          "summary": "Match whole words"
+          "summary": "Match whole words",
+          "detail": "At each end of the match, grep requires the edge of the line or a character other than a letter, digit or underscore. For instance, cat matches in cat-food but not in cat_food."
         },
         {
           "flag": "--invert-match",
-          "summary": "Select non-matching lines"
+          "summary": "Select lines matching no pattern",
+          "detail": "With several patterns, a match for any one of them excludes the line."
         },
         {
           "argument": "PATTERN",
@@ -87,7 +92,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use -e to pass a pattern beginning with a dash. Newlines within its argument separate patterns, and -f can supply additional patterns from a file."
         }
       ]
     },
@@ -97,25 +103,29 @@
       "options": [
         {
           "flag": "--line-number",
-          "summary": "Print line numbers"
+          "summary": "Prefix output with line numbers",
+          "detail": "Numbering begins at 1 in each input file."
         },
         {
           "flag": "--count",
-          "summary": "Print matching-line counts"
+          "summary": "Count selected lines per file",
+          "detail": "Several matches on one line count once. With -v, the count covers lines matching none of the patterns."
         },
         {
           "flag": "--files-with-matches",
-          "summary": "Print names of files containing matches"
+          "summary": "List files with a selected line",
+          "detail": "Print each qualifying file name once and stop reading that file at its first selected line. With -v, a file qualifies if any line matches no pattern."
         },
         {
           "flag": "--only-matching",
-          "summary": "Print only matched portions of lines"
+          "summary": "Print each nonempty match separately",
+          "detail": "Empty matches produce no output. With -z, each printed match ends with a null byte. Context options have no effect with -o."
         },
         {
           "argument": "LINES",
-          "detail": "Nonnegative base-10 integer, without unit suffix. Zero adds no context. Counts apply separately before and after each match; overlapping groups are merged. Overflow saturates at the implementation's intmax_t maximum instead of imposing a smaller guessed fixed limit. Reference scope: GNU grep 3.11.",
+          "detail": "The default group separator is a line containing two dashes (--). With -o, grep omits context lines.",
           "flag": "--context=",
-          "summary": "Print surrounding context lines",
+          "summary": "Show lines before and after each selected line",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -199,12 +209,13 @@
       "options": [
         {
           "flag": "--recursive",
-          "summary": "Search directories recursively"
+          "summary": "Search directories recursively",
+          "detail": "Follow symbolic links named on the command line and skip links found during traversal. Use -R to follow those links too. With no file operand, search the working directory."
         },
         {
           "argument": "GLOB",
           "flag": "--include=",
-          "summary": "Search only matching file names",
+          "summary": "Search files matching a name glob",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -264,12 +275,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Quote the glob. It can match a path suffix on the command line. During recursion it matches the base name. The last matching include or exclude rule wins. If the first rule is an include, files matching no rule are skipped."
         },
         {
           "argument": "GLOB",
           "flag": "--exclude=",
-          "summary": "Skip matching file names",
+          "summary": "Skip files matching a name glob",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -329,7 +341,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "For a command-line file, the glob can match the whole path or a suffix starting after a slash. During recursion it matches the base name. The last matching rule wins. Use --exclude-dir to skip directories."
         }
       ]
     }

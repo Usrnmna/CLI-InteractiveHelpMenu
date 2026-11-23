@@ -1,13 +1,13 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Journal sources, filters and output.",
       "name": "Arguments",
       "options": [
         {
           "argument": "UNIT",
           "flag": "--unit=",
-          "summary": "Match a systemd unit",
+          "summary": "Show journal entries for matching units",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -67,13 +67,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a name or a quoted glob such as 'web*.service'. Includes related manager and coredump records. Repeat the option to include more units. With --user, it matches user units."
         },
         {
           "argument": "UNIT",
           "attached": true,
           "flag": "-u",
-          "summary": "Match a systemd unit",
+          "summary": "Show journal entries for matching units",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -133,23 +134,26 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a name or a quoted glob such as 'web*.service'. Includes related manager and coredump records. Repeat the option to include more units. With --user, it matches user units."
         },
         {
           "argument": "",
           "flag": "--follow",
-          "summary": "Follow newly appended messages"
+          "summary": "Follow new journal entries",
+          "detail": "Normally prints the last 10 entries first. Use --lines=0 to start with new entries only, or --since= to choose a start time. Press Ctrl-C to stop."
         },
         {
           "argument": "",
           "flag": "-f",
-          "summary": "Follow newly appended messages"
+          "summary": "Follow new journal entries",
+          "detail": "Normally prints the last 10 entries first. Use --lines=0 to start with new entries only, or --since= to choose a start time. Press Ctrl-C to stop."
         },
         {
           "argument": "TIME",
-          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive.",
+          "detail": "Quote timestamps containing spaces. Use a local time, an explicit time zone, a relative span such as -1h, or @SECONDS since the Unix epoch.",
           "flag": "--since=",
-          "summary": "Select messages at or after a calendar or relative time",
+          "summary": "Show entries at or after a time",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -236,9 +240,9 @@
         },
         {
           "argument": "TIME",
-          "detail": "systemd 257: use calendar timestamps, now/today/yesterday/tomorrow, signed relative time spans, or @SECONDS since the Unix epoch. Unqualified calendar times use the local timezone; an explicit zone changes it. Omitted date/time components follow systemd.time rules. This is not a generic milliseconds value. The cutoff is inclusive.",
+          "detail": "A date alone means midnight at the start of that date. Use an explicit zone to override local time, or give a relative span or @SECONDS.",
           "flag": "--until=",
-          "summary": "Select messages at or before a calendar or relative time",
+          "summary": "Show entries at or before a time",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -325,9 +329,9 @@
         },
         {
           "argument": "RANGE",
-          "detail": "systemd 257: emerg=0, alert=1, crit=2, err=3, warning=4, notice=5, info=6, debug=7. A single level includes that level and all numerically lower (more severe) levels. FROM..TO selects an inclusive range; the documented names may replace numbers. This is a severity scale, not a percentage.",
+          "detail": "A single level includes more severe messages too. Use err for levels 0 through 3, or warning..info for levels 4 through 6 inclusive.",
           "flag": "--priority=",
-          "summary": "Select severity 0-7; lower numbers are more severe",
+          "summary": "Filter by severity threshold or range",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -411,7 +415,7 @@
         {
           "argument": "FORMAT",
           "flag": "--output=",
-          "summary": "Choose output format",
+          "summary": "Choose how each journal entry is printed",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -482,6 +486,16 @@
                     ],
                     "case": "sensitive",
                     "meaning": "Monotonic timestamps"
+                  },
+                  {
+                    "id": "short-delta",
+                    "notation": "literal",
+                    "syntax": "short-delta",
+                    "tokens": [
+                      "short-delta"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Monotonic timestamps with time since the preceding entry"
                   },
                   {
                     "id": "choice-7",
@@ -609,13 +623,14 @@
                   "references": [
                     {
                       "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
-                      "locator": "--output modes"
+                      "locator": "Output modes, including short-delta"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "The default is short. Use cat for message text, json for one JSON object per entry, or verbose to inspect fields."
         },
         {
           "argument": "",
@@ -625,17 +640,20 @@
         {
           "argument": "",
           "flag": "--system",
-          "summary": "Read system journals"
+          "summary": "Read the system journal",
+          "detail": "Includes system services and kernel messages accessible to the caller. Without a journal selector, all accessible journals are read."
         },
         {
           "argument": "",
           "flag": "--user",
-          "summary": "Read user journals"
+          "summary": "Read the current user’s journal",
+          "detail": "Per-user journals require persistent logging. With --user, the --unit= filter matches user units."
         },
         {
           "argument": "",
           "flag": "--reverse",
-          "summary": "Show newest messages first"
+          "summary": "Show newest messages first",
+          "detail": "Use for a backward listing. It cannot be combined with --follow or --lines=+N."
         },
         {
           "argument": "PATH",
@@ -700,14 +718,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Search the supplied journal directory in place of the usual runtime and persistent paths."
         },
         {
           "argument": "ID",
           "argument_optional": true,
-          "detail": "systemd 257: a 32-character hexadecimal ID identifies a boot. Without an ID, 1 is the oldest boot, 2 the next; 0/-0 is the newest, -1 the preceding boot. An offset after an ID is relative to that boot. Omitting the operand selects the current boot, which can differ from newest when reading another journal directory. all removes an earlier boot restriction. Offsets count boots, not seconds.",
+          "detail": "Use bare --boot for the current boot, or the newest recorded boot with --directory=. Use 1 for the oldest boot, 0 for the newest and -1 for the previous boot. Enter a value after =. Use all to clear the filter. Ubuntu 24.04 ignores the offset in ID+offset.",
           "flag": "--boot=",
-          "summary": "Select boot ID or ordinal; omitted ID means current boot",
+          "summary": "Select a boot by ID or offset",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -751,7 +770,7 @@
                     "grammar": "32 hexadecimal boot-ID characters, optionally followed by a signed offset relative to that ID",
                     "id": "id",
                     "notation": "expression",
-                    "syntax": "ID[+|-OFFSET]"
+                    "syntax": "ID[±OFFSET]"
                   },
                   {
                     "case": "sensitive",
@@ -771,6 +790,10 @@
                     {
                       "locator": "--since, --until, --priority, --boot and --lines",
                       "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/journal/journalctl-util.c",
+                      "locator": "journal_acquire_boot"
                     }
                   ],
                   "status": "verified"
@@ -781,7 +804,7 @@
                   "state": "known"
                 },
                 "when_value_omitted": {
-                  "meaning": "Select the current boot, which can differ from the last boot in another journal directory",
+                  "meaning": "Bare --boot selects the current boot locally or the newest boot in a supplied journal directory. An empty value after = is rejected.",
                   "state": "known"
                 }
               }
@@ -791,9 +814,9 @@
         {
           "argument": "LINES",
           "argument_optional": true,
-          "detail": "systemd 257: a positive integer counts journal events from the newest end; +N counts from the oldest. all removes the cap. With no operand the value is 10. Follow and pager modes can imply their own caps.",
+          "detail": "Bare --lines means 10. After =, supply a count or all. Use +N for the oldest N entries, or 0 with --follow for new entries only. +N cannot be used with --follow or --reverse.",
           "flag": "--lines=",
-          "summary": "Limit journal events; omitted value is 10, all removes cap",
+          "summary": "Limit how many journal entries to show",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -829,9 +852,9 @@
                 "forms": [
                   {
                     "bounds": {
-                      "min": "1"
+                      "min": "0"
                     },
-                    "grammar": "Positive integer count of journal events",
+                    "grammar": "Nonnegative entry count. Zero skips existing entries.",
                     "id": "events",
                     "notation": "number",
                     "syntax": "N"
@@ -860,6 +883,10 @@
                     {
                       "locator": "--since, --until, --priority, --boot and --lines",
                       "source": "https://www.freedesktop.org/software/systemd/man/257/journalctl.html"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/journal/journalctl.c",
+                      "locator": "parse_lines and follow/reverse validation"
                     }
                   ],
                   "status": "verified"
@@ -884,5 +911,5 @@
   "command": [
     "journalctl"
   ],
-  "description": "journalctl shell argument reference."
+  "description": "Read accessible journal entries, oldest first by default."
 }

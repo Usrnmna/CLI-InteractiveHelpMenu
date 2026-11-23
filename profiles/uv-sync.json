@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Package selection, lockfile checks and environment changes.",
       "name": "Options",
       "options": [
         {
           "argument": "EXTRA",
           "argument_optional": false,
           "flag": "--extra",
-          "summary": "Include an optional dependency group",
+          "summary": "Install dependencies from a named extra",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,50 +68,57 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat for more extras. All extras are resolved for the lockfile. Installation fails if selected extras or groups conflict."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--all-extras",
-          "summary": "Include all optional dependencies"
+          "summary": "Install every project extra",
+          "detail": "Extras declared mutually incompatible cannot be installed together."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-dev",
-          "summary": "Exclude development dependencies"
+          "summary": "Exclude the dev dependency group",
+          "detail": "Equivalent to --no-group dev. Other default groups remain selected."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--locked",
-          "summary": "Require an unchanged lockfile"
+          "summary": "Require a current lockfile before syncing",
+          "detail": "A missing or stale uv.lock causes an error. uv can still create the project environment before reporting that error."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--frozen",
-          "summary": "Use the lockfile without updating it"
+          "summary": "Sync from the existing lockfile as written",
+          "detail": "Skip the freshness check. A stale lockfile can omit newly declared dependencies. A missing lockfile is an error."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-install-project",
-          "summary": "Skip installation of the current project"
+          "summary": "Skip installation of the current project",
+          "detail": "Its dependencies are still installed, which lets a build cache them separately from the project source."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--dry-run",
-          "summary": "Show planned changes"
+          "summary": "Preview lockfile and environment changes",
+          "detail": "uv resolves dependencies and reports the plan without writing uv.lock or changing the project environment."
         },
         {
           "argument": "PYTHON",
           "argument_optional": false,
-          "detail": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy. Reference scope: uv 0.6.14.",
+          "detail": "A supplied virtual environment selects its interpreter. Packages are synced into the project environment.",
           "flag": "--python",
-          "summary": "Select a Python interpreter",
+          "summary": "Choose Python for the project environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -188,19 +195,21 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--offline",
-          "summary": "Disable network access"
+          "summary": "Use only local files and cached data",
+          "detail": "Network requests are disabled. A required package or interpreter must already be available locally."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--no-cache",
-          "summary": "Disable caching"
+          "summary": "Use a temporary cache for this command",
+          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--directory",
-          "summary": "Change working directory",
+          "summary": "Change the working directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -260,13 +269,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Relative command-line paths are resolved from this directory."
         },
         {
           "argument": "PROJECT",
           "argument_optional": false,
           "flag": "--project",
-          "summary": "Select project directory",
+          "summary": "Start project discovery in this directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -326,7 +336,8 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "uv searches this directory and its parents. Relative command-line paths still use the working directory."
         }
       ]
     }
@@ -335,11 +346,11 @@
     "uv",
     "sync"
   ],
-  "description": "Options for uv sync.",
+  "description": "Install the project’s locked packages and remove unneeded packages by default.",
   "documentation": {
     "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://docs.astral.sh/uv/reference/cli/"
+    "reviewed": "2026-11-22",
+    "source": "https://docs.astral.sh/uv/reference/cli/#uv-sync"
   },
   "stop_at_positional": false
 }

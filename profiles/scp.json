@@ -6,9 +6,8 @@
       "options": [
         {
           "argument": "",
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
           "flag": "-4",
-          "summary": "Use IPv4 addresses",
+          "summary": "Use IPv4 addresses only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -76,9 +75,8 @@
         },
         {
           "argument": "",
-          "detail": "OpenSSH Portable 9.9p2: the digit selects an address-family protocol version, not a measured value or operand.",
           "flag": "-6",
-          "summary": "Use IPv6 addresses",
+          "summary": "Use IPv6 addresses only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -147,13 +145,14 @@
         {
           "argument": "",
           "flag": "-C",
-          "summary": "Request compression"
+          "summary": "Request SSH compression"
         },
         {
           "argument": "CONFIGFILE",
           "attached": true,
+          "detail": "The named file replaces the usual user configuration and bypasses the system configuration file. Use -F none to skip both.",
           "flag": "-F",
-          "summary": "Read the specified SSH configuration",
+          "summary": "Use an alternate SSH client configuration",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -169,7 +168,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to an SSH client configuration file; defaults/override behavior follows OpenSSH's -F configuration rules."
+                    "grammar": "Path to the alternate user configuration file, or none to skip configuration files."
                   }
                 ],
                 "when_absent": {
@@ -218,8 +217,9 @@
         {
           "argument": "IDENTITY_FILE",
           "attached": true,
+          "detail": "Repeat -i to offer multiple identities. A public key file can select its matching private key held by ssh-agent.",
           "flag": "-i",
-          "summary": "Select a private identity file",
+          "summary": "Select an identity file for authentication",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -235,7 +235,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Path to an authentication private-key/identity file; digits in a filename are not key lengths."
+                    "grammar": "Identity file path. A public key file can select a private key loaded in ssh-agent."
                   }
                 ],
                 "when_absent": {
@@ -284,9 +284,9 @@
         {
           "argument": "DESTINATION",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: comma-separated jump hosts, optional login names and TCP ports; bracket IPv6 addresses. Ports are unitless identifiers, not counts or measurements.",
+          "detail": "List hops in order, separated by commas. Command-line settings generally apply to the final destination. Configure each jump host in ssh_config.",
           "flag": "-J",
-          "summary": "Connect through a jump host",
+          "summary": "Connect through one or more jump hosts",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -535,7 +535,7 @@
         {
           "argument": "OPTION",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: supply an ssh_config option such as Key=value; different keys can denote seconds, counts, ports, paths or names. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 9.9p2.",
+          "detail": "Pass one ssh_config setting per -o, such as Port=2222. The keyword determines the value and its units.",
           "flag": "-o",
           "summary": "Set an SSH configuration option",
           "value_semantics": {
@@ -608,20 +608,21 @@
         },
         {
           "argument": "",
+          "detail": "Also suppresses SSH diagnostic messages.",
           "flag": "-q",
-          "summary": "Reduce diagnostic output"
+          "summary": "Hide transfer progress and SSH warnings"
         },
         {
           "argument": "",
           "flag": "-v",
-          "summary": "Display diagnostic output"
+          "summary": "Show file-copy and SSH diagnostics"
         },
         {
           "argument": "PORT",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: PORT identifies a remote TCP port; it is unitless, not bytes or seconds. Matching SSH configuration applies when absent, with Port defaulting to 22. Forwarding port components have their own rules.",
+          "detail": "Use uppercase -P for the port. The configured Port applies when omitted and defaults to 22.",
           "flag": "-P",
-          "summary": "Select the remote TCP port",
+          "summary": "Select the remote SSH port",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -690,18 +691,20 @@
         },
         {
           "argument": "",
+          "detail": "Preserves access and modification times and file permissions.",
           "flag": "-p",
-          "summary": "Preserve source times and modes"
+          "summary": "Preserve source timestamps and mode bits"
         },
         {
           "argument": "",
+          "detail": "Follows symbolic links encountered during traversal, so their targets can be copied too.",
           "flag": "-r",
-          "summary": "Copy directories recursively"
+          "summary": "Copy directory trees recursively"
         },
         {
           "argument": "LIMIT",
           "attached": true,
-          "detail": "OpenSSH Portable 9.9p2: LIMIT is a decimal integer from 1 through 104857600, multiplied by 1024 bits/second. The manual labels this Kbit/s; the implementation uses 1024, not 1000. No unit suffix is accepted. Zero is invalid; omit -l to avoid imposing this limit.",
+          "detail": "Use a decimal integer from 1 to 104857600 without a suffix. Zero is invalid. Omit -l to leave this limit unset.",
           "flag": "-l",
           "summary": "Limit bandwidth in units of 1024 bits/s",
           "value_semantics": {
@@ -776,14 +779,16 @@
         },
         {
           "argument": "",
+          "detail": "The default is SFTP. Legacy mode can help with older servers or remote wildcard and tilde expansion. The remote shell interprets the path in legacy mode.",
           "flag": "-O",
           "summary": "Use the legacy SCP protocol"
         },
         {
           "argument": "PROGRAM",
           "attached": true,
+          "detail": "The program must accept SSH command-line options.",
           "flag": "-S",
-          "summary": "Select the SSH program",
+          "summary": "Choose the SSH connection program",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -851,6 +856,6 @@
   "command": [
     "scp"
   ],
-  "description": "scp shell argument reference.",
+  "description": "Copy files between hosts over SSH using SFTP by default.",
   "stop_at_positional": true
 }
