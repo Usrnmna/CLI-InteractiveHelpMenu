@@ -31,6 +31,9 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                 if command == "podman run":
                     self.assert_podman_run_coverage(text, profile)
                     continue
+                if command in {"podman build", "podman exec", "podman logs"}:
+                    self.assert_podman_leaf_coverage(command, text, profile)
+                    continue
                 for category in profile["categories"]:
                     for option in category["options"]:
                         pattern = r"(?<![\w-])" + re.escape(option["flag"].rstrip("=")) + r"(?![\w-])"
@@ -55,6 +58,42 @@ class SystemDependencyFollowupTests(unittest.TestCase):
         upstream_additions = {"--health-start-interval"}
         flags = [option["flag"] for category in profile["categories"] for option in category["options"]]
         self.assertCountEqual(flags, visible | manual_only_on_noble | resolute_additions | upstream_additions)
+
+    def assert_podman_leaf_coverage(self, command, capture, profile):
+        """Compare arity with the independently inventoried manuals and packaged Noble help."""
+        inventory = (ROOT / "docs/podman-build-exec-logs-manual-coverage.md").read_text()
+        title = command.split()[1].title()
+        section = inventory.split(f"## {title} inventory\n", 1)[1].split("\n## ", 1)[0]
+        expected = {}
+        for line in section.splitlines():
+            if not line.startswith("| `--"):
+                continue
+            spellings, operand = line.split(" | ")[0:2]
+            if "(parent)" in operand:
+                continue
+            requirement = "optional" if operand == "`[=POLICY]`" else "switch" if operand == "—" else "required"
+            for flag in re.findall(r"`(-[\w-]+)`", spellings):
+                self.assertNotIn(flag, expected)
+                expected[flag] = requirement
+
+        actual = {}
+        for category in profile["categories"]:
+            for option in category["options"]:
+                flag = option["flag"].rstrip("=")
+                self.assertNotIn(flag, actual)
+                actual[flag] = ("optional" if option.get("argument_optional") else
+                                "required" if option.get("argument") else "switch")
+        self.assertEqual(expected, actual)
+        captured = {}
+        for line in capture.splitlines():
+            match = re.fullmatch(r"\s+(?:(-\w), )?(--[\w-]+)(.*?)\s{2,}\S.*", line)
+            if match:
+                metavar = match[3].strip()
+                for flag in filter(None, match.groups()[:2]):
+                    captured[flag] = "optional" if "[=" in metavar else "required" if metavar else "switch"
+        self.assertEqual(len(captured), {"Build": 103, "Exec": 18, "Logs": 12}[title])
+        for flag, arity in captured.items():
+            self.assertEqual(actual[flag], arity, flag)
 
     def profile(self, name):
         return json.loads((ROOT / "profiles" / (name + ".json")).read_text())

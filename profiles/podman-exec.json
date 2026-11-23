@@ -8,35 +8,35 @@
           "argument": "",
           "flag": "--interactive",
           "summary": "Keep standard input open",
-          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal. Also spelled -i."
         },
         {
           "argument": "",
           "flag": "-i",
           "summary": "Keep standard input open",
-          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal."
+          "detail": "Use -i alone to feed a pipe. Add -t for an interactive terminal. Alias for --interactive."
         },
         {
           "argument": "",
           "flag": "--tty",
           "summary": "Allocate a pseudo-terminal",
-          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input. Also spelled -t."
         },
         {
           "argument": "",
           "flag": "-t",
           "summary": "Allocate a pseudo-terminal",
-          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input."
+          "detail": "A TTY combines stdout and stderr and can add control characters. Use -i alone for piped input. Alias for --tty."
         },
         {
           "argument": "",
           "flag": "--detach",
           "summary": "Start the command in the background",
-          "detail": "Prints the exec session ID. The session is removed when the command finishes."
+          "detail": "Prints the exec session ID. The session is removed when the command finishes. Options before the container configure Podman. Arguments after the child command go to that command. Also spelled -d."
         },
         {
           "argument": "KEY=VALUE",
-          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment. Quote a wildcard prefix such as \"APP_*\" to copy matching host variables. Also spelled -e.",
           "flag": "--env",
           "summary": "Set an environment variable for this command",
           "value_semantics": {
@@ -51,7 +51,7 @@
         {
           "argument": "KEY=VALUE",
           "attached": true,
-          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment.",
+          "detail": "Pass KEY=VALUE to assign a value, or KEY alone to copy it if set in the host environment. Quote a wildcard prefix such as \"APP_*\" to copy matching host variables. Alias for --env.",
           "flag": "-e",
           "summary": "Set an environment variable for this command",
           "value_semantics": {
@@ -71,267 +71,22 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "Container working directory",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Directory path inside the container, distinct from a host filesystem path."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use the image/container working-directory configuration."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Podman"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "5.4.2"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
-                      "locator": "--workdir"
-                    }
-                  ]
-                }
+                "ref": "workdir-operand"
               }
             ]
           },
-          "detail": "Overrides the container’s working directory for this exec session."
+          "detail": "Overrides the container’s working directory for this exec session. Without an override the command starts in the container’s configured working directory. Also spelled -w."
         },
         {
           "argument": "USER",
-          "detail": "USER[:GROUP] accepts names or numeric IDs. A user namespace can map those IDs to different IDs on the host.",
+          "detail": "USER[:GROUP] accepts names or numeric IDs. A user namespace can map those IDs to different IDs on the host. Also spelled -u.",
           "flag": "--user",
           "summary": "Choose the container user and group",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "applicability": {
-                  "chip": {
-                    "reason": "No chip-specific interpretation is claimed",
-                    "state": "not_applicable"
-                  },
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Podman"
-                    ]
-                  },
-                  "platform": {
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
-                    "state": "not_applicable"
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "5.4.2"
-                    ]
-                  }
-                },
-                "bare": {
-                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
-                  "state": "not_applicable"
-                },
-                "components": [
-                  {
-                    "id": "user",
-                    "required": true,
-                    "semantics": {
-                      "applicability": {
-                        "chip": {
-                          "reason": "No chip-specific interpretation is claimed",
-                          "state": "not_applicable"
-                        },
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "Podman"
-                          ]
-                        },
-                        "platform": {
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
-                          "state": "not_applicable"
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "5.4.2"
-                          ]
-                        }
-                      },
-                      "bare": {
-                        "form": "integer",
-                        "state": "accepted"
-                      },
-                      "forms": [
-                        {
-                          "grammar": "Integer identifier, not a measured quantity",
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N"
-                        },
-                        {
-                          "grammar": "Symbolic username",
-                          "id": "name",
-                          "notation": "expression",
-                          "syntax": "USERNAME"
-                        }
-                      ],
-                      "kind": "identifier",
-                      "meaning": "Container username or UID",
-                      "review": {
-                        "references": [
-                          {
-                            "locator": "--publish, --volume, --user and --env",
-                            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
-                          }
-                        ],
-                        "status": "verified"
-                      },
-                      "subject": "User accounts",
-                      "when_absent": {
-                        "reason": "The component has no independent option-absence default",
-                        "state": "not_applicable"
-                      },
-                      "when_value_omitted": {
-                        "reason": "The enclosing grammar determines component presence",
-                        "state": "not_applicable"
-                      }
-                    },
-                    "slot": 1
-                  },
-                  {
-                    "id": "group",
-                    "required": false,
-                    "semantics": {
-                      "applicability": {
-                        "chip": {
-                          "reason": "No chip-specific interpretation is claimed",
-                          "state": "not_applicable"
-                        },
-                        "implementation": {
-                          "state": "known",
-                          "values": [
-                            "Podman"
-                          ]
-                        },
-                        "platform": {
-                          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
-                          "state": "not_applicable"
-                        },
-                        "version": {
-                          "state": "known",
-                          "values": [
-                            "5.4.2"
-                          ]
-                        }
-                      },
-                      "bare": {
-                        "form": "integer",
-                        "state": "accepted"
-                      },
-                      "forms": [
-                        {
-                          "grammar": "Integer identifier, not a measured quantity",
-                          "id": "integer",
-                          "notation": "number",
-                          "syntax": "N"
-                        },
-                        {
-                          "grammar": "Symbolic group name",
-                          "id": "name",
-                          "notation": "expression",
-                          "syntax": "GROUPNAME"
-                        }
-                      ],
-                      "kind": "identifier",
-                      "meaning": "Container group name or GID",
-                      "review": {
-                        "references": [
-                          {
-                            "locator": "--publish, --volume, --user and --env",
-                            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
-                          }
-                        ],
-                        "status": "verified"
-                      },
-                      "subject": "Groups",
-                      "when_absent": {
-                        "reason": "The component has no independent option-absence default",
-                        "state": "not_applicable"
-                      },
-                      "when_value_omitted": {
-                        "reason": "The enclosing grammar determines component presence",
-                        "state": "not_applicable"
-                      }
-                    },
-                    "slot": 1
-                  }
-                ],
-                "forms": [
-                  {
-                    "grammar": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults.",
-                    "id": "joined",
-                    "notation": "expression",
-                    "syntax": "USER[:GROUP]"
-                  }
-                ],
-                "kind": "composite",
-                "meaning": "Container user/group identity",
-                "review": {
-                  "references": [
-                    {
-                      "locator": "--publish, --volume, --user and --env",
-                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
-                    },
-                    {
-                      "locator": "--env and --user",
-                      "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-exec.1.html"
-                    }
-                  ],
-                  "status": "verified"
-                },
-                "slots": 1,
-                "when_absent": {
-                  "meaning": "Command defaults and configuration apply without this explicit value",
-                  "state": "known"
-                },
-                "when_value_omitted": {
-                  "reason": "This option requires an operand",
-                  "state": "not_accepted"
-                }
+                "ref": "user-operand"
               }
             ]
           }
@@ -341,6 +96,459 @@
           "flag": "--privileged",
           "summary": "Run the command with extended privileges",
           "detail": "On Linux this requests all available capabilities for the exec process’s bounding set. Rootless Podman remains limited to the privileges of the host user who launched it."
+        },
+        {
+          "argument": "",
+          "flag": "-d",
+          "summary": "Start the command in the background",
+          "detail": "Prints the exec session ID. The session is removed when the command finishes. Options before the container configure Podman. Arguments after the child command go to that command. Alias for --detach."
+        },
+        {
+          "argument": "USER",
+          "detail": "USER[:GROUP] accepts names or numeric IDs. A user namespace can map those IDs to different IDs on the host. Alias for --user.",
+          "flag": "-u",
+          "summary": "Choose the container user and group",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "user-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "DIR",
+          "flag": "-w",
+          "summary": "Set this command’s directory inside the container",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "workdir-operand"
+              }
+            ]
+          },
+          "detail": "Overrides the container’s working directory for this exec session. Without an override the command starts in the container’s configured working directory. Alias for --workdir.",
+          "attached": true
+        }
+      ]
+    },
+    {
+      "name": "Session options",
+      "description": "Session configuration and container selection.",
+      "options": [
+        {
+          "flag": "--env-file",
+          "argument": "FILE",
+          "summary": "Read environment settings for the exec process",
+          "detail": "Use one variable per line, such as NAME=value. Repeat for multiple files. Later files override earlier ones, and explicit --env values take precedence. These settings apply only to the new process. Blank lines and lines beginning with # are ignored.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read environment settings for the exec process",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.9.3",
+                      "5.7.0",
+                      "6.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of processor model."
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Use one variable per line, such as NAME=value."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the documented grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no explicit --env-file override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --env-file"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --env-file"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v6.2.0/markdown/podman-exec.1.html",
+                      "locator": "OPTIONS, --env-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--detach-keys",
+          "argument": "SEQUENCE",
+          "summary": "Choose the keystrokes that detach the session",
+          "detail": "The usual sequence is ctrl-p,ctrl-q. Specify a single letter or comma-separated ctrl- keys. Pass an empty string to disable keyboard detachment. containers.conf can change the default.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the keystrokes that detach the session",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.9.3",
+                      "5.7.0",
+                      "6.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of processor model."
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SEQUENCE",
+                    "grammar": "The usual sequence is ctrl-p,ctrl-q."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the documented grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no explicit --detach-keys override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --detach-keys"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --detach-keys"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v6.2.0/markdown/podman-exec.1.html",
+                      "locator": "OPTIONS, --detach-keys"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cidfile",
+          "argument": "FILE",
+          "summary": "Read the target container ID from a file",
+          "detail": "Give the child command immediately after the Podman options. The file replaces the positional container name. Conflicts with --latest. Available on Resolute and upstream 6.2.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read the target container ID from a file",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.7.0",
+                      "6.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of processor model."
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Give the child command immediately after the Podman options."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the documented grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no explicit --cidfile override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --cidfile"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v6.2.0/markdown/podman-exec.1.html",
+                      "locator": "OPTIONS, --cidfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--latest",
+          "argument": "",
+          "summary": "Run the command in the last created container",
+          "detail": "Omit the container name and give the child command after the options. Creation order determines the target even if another container started more recently. Local client only. Also spelled -l."
+        },
+        {
+          "flag": "--no-session",
+          "argument": "",
+          "summary": "Run without recording an exec session",
+          "detail": "Other Podman commands cannot see the session. Local client only. Conflicts with --detach and an explicit --detach-keys. Requires upstream Podman 6.2 among the reviewed versions."
+        },
+        {
+          "flag": "--preserve-fd",
+          "argument": "FD-LIST",
+          "summary": "Pass specific open file descriptors to the child",
+          "detail": "Use a comma-separated list of descriptor numbers or repeat the flag. Each descriptor must be open in the caller. Requires a local client and the crun runtime. Available on Resolute and upstream 6.2.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Pass specific open file descriptors to the child",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "5.7.0",
+                      "6.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of processor model."
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FD-LIST",
+                    "grammar": "Use a comma-separated list of descriptor numbers or repeat the flag."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the documented grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no explicit --preserve-fd override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --preserve-fd"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v6.2.0/markdown/podman-exec.1.html",
+                      "locator": "OPTIONS, --preserve-fd"
+                    }
+                  ]
+                },
+                "subject": "open file descriptors"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--preserve-fds",
+          "argument": "COUNT",
+          "summary": "Pass consecutive open file descriptors to the child",
+          "detail": "COUNT counts extra descriptors above stdin, stdout and stderr. A count of two passes descriptors 3 and 4. They must already be open. Local client only.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Pass consecutive open file descriptors to the child",
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Podman"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.9.3",
+                      "5.7.0",
+                      "6.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of processor model."
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "number",
+                    "notation": "number",
+                    "syntax": "N"
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "number"
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Pass no additional descriptors."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --preserve-fds"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/podman-exec.1.html",
+                      "locator": "OPTIONS, --preserve-fds"
+                    },
+                    {
+                      "source": "https://docs.podman.io/en/v6.2.0/markdown/podman-exec.1.html",
+                      "locator": "OPTIONS, --preserve-fds"
+                    }
+                  ]
+                },
+                "subject": "additional open file descriptors"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show usage for podman exec",
+          "detail": "Displays exec options when placed before the container. After the child command, --help is a child argument. Also spelled -h."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "summary": "Run the command in the last created container",
+          "detail": "Omit the container name and give the child command after the options. Creation order determines the target even if another container started more recently. Local client only. Alias for --latest."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show usage for podman exec",
+          "detail": "Displays exec options when placed before the container. After the child command, --help is a child argument. Alias for --help."
         }
       ]
     }
@@ -349,7 +557,7 @@
     "podman",
     "exec"
   ],
-  "description": "Run a command in an existing, running container.",
+  "description": "Run a child command in a running container. Place Podman options before the container name.",
   "stop_at_positional": true,
   "value_definitions": {
     "environment-value": {
@@ -420,6 +628,257 @@
       "when_value_omitted": {
         "reason": "This option requires an operand",
         "state": "not_accepted"
+      }
+    },
+    "user-operand": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Podman"
+          ]
+        },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "5.4.2"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "Component grammar determines meaning, including numeric-only alternatives",
+        "state": "not_applicable"
+      },
+      "components": [
+        {
+          "id": "user",
+          "required": true,
+          "semantics": {
+            "applicability": {
+              "chip": {
+                "reason": "No chip-specific interpretation is claimed",
+                "state": "not_applicable"
+              },
+              "implementation": {
+                "state": "known",
+                "values": [
+                  "Podman"
+                ]
+              },
+              "platform": {
+                "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                "state": "not_applicable"
+              },
+              "version": {
+                "state": "known",
+                "values": [
+                  "5.4.2"
+                ]
+              }
+            },
+            "bare": {
+              "form": "integer",
+              "state": "accepted"
+            },
+            "forms": [
+              {
+                "grammar": "Integer identifier, not a measured quantity",
+                "id": "integer",
+                "notation": "number",
+                "syntax": "N"
+              },
+              {
+                "grammar": "Symbolic username",
+                "id": "name",
+                "notation": "expression",
+                "syntax": "USERNAME"
+              }
+            ],
+            "kind": "identifier",
+            "meaning": "Container username or UID",
+            "review": {
+              "references": [
+                {
+                  "locator": "--publish, --volume, --user and --env",
+                  "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
+                }
+              ],
+              "status": "verified"
+            },
+            "subject": "User accounts",
+            "when_absent": {
+              "reason": "The component has no independent option-absence default",
+              "state": "not_applicable"
+            },
+            "when_value_omitted": {
+              "reason": "The enclosing grammar determines component presence",
+              "state": "not_applicable"
+            }
+          },
+          "slot": 1
+        },
+        {
+          "id": "group",
+          "required": false,
+          "semantics": {
+            "applicability": {
+              "chip": {
+                "reason": "No chip-specific interpretation is claimed",
+                "state": "not_applicable"
+              },
+              "implementation": {
+                "state": "known",
+                "values": [
+                  "Podman"
+                ]
+              },
+              "platform": {
+                "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                "state": "not_applicable"
+              },
+              "version": {
+                "state": "known",
+                "values": [
+                  "5.4.2"
+                ]
+              }
+            },
+            "bare": {
+              "form": "integer",
+              "state": "accepted"
+            },
+            "forms": [
+              {
+                "grammar": "Integer identifier, not a measured quantity",
+                "id": "integer",
+                "notation": "number",
+                "syntax": "N"
+              },
+              {
+                "grammar": "Symbolic group name",
+                "id": "name",
+                "notation": "expression",
+                "syntax": "GROUPNAME"
+              }
+            ],
+            "kind": "identifier",
+            "meaning": "Container group name or GID",
+            "review": {
+              "references": [
+                {
+                  "locator": "--publish, --volume, --user and --env",
+                  "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
+                }
+              ],
+              "status": "verified"
+            },
+            "subject": "Groups",
+            "when_absent": {
+              "reason": "The component has no independent option-absence default",
+              "state": "not_applicable"
+            },
+            "when_value_omitted": {
+              "reason": "The enclosing grammar determines component presence",
+              "state": "not_applicable"
+            }
+          },
+          "slot": 1
+        }
+      ],
+      "forms": [
+        {
+          "grammar": "Podman 5.4.2: USER and optional GROUP may be names or numeric UID/GID identifiers. Numeric IDs are unitless; namespaces can map container IDs to different host IDs. Image/container settings determine defaults.",
+          "id": "joined",
+          "notation": "expression",
+          "syntax": "USER[:GROUP]"
+        }
+      ],
+      "kind": "composite",
+      "meaning": "Container user/group identity",
+      "review": {
+        "references": [
+          {
+            "locator": "--publish, --volume, --user and --env",
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html"
+          },
+          {
+            "locator": "--env and --user",
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-exec.1.html"
+          }
+        ],
+        "status": "verified"
+      },
+      "slots": 1,
+      "when_absent": {
+        "meaning": "Command defaults and configuration apply without this explicit value",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
+    },
+    "workdir-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Container working directory",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Directory path inside the container, distinct from a host filesystem path."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the image/container working-directory configuration."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Podman"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "5.4.2"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://docs.podman.io/en/v5.4.2/markdown/podman-run.1.html",
+            "locator": "--workdir"
+          }
+        ]
       }
     }
   }

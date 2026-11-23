@@ -3,7 +3,7 @@
     "podman",
     "logs"
   ],
-  "description": "Read recorded output from one or more containers.",
+  "description": "Read logs from one or more local containers or a single remote container.",
   "categories": [
     {
       "name": "Arguments",
@@ -13,18 +13,19 @@
           "flag": "--follow",
           "argument": "",
           "summary": "Keep reading new log output",
-          "detail": "A container removed on exit with --rm can lose its log file before Podman reads the last lines."
+          "detail": "A container removed on exit with --rm can lose its log file before Podman reads the last lines. This also applies if another process removes the container. Also spelled -f."
         },
         {
           "flag": "-f",
           "argument": "",
           "summary": "Keep reading new log output",
-          "detail": "A container removed on exit with --rm can lose its log file before Podman reads the last lines."
+          "detail": "A container removed on exit with --rm can lose its log file before Podman reads the last lines. This also applies if another process removes the container. Alias for --follow."
         },
         {
           "flag": "--timestamps",
           "argument": "",
-          "summary": "Show a timestamp on each log line"
+          "summary": "Show a timestamp on each log line",
+          "detail": "Adds the recorded time to each line. Use --since or --until to select a time window. Also spelled -t."
         },
         {
           "flag": "--tail",
@@ -101,7 +102,7 @@
               }
             ]
           },
-          "detail": "Use an integer line count. The default, -1, shows all lines."
+          "detail": "Use an integer line count. The default, -1, shows all lines. Use --tail=-1 for all lines or --tail 0 with --follow for new output only."
         },
         {
           "flag": "--since",
@@ -188,7 +189,7 @@
               }
             ]
           },
-          "detail": "Use Unix seconds, a date such as 2026-01-01, or an RFC3339 timestamp. Use --since 10m to start ten minutes before the client’s current time."
+          "detail": "Use Unix seconds, a date such as 2026-01-01, or an RFC3339 timestamp. Use --since 10m to start ten minutes before the client’s current time. A negative duration, as in --since=-10m, starts ten minutes in the future. Calendar times without a zone use UTC."
         },
         {
           "flag": "--until",
@@ -275,18 +276,61 @@
               }
             ]
           },
-          "detail": "Give a Unix time in seconds, a date, or an RFC3339 timestamp. Use --until 10m to set a cutoff ten minutes after the client’s current time. Use --until=-10m for ten minutes ago."
+          "detail": "Give a Unix time in seconds, a date, or an RFC3339 timestamp. Use --until 10m to set a cutoff ten minutes after the client’s current time. Use --until=-10m for ten minutes ago. Calendar times without a zone use UTC."
         },
         {
           "flag": "--names",
           "argument": "",
           "summary": "Label multiple containers by name",
-          "detail": "Uses each container’s name in place of its ID in the log prefix."
+          "detail": "Uses each container’s name in place of its ID in the log prefix. The command podman logs -n web db prefixes local output by container name. Remote clients accept a single container. Also spelled -n."
         },
         {
           "flag": "--color",
           "argument": "",
-          "summary": "Give each container a different log color"
+          "summary": "Give each container a different log color",
+          "detail": "Color distinguishes sources when reading several local containers. A remote client accepts one container per invocation."
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "summary": "Label multiple containers by name",
+          "detail": "Uses each container’s name in place of its ID in the log prefix. The command podman logs -n web db prefixes local output by container name. Remote clients accept a single container. Alias for --names."
+        },
+        {
+          "flag": "-t",
+          "argument": "",
+          "summary": "Show a timestamp on each log line",
+          "detail": "Adds the recorded time to each line. Use --since or --until to select a time window. Alias for --timestamps."
+        }
+      ]
+    },
+    {
+      "name": "Container selection",
+      "description": "Selecting a log source and viewing usage.",
+      "options": [
+        {
+          "flag": "--latest",
+          "argument": "",
+          "summary": "Read logs from the last created container",
+          "detail": "Omit all container operands. Creation order determines the selection even if another container started more recently. Local client only. Also spelled -l."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show usage for podman logs",
+          "detail": "Displays the log retrieval options and exits. Also spelled -h."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "summary": "Read logs from the last created container",
+          "detail": "Omit all container operands. Creation order determines the selection even if another container started more recently. Local client only. Alias for --latest."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show usage for podman logs",
+          "detail": "Displays the log retrieval options and exits. Alias for --help."
         }
       ]
     }

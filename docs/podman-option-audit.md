@@ -1,5 +1,7 @@
 # Podman option audit
 
+The manual revisits cover [build](podman-build-exec-logs-manual-coverage.md#build-inventory), [exec](podman-build-exec-logs-manual-coverage.md#exec-inventory) and [logs](podman-build-exec-logs-manual-coverage.md#logs-inventory). Their [verification results](podman-build-exec-logs-manual-coverage.md#verification) cover the expanded menus.
+
 The first pass covered 44 selectable entries across four menus. The [run manual-coverage revisit](podman-run-manual-coverage.md) records the expanded inventory and updated verification. Short and long aliases occupy separate rows. The main syntax correction is in `podman build`. Selecting the pull policy now inserts `--pull=` and places the cursor after the equals sign. Typing a bare `--pull` remains valid. A space before a policy turns that word into a build-context operand.
 
 ## Sources and versions

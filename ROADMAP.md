@@ -1,9 +1,9 @@
 # Project roadmap
 
-**Next task — revisit `podman build` for manual coverage.** The [completed run revisit](docs/podman-run-manual-coverage.md)
-verified all 168 selectable spellings on the three sandbox targets. Follow build with
-`podman exec` and `podman logs`.
-Revisit GNU tar next, then the other previously audited families in table order.
+**Next task — revisit GNU tar for full manual coverage.** Start with the
+[manual-only options in the first-pass tar audit](docs/tar-option-audit.md#manual-only-coverage).
+The four Podman menus are complete. [Podman inventories and verification](docs/podman-option-audit.md)
+Continue the previously audited families in table order after tar.
 Resume [the 21-entry `psql` menu](profiles/psql.json) after the revisits are verified.
 
 ## Purpose and scope
@@ -30,8 +30,9 @@ established separately for each command.
 The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
-top of this page. The run revisit adds 152 selectable rows to the baseline,
-bringing the bundled total to 1,094 across the same 76 profiles.
+top of this page. The Podman revisits add 295 selectable rows to the baseline. Run added 152,
+build added 124, exec added 13 and logs added six. The bundled total is now
+1,237 across the same 76 profiles.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -56,7 +57,7 @@ bringing the bundled total to 1,094 across the same 76 profiles.
 | Go — `go build`, `go test`, `go run`, `go mod tidy` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/go-option-audit.md) | Pending | Pending |
 | .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Pending | Pending |
 | `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Pending | Pending |
-| Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | `run` verified · [168 spellings](docs/podman-run-manual-coverage.md#option-inventory) · `build` next | `run` verified · [three sandbox targets](docs/podman-run-manual-coverage.md#verification) · `build` next |
+| Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | Complete · [168 run spellings](docs/podman-run-manual-coverage.md#option-inventory) and [171 build, exec and logs spellings](docs/podman-build-exec-logs-manual-coverage.md#build-inventory) | Complete on all three targets · [run](docs/podman-run-manual-coverage.md#verification) and [build, exec and logs](docs/podman-build-exec-logs-manual-coverage.md#verification) |
 | `psql` | 1 | 21 | After revisits | — | — |
 | `ansible-playbook`, `az`, `gcloud` | 7 | 90 | Pending | — | — |
 | `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending | — | — |
