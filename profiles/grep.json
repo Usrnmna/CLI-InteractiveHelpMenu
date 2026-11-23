@@ -7,27 +7,27 @@
         {
           "flag": "--ignore-case",
           "summary": "Match without regard to case",
-          "detail": "Matching is case-sensitive by default. Some Unicode letters have special case relationships, so matching can depend on the locale."
+          "detail": "Use -i or its obsolete alias -y. Case-sensitive matching is the default. Some Unicode letters have locale-dependent case relationships."
         },
         {
           "flag": "--extended-regexp",
           "summary": "Use extended regular expressions",
-          "detail": "Use | for alternatives and parentheses for grouping without backslashes. Quote the pattern so the shell passes these characters to grep."
+          "detail": "Use -E for alternatives (|) and grouping (parentheses) without backslashes. Quote the expression to pass these characters through the shell."
         },
         {
           "flag": "--fixed-strings",
           "summary": "Match literal strings",
-          "detail": "Dots, stars and brackets match themselves. A fixed string can match part of a line."
+          "detail": "With -F, dots, stars and brackets match themselves anywhere in the line. Both Ubuntu releases also accept the undocumented alias --fixed-regexp."
         },
         {
           "flag": "--word-regexp",
           "summary": "Match whole words",
-          "detail": "At each end of the match, grep requires the edge of the line or a character other than a letter, digit or underscore. For instance, cat matches in cat-food but not in cat_food."
+          "detail": "With -w, a match must start and end at a line edge or next to a non-word character. Letters, digits and underscores are word characters. Thus cat matches in cat-food but not in cat_food. Whole-line matching (-x) supersedes -w."
         },
         {
           "flag": "--invert-match",
           "summary": "Select lines matching no pattern",
-          "detail": "With several patterns, a match for any one of them excludes the line."
+          "detail": "With -v, every supplied pattern must fail for the line to be selected. Counts, filename lists and per-file limits use that selection."
         },
         {
           "argument": "PATTERN",
@@ -48,7 +48,7 @@
                     "id": "text",
                     "notation": "expression",
                     "syntax": "VALUE",
-                    "grammar": "Pattern interpreted by the selected basic/extended/Perl regexp or fixed-string mode; repeated patterns provide alternatives."
+                    "grammar": "A pattern in the selected regexp or literal syntax. Repeated patterns provide alternatives except that -P accepts only one distinct pattern."
                   }
                 ],
                 "when_absent": {
@@ -69,7 +69,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "3.11"
+                      "3.11",
+                      "3.12"
                     ]
                   },
                   "platform": {
@@ -87,13 +88,248 @@
                     {
                       "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
                       "locator": "doc/grep.texi: Matching Control --regexp"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/pcresearch.c: Pcompile restriction on multiple patterns"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/pcresearch.c: Pcompile restriction on multiple patterns"
                     }
                   ]
                 }
               }
             ]
           },
-          "detail": "Use -e to pass a pattern beginning with a dash. Newlines within its argument separate patterns, and -f can supply additional patterns from a file."
+          "detail": "Without -e or -f, the first operand is the pattern. Use -e '-x' or -- '-x' for a pattern starting with a dash. Repeat -e or -f to search for any of their patterns. Newlines separate patterns, and an empty pattern matches every line by default. With -P, supply one distinct pattern."
+        },
+        {
+          "flag": "--basic-regexp",
+          "summary": "Use basic regular expressions",
+          "detail": "This is the default syntax (-G). Use \\( and \\) for grouping and \\| for alternatives. Quote the pattern to preserve the backslashes."
+        },
+        {
+          "flag": "--perl-regexp",
+          "summary": "Match a Perl-compatible regular expression",
+          "detail": "Use -P with a single distinct pattern. In UTF-8, \\d matches ASCII digits on both Ubuntu releases. For Unicode decimal digits, use \\p{Nd}. [[:digit:]] includes Unicode digits on Resolute (PCRE2 10.46) but only ASCII digits on Noble (10.42). (?-aD) enables Unicode \\d with PCRE2 10.43 or later. To match across newlines, use -z and (?s) within a record."
+        },
+        {
+          "flag": "--no-ignore-case",
+          "summary": "Restore case-sensitive matching",
+          "detail": "Overrides a preceding -i or -y. A later -i enables case folding again."
+        },
+        {
+          "flag": "--line-regexp",
+          "summary": "Require the pattern to match the whole line",
+          "detail": "Use -x with a fixed string for an exact line or with a regular expression to anchor the entire pattern. With -z the boundary is a NUL-delimited record."
+        },
+        {
+          "flag": "--file=",
+          "summary": "Read search patterns from a file",
+          "detail": "Use -f FILE to read one pattern per line, or -f - for standard input. Repeat -f or combine it with -e for alternatives. An empty file supplies no patterns and selects nothing by itself. A blank line supplies an empty pattern, which matches every line by default.",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pattern file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "One pattern per line. A dash reads patterns from standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the positional pattern or other pattern sources."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: Matching Control, --file"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "doc/grep.texi: Matching Control, --file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-X",
+          "summary": "Select a grep matcher by name",
+          "detail": "Undocumented in both release manuals. Supply the name after -X or attach it directly, as in -Xawk. The grep, egrep and fgrep matchers implement -G, -E and -F. The perl matcher needs PCRE2. The awk, gawk and posixawk matchers select AWK expression dialects. Conflicting matcher selections are rejected.",
+          "argument": "MATCHER",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Matcher name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "grep",
+                    "notation": "literal",
+                    "syntax": "grep",
+                    "tokens": [
+                      "grep"
+                    ],
+                    "meaning": "Basic regular expressions",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "egrep",
+                    "notation": "literal",
+                    "syntax": "egrep",
+                    "tokens": [
+                      "egrep"
+                    ],
+                    "meaning": "Extended regular expressions",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "fgrep",
+                    "notation": "literal",
+                    "syntax": "fgrep",
+                    "tokens": [
+                      "fgrep"
+                    ],
+                    "meaning": "Fixed strings",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "awk",
+                    "notation": "literal",
+                    "syntax": "awk",
+                    "tokens": [
+                      "awk"
+                    ],
+                    "meaning": "AWK regular expressions",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "gawk",
+                    "notation": "literal",
+                    "syntax": "gawk",
+                    "tokens": [
+                      "gawk"
+                    ],
+                    "meaning": "GNU AWK regular expressions",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "posixawk",
+                    "notation": "literal",
+                    "syntax": "posixawk",
+                    "tokens": [
+                      "posixawk"
+                    ],
+                    "meaning": "POSIX AWK regular expressions",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "perl",
+                    "notation": "literal",
+                    "syntax": "perl",
+                    "tokens": [
+                      "perl"
+                    ],
+                    "meaning": "Perl-compatible regular expressions if compiled in",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use basic regular expressions."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: matchers, setmatcher and case 'X'"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: matchers, setmatcher and case 'X'"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -104,26 +340,26 @@
         {
           "flag": "--line-number",
           "summary": "Prefix output with line numbers",
-          "detail": "Numbering begins at 1 in each input file."
+          "detail": "With -n, numbering begins at 1 in each input. With -o, several matches on one line carry the same line number."
         },
         {
           "flag": "--count",
           "summary": "Count selected lines per file",
-          "detail": "Several matches on one line count once. With -v, the count covers lines matching none of the patterns."
+          "detail": "With -c, several matches on one line count once. With -v, count lines matching none of the patterns. A count of zero normally gives status 1 when no input had a selected line. Even with -z the count ends in newline."
         },
         {
           "flag": "--files-with-matches",
           "summary": "List files with a selected line",
-          "detail": "Print each qualifying file name once and stop reading that file at its first selected line. With -v, a file qualifies if any line matches no pattern."
+          "detail": "With -l, print a qualifying file name once. Normally the first selected line is enough. With -v, one nonmatching line qualifies the file. Use -Z to terminate names with NUL."
         },
         {
           "flag": "--only-matching",
           "summary": "Print each nonempty match separately",
-          "detail": "Empty matches produce no output. With -z, each printed match ends with a null byte. Context options have no effect with -o."
+          "detail": "With -o, empty matches produce no output. Several matches on one line print separately. With -z, each ends in NUL. With -b, the offset identifies the start of each match. Context lines are suppressed, although separators can still appear between groups. Use --no-group-separator to omit these too. With -v, a selected line can give status 0 with no matching piece to print."
         },
         {
           "argument": "LINES",
-          "detail": "The default group separator is a line containing two dashes (--). With -o, grep omits context lines.",
+          "detail": "Use -C NUM or the historical -NUM form (for example, -3). Explicit -A and -B override their respective sides. The default group separator is a line containing two dashes (--). With -o, grep omits context lines.",
           "flag": "--context=",
           "summary": "Show lines before and after each selected line",
           "value_semantics": {
@@ -200,6 +436,550 @@
               }
             ]
           }
+        },
+        {
+          "flag": "--files-without-match",
+          "summary": "List files with no selected lines",
+          "detail": "Use -L to list each input that would produce no selected lines. Exit status still tracks selection across all inputs. A listed file alone can give status 1. Use -Z for NUL-terminated names."
+        },
+        {
+          "flag": "--quiet",
+          "summary": "Stop successfully at the first selected line",
+          "detail": "Use -q or --silent for a status-only search. File errors can still produce diagnostics. A selected line gives status 0 even after an earlier file error."
+        },
+        {
+          "flag": "--no-messages",
+          "summary": "Suppress diagnostics for missing or unreadable files",
+          "detail": "Use -s to hide file-access errors. Matches still print and a file error normally gives status 2. Use -q to stop successfully as soon as a line is selected."
+        },
+        {
+          "flag": "--max-count=",
+          "summary": "Limit selected lines per input file",
+          "detail": "Use -m NUM per file. With -v, count selected nonmatching lines. Omit -m for an unlimited inverted search. Explicit -m -1 can suppress all its output on both Ubuntu builds. Zero normally exits before reading input, but -m0 -L still examines file names. A positive limit allows trailing context. On regular-file standard input grep leaves the stream just after the last selected line.",
+          "argument": "NUM",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Selected lines per input file",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "A decimal integer counts lines, without a unit suffix. The manual specifies nonnegative counts and the special value -1. The signed parser saturates on overflow.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Select no lines"
+                      },
+                      {
+                        "value": "-1",
+                        "meaning": "Documented as unlimited. With -v on the tested Ubuntu builds omit -m instead."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No limit on selected lines."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: General Output Control, --max-count; src/grep.c: case 'm' and prtext"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "doc/grep.texi: General Output Control, --max-count; src/grep.c: case 'm' and prtext"
+                    }
+                  ]
+                },
+                "subject": "Selected lines per input file"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--byte-offset",
+          "summary": "Prefix output with zero-based byte offsets",
+          "detail": "With -b, the offset is the start of the line in its input file. With -o, it is the first byte of each printed match. A multibyte character can occupy several bytes."
+        },
+        {
+          "flag": "--with-filename",
+          "summary": "Prefix output with the input file name",
+          "detail": "Use -H to force a name even for a single file or standard input. Multiple input files normally get prefixes automatically. Use --label to name standard input."
+        },
+        {
+          "flag": "--no-filename",
+          "summary": "Omit file names from line prefixes",
+          "detail": "Use -h when searching several files or a directory tree. A single file or standard input normally has no prefix. Filename-list modes still print names."
+        },
+        {
+          "flag": "--label=",
+          "summary": "Set the displayed name for standard input",
+          "detail": "Use -H to show the label when searching a pipeline alone. The label is a display name and does not open a file.",
+          "argument": "LABEL",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Display name for standard input",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "LABEL",
+                    "grammar": "Literal display text used where a file name would be printed for standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the standard input label supplied by grep."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: Output Line Prefix Control, --label"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "doc/grep.texi: Output Line Prefix Control, --label"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--initial-tab",
+          "summary": "Align the start of output text to a tab stop",
+          "detail": "Use -T with prefixes such as -H, -n or -b to keep tabs in the line content aligned. Numbers and offsets may be padded with spaces."
+        },
+        {
+          "flag": "--null",
+          "summary": "Terminate each printed file name with NUL",
+          "detail": "With -Z, a filename prefix ends in NUL instead of its separator. With -l or -L, each listed name ends in NUL, even if the name contains a newline. Matched lines and -o matches still end in newline unless -z is also set."
+        },
+        {
+          "flag": "--null-data",
+          "summary": "Read and print NUL-delimited records",
+          "detail": "With -z, newlines are ordinary input bytes. Printed records and each -o match end in NUL. Filename lists (-l or -L) still use newline unless -Z is set. When an input has no NUL, grep may need to hold the entire file in memory."
+        },
+        {
+          "flag": "--after-context=",
+          "summary": "Show lines after each selected line",
+          "detail": "Use -A NUM for trailing context. Its count overrides the trailing side of -C. Adjacent or overlapping groups print once. With -o, surrounding lines are omitted.",
+          "argument": "LINES",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Trailing context lines",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative decimal integer in lines, without a unit suffix. Positive overflow saturates at the maximum value of intmax_t.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Omit trailing context lines"
+                      }
+                    ],
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the both-sides context setting, or zero when no context was requested."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: context_length_arg, out_before, out_after and default_context"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: context_length_arg, out_before, out_after and default_context"
+                    }
+                  ]
+                },
+                "subject": "Trailing context lines"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--before-context=",
+          "summary": "Show lines before each selected line",
+          "detail": "Use -B NUM for leading context. Its count overrides the leading side of -C. Adjacent or overlapping groups print once. With -o, surrounding lines are omitted.",
+          "argument": "LINES",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Leading context lines",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative decimal integer in lines, without a unit suffix. Positive overflow saturates at the maximum value of intmax_t.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Omit leading context lines"
+                      }
+                    ],
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the both-sides context setting, or zero when no context was requested."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: context_length_arg, out_before, out_after and default_context"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: context_length_arg, out_before, out_after and default_context"
+                    }
+                  ]
+                },
+                "subject": "Leading context lines"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--group-separator=",
+          "summary": "Set the separator between disjoint context groups",
+          "detail": "With -A, -B or -C, the default separator is -- on its own line. An empty string leaves a blank separator line. Use --no-group-separator to remove that line. Group separators end in newline even with -z.",
+          "argument": "STRING",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Context group separator",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "STRING",
+                    "grammar": "Literal separator text. An empty string leaves the separator newline."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Print two dashes between separated context groups by default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: GROUP_SEPARATOR_OPTION and prtext"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: GROUP_SEPARATOR_OPTION and prtext"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-group-separator",
+          "summary": "Omit the line between disjoint context groups",
+          "detail": "Use with -A, -B or -C. An empty --group-separator= still prints a blank line."
+        },
+        {
+          "flag": "--color=",
+          "summary": "Highlight matches and output fields",
+          "detail": "The --colour alias accepts the same modes. Bare --color means auto. Attach a mode as --color=WHEN. A separate word remains a pattern or file operand. The menu inserts --color= for an explicit mode. GREP_COLORS controls the highlighting. An empty or unknown attached mode prints usage on both Ubuntu builds.",
+          "argument": "WHEN",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Color output policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto",
+                      "tty",
+                      "if-tty"
+                    ],
+                    "meaning": "Color output to a terminal that supports it",
+                    "case": "insensitive"
+                  },
+                  {
+                    "id": "always",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always",
+                      "yes",
+                      "force"
+                    ],
+                    "meaning": "Color output even when redirected",
+                    "case": "insensitive"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never",
+                      "no",
+                      "none"
+                    ],
+                    "meaning": "Suppress color escape sequences",
+                    "case": "insensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Leave highlighting off."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "form": "auto",
+                  "value": "auto"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: COLOR_OPTION and color_option"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: COLOR_OPTION and color_option"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--line-buffered",
+          "summary": "Flush standard output after each output line",
+          "detail": "Use for prompt output to a pipe. By default a terminal is line-buffered and redirected output is normally fully buffered. More frequent flushing can slow large searches."
         }
       ]
     },
@@ -210,7 +990,7 @@
         {
           "flag": "--recursive",
           "summary": "Search directories recursively",
-          "detail": "Follow symbolic links named on the command line and skip links found during traversal. Use -R to follow those links too. With no file operand, search the working directory."
+          "detail": "With -r, follow symbolic links named on the command line and skip links found during traversal. Use -R to follow both. With no file operand, search the working directory. The equivalent directory action is --directories=recurse."
         },
         {
           "argument": "GLOB",
@@ -342,7 +1122,460 @@
               }
             ]
           },
-          "detail": "For a command-line file, the glob can match the whole path or a suffix starting after a slash. During recursion it matches the base name. The last matching rule wins. Use --exclude-dir to skip directories."
+          "detail": "Quote the glob. It can match the whole command-line file name or a suffix starting after a slash. During recursion it matches the base name. The last matching include or exclude rule wins. Use --exclude-dir to skip directories."
+        },
+        {
+          "flag": "--dereference-recursive",
+          "summary": "Search directory trees and follow all symbolic links",
+          "detail": "Use -R to follow links named on the command line and links encountered during traversal. With no file operand, search the working directory. The default can also read devices encountered during traversal."
+        },
+        {
+          "flag": "--directories=",
+          "summary": "Choose how to handle directory operands",
+          "detail": "Use -d ACTION. The default read attempts to read the directory and can give an error. Use skip to ignore it, or recurse to search it with the link rules of -r. Both releases also accept unique abbreviations such as rec for recurse.",
+          "argument": "ACTION",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Directory handling",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "read",
+                    "notation": "literal",
+                    "syntax": "read",
+                    "tokens": [
+                      "read"
+                    ],
+                    "meaning": "Attempt to read the directory itself",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "skip",
+                    "notation": "literal",
+                    "syntax": "skip",
+                    "tokens": [
+                      "skip"
+                    ],
+                    "meaning": "Skip directory operands",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "recurse",
+                    "notation": "literal",
+                    "syntax": "recurse",
+                    "tokens": [
+                      "recurse"
+                    ],
+                    "meaning": "Search directory contents like -r",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Attempt to read directory operands."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: directories_args and case 'd' (XARGMATCH)"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: directories_args and case 'd' (XARGMATCH)"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--devices=",
+          "summary": "Choose how to handle devices, FIFOs and sockets",
+          "detail": "Use -D ACTION. The default reads explicitly named devices and those found with -R, and skips those found with -r. This setting does not apply to standard input.",
+          "argument": "ACTION",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Special-file handling",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "read",
+                    "notation": "literal",
+                    "syntax": "read",
+                    "tokens": [
+                      "read"
+                    ],
+                    "meaning": "Read like an ordinary file",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "skip",
+                    "notation": "literal",
+                    "syntax": "skip",
+                    "tokens": [
+                      "skip"
+                    ],
+                    "meaning": "Skip devices, FIFOs and sockets",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read explicit devices and devices found with -R. Skip devices found with -r."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: case 'D' and grepdesc"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: case 'D' and grepdesc"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exclude-dir=",
+          "summary": "Skip directories matching a name glob",
+          "detail": "Quote the glob. For an explicit directory operand it matches the full name or a suffix starting after a slash. For subdirectories found recursively it matches the base name. Trailing slashes in the glob are ignored.",
+          "argument": "GLOB",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded directory glob",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "GLOB",
+                    "grammar": "Shell wildcard pattern applied to directory names. Quote wildcards to pass them to grep."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Add no directory exclusion pattern."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "doc/grep.texi: File and Directory Selection, --exclude-dir"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "doc/grep.texi: File and Directory Selection, --exclude-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exclude-from=",
+          "summary": "Read file exclusion globs from a file",
+          "detail": "Supply one shell-style glob per line. Use - to read globs from standard input. These rules use the same matching scope and ordering as --exclude.",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "File containing exclusion globs",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "One file-name glob per line. A dash reads the list from standard input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Add no file of exclusion rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: EXCLUDE_FROM_OPTION and lib/exclude.c: add_exclude_file"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: EXCLUDE_FROM_OPTION and lib/exclude.c: add_exclude_file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--binary-files=",
+          "summary": "Choose how to search data detected as binary",
+          "detail": "A NUL in ordinary line mode or an encoding error can affect binary detection. The default binary policy can suppress matching text and report a binary match on standard error. It can also change which patterns match. Select text (-a) to print the bytes or without-match (-I) to skip unprocessed binary data.",
+          "argument": "TYPE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Policy for detected binary input",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "binary",
+                    "notation": "literal",
+                    "syntax": "binary",
+                    "tokens": [
+                      "binary"
+                    ],
+                    "meaning": "Suppress binary output and report a match when appropriate",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "text",
+                    "notation": "literal",
+                    "syntax": "text",
+                    "tokens": [
+                      "text"
+                    ],
+                    "meaning": "Search and print binary data as text",
+                    "case": "sensitive"
+                  },
+                  {
+                    "id": "without-match",
+                    "notation": "literal",
+                    "syntax": "without-match",
+                    "tokens": [
+                      "without-match"
+                    ],
+                    "meaning": "Treat unprocessed binary data as nonmatching",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the binary policy."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "GNU grep"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.11",
+                      "3.12"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+                      "locator": "src/grep.c: BINARY_FILES_OPTION"
+                    },
+                    {
+                      "source": "https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz",
+                      "locator": "src/grep.c: BINARY_FILES_OPTION"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--text",
+          "summary": "Process binary input as text",
+          "detail": "Use -a for --binary-files=text. Matching lines can contain raw control bytes. Redirect output if these bytes are unsuitable for a terminal."
+        },
+        {
+          "flag": "-I",
+          "summary": "Treat unprocessed binary data as nonmatching",
+          "detail": "Selects --binary-files=without-match. Once grep detects NUL binary data it treats the unprocessed part as having no matches. Previously processed input can still contribute output."
+        },
+        {
+          "flag": "--binary",
+          "summary": "Use binary I/O where the operating system distinguishes it",
+          "detail": "Use -U to preserve raw bytes on systems with text-mode translation, such as Windows. It has no effect on Ubuntu. Binary-file detection and output suppression are controlled independently by --binary-files."
+        }
+      ]
+    },
+    {
+      "name": "Program",
+      "description": "Show information about the installed grep.",
+      "options": [
+        {
+          "flag": "--help",
+          "summary": "Show command usage and options",
+          "detail": "Print the built-in help for the installed grep and exit."
+        },
+        {
+          "flag": "--version",
+          "summary": "Show the installed grep version",
+          "detail": "Use -V for the version report. On both Ubuntu builds it also identifies the PCRE2 library used by -P."
         }
       ]
     }

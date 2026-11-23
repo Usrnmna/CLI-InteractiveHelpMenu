@@ -1,9 +1,11 @@
 # Bundled GNU grep option audit
 
-The [grep menu](../profiles/grep.json) covers 14 long options for selecting
+The first pass covered 14 long options in the [grep menu](../profiles/grep.json) for selecting
 lines, formatting output and choosing files. Two matches on one line
 contribute **one** to `--count`, while `--only-matching` can print both. With `-v`, the count is the number of
 lines that match none of the patterns in each input file.
+
+The [full manual-coverage revisit](grep-manual-coverage.md) records the expanded inventory, release differences and verification.
 
 ## Manuals reviewed
 
@@ -50,9 +52,9 @@ input. [GNU context line control](https://www.gnu.org/software/grep/manual/grep.
 ## Manual-only coverage
 
 All three sources list the same 48 distinct long spellings in their option
-declarations. Of these, 14 have selectable menu rows. The other 34 are listed
+declarations. At the pilot baseline, 14 had selectable menu rows. The other 34 are listed
 below, counting aliases separately. Short aliases and the short-only binary
-file selector `-I` do not add menu rows.
+file selector `-I` were outside the original row count.
 
 `--after-context`, `--basic-regexp`, `--before-context`, `--binary`, `--binary-files`,
 `--byte-offset`, `--color`, `--colour`, `--dereference-recursive`, `--devices`,

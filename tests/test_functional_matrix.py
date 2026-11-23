@@ -44,7 +44,13 @@ PRIORITIZED = [
     "terraform plan", "jq", "uv pip install",
 ]
 
-# Original insertion spellings from the rsync pilot; its expanded inventory has a separate test.
+# The manual inventories pin the expanded surfaces. Keep the pilot insertions usable.
+ORIGINAL_GREP_FLAGS = {
+    "--context=", "--count", "--extended-regexp", "--exclude=", "--files-with-matches",
+    "--fixed-strings", "--ignore-case", "--include=", "--invert-match", "--line-number",
+    "--only-matching", "--regexp=", "--recursive", "--word-regexp",
+}
+
 ORIGINAL_RSYNC_FLAGS = {
     "--acls", "--archive", "--backup", "--backup-dir=", "--bwlimit=", "--checksum", "--compress",
     "--delete", "--delete-after", "--dry-run", "--exclude=", "--exclude-from=", "--hard-links",
@@ -58,9 +64,6 @@ ORIGINAL_RSYNC_FLAGS = {
 PROFILE_SURFACES = {
     "git commit": ["--amend", "--all", "--dry-run", "--edit", "--file", "--message", "--patch", "--verbose", "--short"],
     "git log": ["--all", "--author=", "--decorate", "--grep=", "--graph", "--max-count=", "--oneline", "--patch", "--since=", "--stat"],
-    "grep": ["--context=", "--count", "--extended-regexp", "--exclude=", "--files-with-matches",
-             "--fixed-strings", "--ignore-case", "--include=", "--invert-match", "--line-number",
-             "--only-matching", "--regexp=", "--recursive", "--word-regexp"],
     "ls": ["--all", "--almost-all", "--classify", "--color=", "--directory", "--dereference",
            "--escape", "--group-directories-first", "--hide=", "--human-readable", "--inode",
            "--numeric-uid-gid", "--quote-name", "--recursive", "--reverse", "--size", "-S", "-l", "-t"],
@@ -217,6 +220,8 @@ class PrioritizedInventoryTests(unittest.TestCase):
         for command, expected in PROFILE_SURFACES.items():
             with self.subTest(command=command):
                 self.assertEqual(sorted(options_of(profile_for(command))), sorted(expected))
+        # Each manual inventory independently pins the expanded set of spellings.
+        self.assertLessEqual(ORIGINAL_GREP_FLAGS, options_of(profile_for("grep")).keys())
         self.assertLessEqual(ORIGINAL_RSYNC_FLAGS, options_of(profile_for("rsync")).keys())
         # Preserve original tar insertions. The manual-coverage test pins its expanded surface.
         original_tar = {"--bzip2", "--create", "--directory=", "--diff", "--exclude=", "--extract",
