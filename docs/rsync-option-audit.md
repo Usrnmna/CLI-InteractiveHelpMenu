@@ -1,6 +1,6 @@
 # Bundled rsync option audit
 
-The offline menu covers 29 client options. Each entry was checked against the
+The first-pass menu covered 29 client options. The [full manual-coverage revisit](rsync-manual-coverage.md) records the expanded client and daemon inventory and its verification. Each entry was checked against the
 option definition in all three manuals below. The menu row states the effect.
 The Details pane explains conditions that can change the result, such as which
 files a filter protects, when a transfer is skipped, or how a rate is interpreted.
@@ -13,7 +13,7 @@ files a filter protects, when a transfer is skipped, or how a rate is interprete
 
 Counts follow the printed **Option Summary**. Aliases on one row count once.
 Daemon startup has a separate summary, including some spellings shared with the
-client. All daemon startup entries are manual-only.
+client. At the pilot baseline, all daemon startup entries were manual-only.
 
 ## Selectable client options
 
@@ -31,7 +31,7 @@ client. All daemon startup entries are manual-only.
 
 ## Client options available in the manuals
 
-The following client summary entries are outside the bundled selection in both
+The following client summary entries were outside the pilot selection in both
 Ubuntu releases. Each entry uses its first printed spelling. The linked manuals
 include aliases, operands, complete filter syntax and examples. Some of these
 options appear in the menu as cross-references.

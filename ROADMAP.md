@@ -1,10 +1,9 @@
 # Project roadmap
 
-**Next task — revisit rsync for full manual coverage.** Start with the
-[rsync pilot’s client and daemon option inventories](docs/rsync-option-audit.md).
-It is the first pending family in table order. GNU grep follows rsync.
-The [GNU tar revisit](docs/tar-manual-coverage.md) and
-[Podman family revisit](docs/podman-option-audit.md) are complete.
+**Next task — revisit GNU grep for full manual coverage.** Start with the
+[options outside the 14-row grep pilot](docs/grep-option-audit.md#manual-only-coverage).
+GNU ls follows grep in table order. The [rsync client and daemon revisit](docs/rsync-manual-coverage.md),
+[GNU tar revisit](docs/tar-manual-coverage.md) and [Podman family revisit](docs/podman-option-audit.md) are complete.
 Resume [the 21-entry `psql` menu](profiles/psql.json) after the revisits are verified.
 
 ## Purpose and scope
@@ -32,12 +31,12 @@ The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
-124 build, 13 exec and six logs). GNU tar added 145. The bundled total is
-**1,382 rows across 76 profiles**, compared with the historical 942.
+124 build, 13 exec and six logs). GNU tar added 145 and rsync added 187. The bundled total is
+**1,569 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
-| `rsync` | 1 | 29 | Complete locally. [Manual comparison and sandbox results](docs/rsync-option-audit.md) | Pending | Pending |
+| `rsync` | 1 | 29 | Complete locally. [First-pass audit](docs/rsync-option-audit.md) | Complete · [216 options and 306 distinct spellings](docs/rsync-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/rsync-manual-coverage.md#verification) |
 | GNU `tar` | 1 | 12 | Complete locally. [First-pass audit](docs/tar-option-audit.md) | Complete · [157 options and 59 aliases](docs/tar-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/tar-manual-coverage.md#verification) |
 | GNU `grep` | 1 | 14 | Complete locally. [Manual comparison and sandbox results](docs/grep-option-audit.md) | Pending | Pending |
 | GNU `ls` | 1 | 19 | Complete locally. [Manual comparison and sandbox results](docs/ls-option-audit.md) | Pending | Pending |

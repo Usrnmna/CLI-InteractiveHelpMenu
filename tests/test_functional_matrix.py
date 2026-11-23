@@ -44,16 +44,20 @@ PRIORITIZED = [
     "terraform plan", "jq", "uv pip install",
 ]
 
+# Original insertion spellings from the rsync pilot; its expanded inventory has a separate test.
+ORIGINAL_RSYNC_FLAGS = {
+    "--acls", "--archive", "--backup", "--backup-dir=", "--bwlimit=", "--checksum", "--compress",
+    "--delete", "--delete-after", "--dry-run", "--exclude=", "--exclude-from=", "--hard-links",
+    "--human-readable", "--ignore-existing", "--include=", "--itemize-changes", "--numeric-ids",
+    "--partial", "--progress", "--quiet", "--recursive", "--rsh=", "--size-only", "--stats",
+    "--timeout=", "--update", "--verbose", "--xattrs"
+}
+
 # Exact option surfaces, by source of truth: bundled profiles for curated
 # commands, maintained fixtures for discovered commands.
 PROFILE_SURFACES = {
     "git commit": ["--amend", "--all", "--dry-run", "--edit", "--file", "--message", "--patch", "--verbose", "--short"],
     "git log": ["--all", "--author=", "--decorate", "--grep=", "--graph", "--max-count=", "--oneline", "--patch", "--since=", "--stat"],
-    "rsync": ["--acls", "--archive", "--backup", "--backup-dir=", "--bwlimit=", "--checksum", "--compress",
-              "--delete", "--delete-after", "--dry-run", "--exclude=", "--exclude-from=", "--hard-links",
-              "--human-readable", "--ignore-existing", "--include=", "--itemize-changes", "--numeric-ids",
-              "--partial", "--progress", "--quiet", "--recursive", "--rsh=", "--size-only", "--stats",
-              "--timeout=", "--update", "--verbose", "--xattrs"],
     "grep": ["--context=", "--count", "--extended-regexp", "--exclude=", "--files-with-matches",
              "--fixed-strings", "--ignore-case", "--include=", "--invert-match", "--line-number",
              "--only-matching", "--regexp=", "--recursive", "--word-regexp"],
@@ -213,6 +217,7 @@ class PrioritizedInventoryTests(unittest.TestCase):
         for command, expected in PROFILE_SURFACES.items():
             with self.subTest(command=command):
                 self.assertEqual(sorted(options_of(profile_for(command))), sorted(expected))
+        self.assertLessEqual(ORIGINAL_RSYNC_FLAGS, options_of(profile_for("rsync")).keys())
         # Preserve original tar insertions. The manual-coverage test pins its expanded surface.
         original_tar = {"--bzip2", "--create", "--directory=", "--diff", "--exclude=", "--extract",
                         "--file=", "--gzip", "--list", "--totals", "--verbose", "--xz"}
@@ -398,15 +403,15 @@ class SearchNavigationTests(unittest.TestCase):
         browser = Browser(self._profile())
         self.assertEqual(browser.options()[0]["flag"], "--archive")
         for query, expected in [("DRY", "--dry-run"), ("bandwidth", "--bwlimit="),
-                                ("destination", "--update"), ("EXCLUDE", "--exclude=")]:
-            browser.set_query(query)
+                                ("destination", "--update"), ("EXCLUDE", "--exclude="),
+                                ("extraneous", "--delete")]:
             with self.subTest(query=query):
-                flags = [option["flag"] for option in browser.options()]
+                browser.set_query(query)
+                self.assertTrue(browser.options())
+                # Several categories can match a term; all remain available for navigation.
+                flags = {option["flag"] for index in range(len(browser.profile["categories"]))
+                         for option in browser.options(index)}
                 self.assertIn(expected, flags)
-        browser.set_query("")
-        browser.set_query("extraneous")
-        flags = [option["flag"] for option in browser.options()]
-        self.assertIn("--delete", flags)
 
     def test_search_finds_unicode_summaries_and_details(self):
         profile = build_profile("tool", [("fixture", "Options:\n  --copy   Caf\u00e9 transfer \u65e5\u672c mode")])
