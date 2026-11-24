@@ -11,6 +11,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import Mock, patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -110,6 +111,23 @@ class TmuxShell:
         lines = tuple(self.tmux("capture-pane", "-p", "-S", "-", "-t", "screen-test:0.0").splitlines())
         return ScreenState(columns, rows, x, y, alternate, lines[-rows:], lines[:-rows])
 
+    def wait_for_option(self, label, summary, details):
+        """Read only the fixed-size pane until the selected row and all Details agree."""
+        deadline = time.monotonic() + 8
+        progress = f"Details 1-{len(details)}/{len(details)}"
+        while True:
+            cells = self.tmux("capture-pane", "-p", "-t", "screen-test:0.0").splitlines()
+            divider = next((i for i, line in enumerate(cells) if line.startswith("Category ")), None)
+            if (divider is not None and len(cells) >= 3 and cells[-3] == progress
+                    and cells[divider + 1:divider + 1 + len(details)] == details
+                    and any(row.startswith("> " + label + " ") and summary in row[3 + len(label):]
+                            for row in (line[26:] for line in cells[4:divider]))):
+                return
+            if time.monotonic() >= deadline:
+                raise AssertionError(f"Incomplete frame for {label!r}: {cells!r}")
+            # The next capture often contains the rest of an in-progress redraw.
+            time.sleep(0.005)
+
     def wait_for(self, predicate):
         """Require matching terminal state to remain stable across redraw polling."""
         deadline = time.monotonic() + 8
@@ -160,6 +178,26 @@ class TmuxShell:
                     return fields[1].decode(), int(fields[0])
             time.sleep(0.02)
         raise AssertionError("Readline buffer snapshot was not completed")
+
+
+class FixedFrameTests(unittest.TestCase):
+    def test_partial_row_retries_and_times_out(self):
+        """Require the selected label, summary, complete Details and progress in one capture."""
+        shell = Mock(spec=TmuxShell)
+        frame = "\n".join(["title", "", "", "OPTIONS", " " * 26 + "> -f  Find", "Category 1/1",
+                           "Option: -f", "Find files.", "Details 1-2/2", "footer", "keys"])
+        for partial in ("", frame.replace("Category", "other"), frame.replace("> -f", "> -x"),
+                        frame.replace("  Find", "  Hide"), frame.replace("Find files.", "Other."),
+                        frame.replace("1-2/2", "1-1/2")):
+            with self.subTest(frame=partial):
+                shell.tmux.side_effect = [partial, frame]
+                with patch.object(time, "sleep") as pause:
+                    TmuxShell.wait_for_option(shell, "-f", "Find", ["Option: -f", "Find files."])
+                    pause.assert_called_once()
+                shell.tmux.side_effect = [partial]
+                with patch.object(time, "monotonic", side_effect=[0, 9]):
+                    with self.assertRaisesRegex(AssertionError, "Incomplete frame"):
+                        TmuxShell.wait_for_option(shell, "-f", "Find", ["Option: -f", "Find files."])
 
 
 class TerminalTestCase(unittest.TestCase):

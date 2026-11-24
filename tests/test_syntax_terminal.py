@@ -206,26 +206,8 @@ class SyntaxScreenTests(TerminalTestCase):
                 with self.subTest(command=title, flag=option["flag"]):
                     label = ellipsize_cells(option_label(option), 40)
                     view = option_text(profile, category, option)
-                    details = tuple(line for paragraph in view.details for line in wrap_cells(paragraph, 218))
-                    progress = f"Details 1-{len(details)}/{len(details)}"
-
-                    def complete(screen):
-                        # A capture can arrive after the selection changes but before its Details finish drawing.
-                        if screen.cells[-3] != progress:
-                            return False
-                        divider = next((i for i, line in enumerate(screen.cells) if line.startswith("Category ")), None)
-                        if divider is None:
-                            return False
-                        selected = any(line[26:].startswith("> " + label + " ") and option["summary"] in line
-                                       for line in screen.cells[4:divider])
-                        return selected and screen.cells[divider + 1:divider + 1 + len(details)] == details
-
-                    # A complete matching frame is sufficient. Waiting for a second
-                    # identical frame adds several minutes on a large option list.
-                    deadline = time.monotonic() + 8
-                    while not complete(screen := shell.capture()):
-                        self.assertLess(time.monotonic(), deadline, (label, screen.cells))
-                        time.sleep(0.03)
+                    details = [line for paragraph in view.details for line in wrap_cells(paragraph, 218)]
+                    shell.wait_for_option(label, option["summary"], details)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())

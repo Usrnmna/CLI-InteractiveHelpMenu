@@ -303,6 +303,11 @@ def check_coverage(root, reviews, *, mode="prospective"):
     if mode not in {"prospective", "strict"}:
         raise ValueError("Coverage mode must be prospective or strict")
     report = inventory.build_inventory(root, reviews)
+    return _evaluate_inventory(root, reviews, report, mode=mode)
+
+
+def _evaluate_inventory(root, reviews, report, *, mode):
+    """Evaluate a freshly reconciled inventory against the same root and reviews."""
     entries = {entry["id"]: entry for entry in report["entries"]}
     groups = {group["id"]: group for group in report["review_groups"]}
     diagnostics, records, failures = [], {}, {}

@@ -331,12 +331,13 @@ class InsertionContractTests(unittest.TestCase):
             profile = dict(profile)
             profile.pop("identity", None)
             command = " ".join(profile["command"])
+            prefix = command + " "
+            suffix = " 'caf\u00e9/\u65e5\u672c destination'"
+            line = prefix + "--part" + suffix
+            cursor = len(prefix) + 4
+            ctx = context(line, profile, cursor)
             for option in [item for category in profile["categories"] for item in category["options"]]:
-                prefix = command + " "
-                suffix = " 'caf\u00e9/\u65e5\u672c destination'"
-                line = prefix + "--part" + suffix
                 with self.subTest(command=command, flag=option["flag"]):
-                    ctx = context(line, profile, len(prefix) + 4)
                     edited, point = insert_option(ctx, option)
                     literal = option["flag"]
                     if option.get("argument_style") == "equals" and not literal.endswith("="):
@@ -345,6 +346,7 @@ class InsertionContractTests(unittest.TestCase):
                     self.assertEqual(edited, expected)
                     joined = literal.endswith("=") or option.get("argument_style") == "attached_only"
                     self.assertEqual(point, len(prefix + literal) + (0 if joined else 1))
+                    self.assertEqual((ctx.line, ctx.point), (line, cursor))
 
     def test_value_options_reserve_their_slot(self):
         rsync = profile_for("rsync")

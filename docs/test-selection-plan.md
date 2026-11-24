@@ -2,6 +2,16 @@
 
 Use repeatable focused commands and the timed full-suite baseline to identify expensive checks. Then reduce measured duplicate work and validate test selection against the full suite. Start with iproute2 and use the yq revisit to test whether selection catches dependencies in shared test modules. [Roadmap](../ROADMAP.md#reducing-test-duration) · [Offline runner](../tests/run_sandbox.py) · [Full suite](../tests/run.sh)
 
+## Phase status and gates
+
+| Phase | Local workflow | Completion criterion |
+| --- | --- | --- |
+| 1 · Focused edit loop | Available now | Run the named family and shared checks during editing. Full offline verification remains the batch gate. |
+| 2 · Timing | Complete | Paired timed and ordinary runs match in discovery order, outcomes, fixture results and exit status on all three targets. |
+| 3 · Reduce duplicate work | Complete | Measure candidates independently, compare sharded and unsharded coverage, then verify retained changes against Phase 2 on the complete offline matrix. |
+| 4 · Selection | Next · report-only pilot | Start with an explain-only iproute2 and yq pilot. Require agreement with full-run evidence, including the historical yq failure, before enabling selected execution. |
+| 5 · Result reuse | Conditional on validated selection and remaining cost | Demonstrate complete invalidation and equivalent outcomes for one bounded group before offering opt-in reuse. |
+
 ## Baseline
 
 | Local target | Focused yq checks | Full suite | Full result |
@@ -178,18 +188,109 @@ records the location of its associated raw `events.jsonl`.
 
 ## 3. Make the complete checks cheaper
 
-Apply these changes independently and retain the ones with measured savings.
+### Coverage retained by the four candidates
 
-1. **Simulated inventory.** In `InventoryRegressionTests.exercise_profile`, construct the default key map once per profile and reuse it. It is currently reconstructed for every draw. Each row draws at 60×16, 100×24, 160×32 and again at 60×16. Keep the first three for every row. Exercise the return to 60×16 once per representative layout, including a wrapped Details case and a change in the visible option window. Assert selected-row visibility and Details after returning to the original size. Compare the FFmpeg route and a small profile before and after, including search, option selection and untouched profile assertions. [Simulated inventory](../tests/test_regression_inventory.py) · [Key loader](../cli_help/ui.py) · [Existing resize tests](../tests/test_terminal_screen.py)
-2. **All-profile insertion.** In `InsertionContractTests.test_every_bundled_option_inserts_exactly_midline`, resolve the context once per profile for its identical pending line and cursor. Continue to call insertion and assert the literal, cursor and original context for each option. Keep its distinct whitespace and partial-token case. The simulated inventory already uses one context per profile. Compare exact row counts and retain separate missing-value, attached-value and positional-boundary tests. [Insertion matrix](../tests/test_functional_matrix.py) · [Argument editing tests](../tests/test_invocation_expansion.py)
-3. **Numerical diagnostics.** `NumericalDiagnosticTests.setUpClass` builds the inventory directly and `check_coverage` builds it again from the same root and reviews. Split the checker into inventory construction and a private evaluation step, and pass the freshly built report to that step in this class. Keep the public CLI building its own inventory. Leave synthetic, mutating and independent census tests on fresh input. Compare complete reports in both modes, including stale fingerprints, diagnostics and exit codes. [Numerical diagnostics](../tests/test_numerical_diagnostics.py) · [Numerical gate](../scripts/check_numerical_coverage.py)
-4. **Real terminal capture.** If the timed FFmpeg or Git walks dominate, instrument tmux subprocess counts. In the all-row helper compare a candidate pane-only capture for fixed-size frames with the existing capture of metadata and history on every poll. Keep exact selected label, summary, and complete Details comparisons. Keep the stronger stable-frame and cursor checks for resize, cancellation and editing. Run the walk repeatedly under all three targets and check that partial frames still time out or retry correctly. [All-row terminal checks](../tests/test_syntax_terminal.py) · [Capture implementation](../tests/test_terminal_screen.py)
+| Check | Work removed | Evidence required from the optimized check |
+| --- | --- | --- |
+| Simulated route inventory | Construct the default key map once per profile. Repeat the narrow draw once for each encountered combination of wrapped Details and a shifted option window. | Every row still renders at 60×16, 100×24 and 160×32 with the selected row visible. Compare the restored 60×16 frame cell for cell and page through every wrapped Details line for the representative layouts. Exercise search, literal insertion, cursor, modal controls and profile immutability. [Inventory](../tests/test_regression_inventory.py) |
+| All-profile insertion | Resolve the identical mid-token line and cursor once per profile. | Each of 4,603 option insertions still checks the literal, Unicode suffix, resulting cursor and original line and cursor. The independent inventory uses different whitespace and a different partial token. Dedicated editing cases exercise missing, attached and positional values and the child-command boundary. [Insertion](../tests/test_functional_matrix.py) · [Argument boundaries](../tests/test_invocation_expansion.py) |
+| Numerical diagnostics | Evaluate the inventory already built in the diagnostic class fixture. | All 13 diagnostic cases retain the same inputs and offline tripwires. Public CLI calls, independent census and mutation tests each build a fresh inventory. [Diagnostic tests](../tests/test_numerical_diagnostics.py) · [Coverage gate](../scripts/check_numerical_coverage.py) |
+| Fixed-size tmux walks | Read visible pane cells in one tmux call per poll and retry an incomplete redraw after 5 ms. | Require a matching selected label, summary, complete wrapped Details in order and exact progress in one frame. The retained syntax walks use a 220-column pane. Git keeps its original full capture after the 240-column trial regressed on Python 3.10. Stable-frame polling still checks cursor, alternate screen and history during open, resize, cancellation and editing. [Git walks](../tests/test_git_stash_worktree_menus.py) · [Syntax walks](../tests/test_syntax_terminal.py) · [Capture and partial-frame controls](../tests/test_terminal_screen.py) |
 
-Test sharding only after measuring these changes. Pilot two duration-balanced shards on one target, with independent temporary state and tmux sockets. Include duplicate setup and extraction in the wall time. Keep sharding only if it improves total time at the same fixture coverage and does not increase failures under concurrent runs.
+### Measurements and reproduction
+
+The pre-change checkout was `6574ffa`. The Phase 2 manifest matched every original test, runtime and packaged input by mode and SHA-256. Only this plan had changed. Each focused wave started the three prepared targets together using the Phase 2 package commands. Three successive fresh Python processes per target ran the following groups in order. Each measurement spans unittest setup through cleanup, including class fixtures. It excludes interpreter startup, snapshot creation and package extraction. The full and shard comparisons below use external wall time including setup.
+
+Use the Phase 2 command for the chosen target, keep its fixture wrapper and `YQ_TEST_BINDIR`, and replace the final `bash tests/run.sh` with the following command for an individual focused check. The local evidence driver also counted calls to the private shell's tmux method and retained the route inventory records and bundled row counts.
+
+```bash
+env PYTHONPATH=tests python3 -m unittest -v "$case"
+```
+
+| Group | Value of `case` |
+| --- | --- |
+| Inventory · large | `test_regression_inventory.InventoryRegressionTests.test_path_164_ffmpeg` |
+| Inventory · small | `test_regression_inventory.InventoryRegressionTests.test_path_020_bun_run` |
+| Insertion | `test_functional_matrix.InsertionContractTests.test_every_bundled_option_inserts_exactly_midline` |
+| Numerical diagnostics | `test_numerical_diagnostics.NumericalDiagnosticTests` |
+| tmux · FFmpeg | `test_syntax_terminal.SyntaxScreenTests.test_ffmpeg_all_rows_and_complete_details` |
+| tmux · Git | `test_git_stash_worktree_menus.GitMenuTests.test_log_rows_and_details` |
+
+The FFmpeg route inventories covered 1,759 bundled rows plus 4 and 10 captured rows. The bun run inventories covered 8 bundled rows plus 8 and 103 captured rows. Coverage comparisons use the full per-source records. Before/after CLI output was byte-identical in strict and prospective modes. Each clean report had 70 diagnostics and exit 0. Changing one review fingerprint in a disposable copy produced 71 diagnostics, including the expected `review_stale`, and exit 1. Evaluating the already-built inventory returned the same complete JSON in all four comparisons. The sole refreshed review pin covers the source digest of the checker whose evaluation body was extracted. [Review database](numerical-inventory/review.json)
+
+### Focused results and decisions
+
+Times are seconds in chronological sample order. Spread is maximum minus minimum. Each group exercises one candidate. The fixed-pane candidate includes both the pane-only read and the shorter retry interval, so its measurements cover those two changes together.
+
+| Check | Target | Before samples (s) | After samples (s) | Median before → after (s) | Spread before / after (s) | Saved (s) |
+| --- | --- | --- | --- | ---: | ---: | ---: |
+| Inventory · FFmpeg | `host` | 12.321, 12.433, 11.972 | 10.657, 10.215, 10.659 | 12.321 → 10.657 | 0.461 / 0.444 | 1.664 |
+| Inventory · FFmpeg | `noble310` | 22.709, 22.377, 22.585 | 19.713, 19.397, 19.282 | 22.585 → 19.397 | 0.333 / 0.431 | 3.188 |
+| Inventory · FFmpeg | `noble312` | 12.657, 12.340, 12.381 | 10.798, 10.604, 10.893 | 12.381 → 10.798 | 0.317 / 0.289 | 1.584 |
+| Inventory · bun run | `host` | 0.547, 0.567, 0.540 | 0.478, 0.447, 0.462 | 0.547 → 0.462 | 0.027 / 0.031 | 0.086 |
+| Inventory · bun run | `noble310` | 1.043, 1.097, 1.048 | 0.901, 0.903, 0.896 | 1.048 → 0.901 | 0.053 / 0.006 | 0.147 |
+| Inventory · bun run | `noble312` | 0.557, 0.556, 0.573 | 0.479, 0.453, 0.456 | 0.557 → 0.456 | 0.017 / 0.026 | 0.102 |
+| Insertion · all rows | `host` | 0.954, 0.938, 0.970 | 0.119, 0.115, 0.117 | 0.954 → 0.117 | 0.032 / 0.004 | 0.837 |
+| Insertion · all rows | `noble310` | 1.449, 1.509, 1.425 | 0.217, 0.214, 0.212 | 1.449 → 0.214 | 0.084 / 0.005 | 1.235 |
+| Insertion · all rows | `noble312` | 0.977, 0.944, 0.940 | 0.123, 0.120, 0.127 | 0.944 → 0.123 | 0.037 / 0.007 | 0.822 |
+| Numerical diagnostics | `host` | 9.291, 8.954, 9.114 | 5.820, 5.742, 5.821 | 9.114 → 5.820 | 0.337 / 0.078 | 3.294 |
+| Numerical diagnostics | `noble310` | 14.472, 14.527, 14.221 | 9.204, 9.311, 9.159 | 14.472 → 9.204 | 0.306 / 0.151 | 5.269 |
+| Numerical diagnostics | `noble312` | 9.857, 9.606, 9.616 | 6.184, 6.126, 6.128 | 9.616 → 6.128 | 0.251 / 0.059 | 3.488 |
+| tmux · FFmpeg | `host` | 34.969, 31.743, 28.079 | 24.818, 24.590, 25.175 | 31.743 → 24.818 | 6.890 / 0.585 | 6.925 |
+| tmux · FFmpeg | `noble310` | 70.764, 68.207, 69.228 | 30.230, 30.744, 30.216 | 69.228 → 30.230 | 2.557 / 0.528 | 38.998 |
+| tmux · FFmpeg | `noble312` | 48.937, 49.242, 49.242 | 23.537, 23.496, 24.128 | 49.242 → 23.537 | 0.305 / 0.632 | 25.704 |
+| tmux · Git log | `host` | 3.747, 3.734, 3.732 | 3.166, 3.163, 3.084 | 3.734 → 3.163 | 0.015 / 0.082 | 0.570 |
+| tmux · Git log | `noble310` | 3.528, 3.719, 3.563 | 4.406, 4.512, 4.372 | 3.563 → 4.406 | 0.191 / 0.140 | -0.843 |
+| tmux · Git log | `noble312` | 3.322, 3.391, 3.332 | 3.145, 2.976, 2.929 | 3.332 → 2.976 | 0.069 / 0.216 | 0.356 |
+
+Retain the simulated inventory, insertion and numerical changes on all three targets. Retain pane-only polling for the syntax-family walks. Median total tmux invocations for FFmpeg fell from 6,146 to 5,037 on `host`, 8,414 to 5,957 on `noble310` and 7,290 to 5,174 on `noble312`. These totals include navigation, session setup and teardown. The fixed-pane loop may take more pane samples while waiting for a redraw.
+
+Defer changing Git's capture path. Git log used fewer calls (777 → 544, 785 → 724 and 775 → 558 respectively), but on Python 3.10 the median grew by 0.843 s, outside the observed ranges. The Git column above measures the trial, which was removed before full verification. The separate timeout control rejects six kinds of incomplete frames, accepts the corrected retry and terminates when the deadline expires.
+
+### Full offline verification
+
+All three timed runs used the Phase 2 commands and packaged fixtures with the same three-target concurrency. The 659 inputs common to all three snapshots matched by SHA-256 and mode. Per-target input manifests also matched the original fixture bytes. The runs include the retained changes and the restored Git walker.
+
+| Target | Ubuntu / Python | Phase 2 timed wall | Phase 3 timed wall | Observed reduction | Pass / fail / skip | Exit |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `host` | 26.04.1 / 3.14.4 | 1082.960 s | 1073.079 s | 9.881 s | 1530 / 0 / 1 | 0 |
+| `noble310` | 24.04.5 / 3.10.20 | 1279.566 s | 1218.491 s | 61.075 s | 1530 / 0 / 1 | 0 |
+| `noble312` | 24.04.5 / 3.12.3 | 1118.817 s | 1084.046 s | 34.771 s | 1530 / 0 / 1 | 0 |
+
+Ordered discovery IDs matched execution and verbose console results. Removing only the new passing `test_terminal_screen.FixedFrameTests.test_partial_row_retries_and_times_out` yielded all 1,530 Phase 2 IDs in their original order with identical outcomes. The Windows probe test still skipped with reason “POSIX hosts complete the probe normally”. There were no fixture-level skips or errors. The focused checks also visited all four representative narrow layouts on each target. The 76 profiles still exercised 4,603 bundled insertion rows.
+
+For context, individual test durations within the full waves were as follows (Phase 2 → Phase 3, seconds). The single full-wave difference includes machine variation. In particular, the historical host FFmpeg walk was already close to the new time. Numerical class setup is outside individual case timings and is measured in the focused table.
+
+| Target | Simulated FFmpeg | Simulated bun run | All-profile insertion | FFmpeg terminal | Git log terminal (original) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `host` | 12.26 → 10.17 | 0.56 → 0.45 | 0.94 → 0.11 | 24.50 → 24.24 | 3.71 → 3.79 |
+| `noble310` | 22.85 → 19.81 | 1.07 → 0.92 | 1.43 → 0.18 | 69.98 → 29.14 | 3.59 → 3.53 |
+| `noble312` | 12.38 → 10.51 | 0.56 → 0.45 | 0.96 → 0.12 | 48.57 → 23.24 | 3.40 → 3.43 |
+
+The ignored local evidence directory is `tests/reports/timing/phase3/`. The exact benchmark commands are in `before-*.command` and `after-*.command`. The fixture wrapper runs `bench.py` three times with the same case order and tmux instrumentation. Set `CLI_HELP_TEST_TIMING=1` when replaying recorded commands. Each corresponding log points to its raw JSONL file. The per-sample counters, per-source inventories and aggregate results are in the logs and `focus.json`. The full invocations, manifests and ordered comparison are in `full-*.command`, `full-inputs-*.json` and `full-parity.json`. The original Phase 2 evidence remains under `baseline-2026-11-23/`.
+
+### Two-shard host pilot
+
+Keep two-way module sharding as a measured local option for this prepared host. The standard three-target full run remains the audit gate. The single pilot establishes the observed wall time and outcome parity for this machine. Reliability across repeated runs, other targets and higher shard counts remains unmeasured.
+
+The pilot used the 91 module totals from the retained `host` full run. Assigning the next longest module to the lighter shard kept class and module fixtures together and predicted 527.084 s and 527.085 s of in-case time. Both shards ran full discovery and retained discovery order within their assigned modules. Each sandbox had its own scratch filesystem, temporary home, packaged fixtures and private tmux sockets. Each ran shell syntax, numerical coverage and both collection checks before unittest.
+
+| Ubuntu 26.04.1 / Python 3.14.4 | Wall (s) | IDs | Pass / fail / skip | Exit |
+| --- | ---: | ---: | ---: | ---: |
+| Unsharded control | 1045.234 | 1531 | 1530 / 0 / 1 | 0 |
+| Shard 1 | 527.026 | 550 | 549 / 0 / 1 | 0 |
+| Shard 2 | 536.472 | 981 | 981 / 0 / 0 | 0 |
+| Parallel pair, first launch to last exit | 536.473 | 1531 | 1530 / 0 / 1 | 0 |
+
+The pair finished 508.761 s sooner (48.7%). Both sides started together on disjoint four-core sets in the same NUMA node. The control used CPUs 8–11 and both shards shared CPUs 12–15. Separate last-level caches and equal physical-core budgets limited contention, although all processes shared memory and host load. The timings include snapshot creation, startup, extraction, fixture setup, repeated preflight and cleanup. Archive extraction took 0.058 s in each instance. Preflight took 6.265 s for the control and 6.410 / 6.409 s for the shards.
+
+The shard ID sets were disjoint, their union equalled full discovery, and every ID retained its original outcome and skip reason. Each shard matched the control order restricted to its IDs. All three transcripts agreed with the timing events, with zero fixture-level outcomes. The control also matched the unsharded host run from the full matrix.
+
+For a local replay, use the retained `balance.py` on the timed `full-host.log`, then `wave.py solo shard0 shard1`. The exact sandbox invocations are recorded in `solo-host.command`, `shard0-host.command` and `shard1-host.command`. All include the same pilot files with `--include`. The temporary shard entry point changes only the final unittest invocation in a snapshot-local copy of the preflight script. `shards.json` records module membership and `pilot-parity.json` records the combined comparison. Preserve the earlier results when replaying.
 
 ## 4. Add explicit selection for local audits
 
-Add an opt-in `--suite impacted --base REF --explain` to `tests/run_sandbox.py` as a report-only pilot. Use `tests/test-impact.json` for explicit group inputs, test IDs, command paths and fixture requirements. Reuse the existing command inventory as the source for generated route cases. Its method names contain a sorted index that can shift when another route is added, so resolve cases by command at discovery time. A missing test ID or unexpectedly empty group triggers full-suite fallback. An explicit `--suite impacted --base REF` can run the printed selection after pilot validation. Keep the existing default and `--` custom command path. [Generated route cases](../tests/test_regression_inventory.py) · [Sandbox runner](../tests/run_sandbox.py)
+The next runnable task is the report-only selector and its full-run comparisons for iproute2 and yq. Add an opt-in `--suite impacted --base REF --explain` to `tests/run_sandbox.py` as a report-only pilot. Use `tests/test-impact.json` for explicit group inputs, test IDs, command paths and fixture requirements. Reuse the existing command inventory as the source for generated route cases. Its method names contain a sorted index that can shift when another route is added, so resolve cases by command at discovery time. A missing test ID or unexpectedly empty group triggers full-suite fallback. An explicit `--suite impacted --base REF` can run the printed selection after pilot validation. Keep the existing default and `--` custom command path. [Generated route cases](../tests/test_regression_inventory.py) · [Sandbox runner](../tests/run_sandbox.py)
 
 | Input changed | Required selection |
 | --- | --- |

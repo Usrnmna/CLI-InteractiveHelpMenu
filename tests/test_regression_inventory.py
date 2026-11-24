@@ -21,7 +21,7 @@ from discovery import build_profile, parse_help
 from invocation import module_driver
 from test_functional_matrix import BrowserLoop, FakeScreen
 from test_numerical_presentation import CellScreen
-from ui import Browser, draw, load_keys, run_browser
+from ui import curses, Browser, draw, load_keys, run_browser, wrap_cells
 
 FIXTURES = ROOT / "tests/fixtures/help"
 REGISTRY = load_driver_registry(ROOT / "config/drivers.example")
@@ -105,6 +105,21 @@ class InventoryRegressionTests(unittest.TestCase):
                        "socket.socket", "socket.create_connection", "discovery.run_probe"):
             stack.enter_context(patch(target, side_effect=AssertionError("Passive inventory attempted execution")))
 
+    def check_returned_details(self, screen, browser, keys, frame, paragraphs):
+        """Restore the narrow viewport, then page through its complete wrapped Details."""
+        screen.lines, screen.columns = 16, 60
+        draw(screen, browser, keys)
+        self.assertEqual(screen.cells, frame)
+        lines = [line for paragraph in paragraphs for line in wrap_cells(paragraph, 58)]
+        for offset in range(0, len(lines), 5):
+            if offset:
+                browser.detail_offset = offset
+                draw(screen, browser, keys)
+            first = min(offset, max(0, len(lines) - 5))
+            expected = lines[first:first + 5]
+            self.assertEqual([screen.cells[row, 0, 0] for row in range(8, 8 + len(expected))], expected)
+            self.assertEqual(browser.detail_offset, first)
+
     def exercise_profile(self, profile):
         """Check every category/option at three sizes, literal edits and modal controls."""
         original = deepcopy(profile)
@@ -122,18 +137,35 @@ class InventoryRegressionTests(unittest.TestCase):
         context = find_context(pending, len(prefix) + 4, [editable], driver_registry=REGISTRY)
         count = 0
         screen = CellScreen(24, 100)
+        keys = load_keys()
+        checked_layouts = set()
         for index, category in enumerate(profile["categories"]):
             browser.category = index
             for selected, option in enumerate(category["options"]):
                 count += 1
                 browser.selected = selected
                 browser.detail_offset = 0
-                for height, width in ((16, 60), (24, 100), (32, 160), (16, 60)):
-                    screen.lines, screen.columns = height, width
-                    draw(screen, browser, load_keys())
-                    self.assertIn("OPTIONS", screen.text())
-                    self.assertIs(browser.options()[browser.selected], option)
                 view = browser.text(option)
+                narrow_frame = None
+                for height, width in ((16, 60), (24, 100), (32, 160)):
+                    screen.lines, screen.columns = height, width
+                    draw(screen, browser, keys)
+                    column = min(26, width // 3)
+                    rows = max(3, (height - 9) // 2)
+                    self.assertIn("OPTIONS", screen.cells[3, column, curses.A_BOLD])
+                    self.assertTrue(screen.cells[4 + min(selected, rows - 1), column, curses.A_REVERSE].startswith("> "))
+                    self.assertIs(browser.options()[browser.selected], option)
+                    if height == 16 and len(checked_layouts) < 4:
+                        # At this size three option rows and five Details lines fit.
+                        paragraphs = "\n".join(view.details).splitlines()
+                        progress = screen.cells[13, 0, 0].split()[1]
+                        wrapped = int(progress.split("/")[1]) > len(paragraphs)
+                        layout = (selected >= rows, wrapped)
+                        if layout not in checked_layouts:
+                            narrow_frame = screen.cells.copy()
+                            checked_layouts.add(layout)
+                if narrow_frame is not None:
+                    self.check_returned_details(screen, browser, keys, narrow_frame, paragraphs)
                 self.assertIn(option["summary"].casefold(), view.searchable)
                 search.set_query(option["flag"])
                 self.assertIn(option, search.options(index))
@@ -146,20 +178,20 @@ class InventoryRegressionTests(unittest.TestCase):
                 self.assertEqual(point, len(prefix + flag) + (0 if joined else 1))
                 self.assertEqual(context.line, pending)
         browser.set_query("no-match-inventory-7f32")
-        draw(screen, browser, load_keys())
+        draw(screen, browser, keys)
         self.assertIn("No matches", screen.text())
         self.assertNotIn("Option:", screen.text())
         browser.set_query("")
-        draw(screen, browser, load_keys())
+        draw(screen, browser, keys)
         self.assertNotIn("No matches", screen.text())
         # Escape cancels search before Enter selects the original first option.
         screen = FakeScreen(24, 100, ["/", "\u2603", "\x1b", "\n"])
         with BrowserLoop(screen):
-            self.assertEqual(run_browser(screen, profile, "", load_keys()), profile["categories"][0]["options"][0])
+            self.assertEqual(run_browser(screen, profile, "", keys), profile["categories"][0]["options"][0])
         # Exercise focus, category/option movement, detail scrolling and preview.
         screen = FakeScreen(24, 100, ["\t", "j", "\n", "j", "]", "[", "h", "l", "\x1b"])
         with BrowserLoop(screen):
-            self.assertIsNone(run_browser(screen, profile, "", load_keys(), preview=True))
+            self.assertIsNone(run_browser(screen, profile, "", keys, preview=True))
         self.assertEqual(Browser(profile).detail_offset, 0)
         self.assertEqual(profile, original)
         return count

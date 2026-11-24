@@ -103,15 +103,15 @@ The bundled total is **4,603 rows across 76 profiles**, compared with the histor
 
 ## Reducing test duration
 
-The [test selection plan](docs/test-selection-plan.md) proposes timing the existing three-target suite, mapping tests to the inputs they consume, and reusing passing results for unchanged inputs on the same target. Start with timing during the next full run and a dry-run selection for one family. Compare its decisions against the complete suite before adopting shorter gates.
+The [test selection plan](docs/test-selection-plan.md#phase-status-and-gates) records the focused edit loop, completed three-target timing baseline and verified reductions in duplicate work. The next testing task is the [Phase 4 report-only selection pilot](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits) for iproute2 and yq. Compare proposed selections against full runs and replay the historical yq failure before enabling selected execution. Persistent result reuse follows validation of selection and invalidation rules.
 
 ## Runtime performance follow-up
 
 The [terminal runtime analysis](docs/runtime-architecture.md#local-performance-baseline)
 records local costs for eager profile loading, large-menu text preparation and
-idle wakeups. The [FFmpeg menu performance plan](docs/ffmpeg-menu-performance-plan.md)
-records the measured cause of large-menu preparation and the proposed
-optimization and verification steps.
+idle wakeups. The [command menu performance plan](docs/ffmpeg-menu-performance-plan.md)
+proposes shared value formatting for all command menus, checks search and
+Details parity per command, and uses FFmpeg as the large-menu benchmark.
 [Open investigations](docs/runtime-architecture.md#optimization-candidates)
 cover redraws on unchanged timeouts, candidate-only profile loading and the cost
 of discovery checks for guarded commands.

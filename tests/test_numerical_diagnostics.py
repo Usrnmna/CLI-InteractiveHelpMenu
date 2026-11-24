@@ -35,7 +35,7 @@ class NumericalDiagnosticTests(unittest.TestCase):
         cls.groups = {group["id"]: group for group in cls.reviews["groups"]}
         cls.inventory = coverage.inventory.build_inventory(ROOT, cls.reviews)
         cls.entries = {entry["id"]: entry for entry in cls.inventory["entries"]}
-        cls.strict = coverage.check_coverage(ROOT, cls.reviews, mode="strict")
+        cls.strict = coverage._evaluate_inventory(ROOT, cls.reviews, cls.inventory, mode="strict")
 
     def group(self, identity):
         return self.groups[self.entries[identity]["review_group"]]

@@ -1,8 +1,19 @@
-# FFmpeg menu performance plan
+# Command menu performance plan
 
 [Runtime architecture and first baseline](runtime-architecture.md#local-performance-baseline) · [FFmpeg manual coverage](ffmpeg-manual-coverage.md)
 
-## Why preparation takes about half a second
+Stage 1 applies to every command and subcommand menu that uses the shared
+browser, including bundled profiles, custom profiles, discovered help and
+authoring previews. During one browser construction, rows with the same
+eligible value definition and argument requirements can reuse its formatted
+text. Eligibility depends on the profile data. The acceptance criteria cover
+exact search and Details parity across menus and the cost of the eligibility
+check for menus with few or zero reusable definitions.
+
+FFmpeg is the large-menu benchmark. Its pilot measurements below motivate the
+proposal. Each other menu will be evaluated against its own baseline.
+
+## FFmpeg benchmark evidence
 
 Before the first draw, `Browser.__post_init__` builds an `OptionText` for
 every row. Each value declaration goes through structural validation, shared
@@ -36,7 +47,7 @@ those rows. Option-level source notes accounted for about 2 ms in a separate
 probe.
 [Browser construction](../cli_help/ui.py#L73) · [Presentation](../cli_help/presentation.py#L175) · [Shared-reference validation](../cli_help/value_semantics.py#L484)
 
-## Temporary reuse experiment
+## Earlier prototype results
 
 A temporary probe reused the immutable formatted value text for a single
 shared reference in one browser construction, keyed by the reference name,
@@ -92,17 +103,19 @@ a plausible second experiment after the reference reuse.
   Keep the full eager search strings and Details lines available before
   drawing. An ordinary startup and an authoring preview each start with
   the definitions from their current profile.
-- [ ] Capture exact ordered `OptionText` parity for the same bundled
-  corpus on baseline and candidate, through a temporary comparison harness.
-  Exercise custom and discovered profile fixtures using the focused
-  presentation tests. Check result order, category counts and selection,
+- [ ] Before editing runtime code, capture every ordered `OptionText` field
+  for every bundled command path. Compare the candidate with that snapshot
+  by command, category and row, including complete search strings, Details
+  lines, summaries and notices. Compare displayed option labels as well.
+  Repeat with fixtures for a custom override, discovered help and an authoring
+  preview. Check result order, category counts and selection,
   casefolded and cross-field matches, formatter-only terms, source evidence
   and every Details line at the minimum size. Keep the existing FFmpeg
   terminal case for searching `optional audio`, scrolling to the input
   requirement, cancelling intact and inserting a literal `-map`.
   [Presentation tests](../tests/test_numerical_presentation.py) · [FFmpeg PTY case](../tests/test_expansion_terminal.py#L324)
 
-### 2. Profile the remaining prose and redraw work
+### Deferred follow-up on prose and redraws
 
 - [ ] Measure the first candidate on its own. If prose preparation still
   dominates startup, test reusing an already-cleaned summary or memoizing
@@ -122,18 +135,31 @@ a plausible second experiment after the reference reuse.
 
 ## Before-and-after measurement
 
+**Every bundled menu.** With its profile already loaded, time construction of
+a fresh `Browser` using process CPU time. For each command path, report row
+count, eligible reference uses, distinct reference-and-arity keys, and
+baseline and candidate CPU times with their difference. Include paths with
+zero eligible rows so the report exposes the cost of checking eligibility.
+
+**Representative terminal sessions.** Use FFmpeg for the large menu, plus
+a small bundled menu, rsync and fzf. Include menus with few or zero repeated
+keys, a custom profile and a discovered profile. For discovery, use fixed
+help fixtures and measure a cache miss and a valid cache hit independently.
+Exercise the same preview fixture before and after a definition edit for
+correctness. Apply the terminal measurements below to the selected PTY cases.
+
 Run baseline and candidate with identical profile and fixture bytes. Record
 revision and profile hashes, host and interpreter versions, terminal size,
 locale, and discovery settings. Use an isolated Bash setup with discovery
 off for static cases. Warm the filesystem once for each revision, start a
 fresh helper per invocation, alternate revision order, and collect at least
-40 measured samples per primary case. Save raw samples and report median
-and p95 by revision and scenario. Repeat the comparison if run-to-run
+40 measured samples per revision for each primary case. Save raw samples and
+report median and p95 by command path, revision and scenario. Repeat the comparison if run-to-run
 variation overlaps the observed change.
 
 | Measure | Start and end points |
 | --- | --- |
-| Startup | From writing Alt-H to observing the complete first menu in decoded PTY cells, including the expected selection and Details footer. Test unfiltered FFmpeg, initial `-map`, and a narrow match such as `-rw_timeout`, plus rsync and fzf controls. Record CPU for profile loading, context resolution, constructor and first draw in a separate instrumented run. |
+| Startup | From writing Alt-H to observing the complete first menu in decoded PTY cells, including the expected selection and Details footer. Use unfiltered and filtered openings, including FFmpeg with initial `-map` and `-rw_timeout`. Record CPU for profile loading, context resolution, constructor and first draw in a separate instrumented run. |
 | RAM | Record the Python helper's `VmRSS` and `VmHWM` from `/proc/<pid>/status` after the first frame, after a full search and navigation script, and immediately before dismissal. Record RSS again after returning to a short query. Report the initial and idle RSS and the highest observed high-water mark. Measure startup and sustained interaction separately from profiler runs. |
 | Responsiveness | From sending a key or terminal resize to the first decoded screen that reflects the expected state. Measure first search, repeated search, a no-match query, a formatter-only term such as `'ms'`, category and row movement, Details scrolling, and shrink to 60 × 16 then grow to 100 × 24. Measure keys individually and replay a rapid sequence that must end in the same state. |
 | Idle work | Over a matched 10-second interval with the menu open, record helper user and system CPU from `/proc/<pid>/stat`, voluntary context-switch delta and draw count in a separately instrumented run. Use idle measurement to assess redraw follow-ups. |
@@ -148,8 +174,9 @@ results separate from warm local runs.
 [Bash PTY fixture](../tests/test_bash_pty.py#L21) · [Terminal-cell decoder](../tools/capture_readme_media.py#L51) · [tmux screen checks](../tests/test_terminal_screen.py#L40)
 
 Use **30% lower FFmpeg median first-frame time** on the warm PTY cases as a
-proposed target for stage 1, with improved FFmpeg p95. Require exact
-correctness parity. Investigate a control or interaction p95 regression
+proposed target for the large-menu benchmark, with improved FFmpeg p95.
+Require exact correctness parity for all menus. Review constructor CPU
+changes per command, including slowdowns. Investigate a control or interaction p95 regression
 larger than the greater of 5 ms or 10%, or a helper RSS or high-water
 regression larger than the greater of 2 MiB or 5%, over repeated matched runs.
 These are review thresholds based on the pilot and expected measurement

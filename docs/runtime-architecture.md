@@ -147,9 +147,9 @@ unmeasured. [PTY harness](../tests/test_bash_pty.py#L21) · [Discovery fixtures]
 1. **Large menus and idle work.** Measure before and after first display,
    search and navigation. Investigate skipping redraws when a timeout leaves
    geometry and visible state unchanged. Keep the resize check. The
-   [FFmpeg menu performance plan](ffmpeg-menu-performance-plan.md) traces
-   expensive repeated value formatting and proposes reuse within each browser
-   open while preserving search and Details.
+   [command menu performance plan](ffmpeg-menu-performance-plan.md) proposes
+   reusing shared value text within each browser open, with exact search and
+   Details parity for all command menus and FFmpeg as the large-menu benchmark.
 2. **Collection growth and startup.** Evaluate a small command-path index and
    loading only candidate profiles. Preserve longest-path resolution, custom
    overrides and explicit handling of invalid and stale files. Keep full
