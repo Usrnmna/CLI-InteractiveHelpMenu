@@ -110,6 +110,9 @@ class InventoryRegressionTests(unittest.TestCase):
         original = deepcopy(profile)
         validate_profile(profile, Path("inventory-fixture.json"))
         browser = Browser(profile)
+        # Reuse the formatted profile as a user would for successive searches.
+        # Keep filtering separate from the browser whose selected row is drawn.
+        search = Browser(profile)
         command = " ".join(profile["command"])
         editable = dict(profile)
         # Installed-version identity is independently tested with controlled probes.
@@ -132,7 +135,8 @@ class InventoryRegressionTests(unittest.TestCase):
                     self.assertIs(browser.options()[browser.selected], option)
                 view = browser.text(option)
                 self.assertIn(option["summary"].casefold(), view.searchable)
-                self.assertIn(option, Browser(profile, option["flag"]).options(index))
+                search.set_query(option["flag"])
+                self.assertIn(option, search.options(index))
                 flag = option["flag"]
                 if option.get("argument_style") == "equals" and not flag.endswith("="):
                     flag += "="

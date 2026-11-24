@@ -1,6 +1,6 @@
 # FFmpeg option audit
 
-The [bundled FFmpeg menu](../profiles/ffmpeg.json) has 16 entries in two categories. File order determines the meaning of several options. Input options precede `-i`. Output options precede the output filename. Global options such as the overwrite policy apply throughout the invocation.
+The first pass covered 16 entries in two categories. The [full manual inventory](ffmpeg-manual-inventory.md) and [revisit results](ffmpeg-manual-coverage.md) cover the expanded [bundled FFmpeg menu](../profiles/ffmpeg.json). File order determines the meaning of several options. Input options precede `-i`. Output options precede the output filename. Global options such as the overwrite policy apply throughout the invocation.
 
 ## Sources
 

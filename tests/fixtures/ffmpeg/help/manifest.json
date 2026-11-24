@@ -1,0 +1,138 @@
+{
+  "builds": {
+    "noble": {
+      "version": "7:6.1.1-3ubuntu5",
+      "source": "https://packages.ubuntu.com/noble/ffmpeg",
+      "environment": "Ubuntu 24.04.5 LTS offline sandbox with private amd64 package and libraries",
+      "captures": {
+        "short": {
+          "file": "noble-short.txt.xz",
+          "bytes": 5365,
+          "sha256": "864ba2857a835020bb38ba40a0bd983a7ef5de17dab948cfd8c7ca3d6cd9b7ab"
+        },
+        "long": {
+          "file": "noble-long.txt.xz",
+          "bytes": 12772,
+          "sha256": "82823eed0466b8e16fed30dffc7afeead2f99e2d47e5e52ccd47aebd8c116aba"
+        },
+        "full": {
+          "file": "noble-full.txt.xz",
+          "bytes": 1165847,
+          "sha256": "01fb1ed997402f451c65c46ae9d48907b94bd182c9c9d1155f6477ef5e8f0d2c"
+        },
+        "version": {
+          "file": "noble-version.txt",
+          "bytes": 1838,
+          "sha256": "5b320c97f515e79171f10a2147d875ffb6b14bd2b25681047b73c46fe0a527ee"
+        }
+      }
+    },
+    "resolute": {
+      "version": "7:8.0.1-3ubuntu2",
+      "source": "https://packages.ubuntu.com/resolute/ffmpeg",
+      "environment": "Ubuntu 26.04.1 LTS offline sandbox with installed amd64 package",
+      "captures": {
+        "short": {
+          "file": "resolute-short.txt.xz",
+          "bytes": 3387,
+          "sha256": "0860036c71f7442dce5d853f0bd77173630a1920d4ef6555db3593bfe0dc179e"
+        },
+        "long": {
+          "file": "resolute-long.txt.xz",
+          "bytes": 14761,
+          "sha256": "9354e6da23da6d79b6e3fbf92397f8e52f3649caacf5074b3a58bcab53322283"
+        },
+        "full": {
+          "file": "resolute-full.txt.xz",
+          "bytes": 1213717,
+          "sha256": "e2c3f19d4fb713ed8c71a083433e416174a3c331254739889d27367b2f4e735e"
+        },
+        "version": {
+          "file": "resolute-version.txt",
+          "bytes": 1866,
+          "sha256": "a85f002a2266c5bfd7a5d1e5c72d18a0f9e8e60fd941327fa9a093d931687c17"
+        }
+      }
+    },
+    "upstream": {
+      "version": "9.1",
+      "source": "https://ffmpeg.org/releases/ffmpeg-9.1.tar.xz",
+      "environment": "Locally compiled official FFmpeg source release on Ubuntu 26.04.1 LTS amd64",
+      "archive_sha256": "1a4d394ae63d190a526cd052eb4415c156b5c5e2df37efab41a7de0b8fde2433",
+      "verified_signing_key": "FCF986EA15E6E293A5644F10B4322F04D67658D8",
+      "captures": {
+        "short": {
+          "file": "upstream-short.txt.xz",
+          "bytes": 3597,
+          "sha256": "e0adc9c3f629d2cf47ffb28c89d0663ba86143b9be8430c6f9f18de523012afc"
+        },
+        "long": {
+          "file": "upstream-long.txt.xz",
+          "bytes": 14643,
+          "sha256": "435d1a1bff40c1ae27356362389d0ce994acbb3fbac20a2cf71900e91c18aca3"
+        },
+        "full": {
+          "file": "upstream-full.txt.xz",
+          "bytes": 914747,
+          "sha256": "b330a4325270dcfdc2730d59c90493024c1f891636b598a073a220355446326e"
+        },
+        "version": {
+          "file": "upstream-version.txt",
+          "bytes": 544,
+          "sha256": "c17961a449cdb4393960dd3fd06cfa6d94275662998ca34de43510d5942791f1"
+        }
+      }
+    }
+  },
+  "commands": {
+    "short": [
+      "-hide_banner",
+      "-h"
+    ],
+    "long": [
+      "-hide_banner",
+      "-h",
+      "long"
+    ],
+    "full": [
+      "-hide_banner",
+      "-h",
+      "full"
+    ],
+    "version": [
+      "-version"
+    ]
+  },
+  "locale": "C",
+  "streams": "combined stdout and stderr",
+  "supplemental_builds": {
+    "upstream-optional": {
+      "version": "9.1",
+      "source": "https://ffmpeg.org/releases/ffmpeg-9.1.tar.xz",
+      "environment": "Ubuntu 26.04.1 LTS offline sandbox, private upstream build with libcurl 8.18.0, OpenSSL 3.5.5, native encrypted RTMP transport, libsrt 1.5.4, libsmbclient, libxml2 and libmodplug",
+      "archive_sha256": "1a4d394ae63d190a526cd052eb4415c156b5c5e2df37efab41a7de0b8fde2433",
+      "captures": {
+        "short": {
+          "file": "upstream-optional-short.txt.xz",
+          "bytes": 3597,
+          "sha256": "e0adc9c3f629d2cf47ffb28c89d0663ba86143b9be8430c6f9f18de523012afc"
+        },
+        "long": {
+          "file": "upstream-optional-long.txt.xz",
+          "bytes": 14643,
+          "sha256": "435d1a1bff40c1ae27356362389d0ce994acbb3fbac20a2cf71900e91c18aca3"
+        },
+        "full": {
+          "file": "upstream-optional-full.txt.xz",
+          "bytes": 1022572,
+          "sha256": "9209dba915ebe80a7e11605c7b3797859d86d254f818aeba571fdc4687e93c9f"
+        },
+        "version": {
+          "file": "upstream-optional-version.txt",
+          "bytes": 645,
+          "sha256": "eb0ebc9deb778ef498c2db202829dcf82a8abc0616b32cca498db7bdabedd951"
+        }
+      }
+    }
+  }
+}

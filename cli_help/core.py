@@ -57,8 +57,10 @@ def validate_profile(profile: dict, source: Path):
         raise HelpError(f"{source}: command must contain literal command words.")
     require_text(profile.get("description"), f"{source}: description")
     switch_syntax = profile.get("switch_syntax")
-    if switch_syntax is not None and (switch_syntax != "7zip" or command not in (["7z", "x"], ["7zz", "x"])):
-        raise HelpError("The 7zip switch syntax applies to the two extraction command paths.")
+    if switch_syntax is not None:
+        syntaxes = {("7z", "x"): "7zip", ("7zz", "x"): "7zip", ("ffmpeg",): "ffmpeg"}
+        if switch_syntax != syntaxes.get(tuple(command)):
+            raise HelpError("The declared switch syntax does not apply to this command path.")
     if not isinstance(profile.get("stop_at_positional", False), bool):
         raise HelpError("stop_at_positional must be a boolean.")
     boundaries = profile.get("stop_at_options", [])
@@ -326,7 +328,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         # A joined payload is a real value, never an editable flag prefix.
         exact_name = query in options or (switch_syntax == "7zip" and query.isascii()
                                           and any(key.lower() == query.lower() for key in options))
-        if not exact_name and any((option.get("attached") or len(key) == 2 and option.get("argument"))
+        if switch_syntax != "ffmpeg" and not exact_name and any((option.get("attached") or len(key) == 2 and option.get("argument"))
                and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
             raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
@@ -386,7 +388,8 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
                 raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.", "unsupported_option")
         if option.get("argument") and not option.get("argument_optional", False):
             values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal) or attached))
-            strict_value = bool(option.get("argument_style") or len(parsed) > 1)
+            # FFmpeg consumes the following word verbatim, including a negative map or pipe name.
+            strict_value = switch_syntax != "ffmpeg" and bool(option.get("argument_style") or len(parsed) > 1)
         optional_integer_pending = option.get("optional_value_kind") == "nonnegative_integer" and not (equal or attached)
     if values_remaining:
         raise HelpError("Enter the preceding option's argument before choosing another option.", "option_value_required")

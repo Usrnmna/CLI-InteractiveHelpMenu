@@ -85,7 +85,7 @@ completed migration without asserting complete external-help coverage.
 | `options[].bundle` | Boolean opt-in for a single-character short option; every member must have unambiguous declared arity; default false |
 | `options[].optional_value_kind` | `nonnegative_integer` recognizes one separate ASCII decimal count after a single optional argument, such as `fzf -m 2`; other values are rejected |
 | `options[].numeric_shorthand` | `true` lets a single required count option also accept a complete `-NUMBER` token, such as `git stash list -3`. Exact declared flags take precedence. |
-| `switch_syntax` | The `7z x` and `7zz x` profiles use `"7zip"` to match the longest declared ASCII switch name regardless of case. An attached value starts immediately after that name. A literal `--` row inserts the end-of-options marker. |
+| `switch_syntax` | The `7z x` and `7zz x` profiles use `"7zip"` to match the longest declared ASCII switch name regardless of case. An attached value starts immediately after that name. A literal `--` row inserts the end-of-options marker. The bundled `ffmpeg` profile uses `"ffmpeg"` to recognize stream-qualified option names, values read from files, and separate operands such as negative maps and `-` for standard input. |
 | `stop_at_positional` | Profile-level boolean boundary, retained even without a loaded driver |
 | `stop_at_options` | Literal option-name array that ends the parent argument region, such as Go test's `-args` |
 | `positional_group` | Object with `argument`, `argument_count` (2–16), and `repeatable: true`; complete repeated groups delimit safe insertion positions |

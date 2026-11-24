@@ -51,6 +51,25 @@ def _seven_zip_tokens(word, options, strict):
     return [(name, option, bool(suffix))]
 
 
+def _ffmpeg_tokens(word, options, strict):
+    """Resolve FFmpeg option arity while leaving file paths and stream specifiers opaque."""
+    if word == "-" or not word.startswith("-"):
+        return []
+    if word in options:
+        return [(word, options[word], False)]
+    # FFmpeg has no short bundles or attached payloads. A partial option
+    # at the cursor, including a search with no matches yet, can be replaced.
+    if not strict:
+        return []
+    # A file-loaded value and a stream-qualified value consume the same number
+    # of arguments as the declared base option. The client validates the scope.
+    name = word.replace("-/", "-", 1) if word.startswith("-/") else word
+    base = name.split(":", 1)[0]
+    if base in options and "=" not in base:
+        return [(base, options[base], False)]
+    raise HelpError("Unknown FFmpeg option or operand spelling.", "unsupported_option")
+
+
 def option_tokens(word, options, strict=True, *, switch_syntax=None):
     """Return (name, metadata, payload-present) entries for one completed token.
 
@@ -60,6 +79,8 @@ def option_tokens(word, options, strict=True, *, switch_syntax=None):
     """
     if switch_syntax == "7zip":
         return _seven_zip_tokens(word, options, strict)
+    if switch_syntax == "ffmpeg":
+        return _ffmpeg_tokens(word, options, strict)
     key, equal, payload = word.partition("=")
     if word in options or equal and key in options:
         option = options.get(word, options.get(key))

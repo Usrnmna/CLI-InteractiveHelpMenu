@@ -105,6 +105,36 @@ class SyntaxScreenTests(TerminalTestCase):
         shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 220, 120, ("fzf",))
         self.check_rendered_rows(profile, shell, prefix, suffix)
 
+    def test_ffmpeg_all_rows_and_complete_details(self):
+        """Read every FFmpeg selection between an existing input and a quoted output."""
+        profile = json.loads((ROOT / "profiles/ffmpeg.json").read_text())
+        shell, prefix, suffix = self.pending_stubbed_command(
+            "ffmpeg -i 'first clip.mkv'", " 'final cut.mkv'", 220, 120, ("ffmpeg",))
+        self.check_rendered_rows(profile, shell, prefix, suffix)
+
+    def test_ffmpeg_seek_before_second_input_at_minimum_size(self):
+        """Reach the input placement rule and edit a pending command with two inputs."""
+        shell, prefix, suffix = self.pending_stubbed_command(
+            "ffmpeg -i one.mkv", " -i 'last clip.mkv' out.mkv", 60, 16, ("ffmpeg",))
+        qualification = "Place it before the input it should seek."
+        for action in ("Escape", "Enter"):
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            shell.keys("/")
+            shell.text("end of file")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: end of file"
+                                   and "> -sseof " in state.cells[4])
+            self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+            self.reach_detail(shell, found, qualification)
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "-sseof" + suffix, len(prefix + "-sseof ")))
+        shell.text("-2 ")
+        self.assertEqual(shell.read_buffer(), ("ffmpeg -i one.mkv -sseof -2 -i 'last clip.mkv' out.mkv",
+                                               len(prefix + "-sseof -2 ")))
+        self.assertFalse(shell.executed.exists())
+
     def test_fzf_output_fields_before_quoted_query_at_minimum_size(self):
         """Find the field-numbering rule and insert a projection before an existing option."""
         shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 60, 16, ("fzf",))
@@ -153,7 +183,12 @@ class SyntaxScreenTests(TerminalTestCase):
                                        for line in screen.cells[4:divider])
                         return selected and screen.cells[divider + 1:divider + 1 + len(details)] == details
 
-                    shell.wait_for(complete)
+                    # A complete matching frame is sufficient. Waiting for a second
+                    # identical frame adds several minutes on a large option list.
+                    deadline = time.monotonic() + 8
+                    while not complete(screen := shell.capture()):
+                        self.assertLess(time.monotonic(), deadline, (label, screen.cells))
+                        time.sleep(0.03)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
