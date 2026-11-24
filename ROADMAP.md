@@ -1,7 +1,8 @@
 # Project roadmap
 
-**Next task — revisit `yq eval` for full manual coverage.** Start with the
-[original yq eval audit](docs/yq-eval-option-audit.md). The
+**Next task — revisit iproute2 for full manual coverage.** Start with `ip address`,
+then `ip link`, `ip route` and `ss`. Use the [original iproute2 audit](docs/iproute2-option-audit.md).
+The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
 [fzf revisit](docs/fzf-manual-coverage.md),
 [fd and fdfind revisit](docs/fd-manual-coverage.md),
@@ -39,8 +40,8 @@ The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
-124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158, fzf added 192 and FFmpeg added 1,743.
-The bundled total is **4,549 rows across 76 profiles**, compared with the historical 942.
+124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158, fzf added 192, FFmpeg added 1,743 and yq eval added 54.
+The bundled total is **4,603 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -55,7 +56,7 @@ The bundled total is **4,549 rows across 76 profiles**, compared with the histor
 | `fd`, `fdfind` | 2 | 38 | Complete locally. [Manual comparison and sandbox results](docs/fd-option-audit.md) | Complete · [58 option families and 98 spellings per menu](docs/fd-manual-inventory.md#option-and-spelling-inventory) | Complete on all three targets · [menu and suite results](docs/fd-manual-coverage.md#compatibility-results) |
 | `fzf` | 1 | 17 | Complete locally. [Manual comparison and sandbox results](docs/fzf-option-audit.md) | Complete · [191 effects and 209 selectable spellings](docs/fzf-manual-inventory.md#option-effects-and-spellings) | Complete on all three targets · [menu and suite results](docs/fzf-manual-coverage.md#compatibility-results) |
 | `ffmpeg` | 1 | 16 | Complete locally. [Manual comparison and sandbox results](docs/ffmpeg-option-audit.md) | Complete · [1,759 selectable spellings and release inventories](docs/ffmpeg-manual-inventory.md#selectable-inventory) | Complete on all three targets · [menu and suite results](docs/ffmpeg-manual-coverage.md#compatibility-results) |
-| `yq eval` | 1 | 15 | Complete locally. [Manual comparison and sandbox results](docs/yq-eval-option-audit.md) | Pending | Pending |
+| `yq eval` | 1 | 15 | Complete locally. [Manual comparison and sandbox results](docs/yq-eval-option-audit.md) | Complete · [51 effects and 18 aliases](docs/yq-eval-manual-inventory.md#effects-and-spellings) | Complete on all three targets · [menu and suite results](docs/yq-eval-manual-coverage.md#compatibility-results) |
 | iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Pending | Pending |
 | systemd — `systemctl`, `journalctl` | 4 | 50 | Complete locally. [Manual comparison and sandbox results](docs/systemd-option-audit.md) | Pending | Pending |
 | OpenSSL — `s_client`, `x509`, `dgst` | 3 | 33 | Complete locally. [Manual comparison and sandbox results](docs/openssl-option-audit.md) | Pending | Pending |
@@ -99,6 +100,21 @@ The bundled total is **4,549 rows across 76 profiles**, compared with the histor
    below. Mark each coverage column verified only when its inventory reconciles,
    its open gaps are resolved and its checks pass. Apply the same coverage
    standard when the first pass resumes with `psql`.
+
+## Reducing test duration
+
+The [test selection plan](docs/test-selection-plan.md) proposes timing the existing three-target suite, mapping tests to the inputs they consume, and reusing passing results for unchanged inputs on the same target. Start with timing during the next full run and a dry-run selection for one family. Compare its decisions against the complete suite before adopting shorter gates.
+
+## Runtime performance follow-up
+
+The [terminal runtime analysis](docs/runtime-architecture.md#local-performance-baseline)
+records local costs for eager profile loading, large-menu text preparation and
+idle wakeups. The [FFmpeg menu performance plan](docs/ffmpeg-menu-performance-plan.md)
+records the measured cause of large-menu preparation and the proposed
+optimization and verification steps.
+[Open investigations](docs/runtime-architecture.md#optimization-candidates)
+cover redraws on unchanged timeouts, candidate-only profile loading and the cost
+of discovery checks for guarded commands.
 
 ## Discovered command help
 

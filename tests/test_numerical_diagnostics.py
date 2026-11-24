@@ -62,7 +62,7 @@ class NumericalDiagnosticTests(unittest.TestCase):
 
     def test_external_fixed_digits_classify_the_documented_action(self):
         """Retain source-scoped action evidence for the unbundled digit switches."""
-        for name in ("du|-0", "psql|-0", "psql|-1", "yq eval|-0"):
+        for name in ("du|-0", "psql|-0", "psql|-1"):
             identity = "option|" + name
             with self.subTest(identity=identity):
                 entry = self.entries[identity]
@@ -72,6 +72,18 @@ class NumericalDiagnosticTests(unittest.TestCase):
                 self.assertEqual(group["evidence"], "source-derived")
                 self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
                 self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+
+    def test_yq_nul_switch_retains_both_sources(self):
+        """The digit selects output framing and consumes no numerical operand."""
+        identity = "option|yq eval|-0"
+        entry = self.entries[identity]
+        self.assertTrue(entry["numeric_fixed_spelling"])
+        self.assertEqual(self.group(identity)["classification"], "nonnumerical")
+        self.assertEqual(self.group(identity)["evidence"], "verified")
+        self.assertTrue(any(o["role"] == "fixture_help" for o in entry["observations"]))
+        option, = (o["option"] for o in entry["observations"] if o["role"] == "bundled_option")
+        self.assertFalse(option["argument"])
+        self.assertEqual(option["value_semantics"]["variants"][0]["forms"][0]["tokens"], ["-0"])
 
     def test_fzf_match_count_switches_retain_fixed_help_evidence(self):
         """The digit is a match count built into the switch, with no separate operand."""

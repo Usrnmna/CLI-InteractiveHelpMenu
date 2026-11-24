@@ -44,6 +44,16 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                     self.assert_podman_leaf_coverage(command, text, profile)
                     continue
                 flags = [option["flag"] for category in profile["categories"] for option in category["options"]]
+                if command == "yq eval":
+                    # The old capture predates three flags and omits the deprecated JSON switch.
+                    self.assertEqual(record["version"], "yq (https://github.com/mikefarah/yq/) version v4.54.1")
+                    headings = re.findall(r"^  (?:(-\w), |    )(--[\w-]+)\s", text, re.MULTILINE)
+                    visible = {flag for pair in headings for flag in pair if flag}
+                    self.assertEqual(len(visible), 64)
+                    additions = {"--ini-key-value-delimiters", "--security-allow-write-any-path",
+                                 "--security-force-never-escape-shell-output", "--tojson", "-j"}
+                    self.assertCountEqual(flags, visible | additions)
+                    continue
                 if command == "fzf":
                     # This installed help covered the original 17 curated spellings.
                     # The release inventory checks the expanded menu, including manual-only flags.

@@ -292,37 +292,20 @@ class ExpansionScreenTests(TerminalTestCase):
 
     def test_yq_first_file_warning_and_explicit_expression(self):
         """Read the multi-file write rule and insert an expression before two filenames."""
-        shell = self.start()
-        # The bundled profile requires an identified v4 executable. Only the two
-        # fixed discovery requests can succeed, even if a pending line is submitted.
-        executable = shell.folder / "yq"
-        fixture = ROOT / "tests/fixtures/help/yq-eval.txt"
-        executable.write_text(
-            "#!/bin/sh\n"
-            'if [ "$#" = 1 ] && [ "$1" = --version ]; then\n'
-            "  echo 'yq (https://github.com/mikefarah/yq/) version v4.44.3'\n"
-            'elif [ "$#" = 2 ] && [ "$1" = eval ] && [ "$2" = --help ]; then\n'
-            "  cat " + shlex.quote(str(fixture)) + "\n"
-            "else\n  echo executed > " + shlex.quote(str(shell.executed)) + "\n  exit 1\nfi\n"
-        )
-        executable.chmod(0o755)
-        shell.text("export CLI_HELP_DISCOVERY=auto CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example"))
-                   + " PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"')
-        shell.keys("Enter")
-        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
-        prefix, suffix = "yq eval ", " first.yml second.yml"
-        shell.text(prefix + suffix)
-        shell.keys(*(["Left"] * len(suffix)))
-        shell.resize(60, 16)
+        shell, prefix, suffix, _ = self.pending_yq(60, 16)
         shell.open_menu()
         shell.keys("/")
         shell.text("combined results")
         shell.keys("Enter")
         found = shell.wait_for(lambda state: state.cells[2] == "Filter: combined results")
         self.assertIn("> --inplace", found.cells[4])
-        shell.keys(*(["]"] * 12))
-        shell.wait_for(lambda state: "Later files keep their original contents." in
-                       " ".join(" ".join(state.cells[8:-3]).split()))
+        for _ in range(12):
+            if "Later files keep their original contents." in " ".join(" ".join(found.cells[8:-3]).split()):
+                break
+            previous = found.cells[-3]
+            shell.keys("]")
+            found = shell.wait_for(lambda state: state.cells[-3] != previous)
+        self.assertIn("Later files keep their original contents.", " ".join(" ".join(found.cells[8:-3]).split()))
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
 

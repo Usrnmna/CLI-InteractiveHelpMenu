@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import os
 import re
 import shlex
 import shutil
@@ -169,6 +170,36 @@ class TerminalTestCase(unittest.TestCase):
         shell = TmuxShell(folder.name)
         self.addCleanup(shell.close)
         return shell
+
+    def pending_yq(self, columns, rows, version="4.54.3"):
+        """Enable the example driver and record each permitted probe in a private shell."""
+        shell = self.start()
+        probe_log = shell.folder / "yq-probes"
+        executable = shell.folder / "yq"
+        capture = ROOT / "tests/fixtures/yq" / (version + "-eval-help.txt")
+        version_reply = "echo " + shlex.quote(f"yq (https://github.com/mikefarah/yq/) version v{version}")
+        help_reply = "cat " + shlex.quote(str(capture))
+        if version == "kislyuk":
+            version_reply = "echo 'yq 3.4.3'"
+        elif directory := os.environ.get("YQ_TEST_BINDIR"):
+            binary = shlex.quote(str(Path(directory).resolve() / ("yq-" + version)))
+            version_reply = "exec " + binary + " --version"
+            help_reply = "exec " + binary + " eval --help"
+        executable.write_text(
+            "#!/bin/sh\n" + 'echo "$*" >> ' + shlex.quote(str(probe_log)) + "\n"
+            + 'if [ "$#" = 1 ] && [ "$1" = --version ]; then ' + version_reply + "\n"
+            + 'elif [ "$#" = 2 ] && [ "$1" = eval ] && [ "$2" = --help ]; then ' + help_reply + "\n"
+            + "else echo executed > " + shlex.quote(str(shell.executed)) + "; exit 1; fi\n")
+        executable.chmod(0o700)
+        shell.text("export CLI_HELP_DISCOVERY=auto CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example"))
+                   + " PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"')
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        shell.resize(columns, rows)
+        prefix, suffix = "yq eval ", " first.yml second.yml"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        return shell, prefix, suffix, probe_log
 
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")

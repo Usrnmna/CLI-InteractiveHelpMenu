@@ -6,34 +6,11 @@ Commands in this guide are run from the repository root unless stated otherwise.
 
 ## Runtime components and data flow
 
-The Bash adapter opens a Python helper for each help request. The helper resolves
-the command context, obtains a profile, and runs the terminal browser. Selection
-produces an edit response; cancellation produces no edit response.
-
-```mermaid
-flowchart TD
-    B[Bash Readline buffer and cursor] -->|Alt-H| H[Python helper: validate context]
-    P[Bundled or custom profiles] --> H
-    D[Built-in and loaded drivers] --> H
-    H -->|Discovery enabled and no static match| Q[Bounded documentation discovery]
-    Q -->|Validated profile| U[Curses help browser]
-    H -->|Static profile matched| U
-    N[Optional value metadata and preserved source notes] -->|Shared display and search text| U
-    U -->|Selected literal option| E[Calculate buffer edit]
-    E -->|NUL-delimited response| R[Return to Readline; redraw if resized]
-    U -->|Cancel without an edit| R
-    R --> B
-```
-
-The adapter supplies `CLI_HELP_LINE` and `CLI_HELP_POINT` to the helper.
-A successful selection returns `cursor\0line\0` on standard output; the adapter
-accepts exactly two fields with a numeric cursor and updates `READLINE_POINT`
-and `READLINE_LINE`. Curses attaches to the controlling terminal so browser
-output does not mix with the edit response. This response does not accept or
-execute the command line.
-
-The [discovery and safety guide](discovery-and-safety.md) describes subprocess
-execution, parsing, and caching. The
+The [terminal runtime diagrams](runtime-architecture.md) show the Bash and
+Python process boundary, how JSON profiles and drivers are resolved, how the
+browser handles input and resizing, and which costs the local baseline measures.
+The [discovery and safety guide](discovery-and-safety.md) covers subprocess
+execution, parsing, and caching in more detail. The
 [collection workflow diagram](README.md#help-collection-workflows) covers the
 separate import, scan, and review tools.
 
@@ -100,6 +77,8 @@ python3 -I tests/run_sandbox.py
 python3 -I tests/run_sandbox.py -- python3 -m unittest discover -s tests \
   -p test_bash_pty.py -k rebinding_between_keymaps -v
 ```
+
+The [test selection plan](test-selection-plan.md) records future work to shorten the edit-and-test cycle and validate reuse of earlier results against the full matrix.
 
 Use `--include tests/new_fixture.json` before `--` to add a new, untracked
 file to that run. Paths are relative to the repository root. The runner

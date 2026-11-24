@@ -1,6 +1,8 @@
 # yq eval option audit
 
-The [bundled menu](../profiles/yq-eval.json) covers 15 spellings for Mike Farah’s yq v4. `eval` runs the expression on each document in input-file order. Use `-` as a filename for standard input. The Ubuntu archive packages named `yq` on both target releases provide Kislyuk’s Python wrapper for jq, which takes a jq filter as its first positional argument. The [eval driver](../config/drivers.example/yq.json) and the menu’s existing executable identity check distinguish the two tools.
+The first-pass [bundled menu](../profiles/yq-eval.json) covered 15 spellings for Mike Farah’s yq v4. `eval` runs the expression on each document in input-file order. Use `-` as a filename for standard input. The Ubuntu archive packages named `yq` on both target releases provide Kislyuk’s Python wrapper for jq, which takes a jq filter as its first positional argument. The [eval driver](../config/drivers.example/yq.json) and the menu’s existing executable identity check distinguish the two tools.
+
+The subsequent [manual inventory](yq-eval-manual-inventory.md) and [coverage report](yq-eval-manual-coverage.md) cover the expanded menu. The counts and results below record the original audit.
 
 ## Sources and versions
 

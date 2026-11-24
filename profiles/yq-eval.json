@@ -8,37 +8,37 @@
           "argument": "",
           "flag": "--inplace",
           "summary": "Write results back to the first input file",
-          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents."
+          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents. Evaluation errors and an unsuccessful --exit-status leave the destination intact. Split output is incompatible. On Linux, editing a symlink replaced the link and preserved its target in both tested releases. In a writable directory, 4.44.3 can replace a read-only file. Version 4.54.3 rejects that edit. Short spelling: -i."
         },
         {
           "argument": "",
           "flag": "-i",
           "summary": "Write results back to the first input file",
-          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents."
+          "detail": "The first input must be a file. With multiple files, the combined results replace the first file. Later files keep their original contents. Evaluation errors and an unsuccessful --exit-status leave the destination intact. Split output is incompatible. On Linux, editing a symlink replaced the link and preserved its target in both tested releases. In a writable directory, 4.44.3 can replace a read-only file. Version 4.54.3 rejects that edit. Alias for --inplace."
         },
         {
           "argument": "",
           "flag": "--null-input",
           "summary": "Evaluate once with null as the input",
-          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -."
+          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -. Short spelling: -n."
         },
         {
           "argument": "",
           "flag": "-n",
           "summary": "Evaluate once with null as the input",
-          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -."
+          "detail": "Use this to create a document from an expression. Omit input filenames, including the stdin marker -. Alias for --null-input."
         },
         {
           "argument": "",
           "flag": "--exit-status",
           "summary": "Fail on no matches or only null and lowercase false",
-          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches."
+          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches. Short spelling: -e."
         },
         {
           "argument": "",
           "flag": "-e",
           "summary": "Fail on no matches or only null and lowercase false",
-          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches."
+          "detail": "Any other result gives status 0 if evaluation succeeds, even if false comes last. Zero, an empty string and the YAML boolean spelling False all count as matches. Alias for --exit-status."
         },
         {
           "argument": "FORMAT",
@@ -116,7 +116,7 @@
               }
             ]
           },
-          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set."
+          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set. Version 4.54.3 also accepts kyaml/ky, base64url, hcl/h/tf and ini/i. Shell is output-only. Short spelling: -o."
         },
         {
           "argument": "FORMAT",
@@ -195,7 +195,7 @@
               }
             ]
           },
-          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set."
+          "detail": "Use -o json to write JSON from YAML. Auto normally follows the first input filename. An explicit input format such as -p json defaults the output to YAML unless -o is also set. Version 4.54.3 also accepts kyaml/ky, base64url, hcl/h/tf and ini/i. Shell is output-only. Alias for --output-format."
         },
         {
           "argument": "FORMAT",
@@ -269,7 +269,7 @@
               }
             ]
           },
-          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding."
+          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding. Version 4.54.3 also accepts kyaml/ky, base64url, hcl/h/tf and ini/i. Shell is output-only. Short spelling: -p."
         },
         {
           "argument": "FORMAT",
@@ -344,11 +344,11 @@
               }
             ]
           },
-          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding."
+          "detail": "Auto uses the first input filename extension and falls back to YAML for stdin or an unknown extension. Use -p csv for CSV on stdin and add -o to choose the output encoding. Version 4.54.3 also accepts kyaml/ky, base64url, hcl/h/tf and ini/i. Shell is output-only. Alias for --input-format."
         },
         {
           "argument": "NUMBER",
-          "detail": "The default is 2. Use --indent 0 for compact JSON. For YAML, 4.44.3 uses four spaces at zero. Version 4.54.3 limits YAML indentation to 2 through 9 spaces and rejects negative input for every format.",
+          "detail": "The default is 2. Use --indent 0 for compact JSON. For YAML, 4.44.3 uses four spaces at zero. Version 4.54.3 limits YAML indentation to 2 through 9 spaces and rejects negative input for every format. Short spelling: -I.",
           "flag": "--indent",
           "summary": "Set output indentation in spaces",
           "value_semantics": {
@@ -455,23 +455,23 @@
           "argument": "",
           "flag": "--prettyPrint",
           "summary": "Reset YAML styles for block output",
-          "detail": "After evaluating the expression, yq resets styles on the result. Inline maps and lists expand across lines in YAML output."
+          "detail": "After evaluating the expression, yq resets styles on the result. Inline maps and lists expand across lines in YAML output. Short spelling: -P."
         },
         {
           "argument": "",
           "flag": "--unwrapScalar",
           "summary": "Print a scalar as its raw value",
-          "detail": "A selected YAML string prints without its quotes, color or inline comment. YAML enables this by default. Use --unwrapScalar=false to keep scalar formatting."
+          "detail": "A selected YAML string prints without its quotes, color or inline comment. YAML and properties enable this by default. Use --unwrapScalar=false to keep scalar formatting. Short spelling: -r."
         },
         {
           "argument": "",
           "flag": "--no-colors",
           "summary": "Disable colored output",
-          "detail": "Use for plain terminal output. Redirected output is normally plain already. An explicit --colors takes precedence."
+          "detail": "Use for plain terminal output. Redirected output is normally plain already. An explicit --colors takes precedence. Short spelling: -M."
         },
         {
           "argument": "EXPRESSION",
-          "detail": "Use when an expression also names an existing file. Pass the whole expression as one argument, such as --expression '.items[] | .name'.",
+          "detail": "Use when an expression also names an existing file. Pass the whole expression as one argument, such as --expression '.items[] | .name'. A nonempty expression loaded with --from-file takes precedence.",
           "flag": "--expression",
           "summary": "Set the expression explicitly",
           "value_semantics": {
@@ -545,6 +545,1575 @@
               }
             ]
           }
+        },
+        {
+          "argument": "NUMBER",
+          "detail": "Alias for --indent. The default is 2. Use --indent 0 for compact JSON. For YAML, 4.44.3 uses four spaces at zero. Version 4.54.3 limits YAML indentation to 2 through 9 spaces and rejects negative input for every format.",
+          "flag": "-I",
+          "summary": "Set output indentation in spaces",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Encoder-specific output indentation",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "With 4.44.3, YAML zero uses a four-space indent. Positive YAML widths outside 2 through 9 use two spaces. Negative YAML indentation is rejected by the encoder. JSON and XML use no indentation spaces for nonpositive values. This does not promise one-line XML. Other encoders ignore this setting in 4.44.3.",
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "For 4.44.3, zero gives four spaces in YAML and no indentation spaces in JSON or XML."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use 2 spaces for the applicable encoder."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--indent IntVar default 2"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/utils.go",
+                      "locator": "configureEncoder assigns Indent only to XML/YAML/JSON preferences"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_json.go",
+                      "locator": "NewJSONEncoder positive-space loop"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_xml.go",
+                      "locator": "NewXMLEncoder positive-space loop"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/pkg/yqlib/encoder_yaml.go",
+                      "locator": "YamlEncoder passes preference to yaml.Encoder.SetIndent"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/go.mod",
+                      "locator": "yaml.v3 v3.0.1 dependency"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/yaml.go",
+                      "locator": "SetIndent rejects negative values"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/encode.go",
+                      "locator": "encoder.init maps zero to 4"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/emitterc.go",
+                      "locator": "yaml_emitter_emit_stream_start resets positive widths outside 2 through 9 to 2"
+                    }
+                  ]
+                },
+                "subject": "Spaces per indentation level in YAML, JSON or XML output"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "",
+          "flag": "-P",
+          "summary": "Reset YAML styles for block output",
+          "detail": "Alias for --prettyPrint. After evaluating the expression, yq resets styles on the result. Inline maps and lists expand across lines in YAML output."
+        },
+        {
+          "argument": "",
+          "flag": "-r",
+          "summary": "Print a scalar as its raw value",
+          "detail": "Alias for --unwrapScalar. A selected YAML string prints without its quotes, color or inline comment. YAML and properties enable this by default. Use --unwrapScalar=false to keep scalar formatting."
+        },
+        {
+          "argument": "",
+          "flag": "-M",
+          "summary": "Disable colored output",
+          "detail": "Alias for --no-colors. Use for plain terminal output. Redirected output is normally plain already. An explicit --colors takes precedence."
+        }
+      ]
+    },
+    {
+      "name": "Queries and output",
+      "options": [
+        {
+          "flag": "--from-file",
+          "argument": "FILE",
+          "summary": "Read the query from an expression file",
+          "detail": "Use a path such as --from-file 'rules/filter query.yq'. The file supplies the query. The following filenames supply input documents. An existing first positional file ending in .yq also supplies a query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read the query from an expression file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Path to a readable text file containing one yq expression. Quote paths with spaces."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Detect a positional expression or .yq query file."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--from-file persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--from-file persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--split-exp",
+          "argument": "EXPRESSION",
+          "summary": "Write each result to a computed filename",
+          "detail": "Quote the naming expression. It sees the current result and $index starting at zero. Repeated names replace earlier output, even within the same run. An alphanumeric extension is kept. Otherwise yq adds .json for JSON, .properties for properties, or .yml. In 4.44.3 parent directories must exist. In 4.54.3 missing directories are created and output stays under the working directory by default. In-place editing is incompatible. Short spelling: -s.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Write each result to a computed filename",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "EXPRESSION",
+                    "grammar": "One yq expression returning a filename string for each result. Quote it so the shell leaves $index intact."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write results to standard output unless another destination is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--split-exp persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--split-exp persistent flag declaration"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "yq filename expression",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/pkg/yqlib/printer_writer.go",
+                    "locator": "GetWriter evaluates the name against the current result with $index"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-s",
+          "argument": "EXPRESSION",
+          "summary": "Write each result to a computed filename",
+          "detail": "Alias for --split-exp. Quote the naming expression. It sees the current result and $index starting at zero. Repeated names replace earlier output, even within the same run. An alphanumeric extension is kept. Otherwise yq adds .json for JSON, .properties for properties, or .yml. In 4.44.3 parent directories must exist. In 4.54.3 missing directories are created and output stays under the working directory by default. In-place editing is incompatible.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Write each result to a computed filename",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "EXPRESSION",
+                    "grammar": "One yq expression returning a filename string for each result. Quote it so the shell leaves $index intact."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write results to standard output unless another destination is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--split-exp persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--split-exp persistent flag declaration"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "yq filename expression",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/pkg/yqlib/printer_writer.go",
+                    "locator": "GetWriter evaluates the name against the current result with $index"
+                  }
+                }
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--split-exp-file",
+          "argument": "FILE",
+          "summary": "Read the output naming expression from a file",
+          "detail": "Supply a file containing the split-exp naming expression. Its contents take precedence over --split-exp. Use --from-file for the query applied to input documents. The same split-output naming and file replacement rules apply.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read the output naming expression from a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Path to a file containing the filename expression."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command-line naming expression if supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--split-exp-file persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--split-exp-file persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-doc",
+          "argument": "",
+          "summary": "Suppress YAML document separators",
+          "detail": "Use -N to omit the --- markers between documents. This keeps every result and leaves scalar quoting to --unwrapScalar. Short spelling: -N."
+        },
+        {
+          "flag": "-N",
+          "argument": "",
+          "summary": "Suppress YAML document separators",
+          "detail": "Alias for --no-doc. Use -N to omit the --- markers between documents. This keeps every result and leaves scalar quoting to --unwrapScalar."
+        },
+        {
+          "flag": "--nul-output",
+          "argument": "",
+          "summary": "End each result with a NUL byte",
+          "detail": "Use -0 when a result can contain newlines. Unwrapped scalars containing a NUL byte cause an error. Use -N separately to omit YAML document separators. Short spelling: -0."
+        },
+        {
+          "flag": "-0",
+          "argument": "",
+          "summary": "End each result with a NUL byte",
+          "detail": "Alias for --nul-output. Use -0 when a result can contain newlines. Unwrapped scalars containing a NUL byte cause an error. Use -N separately to omit YAML document separators.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "End each result with a NUL byte",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The digit is part of the switch spelling."
+                },
+                "forms": [
+                  {
+                    "id": "switch",
+                    "notation": "literal",
+                    "tokens": [
+                      "-0"
+                    ],
+                    "syntax": "-0",
+                    "meaning": "End each result with a NUL byte"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the usual output terminator."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no separate operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/pkg/yqlib/printer.go",
+                      "locator": "SetNulSepOutput and PrintResults"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--front-matter",
+          "argument": "MODE",
+          "summary": "Evaluate the first input’s YAML front matter",
+          "detail": "Use extract to emit only the evaluated header. Use process to append the original body after the evaluated header. Supply the first input as a filename or -. Short spelling: -f.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Evaluate the first input’s YAML front matter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "mode",
+                    "notation": "literal",
+                    "syntax": "MODE",
+                    "tokens": [
+                      "extract",
+                      "process"
+                    ],
+                    "meaning": "Extract the YAML header, or process it and append the original body.",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read the complete document."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--front-matter persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--front-matter persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-f",
+          "argument": "MODE",
+          "summary": "Evaluate the first input’s YAML front matter",
+          "detail": "Alias for --front-matter. Use extract to emit only the evaluated header. Use process to append the original body after the evaluated header. Supply the first input as a filename or -.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Evaluate the first input’s YAML front matter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "mode",
+                    "notation": "literal",
+                    "syntax": "MODE",
+                    "tokens": [
+                      "extract",
+                      "process"
+                    ],
+                    "meaning": "Extract the YAML header, or process it and append the original body.",
+                    "case": "sensitive"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read the complete document."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--front-matter persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--front-matter persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--colors",
+          "argument": "",
+          "summary": "Force colored output",
+          "detail": "Use -C to keep color when redirecting output to a file or pipe. Explicit color takes precedence over --no-colors. Short spelling: -C."
+        },
+        {
+          "flag": "-C",
+          "argument": "",
+          "summary": "Force colored output",
+          "detail": "Alias for --colors. Use -C to keep color when redirecting output to a file or pipe. Explicit color takes precedence over --no-colors."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show help for sequential evaluation",
+          "detail": "Print usage, examples and flags for eval, then exit. Short spelling: -h."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show help for sequential evaluation",
+          "detail": "Alias for --help. Print usage, examples and flags for eval, then exit."
+        },
+        {
+          "flag": "--verbose",
+          "argument": "",
+          "summary": "Write debug diagnostics to standard error",
+          "detail": "Use -v to trace parsing and evaluation while keeping result output on its usual destination. Short spelling: -v."
+        },
+        {
+          "flag": "-v",
+          "argument": "",
+          "summary": "Write debug diagnostics to standard error",
+          "detail": "Alias for --verbose. Use -v to trace parsing and evaluation while keeping result output on its usual destination."
+        },
+        {
+          "flag": "--tojson",
+          "argument": "",
+          "summary": "Encode results as JSON",
+          "detail": "Deprecated shortcut. Both releases accept it and warn on stderr. Use -o json for new commands. An enabled shortcut overrides an explicit output format. Short spelling: -j."
+        },
+        {
+          "flag": "-j",
+          "argument": "",
+          "summary": "Encode results as JSON",
+          "detail": "Alias for --tojson. Deprecated shortcut. Both releases accept it and warn on stderr. Use -o json for new commands. An enabled shortcut overrides an explicit output format."
+        },
+        {
+          "flag": "--debug-node-info",
+          "argument": "",
+          "summary": "Print metadata for each selected node",
+          "detail": "Inspect the node kind, tag and source position in the result stream. Available in 4.54.3, absent in 4.44.3. The metadata printer ignores NUL framing."
+        },
+        {
+          "flag": "--string-interpolation",
+          "argument": "",
+          "summary": "Expand expressions inside quoted yq strings",
+          "detail": "Enabled by default. Use --string-interpolation=false to keep the literal characters in a sequence such as \\( .name )."
+        }
+      ]
+    },
+    {
+      "name": "YAML settings",
+      "options": [
+        {
+          "flag": "--header-preprocess",
+          "argument": "",
+          "summary": "Collect leading YAML comments and separators",
+          "detail": "Enabled by default. Use --header-preprocess=false to pass leading content directly to the YAML decoder."
+        },
+        {
+          "flag": "--yaml-compact-seq-indent",
+          "argument": "",
+          "summary": "Count the list marker toward YAML indentation",
+          "detail": "Use -c for compact nested sequences. The default places the dash farther inside its parent. Available in 4.54.3, absent in 4.44.3. Short spelling: -c."
+        },
+        {
+          "flag": "-c",
+          "argument": "",
+          "summary": "Count the list marker toward YAML indentation",
+          "detail": "Alias for --yaml-compact-seq-indent. Use -c for compact nested sequences. The default places the dash farther inside its parent. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--yaml-fix-merge-anchor-to-spec",
+          "argument": "",
+          "summary": "Apply YAML merge-key precedence",
+          "detail": "Enable this for explicit keys to override merged values regardless of where the merge key appears. The default in 4.54.3 is false. Available in 4.54.3, absent in 4.44.3."
+        }
+      ]
+    },
+    {
+      "name": "Format settings",
+      "options": [
+        {
+          "flag": "--csv-auto-parse",
+          "argument": "",
+          "summary": "Interpret structured values inside CSV cells",
+          "detail": "Enabled by default. With --csv-auto-parse=false, arrays and maps remain text. Plain scalar values can still acquire types."
+        },
+        {
+          "flag": "--csv-separator",
+          "argument": "CHAR",
+          "summary": "Choose the CSV field delimiter",
+          "detail": "Defaults to a comma. Pass one byte, such as ';', or a quoted escape such as '\\t' for a tab. The CSV reader and writer must accept the resulting delimiter.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CSV field delimiter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "CHAR",
+                    "grammar": "One single-byte delimiter or an escape such as \\t. Quote shell punctuation."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Defaults to a comma."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--csv-separator persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--csv-separator persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--tsv-auto-parse",
+          "argument": "",
+          "summary": "Interpret structured values inside TSV cells",
+          "detail": "Enabled by default. With --tsv-auto-parse=false, arrays and maps remain text. Plain scalar values can still acquire types."
+        },
+        {
+          "flag": "--properties-array-brackets",
+          "argument": "",
+          "summary": "Use brackets for properties array indices",
+          "detail": "The default flattens an array index as a dotted path component. Enable this for names such as items[0]."
+        },
+        {
+          "flag": "--properties-separator",
+          "argument": "TEXT",
+          "summary": "Set the properties output separator",
+          "detail": "The default places a space on either side of the equals sign. Quote a separator containing spaces when passing it to the shell.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the properties output separator",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Literal text between a property name and its value."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default places a space on either side of the equals sign."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--properties-separator persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--properties-separator persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ini-preserve-quotes",
+          "argument": "",
+          "summary": "Keep surrounding quotes on INI input values",
+          "detail": "Enable this to retain the quote characters when reading values for a round trip. By default the INI decoder strips surrounding quotes. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--ini-key-value-delimiters",
+          "argument": "CHARACTERS",
+          "summary": "Choose the INI input delimiters",
+          "detail": "Each character in the operand is a possible separator between a key and its value. The default accepts equals and colon. Available in 4.54.3, absent in 4.44.3.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the INI input delimiters",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "CHARACTERS",
+                    "grammar": "Each character in the string acts as a delimiter."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Accept equals and colon."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--ini-key-value-delimiters persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--shell-key-separator",
+          "argument": "TEXT",
+          "summary": "Join nested shell variable names with a separator",
+          "detail": "The shell output encoder flattens nested paths. Its default separator is an underscore. Available in 4.54.3, absent in 4.44.3.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Join nested shell variable names with a separator",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Literal text between path components."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Join path components with an underscore."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--shell-key-separator persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--lua-prefix",
+          "argument": "TEXT",
+          "summary": "Set the prefix for each Lua output document",
+          "detail": "The default is 'return ' including its trailing space. Quote spaces in the shell. Global assignment mode omits the document wrapper.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the prefix for each Lua output document",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Text before the encoded Lua value."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default is 'return ' including its trailing space."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--lua-prefix persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--lua-prefix persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--lua-suffix",
+          "argument": "TEXT",
+          "summary": "Set the suffix for each Lua output document",
+          "detail": "The default is a semicolon followed by a newline. Global assignment mode omits this suffix.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the suffix for each Lua output document",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Text after the encoded Lua value."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default is a semicolon followed by a newline."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--lua-suffix persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--lua-suffix persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--lua-globals",
+          "argument": "",
+          "summary": "Write a Lua mapping as global assignments",
+          "detail": "The top-level result must be a mapping. Global mode omits the usual document prefix and suffix."
+        },
+        {
+          "flag": "--lua-unquoted",
+          "argument": "",
+          "summary": "Write eligible Lua table keys without quotes",
+          "detail": "Applies to string keys that can be written as Lua identifiers. Other keys retain bracket notation."
+        }
+      ]
+    },
+    {
+      "name": "XML settings",
+      "options": [
+        {
+          "flag": "--xml-attribute-prefix",
+          "argument": "TEXT",
+          "summary": "Choose the key prefix for XML attributes",
+          "detail": "The default +@ represents an attribute such as id as +@id. Use the same prefix when converting the mapping back to XML.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the key prefix for XML attributes",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Text prepended to XML attribute names in a mapping."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default +@ represents an attribute such as id as +@id."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--xml-attribute-prefix persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--xml-attribute-prefix persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--xml-content-name",
+          "argument": "KEY",
+          "summary": "Name the key holding XML element text",
+          "detail": "The default +content stores text when attributes or children require a mapping. A text-only element can be a scalar.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the key holding XML element text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Mapping key for XML element text."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default +content stores text when attributes or children require a mapping."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--xml-content-name persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--xml-content-name persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--xml-directive-name",
+          "argument": "KEY",
+          "summary": "Name the key for XML directives",
+          "detail": "The default +directive represents directives such as DOCTYPE in the decoded mapping.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the key for XML directives",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Mapping key for an XML directive."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default +directive represents directives such as DOCTYPE in the decoded mapping."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--xml-directive-name persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--xml-directive-name persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--xml-keep-namespace",
+          "argument": "",
+          "summary": "Keep namespaces in decoded XML names",
+          "detail": "Enabled by default. Use --xml-keep-namespace=false for local names. This can merge names that differ only by namespace."
+        },
+        {
+          "flag": "--xml-proc-inst-prefix",
+          "argument": "TEXT",
+          "summary": "Choose the key prefix for XML processing instructions",
+          "detail": "The default +p_ precedes the instruction target. For example, +p_xml represents the XML declaration.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the key prefix for XML processing instructions",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "Text prepended to the XML processing instruction target."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The default +p_ precedes the instruction target."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "mikefarah/yq"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.44.3",
+                      "4.54.3"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.44.3/cmd/root.go",
+                      "locator": "--xml-proc-inst-prefix persistent flag declaration"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/mikefarah/yq/v4.54.3/cmd/root.go",
+                      "locator": "--xml-proc-inst-prefix persistent flag declaration"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--xml-raw-token",
+          "argument": "",
+          "summary": "Read XML tokens without namespace translation",
+          "detail": "Enabled by default. Use --xml-raw-token=false to use the XML decoder’s Token method, which resolves namespace prefixes and checks matching start and end elements."
+        },
+        {
+          "flag": "--xml-skip-directives",
+          "argument": "",
+          "summary": "Discard XML directives on input",
+          "detail": "Enable this to omit directives such as DOCTYPE from decoded data. Processing instructions have a separate switch."
+        },
+        {
+          "flag": "--xml-skip-proc-inst",
+          "argument": "",
+          "summary": "Discard XML processing instructions on input",
+          "detail": "Enable this to omit instructions such as the XML declaration from decoded data. Directives have a separate switch."
+        },
+        {
+          "flag": "--xml-strict-mode",
+          "argument": "",
+          "summary": "Enable strict XML decoding",
+          "detail": "Defaults to false. Parsing checks also depend on --xml-raw-token. Use --xml-raw-token=false for matching-element checks."
+        }
+      ]
+    },
+    {
+      "name": "Expression permissions",
+      "options": [
+        {
+          "flag": "--security-disable-env-ops",
+          "argument": "",
+          "summary": "Block environment access from yq expressions",
+          "detail": "Use this to disable expression operators that read environment variables, including env and strenv. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--security-disable-file-ops",
+          "argument": "",
+          "summary": "Block file operations in yq expressions",
+          "detail": "Use this to disable operators such as load. Input documents and query files are still command-line operands. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--security-enable-system-operator",
+          "argument": "",
+          "summary": "Allow expressions to run external commands",
+          "detail": "Disabled by default. Enable only for trusted expressions that require the system operator. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--security-allow-write-any-path",
+          "argument": "",
+          "summary": "Allow split output outside the working directory",
+          "detail": "By default split filenames must resolve inside the working directory. Enable this only with trusted naming expressions and input data. Available in 4.54.3, absent in 4.44.3."
+        },
+        {
+          "flag": "--security-force-never-escape-shell-output",
+          "argument": "",
+          "summary": "Disable quoting of unwrapped shell output",
+          "detail": "With -o shell -r, values normally receive protective quoting when needed. Enabling this emits them verbatim. Treat the resulting text as data when values can contain shell syntax. Available in 4.54.3, absent in 4.44.3."
         }
       ]
     }

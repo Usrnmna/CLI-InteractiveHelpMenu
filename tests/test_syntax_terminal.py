@@ -105,6 +105,43 @@ class SyntaxScreenTests(TerminalTestCase):
         shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 220, 120, ("fzf",))
         self.check_rendered_rows(profile, shell, prefix, suffix)
 
+    def test_yq_all_rows_and_complete_details(self):
+        """Read every selectable spelling with the Mike Farah identity guard enabled."""
+        shell, prefix, suffix, probes = self.pending_yq(220, 120)
+        profile = json.loads((ROOT / "profiles/yq-eval.json").read_text())
+        self.check_rendered_rows(profile, shell, prefix, suffix)
+        self.assertIn("--version", probes.read_text().splitlines())
+
+    def test_yq_rejects_kislyuk_in_bash(self):
+        """A jq-wrapper identity must stop lookup before any leaf-help probe."""
+        shell, prefix, suffix, probes = self.pending_yq(100, 24, version="kislyuk")
+        shell.keys("Escape", "h")
+        shell.wait_for(lambda state: state.alternate == 0 and "requires Mike Farah" in " ".join(state.cells))
+        self.assertEqual(probes.read_text().splitlines(), ["--version"])
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertFalse(shell.executed.exists())
+
+    def test_yq_expression_file_before_two_inputs(self):
+        """Read the file distinction at minimum size and insert a quoted query path."""
+        shell, prefix, suffix, _ = self.pending_yq(60, 16)
+        for action in ("Escape", "Enter"):
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            shell.keys("/")
+            shell.text("read the query")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: read the query"
+                                   and "> --from-file" in state.cells[4])
+            self.reach_detail(shell, found, "following filenames supply input documents.")
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--from-file" + suffix, len(prefix + "--from-file ")))
+        operand = "'query file.yq'"
+        shell.text(operand + " ")
+        edited = prefix + "--from-file " + operand
+        self.assertEqual(shell.read_buffer(), (edited + suffix, len(edited) + 1))
+        self.assertFalse(shell.executed.exists())
+
     def test_ffmpeg_all_rows_and_complete_details(self):
         """Read every FFmpeg selection between an existing input and a quoted output."""
         profile = json.loads((ROOT / "profiles/ffmpeg.json").read_text())
