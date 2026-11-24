@@ -85,7 +85,16 @@ options section. Usage and example sections are excluded. Multiword and
 structured FFmpeg argument placeholders are retained when a separate description
 column identifies the declaration. Concrete colon selectors such as `-c:v`
 are supported. Unsupported joined syntax, such as GCC `-Wl,<options>`, and
-selector placeholders are omitted rather than truncated into a different flag. CR, CRLF, and LF help output is normalized.
+unrecognized selector placeholders are omitted. The native FFmpeg short-help
+and section-1 layouts distinguish optional stream selectors from the insertable
+base spelling. FFprobe component declarations retain their owner, value type
+and local defaults. [Media discovery audit](essential-media.md)
+
+Executable help can appear on either standard output or standard error.
+For manual pages, discovery parses the formatted page on standard output and
+keeps typesetter warnings from interrupting declarations. Both streams count
+toward the probe's output limit. Discovery normalizes CR, CRLF and LF line
+endings. [Essential discovery sources and results](essential-discovery-audit.md)
 
 Terminal sequences are removed before individual control characters are filtered.
 The scanner handles ESC and Unicode C1 forms of CSI, OSC, DCS, SOS, PM and APC,

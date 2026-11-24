@@ -29,6 +29,7 @@ ARTIFACT_KIND = "numerical_description_inventory"
 # Snapshot readers inspect their text; none of the inspected modules is imported.
 PROTECTED_SOURCES = (
     "cli_help/core.py", "cli_help/discovery.py", "cli_help/drivers.py",
+    "cli_help/docker_manual.py", "cli_help/git_manual.py", "cli_help/media_help.py", "cli_help/npm_help.py", "cli_help/utility_manual.py",
     "cli_help/arguments.py", "cli_help/ui.py", "cli_help/main.py",
     "bash/interactive-help.bash", "cli_help/value_semantics.py",
     "cli_help/presentation.py", "cli_help/terminal_text.py", "cli_help/authoring.py", "cli_help/manual_import.py",

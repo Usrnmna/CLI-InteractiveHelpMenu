@@ -111,7 +111,7 @@ class TmuxShell:
         lines = tuple(self.tmux("capture-pane", "-p", "-S", "-", "-t", "screen-test:0.0").splitlines())
         return ScreenState(columns, rows, x, y, alternate, lines[-rows:], lines[:-rows])
 
-    def wait_for_option(self, label, summary, details):
+    def wait_for_option(self, label, summary, details, *, exact_row=None):
         """Read only the fixed-size pane until the selected row and all Details agree."""
         deadline = time.monotonic() + 8
         progress = f"Details 1-{len(details)}/{len(details)}"
@@ -120,7 +120,8 @@ class TmuxShell:
             divider = next((i for i, line in enumerate(cells) if line.startswith("Category ")), None)
             if (divider is not None and len(cells) >= 3 and cells[-3] == progress
                     and cells[divider + 1:divider + 1 + len(details)] == details
-                    and any(row.startswith("> " + label + " ") and summary in row[3 + len(label):]
+                    and any((row == exact_row if exact_row is not None else
+                             row.startswith("> " + label + " ") and summary in row[3 + len(label):])
                             for row in (line[26:] for line in cells[4:divider]))):
                 return
             if time.monotonic() >= deadline:

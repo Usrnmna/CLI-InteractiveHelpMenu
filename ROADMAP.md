@@ -1,6 +1,6 @@
 # Project roadmap
 
-**Next task — audit the Essential tier of discovered command help, beginning with `ffmpeg`.** The [discovery matrix](tests/fixtures/help/matrix.json) lists 46 Essential paths. Compare the menu produced through each discovery route with its source, including qualifications lost during parsing or rendering. All 76 bundled profiles have completed the first-pass, manual-option and Menu Details reviews. The [final seven-family verification](docs/remaining-bundled-verification.md) covers the last 16 menus. The [preceding six-family verification](docs/devtools-batch-verification.md) covers the previous 18.
+**Next task — audit the Next tier of discovered command help, beginning with `gcc`.** The [discovery matrix](tests/fixtures/help/matrix.json) lists 65 Next paths. Follow the [Essential route inventory](docs/essential-discovery-audit.md) and its [verification procedure and results](docs/essential-discovery-verification.md) when comparing each generated menu with its fixed sources. All 76 bundled profiles have completed the first-pass, manual-option and Menu Details reviews. The [final seven-family verification](docs/remaining-bundled-verification.md) covers the last 16 menus. The [preceding six-family verification](docs/devtools-batch-verification.md) covers the previous 18.
 The [combined iproute2, systemd and OpenSSL revisit](docs/iproute2-systemd-openssl-verification.md) is complete.
 The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
@@ -121,8 +121,8 @@ only when the audit also checks the help produced through that route.
 
 | Matrix tier | Paths | Description review |
 | --- | ---: | --- |
-| Essential | 46 | Pending |
-| Next | 65 | Pending |
+| Essential | 46 | Complete on all three targets. The 46 reviews cover 45 selectable menus and the usage-only npm root. [Route inventory](docs/essential-discovery-audit.md) · [Test results](docs/essential-discovery-verification.md) |
+| Next | 65 | Pending. Start with `gcc`, the first Next path in matrix order. |
 | Extended | 51 | Pending |
 
 For each path, identify its help source and version. Compare what the menu

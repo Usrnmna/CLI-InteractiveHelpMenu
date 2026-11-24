@@ -246,6 +246,17 @@ class DiscoveryTests(unittest.TestCase):
         self.assertNotIn("ENV", environment)
         self.assertEqual(environment["MANOPT"], "")
 
+    def test_manual_renderer_warnings_do_not_become_declarations(self):
+        """Keep renderer stderr outside the document while charging it to the shared byte limit."""
+        renderer = self.command.with_name("man")
+        write_executable(renderer, "import os\nos.write(1, b'  --real  An option\\n')\n"
+                                   "os.write(2, b'  --wrong  Renderer diagnostic\\n')\n")
+        argv = [str(renderer), "-P", "/bin/cat", "--", "example"]
+        self.assertEqual(run_probe(argv, 2), "  --real  An option\n")
+        with self.assertRaises(ProbeError) as overflow:
+            run_probe(argv, 2, max_bytes=30)
+        self.assertEqual(overflow.exception.code, "probe_output_limit")
+
     def test_timeout_and_output_limit(self):
         write_executable(self.command, "import time\ntime.sleep(5)\n")
         started = time.monotonic()

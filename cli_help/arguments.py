@@ -51,7 +51,7 @@ def _seven_zip_tokens(word, options, strict):
     return [(name, option, bool(suffix))]
 
 
-def _ffmpeg_tokens(word, options, strict):
+def _ffmpeg_tokens(word, options, strict, *, partial_inventory=False):
     """Resolve FFmpeg option arity while leaving file paths and stream specifiers opaque."""
     if word == "-" or not word.startswith("-"):
         return []
@@ -67,10 +67,12 @@ def _ffmpeg_tokens(word, options, strict):
     base = name.split(":", 1)[0]
     if base in options and "=" not in base:
         return [(base, options[base], False)]
+    if partial_inventory:
+        return []  # A fixed discovery response may omit a valid advanced option.
     raise HelpError("Unknown FFmpeg option or operand spelling.", "unsupported_option")
 
 
-def option_tokens(word, options, strict=True, *, switch_syntax=None):
+def option_tokens(word, options, strict=True, *, switch_syntax=None, partial_inventory=False):
     """Return (name, metadata, payload-present) entries for one completed token.
 
     Exact names win. Bundles require every member to opt in; a value member
@@ -80,7 +82,7 @@ def option_tokens(word, options, strict=True, *, switch_syntax=None):
     if switch_syntax == "7zip":
         return _seven_zip_tokens(word, options, strict)
     if switch_syntax == "ffmpeg":
-        return _ffmpeg_tokens(word, options, strict)
+        return _ffmpeg_tokens(word, options, strict, partial_inventory=partial_inventory)
     key, equal, payload = word.partition("=")
     if word in options or equal and key in options:
         option = options.get(word, options.get(key))

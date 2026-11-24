@@ -22,16 +22,21 @@ import time
 
 from core import HelpError, validate_profile
 from command_paths import help_route
+from git_manual import git_manual_document
+from docker_manual import docker_manual_document
+from media_help import media_help_document, media_manual_document
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
+from npm_help import explain_syntax_only_options
 from terminal_text import strip_terminal_sequences
+from utility_manual import complete_utility_declarations, utility_manual_document
 from value_semantics import ValueContext, validate_profile_semantics, validate_value_semantics
 
 
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 16
-FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*)(?=$|[\s,=\[<])")
+CACHE_VERSION = 17
+FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*|-[.#:](?=,\s+--)|(?<=, )-@)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
 MODULE_INTERPRETER_OPTIONS = INTERPRETER_FLAGS
@@ -113,29 +118,38 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
             environment.update({"LC_ALL": "C.UTF-8", "LANG": "C.UTF-8"})
         if environment_overrides:
             environment.update(environment_overrides)
+        # man writes typesetter warnings on stderr, sometimes halfway through a
+        # declaration on stdout. Drain and bound both streams without inserting
+        # warnings into the page. Executable help may legitimately use stderr.
+        manual_page = Path(argv[0]).name == "man" and argv[1:3] == ["-P", "/bin/cat"]
         try:
             process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT, cwd=directory, env=environment,
+                                       stderr=subprocess.PIPE if manual_page else subprocess.STDOUT, cwd=directory, env=environment,
                                        start_new_session=True)
         except OSError as error:
             raise ProbeError("Cannot start help source; check executable availability and permissions.", "probe_start") from error
         output = bytearray()
+        diagnostics = bytearray()
+        received = 0
         deadline = time.monotonic() + timeout
         try:
             with selectors.DefaultSelector() as selector:
-                selector.register(process.stdout, selectors.EVENT_READ)
+                selector.register(process.stdout, selectors.EVENT_READ, output)
+                if process.stderr:
+                    selector.register(process.stderr, selectors.EVENT_READ, diagnostics)
                 while selector.get_map():
                     remaining = deadline - time.monotonic()
                     if remaining <= 0:
                         raise ProbeError(f"Help source timed out after {timeout:g} seconds.", "probe_timeout")
                     for key, _ in selector.select(remaining):
-                        chunk = os.read(key.fd, min(65536, max_bytes - len(output) + 1))
+                        chunk = os.read(key.fd, min(65536, max_bytes - received + 1))
                         if not chunk:
                             selector.unregister(key.fileobj)
-                            break
-                        output.extend(chunk)
-                        if len(output) > max_bytes:
+                            continue
+                        received += len(chunk)
+                        if received > max_bytes:
                             raise ProbeError(f"Help source exceeded {max_bytes} bytes.", "probe_output_limit")
+                        key.data.extend(chunk)
             try:
                 process.wait(timeout=max(0.001, deadline - time.monotonic()))
             except subprocess.TimeoutExpired as error:
@@ -144,7 +158,7 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
             # require renderer success to distinguish missing pages from prose.
             decoded = output.decode("utf-8", errors="replace")
             if check and process.returncode:
-                raise ProbeExitError(process.returncode, decoded)
+                raise ProbeExitError(process.returncode, decoded + diagnostics.decode("utf-8", errors="replace"))
             return decoded
         finally:
             try:
@@ -153,6 +167,8 @@ def run_probe(argv: list[str], timeout: float, max_bytes=MAX_OUTPUT_BYTES, check
                 pass
             process.wait()
             process.stdout.close()
+            if process.stderr:
+                process.stderr.close()
 
 
 def clean_output(text: str) -> str:
@@ -385,13 +401,26 @@ def _parse_option_group(line: str) -> tuple[list[dict], str] | None:
     argument_owner = next((option for option in reversed(options) if option["argument"]), None)
     if not argument_owner and any(option["flag"].endswith("=") for option in options):
         return None
-    if argument_owner:
+    # In an equivalence list such as "-C, --check=quiet, --check=silent",
+    # the repeated long spelling supplies literal modes. They are not operands
+    # of the other aliases. Retain the complete list for the Details pane.
+    assigned = [option["flag"][:-1] for option in options if option["flag"].endswith("=")]
+    repeated_mode = any(assigned.count(name) > 1 or any(option["flag"] == name for option in options)
+                        for name in assigned)
+    if repeated_mode:
+        summary += ("\n\n" if summary else "") + "Equivalent forms: " + signature
+    elif argument_owner:
         for option in options:
             if not option["argument"]:
                 option["argument"] = argument_owner["argument"]
                 option["argument_optional"] = argument_owner["argument_optional"]
                 if "argument_count" in argument_owner:
                     option["argument_count"] = argument_owner["argument_count"]
+    # clap may print a visible alias in the description column instead of
+    # listing it beside the primary switch, e.g. tail's [alias: --silent].
+    for spelling in re.findall(r"\[alias: (--?[A-Za-z0-9][A-Za-z0-9_-]*)\]", summary):
+        if not any(option["flag"] == spelling for option in options):
+            options.append({**options[-1], "flag": spelling})
     return options, summary
 
 
@@ -404,6 +433,15 @@ def parse_option_groups(line: str) -> list[tuple[list[dict], str]]:
     """
     stripped = line.strip()
     columns = re.split(r"\s{2,}|\t+", stripped, maxsplit=1)
+    repeatable = re.fullmatch(r"(-[A-Za-z],\s*--[A-Za-z][\w-]*)\.\.\.", columns[0])
+    if repeatable:
+        # clap renders repeatable switches as "-q, --quiet...". The dots
+        # describe repeated use of the switch; no operand follows it.
+        parsed = _parse_option_group(repeatable[1] + ("  " + columns[1] if len(columns) > 1 else ""))
+        if parsed:
+            for option in parsed[0]:
+                option["_source_syntax"] = columns[0]
+            return [parsed]
     pairs = re.split(r",\s*(?=-[A-Za-z0-9]\s+--[A-Za-z0-9])", columns[0])
     if len(pairs) > 1 and all(re.fullmatch(r"-[A-Za-z0-9]\s+--[A-Za-z0-9][A-Za-z0-9_-]*", pair) for pair in pairs):
         summary = columns[1] if len(columns) > 1 else ""
@@ -418,6 +456,94 @@ def parse_option_line(line: str) -> tuple[list[dict], str] | None:
     if not groups:
         return None
     return [option for options, _ in groups for option in options], groups[0][1]
+
+
+def _retain_optional_equals_forms(entries):
+    """Combine bare and valued declarations from the same source and section.
+
+    Preserve separate descriptions for the normal source merge. A documented
+    bare long spelling proves that its equals operand may be omitted. Without
+    a bare declaration the existing required-operand rules still apply.
+    """
+    bare = {(entry["category"], entry["flag"]) for entry in entries
+            if entry["flag"].startswith("--") and not entry["argument"]}
+    variants = {}
+    for entry in entries:
+        key = (entry["category"], entry["flag"].removesuffix("="))
+        if entry["flag"].endswith("=") and key in bare and entry["argument"]:
+            variants.setdefault(key, []).append(entry["argument"])
+    for entry in entries:
+        key = (entry["category"], entry["flag"].removesuffix("="))
+        if key in variants:
+            entry["flag"] = key[1]
+            operands = "|".join(dict.fromkeys(variants[key]))
+            entry.update(argument=f"[={operands}]", argument_optional=True)
+
+
+def declaration_summary(paragraphs: str, *, wrapped_table=False) -> str:
+    """Read the opening statement across physical wraps, preserving Details separately.
+
+    A blank line starts a new paragraph. A colon at the end of a line
+    introduces a list, so its values belong in Details. Mid-word punctuation
+    in versions, abbreviations and operands should stay with the statement.
+    """
+    lines = paragraphs.splitlines()
+    if not lines:
+        return "Documented option"
+    first = lines[0]
+    # Unaligned single-column formats may place another declaration directly
+    # below a complete description. Expand only a lead that visibly stops
+    # on a function word or an unfinished parenthetical phrase.
+    unfinished = re.search(
+        r"\b(?:a|an|the|its|their|your|of|at|by|with|without|in|for|from|into|or|and|when|which|as|to|is|are)$",
+        first, re.I)
+    if not wrapped_table and not unfinished and first.count("(") <= first.count(")"):
+        return first
+    lead = []
+    for line in lines:
+        if not line:
+            break
+        if lead and line.startswith("-"):
+            break
+        lead.append(line)
+        if line.endswith(":"):
+            break
+        if line.endswith((".", "!", "?")) and not line.endswith(("e.g.", "i.e.")):
+            break
+    first = " ".join(lead)
+    return re.split(r"(?<=[.!?])\s+(?=[A-Z])", first, maxsplit=1)[0] or "Documented option"
+
+
+def pnpm_install_choice(raw: str) -> list[tuple[list[dict], str]]:
+    """Read operand alternatives in pnpm 9.15.9's installation help table.
+
+    The reporter and package-import tables label literal values. Filtering
+    uses selector templates. Keep each signature with its own explanation,
+    while exposing one value-taking row per switch. The tagged config also
+    types global-dir as a string despite its missing help placeholder.
+    """
+    columns = re.split(r"\s{2,}", raw.strip(), maxsplit=1)
+    if len(columns) != 2:
+        return []
+    signature, explanation = columns
+    if signature == "--global-dir":
+        return [([{"flag": signature, "argument": "<dir>", "argument_optional": False}], explanation)]
+    choices = {
+        "--reporter": ("<reporter>", "Choose the output reporter."),
+        "--package-import-method": ("<method>", "Choose how packages are imported from the store."),
+        "--filter": ("<selector>", "Select workspace packages that match the selector."),
+    }
+    declarations = signature.split(", ")
+    name, separator, value = declarations[-1].partition(" ")
+    if not separator or name not in choices or not value or not all(
+            re.fullmatch(r"--?[\w-]+", alias) for alias in declarations[:-1]):
+        return []
+    argument, summary = choices[name]
+    aliases = [{"flag": alias, "argument": "", "argument_optional": False, "_source_syntax": signature}
+               for alias in declarations[:-1]]
+    choice = {"flag": name, "argument": argument, "argument_optional": False, "_source_syntax": signature,
+              "_selection_summary": summary}
+    return [([alias], explanation) for alias in aliases] + [([choice], explanation)]
 
 
 def parse_help_document(text: str, source: str) -> dict:
@@ -438,6 +564,7 @@ def parse_help_document(text: str, source: str) -> dict:
     description = []
     skip_section = False
     declaration_indent = 0
+    description_indent = None
     previous_blank = False
     shared_lines = []
     shared_start = 0
@@ -449,15 +576,31 @@ def parse_help_document(text: str, source: str) -> dict:
     context_mode = False
     option_lines = []
     active_line = 0
+    command_names = set()
+    bullet_continuation = None
 
     def finish():
         """Freeze the current declaration with its original inline explanation."""
         if not active_options:
             return
         paragraphs = "\n".join(description).strip()
-        summary = next((line for line in description if line), "Documented option")
+        summary = declaration_summary(paragraphs, wrapped_table=docker_table)
         for option in active_options:
-            entries.append({**option, "summary": summary, "detail": paragraphs + f"\nSource: {source}",
+            detail = paragraphs
+            option_summary = summary
+            syntax = option.pop("_source_syntax", "")
+            if syntax:
+                detail = "Syntax: " + syntax + ("\n" + detail if detail else "")
+            negation = re.match(r"\s*--\[no-\]([\w-]+)(?:\s|$)", lines[active_line])
+            if negation and option["flag"] == "--no-" + negation[1]:
+                option_summary = "Use the negated form of --" + negation[1] + "."
+                detail = option_summary + ("\nHelp for " + negation[0].strip() + ":\n" + detail if detail else "")
+            if legacy_pip_manual and option["flag"] == "--log-file":
+                option_summary = "Set the log file path."
+                detail = ("In pip 24.0, --log-file is an alias for --log and appends verbose output. "
+                          "This manual describes pip 1.5.6:\n" + detail)
+            option_summary = option.pop("_selection_summary", option_summary)
+            entries.append({**option, "summary": option_summary, "detail": detail + f"\nSource: {source}",
                             "category": active_heading})
             option_lines.append(active_line + 1)
 
@@ -477,6 +620,15 @@ def parse_help_document(text: str, source: str) -> dict:
             context_lines.clear()
 
     lines = clean_output(text).splitlines()
+    docker_table = bool(lines and lines[0].startswith("Usage:  docker ") and "Options:" in lines)
+    rendered_manual = any(re.match(r"^\s*[\w.+-]+\(\d\w*\)", row) for row in lines[:6])
+    legacy_pip_manual = (rendered_manual and any(re.fullmatch(r"1\.5\.6\s+2014-06-03\s+PIP\(1\)", row.strip())
+                                                 for row in lines[-3:]))
+    pnpm_install = (len(lines) > 1 and lines[0].startswith("Version 9.15.9 (")
+                    and lines[1] == "Usage: pnpm install [options]")
+    media = media_help_document(lines, source) or media_manual_document(lines, source)
+    if media is not None:
+        return media
     # Manual declarations often place a lowercase metavariable on its own
     # line. A more deeply indented following paragraph distinguishes those
     # declarations from single-column descriptions such as '-h help'.
@@ -489,7 +641,28 @@ def parse_help_document(text: str, source: str) -> dict:
     for line_index, raw in enumerate(lines):
         line = raw.strip()
         indentation = len(raw) - len(raw.lstrip())
-        is_heading = bool(line) and indentation <= 3 and len(line) <= 72 and not line.startswith("-") and (
+        if bullet_continuation is not None and (not line or indentation < bullet_continuation):
+            finish()
+            active_options = []
+            description = []
+            bullet_continuation = None
+        # npm's unindented footer lists command names. Those names do not
+        # describe the last workspace option or establish new option aliases.
+        if (active_options and previous_blank and indentation == 0
+                and line.casefold().startswith("aliases: ")
+                and any(option.get("_source_syntax", "").startswith("[") for option in active_options)):
+            finish()
+            active_options = []
+            description = []
+            shared.append({"source": source, "line": line_index + 1, "section": "Command aliases",
+                           "text": line, "options": [], "association": "unassigned"})
+            continue
+        if pnpm_install and indentation == 0 and line.startswith("Visit https://"):
+            finish()
+            active_options = []
+            description = []
+            continue
+        is_heading = bool(line) and indentation <= 3 and (len(line) <= 72 or pnpm_install) and not line.startswith("-") and (
             line.endswith(":") or line.isupper() and any(char.isalpha() for char in line)
         )
         if context_mode and is_heading:
@@ -512,9 +685,19 @@ def parse_help_document(text: str, source: str) -> dict:
         definition = re.match(r"^(?:The\s+)?([A-Z][A-Z0-9_]+)(?:\s+argument)?\s+(?:is|are|may|can|must)\b", line)
         common_intro = bool(definition or re.match(r"^(?:Display values|The units|Units|Binary prefixes)\b", line))
         detached = (indentation < declaration_indent or indentation == declaration_indent == 0) and previous_blank
+        # Some programs put a shared qualification between adjacent option
+        # declarations, without a blank line (e.g. mv's last-flag-wins rule).
+        if (active_options and indentation < declaration_indent
+                and line.startswith("If you specify more than one of -")):
+            finish()
+            active_options = []
+            description = []
+            shared.append({"source": source, "line": line_index + 1, "section": source_heading, "text": line})
+            continue
+        footer = active_options and line.startswith(("By default,", "With no FILE,", "If no -"))
         if (not skip_section and line and (not is_heading or common_intro)
                 and (not active_options and common_intro
-                     or detached and (common_intro or shared_seen))):
+                     or detached and (common_intro or shared_seen or footer))):
             finish()
             active_options = []
             description = []
@@ -530,7 +713,12 @@ def parse_help_document(text: str, source: str) -> dict:
             description = []
             heading = line.rstrip(":").strip().title()
             source_heading = line.rstrip(":").strip()
-            if heading.lower() in {"interactive commands", "subcommands"}:
+            # pip(1) in Noble lists subcommands under COMMANDS, then puts
+            # their declarations in INSTALL OPTIONS and UNINSTALL OPTIONS.
+            # A subcommand's own help can have the same section title.
+            child_section = (heading.casefold().endswith(" options")
+                             and heading.casefold()[:-8] in command_names)
+            if heading.lower() in {"interactive commands", "subcommands"} or child_section:
                 context_mode = True
                 context_start = line_index
                 context_section = source_heading
@@ -540,17 +728,71 @@ def parse_help_document(text: str, source: str) -> dict:
             continue
         if skip_section:
             continue
-        groups = parse_option_groups(raw)
+        if heading == "Commands" and (item := re.fullmatch(r"([a-z][\w-]*)(?:\s{2,}.+)?", line)):
+            command_names.add(item[1].casefold())
+        # Some formatted manuals define switches as list items, e.g.
+        # "o -D, --save-dev: Package will appear in your devDependencies."
+        # Require a complete declaration and explicit definition delimiter.
+        bullet = rendered_manual and re.fullmatch(
+            r"(?:o|•)\s+(--?[\w-]+(?:,\s*--?[\w-]+)*):\s+(.+)", line)
+        if bullet:
+            bullet_continuation = indentation + line.index(bullet[1])
+            raw = " " * bullet_continuation + bullet[1] + "  " + bullet[2]
+            indentation = bullet_continuation
+            line = raw.strip()
+        if re.match(r"^(?:-[0-9]\s+(?:\.\.\.|…)\s+-[0-9]|--)(?:\s|$)", line):
+            # A preset range or end-of-options delimiter is command context.
+            # Keep its explanation separate from the preceding switch.
+            finish()
+            active_options = []
+            description = []
+            range_lines = [line]
+            following = line_index + 1
+            while following < len(lines):
+                continuation = lines[following]
+                if not continuation.strip() or len(continuation) - len(continuation.lstrip()) <= indentation:
+                    break
+                range_lines.append(continuation.strip())
+                following += 1
+            shared.append({"source": source, "line": line_index + 1, "section": source_heading,
+                           "text": "\n".join(range_lines), "options": [], "association": "unassigned"})
+            continue
+        # Fixed help can wrap a flag reference at the established description
+        # column. du, for example, wraps --summarize inside --max-depth's body.
+        if (active_options and description_indent is not None and indentation >= description_indent
+                and indentation > declaration_indent and line.startswith("-")):
+            description.append(line)
+            previous_blank = False
+            continue
+        groups = pnpm_install_choice(raw) if pnpm_install else []
+        if not groups:
+            groups = parse_option_groups(raw)
         parsed = ([option for options, _ in groups for option in options], groups[0][1]) if groups else None
         if parsed is None and heading.lower().endswith("options"):
             parsed = parse_bracketed_options(line)
+        # A clipped manual can begin a detached paragraph in mid-sentence,
+        # e.g. "--prune an error." in git-fetch. There is no aligned
+        # description or indented definition to establish a declaration.
+        # Keep this source fragment outside the preceding option's Details.
+        if (parsed and previous_blank and indentation == declaration_indent >= 4
+                and next_indents[line_index] <= indentation
+                and re.fullmatch(r"--?[\w-]+ [a-z][^\t]*[.!?]", line)
+                and not re.search(r"\s{2,}", line) and parsed[1]):
+            finish()
+            active_options = []
+            description = []
+            shared.append({"source": source, "line": line_index + 1, "section": source_heading,
+                           "text": line, "options": [], "association": "unassigned"})
+            previous_blank = False
+            continue
         if parsed:
             finish()
             active_options, summary = parsed
             shared_seen = False
-            aliases.extend([[option["flag"] for option in options] for options, _ in groups]
-                           if groups else [[option["flag"] for option in active_options]])
+            aliases.extend([option["flag"] for option in options] for options, _ in groups)
             declaration_indent = indentation
+            inline = raw.find(summary.splitlines()[0]) if summary else -1
+            description_indent = inline if inline > indentation and raw[inline - 2:inline].isspace() else None
             if (indentation >= 4 and next_indents[line_index] > indentation
                     and re.fullmatch(r"[a-z][a-z0-9_-]*", summary)
                     and not any(option["argument"] for option in active_options)):
@@ -562,10 +804,13 @@ def parse_help_document(text: str, source: str) -> dict:
             description = [summary] if summary else []
         elif active_options:
             description.append(line)
+            if line and indentation > declaration_indent:
+                description_indent = indentation
         previous_blank = not line
     finish()
     finish_shared()
     finish_context()
+    _retain_optional_equals_forms(entries)
     arguments = {}
     for entry in entries:
         for name in re.findall(r"\b[A-Z][A-Z0-9_]+\b", entry.get("argument", "")):
@@ -721,7 +966,20 @@ def associate_document(parsed: dict, text: str, source: str, command, request=No
 
 def parse_command_help(text: str, source: str, command, request=None, *, scope=None) -> dict:
     """Apply the same source-ownership boundary to runtime and passive census."""
-    return associate_document(parse_help_document(text, source), text, source, command, request, scope=scope)
+    parsed = None
+    if len(command) == 2 and command[0] == "git":
+        parsed = git_manual_document(clean_output(text).splitlines(), source, command)
+        if parsed is not None:
+            _retain_optional_equals_forms(parsed["options"])
+    elif command and command[0] == "docker" and text.startswith("DOCKER(1)"):
+        parsed = docker_manual_document(clean_output(text).splitlines(), source, command)
+    elif len(command) == 1 and text[:len(command[0]) + 3].lower() == command[0] + "(1)":
+        parsed = utility_manual_document(clean_output(text).splitlines(), command[0], source, declaration_summary)
+    if parsed is None:
+        parsed = parse_help_document(text, source)
+    if len(command) == 1 and command[0] in {"curl", "wget", "jq", "rsync", "rg", "sort", "tail"}:
+        complete_utility_declarations(parsed, command[0], clean_output(text), source)
+    return associate_document(parsed, text, source, command, request, scope=scope)
 
 
 def parse_bracketed_options(line: str) -> tuple[list[dict], str] | None:
@@ -738,18 +996,37 @@ def parse_bracketed_options(line: str) -> tuple[list[dict], str] | None:
     remainder = pattern.sub("", line)
     if not matches or not re.fullmatch(r"[\[\]. \t]*", remainder):
         return None
+    # Associate a declaration with its own outer group. A repeated spelling
+    # nested in that group documents repeatability without adding a second
+    # selectable row. Neighboring groups may describe unrelated effects.
     depth = 0
-    for char in remainder:
-        depth += (char == "[") - (char == "]")
-        if depth < 0:
-            return None
+    group_start = 0
+    group_spans = []
+    for index, char in enumerate(line):
+        if char == "[":
+            if not depth:
+                group_start = index
+            depth += 1
+        elif char == "]":
+            depth -= 1
+            if depth < 0:
+                return None
+            if not depth:
+                group_spans.append((group_start, index + 1))
     if depth:
         return None
-    options = []
+    options = {}
+    group_index = 0
     for match in matches:
+        while group_index < len(group_spans) and match.start() >= group_spans[group_index][1]:
+            group_index += 1
+        if group_index == len(group_spans) or match.start() < group_spans[group_index][0]:
+            return None
+        start, end = group_spans[group_index]
         for flag in match.group(1).split("|"):
-            options.append({"flag": flag, "argument": match.group(2) or "", "argument_optional": False})
-    return options, ""
+            options.setdefault((flag, match.group(2), start), {"flag": flag, "argument": match.group(2) or "",
+                               "argument_optional": False, "_source_syntax": line[start:end]})
+    return list(options.values()), ""
 
 
 def _semantic_references(value):
@@ -853,15 +1130,21 @@ def _merge_option_text(previous, entry, source, command, notes):
     """
     old_summary, new_summary = previous.get("summary", ""), entry.get("summary", "")
     old_detail, new_detail = previous.get("detail", ""), entry.get("detail", "")
+    synopsis_first = (old_summary == "Documented option" and old_detail.startswith("Syntax: ")
+                      and new_summary not in ("", "Documented option"))
     if old_summary in ("", "Documented option") and new_summary:
         previous["summary"] = new_summary
     elif new_summary and new_summary != old_summary and new_summary not in new_detail:
         new_detail = new_summary + ("\n" + new_detail if new_detail else "")
-    if old_summary and old_summary not in old_detail:
+    if old_summary and not synopsis_first and old_summary not in old_detail:
         old_detail = old_summary + ("\n" + old_detail if old_detail else "")
     if new_detail and new_detail != old_detail:
         attribution = "" if f"Source: {source}" in new_detail else f"\nSource: {source}"
-        previous["detail"] = old_detail + ("\n\n" if old_detail else "") + new_detail + attribution
+        explanation = new_detail + attribution
+        # A synopsis can precede its prose definition. Lead with the definition
+        # so a physically wrapped opening appears once, then retain the syntax.
+        parts = (explanation, old_detail) if synopsis_first else (old_detail, explanation)
+        previous["detail"] = "\n\n".join(part for part in parts if part)
     elif old_detail:
         previous["detail"] = old_detail
     terms = re.compile(r"\b(?:milliseconds?|seconds?|minutes?|hours?|bits?|bytes?|KiB|MiB|GiB|KB|MB|GB|ms|Mbps|Mbit|MHz|kHz)\b|[0-9]+(?:\.[0-9]+)?|%", re.IGNORECASE)
@@ -1042,8 +1325,7 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]], *, s
     unassigned_sources = []
     for source, text in sources:
         request = (source_requests or {}).get(source)
-        parsed = associate_document(parse_help_document(text, source), text, source, command, request,
-                                    scope=(source_scopes or {}).get(source))
+        parsed = parse_command_help(text, source, command, request, scope=(source_scopes or {}).get(source))
         categories = {}
         for original in parsed["options"]:
             entry = dict(original)
@@ -1079,6 +1361,7 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]], *, s
                         "Its source identity or section scope differs from the requested command; supply matching help or a curated profile.",
                         "help_source_scope")
     result = merge_profiles(profiles)
+    explain_syntax_only_options(result)
     for record in unassigned_sources:
         document = record["documentation"]
         result["documentation"]["sources"].append(record)
@@ -1361,7 +1644,8 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     except HelpError as error:
         explanation = " ".join(warnings)
         error_type = ProbeError if probe_failed else HelpError
-        raise error_type(f"{error} {explanation} Add a custom profile for this command.") from error
+        raise error_type(f"{error} {explanation} Add a custom profile for this command.",
+                         "probe_failed" if probe_failed else error.code) from error
     preserved_warnings = profile.get("discovery", {}).get("warnings", [])
     profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": [*warnings, *preserved_warnings],
                             "executable": executable, "scope": "subcommand" if subcommands else "top-level"}

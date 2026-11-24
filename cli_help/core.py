@@ -100,7 +100,7 @@ def validate_profile(profile: dict, source: Path):
                 raise HelpError(f"{source}: each option must be an object.")
             flag = option.get("flag")
             kind = option.get("kind", "flag")
-            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?"
+            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?|-[.@#:]"
             if kind == "flag" and option.get("argument_style") == "attached_only" and isinstance(flag, str) and flag.endswith(":"):
                 pattern = r"--?[A-Za-z0-9][A-Za-z0-9_-]*:"
             end_marker = switch_syntax == "7zip" and kind == "flag" and flag == "--" and not option.get("argument")
@@ -310,6 +310,9 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         raise HelpError("No matching help profile. Use --list-commands to list profiles.", "profile_missing")
     profile = max(matches, key=lambda item: len(item["command"]))
     switch_syntax = profile.get("switch_syntax")
+    discovered_media = profile["command"] == ["ffmpeg"] and "discovery" in profile and not switch_syntax
+    if discovered_media:
+        switch_syntax = "ffmpeg"
     command_end = tokens[argument_start - 1].end
     if point <= command_end:
         raise HelpError("Move the cursor after the command or subcommand and a space.", "cursor_before_arguments")
@@ -385,7 +388,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         key, equal, _ = word.partition("=")
         if invocation.module == "pip" and key == "--python":
             raise HelpError("pip --python changes the interpreter; this module form is unsupported.")
-        parsed = option_tokens(word, options, switch_syntax=switch_syntax)
+        parsed = option_tokens(word, options, switch_syntax=switch_syntax, partial_inventory=discovered_media)
         option = parsed[-1][1] if parsed else {}
         attached = parsed[-1][2] if parsed else False
         if any(name in boundary_options for name, _, _ in parsed):
