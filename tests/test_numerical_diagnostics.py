@@ -60,21 +60,33 @@ class NumericalDiagnosticTests(unittest.TestCase):
                 self.assertIn(token.casefold(), view.searchable)
                 self.assertEqual(profile, original)
 
-    def test_fixed_digits_classify_the_documented_action_or_count(self):
-        """Pinned fd/fzf/psql/yq and coreutils sections support these distinctions."""
-        actions = ["du|-0", "psql|-0", "psql|-1", "yq eval|-0"]
-        counts = ["fzf|-0", "fzf|-1"]
-        for classification, names in (("nonnumerical", actions), ("count", counts)):
-            for name in names:
-                identity = "option|" + name
-                with self.subTest(identity=identity):
-                    entry = self.entries[identity]
-                    group = self.group(identity)
-                    self.assertTrue(entry["numeric_fixed_spelling"])
-                    self.assertEqual(group["classification"], classification)
-                    self.assertEqual(group["evidence"], "source-derived")
-                    self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
-                    self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+    def test_external_fixed_digits_classify_the_documented_action(self):
+        """Retain source-scoped action evidence for the unbundled digit switches."""
+        for name in ("du|-0", "psql|-0", "psql|-1", "yq eval|-0"):
+            identity = "option|" + name
+            with self.subTest(identity=identity):
+                entry = self.entries[identity]
+                group = self.group(identity)
+                self.assertTrue(entry["numeric_fixed_spelling"])
+                self.assertEqual(group["classification"], "nonnumerical")
+                self.assertEqual(group["evidence"], "source-derived")
+                self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
+                self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+
+    def test_fzf_match_count_switches_retain_fixed_help_evidence(self):
+        """The digit is a match count built into the switch, with no separate operand."""
+        for flag in ("-0", "-1"):
+            identity = "option|fzf|" + flag
+            with self.subTest(flag=flag):
+                entry = self.entries[identity]
+                group = self.group(identity)
+                self.assertTrue(entry["numeric_fixed_spelling"])
+                self.assertEqual((group["classification"], group["evidence"]), ("count", "verified"))
+                self.assertTrue(any(o["role"] == "fixture_help" for o in entry["observations"]))
+                option, = (o["option"] for o in entry["observations"] if o["role"] == "bundled_option")
+                self.assertFalse(option.get("argument"))
+                variant, = option["value_semantics"]["variants"]
+                self.assertEqual(variant["forms"][0]["tokens"], [flag])
 
     def test_fd_fixed_digit_rows_preserve_bundled_and_external_evidence(self):
         """The two digit switches select a delimiter or a result count without a value."""

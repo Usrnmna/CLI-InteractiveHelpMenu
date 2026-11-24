@@ -43,10 +43,19 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                 if command in {"podman build", "podman exec", "podman logs"}:
                     self.assert_podman_leaf_coverage(command, text, profile)
                     continue
-                for category in profile["categories"]:
-                    for option in category["options"]:
-                        pattern = r"(?<![\w-])" + re.escape(option["flag"].rstrip("=")) + r"(?![\w-])"
-                        self.assertRegex(text, pattern)
+                flags = [option["flag"] for category in profile["categories"] for option in category["options"]]
+                if command == "fzf":
+                    # This installed help covered the original 17 curated spellings.
+                    # The release inventory checks the expanded menu, including manual-only flags.
+                    self.assertEqual(record["version"], "0.44.1 (debian)")
+                    original = (fixture_root.parent / "fzf.txt").read_text()
+                    curated = re.findall(r"^  (--?[\w-]+)", original, re.MULTILINE)
+                    self.assertEqual(len(curated), 17)
+                    self.assertLessEqual(set(curated), set(flags))
+                    flags = curated
+                for flag in flags:
+                    pattern = r"(?<![\w-])" + re.escape(flag.rstrip("=")) + r"(?![\w-])"
+                    self.assertRegex(text, pattern)
 
     def assert_podman_run_coverage(self, capture, profile):
         """Reconcile the visible Noble flags and the documented cross-release additions."""

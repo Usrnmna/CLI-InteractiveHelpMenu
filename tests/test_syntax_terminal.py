@@ -99,6 +99,33 @@ class SyntaxScreenTests(TerminalTestCase):
             shell, prefix, suffix = self.pending_finder(executable, 220, 120)
             self.check_rendered_rows(profile, shell, prefix, suffix)
 
+    def test_fzf_all_rows_and_complete_details(self):
+        """Compare every fzf selection with its complete formatted Details."""
+        profile = json.loads((ROOT / "profiles/fzf.json").read_text())
+        shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 220, 120, ("fzf",))
+        self.check_rendered_rows(profile, shell, prefix, suffix)
+
+    def test_fzf_output_fields_before_quoted_query_at_minimum_size(self):
+        """Find the field-numbering rule and insert a projection before an existing option."""
+        shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 60, 16, ("fzf",))
+        qualification = "Count fields in the original input."
+        for action in ("Escape", "Enter"):
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            shell.keys("/")
+            shell.text("output fields")
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: output fields"
+                                   and "> --accept-nth " in state.cells[4])
+            self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+            self.reach_detail(shell, found, qualification)
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertEqual(shell.read_buffer(), (prefix + "--accept-nth" + suffix, len(prefix + "--accept-nth ")))
+        shell.text("3 ")
+        self.assertEqual(shell.read_buffer(), ("fzf --accept-nth 3 --query 'some text'", len("fzf --accept-nth 3 ")))
+        self.assertFalse(shell.executed.exists())
+
     def check_rendered_rows(self, profile, shell, prefix, suffix):
         """Read each selected declaration, summary, and complete formatted Details from terminal cells."""
         title = " ".join(profile["command"])

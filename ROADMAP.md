@@ -1,7 +1,8 @@
 # Project roadmap
 
-**Next task — revisit `fzf` for full manual coverage.** Start with the
-[original fzf audit](docs/fzf-option-audit.md). The
+**Next task — revisit FFmpeg for full manual coverage.** Start with the
+[original FFmpeg audit](docs/ffmpeg-option-audit.md). The
+[fzf revisit](docs/fzf-manual-coverage.md),
 [fd and fdfind revisit](docs/fd-manual-coverage.md),
 [7-Zip extraction revisit](docs/7zip-extraction-manual-coverage.md),
 [Git commit and log revisit](docs/git-commit-log-manual-coverage.md) and
@@ -37,8 +38,8 @@ The last two columns track the revisit of the 60 previously audited profiles.
 Record each family’s option counts, detail gaps and test evidence in its linked
 audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
-124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106 and fd/fdfind added 158.
-The bundled total is **2,614 rows across 76 profiles**, compared with the historical 942.
+124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158 and fzf added 192.
+The bundled total is **2,806 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -51,7 +52,7 @@ The bundled total is **2,614 rows across 76 profiles**, compared with the histor
 | Git — commit and log | 2 | 19 | Complete locally. [First-pass audit](docs/git-commit-log-option-audit.md) | Complete · [98 commit and 234 log rows](docs/git-commit-log-manual-coverage.md#manual-inventory) | Complete on all three targets · [menu and suite results](docs/git-commit-log-manual-coverage.md#verification) |
 | `7z x`, `7zz x` | 2 | 8 | Complete locally. [Manual comparison and sandbox results](docs/7zip-extraction-option-audit.md) | Complete · [57 choices per executable](docs/7zip-extraction-manual-inventory.md#selectable-inventory) | Complete on all three targets · [menu and suite results](docs/7zip-extraction-manual-coverage.md#verification) |
 | `fd`, `fdfind` | 2 | 38 | Complete locally. [Manual comparison and sandbox results](docs/fd-option-audit.md) | Complete · [58 option families and 98 spellings per menu](docs/fd-manual-inventory.md#option-and-spelling-inventory) | Complete on all three targets · [menu and suite results](docs/fd-manual-coverage.md#compatibility-results) |
-| `fzf` | 1 | 17 | Complete locally. [Manual comparison and sandbox results](docs/fzf-option-audit.md) | Pending | Pending |
+| `fzf` | 1 | 17 | Complete locally. [Manual comparison and sandbox results](docs/fzf-option-audit.md) | Complete · [191 effects and 209 selectable spellings](docs/fzf-manual-inventory.md#option-effects-and-spellings) | Complete on all three targets · [menu and suite results](docs/fzf-manual-coverage.md#compatibility-results) |
 | `ffmpeg` | 1 | 16 | Complete locally. [Manual comparison and sandbox results](docs/ffmpeg-option-audit.md) | Pending | Pending |
 | `yq eval` | 1 | 15 | Complete locally. [Manual comparison and sandbox results](docs/yq-eval-option-audit.md) | Pending | Pending |
 | iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Pending | Pending |
