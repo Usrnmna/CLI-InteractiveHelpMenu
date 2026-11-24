@@ -289,7 +289,8 @@ class VariantAndSelectorTests(unittest.TestCase):
                         verify_command_variant("yarn", "/tools/yarn", Settings())
 
     def test_esptool_command_spelling_is_version_specific(self):
-        for version, route, accepted in (("esptool v5.1.0", "write-flash", True), ("esptool.py v4.8.1", "write_flash", True), ("esptool.py v4.8.1", "write-flash", False), ("esptool v5.1.0", "write_flash", False)):
+        for version, route, accepted in (("esptool v5.1.0", "write-flash", True), ("esptool.py v4.8.1", "write_flash", True), ("esptool.py v4.8.1", "write-flash", False), ("esptool v5.1.0", "write_flash", False),
+                                         ("esptool.py v3.3.0", "write_flash", False)):
             with self.subTest(version=version, route=route), patch("discovery.run_probe", return_value=version) as probe:
                 if accepted:
                     verify_command_variant("esptool", "/tools/esptool", Settings(), (route,))

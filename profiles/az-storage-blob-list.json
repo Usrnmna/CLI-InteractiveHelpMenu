@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Command options and applicable inherited flags.",
       "name": "Options",
       "options": [
         {
           "argument": "CONTAINER",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select a storage container",
+          "summary": "Select the container to list.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,13 +68,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Required. Supply the container name within the selected storage account."
         },
         {
           "argument": "CONTAINER",
           "argument_optional": false,
           "flag": "--container-name",
-          "summary": "Select a storage container",
+          "summary": "Select the container to list.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -134,13 +135,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Required. Supply the container name within the selected storage account."
         },
         {
           "argument": "ACCOUNT",
           "argument_optional": false,
           "flag": "--account-name",
-          "summary": "Set storage account",
+          "summary": "Identify the storage account.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -200,13 +202,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "AZURE_STORAGE_ACCOUNT can supply the name. With login mode the client uses the signed-in identity. In key mode, omitting a key or SAS can trigger a management request for an account key."
         },
         {
           "argument": "MODE",
           "argument_optional": false,
           "flag": "--auth-mode",
-          "summary": "Select authentication mode",
+          "summary": "Choose how to authorize blob access.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -280,13 +283,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use login for the signed-in identity with data permissions. In key mode the client can request an account key if credentials were omitted. AZURE_STORAGE_AUTH_MODE sets the mode."
         },
         {
           "argument": "PREFIX",
           "argument_optional": false,
           "flag": "--prefix",
-          "summary": "Restrict blob names by prefix",
+          "summary": "Request blobs whose names start with a prefix.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -346,14 +350,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The service matches a literal beginning of the blob name. For example, foo also matches foo/bar. Apply --query to filter the returned data locally."
         },
         {
           "argument": "NUM",
           "argument_optional": false,
-          "detail": "Decimal integer count or literal *. The service's per-page maxresults must be positive and returns at most 5000 per page; partition boundaries can return fewer with a continuation marker. The CLI converts ordinary input with int(), while service/SDK paging handles requests; * removes the overall result limit rather than assigning a byte size. Request all entries through continuation handling Reference scope: Azure CLI 2.71.0.",
+          "detail": "The default is 5000 entries. Each service page holds at most 5000 and may end earlier. Use a positive decimal count or quote '*' to follow continuation pages without an overall limit.",
           "flag": "--num-results",
-          "summary": "Limit returned blobs",
+          "summary": "Limit the number of blobs returned.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -434,7 +439,7 @@
           "argument": "MARKER",
           "argument_optional": false,
           "flag": "--marker",
-          "summary": "Continue from a listing marker",
+          "summary": "Resume an earlier blob listing.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -494,13 +499,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply the opaque continuation token from the preceding response. Use --show-next-marker to carry that token in the result."
         },
         {
           "argument": "VALUES",
           "argument_optional": false,
           "flag": "--include",
-          "summary": "Include additional blob details",
+          "summary": "Request extra datasets for each blob.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -558,15 +564,71 @@
                     }
                   ]
                 }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Blob listing dataset selectors",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Combine lowercase c, d, m, s, v or t without separators in a single argument. The validator forwards copy, deleted, metadata, snapshots, versions and tags. The i and l selectors do not add a dataset. The letter d requests deleted rather than deleted-with-versions."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request additional include datasets."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/Azure/azure-cli/blob/azure-cli-2.91.0/src/azure-cli/azure/cli/command_modules/storage/_validators.py",
+                      "locator": "validate_included_datasets_validator"
+                    }
+                  ]
+                }
               }
             ]
-          }
+          },
+          "detail": "Combine lowercase letters in one word, e.g. ms for metadata and snapshots. Azure CLI 2.91.0 forwards c (copy), d (deleted), m (metadata), s (snapshots), v (versions) and t (tags). Its help also lists immutability policy, legal hold and deleted-with-versions, but its validator does not forward those datasets."
         },
         {
           "argument": "DELIMITER",
           "argument_optional": false,
           "flag": "--delimiter",
-          "summary": "Group blob names by delimiter",
+          "summary": "Group blobs by a shared name prefix.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -626,13 +688,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a character or string such as /. The listing returns a BlobPrefix for names grouped at that delimiter."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -756,13 +819,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -886,14 +950,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "QUERY",
           "argument_optional": false,
-          "detail": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability. Reference scope: Azure CLI 2.71.0.",
+          "detail": "Use a JMESPath expression to select fields or filter returned JSON before output formatting. Array indices start at zero and negative indices count from the end. Quote shell metacharacters.",
           "flag": "--query",
-          "summary": "Filter output with JMESPath",
+          "summary": "Apply a client-side query to the result.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -974,7 +1039,7 @@
           "argument": "SUBSCRIPTION",
           "argument_optional": false,
           "flag": "--subscription",
-          "summary": "Select subscription",
+          "summary": "Choose the subscription for this request.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -1035,25 +1100,403 @@
                 "subject": "Azure subscriptions"
               }
             ]
-          }
+          },
+          "detail": "Supply its name or ID. Omit this option to use the active subscription."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--only-show-errors",
-          "summary": "Suppress warnings"
+          "summary": "Suppress warning messages.",
+          "detail": "Normal command results still follow the selected output format."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--debug",
-          "summary": "Include debug logging"
+          "summary": "Include debug diagnostics.",
+          "detail": "Debug is the most detailed Azure CLI logging level."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase logging detail"
+          "summary": "Include informational diagnostics.",
+          "detail": "Use --debug when the full debug log is needed."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--help",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-h",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--show-next-marker",
+          "summary": "Include the continuation token in the result.",
+          "detail": "Appends a nextMarker record. Without it, the CLI reports any remaining marker as a warning. Pass the token to --marker to resume."
+        },
+        {
+          "argument": "SECONDS",
+          "argument_optional": false,
+          "flag": "--timeout",
+          "summary": "Set a timeout per service call.",
+          "detail": "Supply the number of seconds allowed for each storage request. Pagination can take longer.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Set a timeout per service call",
+                "bare": {
+                  "state": "accepted",
+                  "form": "seconds"
+                },
+                "forms": [
+                  {
+                    "id": "seconds",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    },
+                    "grammar": "Supply an integer count of seconds. The storage request timeout applies separately to each service call."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Leave the storage request timeout unspecified."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+                      "locator": "--timeout"
+                    },
+                    {
+                      "source": "https://github.com/Azure/azure-cli/blob/azure-cli-2.91.0/src/azure-cli/azure/cli/command_modules/storage/_params.py",
+                      "locator": "storage timeout argument, type=int"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY",
+          "argument_optional": false,
+          "flag": "--account-key",
+          "summary": "Authenticate with a storage account key.",
+          "detail": "Supply the account name or blob endpoint as well. The environment variable AZURE_STORAGE_KEY can provide the key.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Authenticate with a storage account key",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Supply the account name or blob endpoint as well. The environment variable AZURE_STORAGE_KEY can provide the key."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the environment key or the selected authentication mode."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+                      "locator": "--account-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "URL",
+          "argument_optional": false,
+          "flag": "--blob-endpoint",
+          "summary": "Set the blob service endpoint.",
+          "detail": "Supply the service URL. With shared-key or SAS authentication, pair it with the corresponding key or token. AZURE_STORAGE_SERVICE_ENDPOINT can supply the URL.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the blob service endpoint",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "Supply the service URL. With shared-key or SAS authentication, pair it with the corresponding key or token. AZURE_STORAGE_SERVICE_ENDPOINT can supply the URL."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured or derived storage endpoint."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+                      "locator": "--blob-endpoint"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "STRING",
+          "argument_optional": false,
+          "flag": "--connection-string",
+          "summary": "Connect with a storage account connection string.",
+          "detail": "Read from AZURE_STORAGE_CONNECTION_STRING when supplied there. Quote a literal connection string to keep semicolons within one shell argument.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Connect with a storage account connection string",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STRING",
+                    "grammar": "Read from AZURE_STORAGE_CONNECTION_STRING when supplied there. Quote a literal connection string to keep semicolons within one shell argument."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use environment or other storage connection arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+                      "locator": "--connection-string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TOKEN",
+          "argument_optional": false,
+          "flag": "--sas-token",
+          "summary": "Authorize access with a shared access signature.",
+          "detail": "Supply the storage account name or service endpoint as well. AZURE_STORAGE_SAS_TOKEN can provide the token. Quote a literal token to preserve its query parameters.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Authorize access with a shared access signature",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TOKEN",
+                    "grammar": "Supply the storage account name or service endpoint as well. AZURE_STORAGE_SAS_TOKEN can provide the token. Quote a literal token to preserve its query parameters."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the environment token or another authentication method."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list",
+                      "locator": "--sas-token"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -1066,8 +1509,8 @@
   ],
   "description": "Options for az storage blob list.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "kind": "Published command reference and versioned client help for Azure CLI 2.91.0",
+    "reviewed": "2026-11-24",
     "source": "https://learn.microsoft.com/en-us/cli/azure/storage/blob#az-storage-blob-list"
   },
   "stop_at_positional": false

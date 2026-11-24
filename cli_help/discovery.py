@@ -1251,8 +1251,8 @@ def verify_command_variant(name: str, executable: str, settings: Settings, subco
             raise HelpError("The esptool version could not be identified from fixed root help.")
         major = int(match.group(1))
         if subcommands and ((subcommands[0] == "write-flash" and major < 5) or
-                            (subcommands[0] == "write_flash" and major >= 5)):
-            raise HelpError("esptool write-flash requires v5 or newer; write_flash is the explicitly separate legacy route.")
+                            (subcommands[0] == "write_flash" and major != 4)):
+            raise HelpError("esptool write-flash requires v5 or newer; write_flash requires v4.")
         # Keep identity compact rather than caching the complete root help text.
         output = match.group(0)
     return clean_output(output).strip()

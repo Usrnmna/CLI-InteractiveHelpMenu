@@ -75,8 +75,6 @@ class RuntimeFollowupTests(unittest.TestCase):
                 options = options_for(profile_for(command))
                 historical = set((required + " " + switches + " " + optional).split())
                 self.assertLessEqual(historical, options.keys())
-                if command == "arduino-cli compile":
-                    self.assertEqual(historical, options.keys())
                 for flag in required.split():
                     self.assertTrue(options[flag]["argument"], flag)
                     self.assertFalse(options[flag]["argument_optional"], flag)

@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Options for compiling a sketch and optionally uploading its binary.",
       "name": "Options",
       "options": [
         {
           "argument": "FQBN",
           "argument_optional": false,
           "flag": "-b",
-          "summary": "Select the board identifier",
+          "summary": "Select the target board.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,13 +68,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass the fully qualified board name as vendor:architecture:board, for example arduino:avr:uno. Board menu selections can follow the board name or be passed with --board-options. Spellings: -b and --fqbn.",
+          "attached": true
         },
         {
           "argument": "FQBN",
           "argument_optional": false,
           "flag": "--fqbn",
-          "summary": "Select the board identifier",
+          "summary": "Select the target board.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -134,14 +136,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass the fully qualified board name as vendor:architecture:board, for example arduino:avr:uno. Board menu selections can follow the board name or be passed with --board-options. Spellings: -b and --fqbn."
         },
         {
           "argument": "OPTIONS",
           "argument_optional": false,
-          "detail": "Comma-separated menu-option=value assignments interpreted by the selected board package; option values may name speeds, sizes or other choices with board-specific meanings. They do not share one universal numerical unit. Reference scope: Arduino CLI 1.2.2.",
+          "detail": "Supply board-defined menu=value pairs separated by commas, or repeat the option. The FQBN identifies which choices are available.",
           "flag": "--board-options",
-          "summary": "Set board options",
+          "summary": "Set choices from the board’s option menus.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -214,7 +217,7 @@
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--build-path",
-          "summary": "Set intermediate build directory",
+          "summary": "Choose the directory for intermediate files.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -235,7 +238,7 @@
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Create a directory under the operating system's default temporary path."
+                  "meaning": "Use a sketch-specific directory under the configured build cache."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
@@ -269,18 +272,23 @@
                     {
                       "source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.2.2/internal/cli/compile/compile.go",
                       "locator": "--build-path"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.2.2/commands/service_compile.go",
+                      "locator": "getDefaultSketchBuildPath and the omitted BuildPath branch"
                     }
                   ]
                 }
               }
             ]
-          }
+          },
+          "detail": "Object files and other build files are written here. When omitted, the build service uses sketches/<sketch hash> under the configured build cache. --output-dir selects the export destination. Quote paths with spaces to pass one directory."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--output-dir",
-          "summary": "Set binary output directory",
+          "summary": "Choose a destination for build artifacts.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -340,14 +348,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supplying a directory enables export without --export-binaries. --build-path controls the working build folder. Quote a path containing spaces as one argument. Database-only builds do not export binaries."
         },
         {
           "argument": "PROPERTY",
           "argument_optional": false,
-          "detail": "One property=value assignment per occurrence; values override the selected platform's recipe/property definitions. Embedded frequencies, sizes and compiler flags have property-specific meanings; this option does not convert them. Reference scope: Arduino CLI 1.2.2.",
+          "detail": "Use one property=value assignment per occurrence. Quote the whole assignment when it contains spaces. Compiler flags and units inside the value are interpreted by the platform recipe.",
           "flag": "--build-property",
-          "summary": "Override a build property",
+          "summary": "Override one build property.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -420,7 +429,7 @@
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--libraries",
-          "summary": "Add a library search directory",
+          "summary": "Add a directory containing multiple libraries.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -480,13 +489,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass comma-separated directories or repeat the option. Use --library for an individual library root. An explicitly selected sketch profile cannot be combined with these overrides."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--warnings",
-          "summary": "Set compiler warning level",
+          "summary": "Set the compiler warning level.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -580,26 +590,29 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use none (the default), default, more or all. The platform’s compiler recipes determine which warnings are emitted."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--clean",
-          "summary": "Discard previous build files"
+          "summary": "Start with a clean build folder.",
+          "detail": "Discards cached build results for this compilation and rebuilds the sketch."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--export-binaries",
-          "summary": "Copy binaries into the sketch directory"
+          "summary": "Copy the built binaries into the sketch folder.",
+          "detail": "Without --output-dir, exported files go under build/<board identifier> in the sketch folder, with dots replacing the FQBN colons. The sketch.always_export_binaries setting supplies the default. Spellings: -e and --export-binaries."
         },
         {
           "argument": "JOBS",
           "argument_optional": false,
-          "detail": "Signed 32-bit CLI integer, without suffix. Zero selects runtime.NumCPU(). Positive values start that many workers. Negative inputs are admitted by the signed parser but start no workers and can stall compilation; they are not a usable worker limit. Reference scope: Arduino CLI 1.2.2.",
+          "detail": "Signed 32-bit CLI integer, without suffix. Zero selects runtime.NumCPU(). Positive values start that many workers. Negative inputs are admitted by the signed parser but start no workers and can stall compilation; they are not a usable worker limit. Reference scope: Arduino CLI 1.2.2. Spellings: -j and --jobs.",
           "flag": "-j",
-          "summary": "Set parallel compile count; 0 uses CPU cores",
+          "summary": "Limit parallel compiles (0 uses CPU cores).",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -607,14 +620,15 @@
                 "ref": "compile-jobs"
               }
             ]
-          }
+          },
+          "attached": true
         },
         {
           "argument": "JOBS",
           "argument_optional": false,
-          "detail": "Signed 32-bit CLI integer, without suffix. Zero selects runtime.NumCPU(). Positive values start that many workers. Negative inputs are admitted by the signed parser but start no workers and can stall compilation; they are not a usable worker limit. Reference scope: Arduino CLI 1.2.2.",
+          "detail": "Signed 32-bit CLI integer, without suffix. Zero selects runtime.NumCPU(). Positive values start that many workers. Negative inputs are admitted by the signed parser but start no workers and can stall compilation; they are not a usable worker limit. Reference scope: Arduino CLI 1.2.2. Spellings: -j and --jobs.",
           "flag": "--jobs",
-          "summary": "Set parallel compile count; 0 uses CPU cores",
+          "summary": "Limit parallel compiles (0 uses CPU cores).",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -628,19 +642,1299 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Increase output detail"
+          "summary": "Show detailed compiler output.",
+          "detail": "Includes commands from the build process. Cannot be combined with --quiet. Use the separate inherited --log option for CLI logs. Spellings: -v and --verbose."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "Show detailed compiler output.",
+          "detail": "Includes commands from the build process. Cannot be combined with --quiet. Use the separate inherited --log option for CLI logs. Spellings: -v and --verbose."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--only-compilation-database",
-          "summary": "Generate compile_commands.json"
+          "summary": "Generate compile_commands.json for the sketch.",
+          "detail": "Skips compilation and other build commands. Platform pre* hooks still run."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-e",
+          "summary": "Copy the built binaries into the sketch folder.",
+          "detail": "Without --output-dir, exported files go under build/<board identifier> in the sketch folder, with dots replacing the FQBN colons. The sketch.always_export_binaries setting supplies the default. Spellings: -e and --export-binaries."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--dump-profile",
+          "summary": "Print a sketch profile from the build.",
+          "detail": "On success the generated configuration describes dependencies and the target used by this build. Redirect the output if a file is needed."
+        },
+        {
+          "argument": "NAME",
+          "argument_optional": false,
+          "flag": "--encrypt-key",
+          "summary": "Name the key for binary encryption.",
+          "detail": "Requires platform support. Supply --keys-keychain, --sign-key and --encrypt-key together.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the key for binary encryption",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Key name in the selected keychain directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No custom encryption key is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--encrypt-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--keys-keychain",
+          "summary": "Select the directory containing the build keys.",
+          "detail": "For platforms supporting signed and encrypted binaries, specify this directory together with --sign-key and --encrypt-key. Quote the directory if it contains spaces.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select the directory containing the build keys",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "DIRECTORY",
+                    "grammar": "One directory containing the named custom keys."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No custom key directory is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--keys-keychain"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "argument_optional": false,
+          "flag": "--sign-key",
+          "summary": "Name the key for binary signing.",
+          "detail": "Requires platform support. Supply --keys-keychain, --sign-key and --encrypt-key together.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the key for binary signing",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Key name in the selected keychain directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No custom signing key is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--sign-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-h",
+          "summary": "Print compile help.",
+          "detail": "Lists compile flags and inherited Arduino CLI options. Spellings: -h and --help."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--help",
+          "summary": "Print compile help.",
+          "detail": "Lists compile flags and inherited Arduino CLI options. Spellings: -h and --help."
+        },
+        {
+          "argument": "DURATION",
+          "argument_optional": false,
+          "flag": "--discovery-timeout",
+          "summary": "Limit the wait for port discovery.",
+          "detail": "The default is 1s. Include a duration suffix, as in 30s or 1m30s. This limit applies to finding the port, independently of compilation or upload time.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "bare": {
+                  "reason": "Nonzero ordinary bare numbers require a unit; signed literal zero is the exception",
+                  "state": "not_accepted"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "ns",
+                    "notation": "suffix",
+                    "syntax": "Nns",
+                    "tokens": [
+                      "ns"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000000001"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "us",
+                    "notation": "suffix",
+                    "syntax": "Nus",
+                    "tokens": [
+                      "us",
+                      "µs",
+                      "μs"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000001"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "ms",
+                    "notation": "suffix",
+                    "syntax": "Nms",
+                    "tokens": [
+                      "ms"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "s",
+                    "notation": "suffix",
+                    "syntax": "Ns",
+                    "tokens": [
+                      "s"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "60"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "grammar": "Go duration component with the indicated case-sensitive unit.",
+                    "id": "h",
+                    "notation": "suffix",
+                    "syntax": "Nh",
+                    "tokens": [
+                      "h"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "3600"
+                    }
+                  },
+                  {
+                    "grammar": "Signed sequence of fractional or integer components with unit suffixes, for example 1m30s. A nonpositive interval leaves no wait for context-based discovery.",
+                    "id": "compound",
+                    "notation": "expression",
+                    "syntax": "[+|-]NUMBERunit[NUMBERunit...]",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "case": "sensitive",
+                    "id": "zero",
+                    "meaning": "No waiting interval for port discovery.",
+                    "notation": "literal",
+                    "sentinel": true,
+                    "syntax": "0 | +0 | -0",
+                    "tokens": [
+                      "0",
+                      "+0",
+                      "-0"
+                    ]
+                  }
+                ],
+                "kind": "duration",
+                "meaning": "Maximum port discovery wait",
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.6.0/internal/cli/arguments/discovery_timeout.go",
+                      "locator": "DiscoveryTimeout.AddToCommand duration and one-second default"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/arduino/arduino-cli/v1.6.0/internal/cli/arguments/port.go",
+                      "locator": "context.WithTimeout in port discovery"
+                    },
+                    {
+                      "source": "https://pkg.go.dev/time#ParseDuration",
+                      "locator": "permitted duration units and signed components"
+                    }
+                  ]
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Wait up to one second (1s)."
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--library",
+          "summary": "Add an individual library root.",
+          "detail": "Pass the library’s own directory. Repeat for multiple libraries or supply a comma-separated list. --libraries takes a collection directory. Cannot be combined with an explicit --profile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add an individual library root",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "DIRECTORY",
+                    "grammar": "One library root per list item or occurrence."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured library search locations."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--library"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--optimize-for-debug",
+          "summary": "Request a build optimized for debugging.",
+          "detail": "The selected platform’s debug recipes determine the compiler flags and resulting binary."
+        },
+        {
+          "argument": "PORT",
+          "argument_optional": false,
+          "flag": "-p",
+          "summary": "Select the board’s port address.",
+          "detail": "For example, /dev/ttyACM2 or COM3 identifies a port. --protocol can disambiguate its transport. Supplying a port alone does not request an upload. Spellings: -p and --port.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "port"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "PORT",
+          "argument_optional": false,
+          "flag": "--port",
+          "summary": "Select the board’s port address.",
+          "detail": "For example, /dev/ttyACM2 or COM3 identifies a port. --protocol can disambiguate its transport. Supplying a port alone does not request an upload. Spellings: -p and --port.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "port"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--preprocess",
+          "summary": "Print the preprocessed sketch source.",
+          "detail": "Writes the preprocessor output to standard output instead of producing a compiled binary."
+        },
+        {
+          "argument": "PROFILE",
+          "argument_optional": false,
+          "flag": "-m",
+          "summary": "Build using a named sketch profile.",
+          "detail": "Choose a profile in sketch.yaml for the target and dependencies. If omitted, the sketch can supply a default profile. An explicit profile excludes --library and --libraries. Spellings: -m and --profile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "profile"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "PROFILE",
+          "argument_optional": false,
+          "flag": "--profile",
+          "summary": "Build using a named sketch profile.",
+          "detail": "Choose a profile in sketch.yaml for the target and dependencies. If omitted, the sketch can supply a default profile. An explicit profile excludes --library and --libraries. Spellings: -m and --profile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "profile"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PROGRAMMER",
+          "argument_optional": false,
+          "flag": "-P",
+          "summary": "Select the programmer for the upload step.",
+          "detail": "Use a programmer identifier supported by the board platform, for example atmel_ice. Request an upload with --upload. Spellings: -P and --programmer.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "programmer"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "PROGRAMMER",
+          "argument_optional": false,
+          "flag": "--programmer",
+          "summary": "Select the programmer for the upload step.",
+          "detail": "Use a programmer identifier supported by the board platform, for example atmel_ice. Request an upload with --upload. Spellings: -P and --programmer.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "programmer"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PROTOCOL",
+          "argument_optional": false,
+          "flag": "-l",
+          "summary": "Select the upload port’s transport protocol.",
+          "detail": "For example, serial identifies a serial discovery port. A port address belongs in --port. Upload requires --upload. Spellings: -l and --protocol.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "protocol"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "PROTOCOL",
+          "argument_optional": false,
+          "flag": "--protocol",
+          "summary": "Select the upload port’s transport protocol.",
+          "detail": "For example, serial identifies a serial discovery port. A port address belongs in --port. Upload requires --upload. Spellings: -l and --protocol.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "protocol"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-q",
+          "summary": "Suppress most compiler output.",
+          "detail": "Cannot be combined with --verbose. Errors can still be reported. Spellings: -q and --quiet."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--quiet",
+          "summary": "Suppress most compiler output.",
+          "detail": "Cannot be combined with --verbose. Errors can still be reported. Spellings: -q and --quiet."
+        },
+        {
+          "argument": "MODE",
+          "argument_optional": true,
+          "flag": "--show-properties",
+          "summary": "Print the build properties.",
+          "detail": "Bare --show-properties expands property references. Use --show-properties=unexpanded to preserve their definitions. The default when absent is disabled.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Print the build properties",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "disabled",
+                    "tokens": [
+                      "disabled"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable property display."
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "expanded",
+                    "tokens": [
+                      "expanded"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Resolve property references."
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "unexpanded",
+                    "tokens": [
+                      "unexpanded"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Display the original property values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Property display is disabled."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Expand references in the property values."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--show-properties"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "argument_style": "equals"
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-u",
+          "summary": "Upload the binary after a successful compile.",
+          "detail": "Ordinary compilation ends after the build. Use --port and --programmer as needed for the board. --verify requests verification of the uploaded binary. Spellings: -u and --upload."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--upload",
+          "summary": "Upload the binary after a successful compile.",
+          "detail": "Ordinary compilation ends after the build. Use --port and --programmer as needed for the board. --verify requests verification of the uploaded binary. Spellings: -u and --upload."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-t",
+          "summary": "Verify the binary after uploading it.",
+          "detail": "Takes effect during the upload requested by --upload. This flag alone does not start an upload. Spellings: -t and --verify."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--verify",
+          "summary": "Verify the binary after uploading it.",
+          "detail": "Takes effect during the upload requested by --upload. This flag alone does not start an upload. Spellings: -t and --verify."
+        }
+      ]
+    },
+    {
+      "name": "Inherited options",
+      "description": "Arduino CLI settings accepted with compile.",
+      "options": [
+        {
+          "argument": "URLS",
+          "argument_optional": false,
+          "flag": "--additional-urls",
+          "summary": "Add Boards Manager package indexes.",
+          "detail": "Pass a comma-separated list of package index URLs or repeat the flag. These URLs affect board package resolution.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add Boards Manager package indexes",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "URLS",
+                    "grammar": "URLs separated by commas, or repeated occurrences."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured package indexes."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--additional-urls"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DIRECTORY",
+          "argument_optional": false,
+          "flag": "--config-dir",
+          "summary": "Set the data directory used to locate configuration.",
+          "detail": "An explicit --config-file selects the configuration file directly. Quote paths containing spaces.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the data directory used to locate configuration",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "DIRECTORY",
+                    "grammar": "One data directory path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal Arduino CLI data directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--config-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--config-file",
+          "summary": "Load a specific Arduino CLI configuration file.",
+          "detail": "Pass one configuration file path. --config-dir selects a directory instead.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load a specific Arduino CLI configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "One CLI configuration file path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default configuration search."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--config-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--json",
+          "summary": "Format command results as JSON.",
+          "detail": "--log-format controls diagnostic logs separately."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--log",
+          "summary": "Write CLI diagnostic logs to standard output.",
+          "detail": "--log-level filters severity and --log-format controls formatting. Compile verbosity uses --verbose."
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--log-file",
+          "summary": "Append CLI logs to a file.",
+          "detail": "The CLI creates the log file if necessary. --log can also enable logging to standard output.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Append CLI logs to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "input",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "One output file path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No additional file destination is selected."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--log-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "argument_optional": false,
+          "flag": "--log-format",
+          "summary": "Select the diagnostic log format.",
+          "detail": "Use text (the default) or json. --json selects the format of command results.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select the diagnostic log format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "text",
+                    "tokens": [
+                      "text"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Text log messages."
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "JSON log messages."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use text unless configuration changes the default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--log-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "flag": "--log-level",
+          "summary": "Set the minimum logged severity.",
+          "detail": "From least to most severe: trace, debug, info, warn, error, fatal, panic. The default is info.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Set the minimum logged severity",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses the documented text or selector grammar."
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "trace",
+                    "tokens": [
+                      "trace"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log trace messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "debug",
+                    "tokens": [
+                      "debug"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log debug messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "info",
+                    "tokens": [
+                      "info"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log info messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "warn",
+                    "tokens": [
+                      "warn"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log warn messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "error",
+                    "tokens": [
+                      "error"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log error messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-6",
+                    "notation": "literal",
+                    "syntax": "fatal",
+                    "tokens": [
+                      "fatal"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log fatal messages and more severe messages."
+                  },
+                  {
+                    "id": "choice-7",
+                    "notation": "literal",
+                    "syntax": "panic",
+                    "tokens": [
+                      "panic"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Log panic messages and more severe messages."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use info unless configuration changes the default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Arduino CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.2",
+                      "1.5.1",
+                      "1.6.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The operand grammar is independent of the operating system."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is asserted by this operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+                      "locator": "--log-level"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-color",
+          "summary": "Disable colored terminal output.",
+          "detail": "NO_COLOR also suppresses color."
         }
       ]
     }
@@ -651,9 +1945,9 @@
   ],
   "description": "Options for arduino-cli compile.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://arduino.github.io/arduino-cli/1.5/commands/arduino-cli_compile/"
+    "kind": "Versioned compile manual and fixed-help comparison",
+    "reviewed": "2026-11-24",
+    "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/"
   },
   "stop_at_positional": false,
   "value_definitions": {
@@ -726,6 +2020,234 @@
         ]
       },
       "subject": "Concurrent Arduino compilation workers"
+    },
+    "port": {
+      "kind": "nonnumerical",
+      "meaning": "Select the board’s port address",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses the documented text or selector grammar."
+      },
+      "forms": [
+        {
+          "id": "input",
+          "notation": "expression",
+          "syntax": "PORT",
+          "grammar": "One port address recognized by the selected discovery or transport."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Port selection can come from the sketch or its profile."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply the operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Arduino CLI"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.2.2",
+            "1.5.1",
+            "1.6.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The operand grammar is independent of the operating system."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is asserted by this operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+            "locator": "--port"
+          }
+        ]
+      }
+    },
+    "profile": {
+      "kind": "nonnumerical",
+      "meaning": "Build using a named sketch profile",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses the documented text or selector grammar."
+      },
+      "forms": [
+        {
+          "id": "input",
+          "notation": "expression",
+          "syntax": "PROFILE",
+          "grammar": "Profile name defined by the sketch project."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the sketch’s default profile when present."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply the operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Arduino CLI"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.2.2",
+            "1.5.1",
+            "1.6.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The operand grammar is independent of the operating system."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is asserted by this operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+            "locator": "--profile"
+          }
+        ]
+      }
+    },
+    "programmer": {
+      "kind": "nonnumerical",
+      "meaning": "Select the programmer for the upload step",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses the documented text or selector grammar."
+      },
+      "forms": [
+        {
+          "id": "input",
+          "notation": "expression",
+          "syntax": "PROGRAMMER",
+          "grammar": "One platform-defined programmer identifier."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use any selected sketch profile or sketch programmer, then platform defaults."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply the operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Arduino CLI"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.2.2",
+            "1.5.1",
+            "1.6.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The operand grammar is independent of the operating system."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is asserted by this operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+            "locator": "--programmer"
+          }
+        ]
+      }
+    },
+    "protocol": {
+      "kind": "nonnumerical",
+      "meaning": "Select the upload port’s transport protocol",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses the documented text or selector grammar."
+      },
+      "forms": [
+        {
+          "id": "input",
+          "notation": "expression",
+          "syntax": "PROTOCOL",
+          "grammar": "A transport identifier understood by the board discovery, for example serial."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Port discovery or sketch configuration supplies the protocol."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply the operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Arduino CLI"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.2.2",
+            "1.5.1",
+            "1.6.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The operand grammar is independent of the operating system."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is asserted by this operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://arduino.github.io/arduino-cli/1.6/commands/arduino-cli_compile/",
+            "locator": "--protocol"
+          }
+        ]
+      }
     }
   }
 }

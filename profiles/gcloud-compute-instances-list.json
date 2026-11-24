@@ -1,15 +1,15 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Command options and applicable inherited flags.",
       "name": "Options",
       "options": [
         {
           "argument": "EXPRESSION",
           "argument_optional": false,
-          "detail": "Boolean property-expression grammar evaluated by the SDK resource filter. Comparisons, matching and value coercion follow that grammar and the selected resource field; property-specific numerical values have their API meanings, without one universal unit. Reference scope: Google Cloud CLI 515.0.0.",
+          "detail": "Quote a Boolean expression over resource fields. Depending on the API and expression, the service, client or both apply the filter. The final result limit follows filtering.",
           "flag": "--filter",
-          "summary": "Filter resources",
+          "summary": "Keep instances matching a Boolean expression.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -81,9 +81,9 @@
         {
           "argument": "LIMIT",
           "argument_optional": false,
-          "detail": "Positive integer up to the SDK Python interpreter's sys.maxsize, or the case-sensitive literal unlimited. Zero and negative counts are rejected by BoundedInt. Per-service page constraints can reject or reduce a request; page size is not a byte size or a guarantee of returned entries. No SDK count bound; service pagination/limits still apply Reference scope: Google Cloud CLI 515.0.0.",
+          "detail": "Supply a positive count or unlimited. The default is unlimited. Filtering precedes this limit.",
           "flag": "--limit",
-          "summary": "Limit listed resources; positive count or unlimited",
+          "summary": "Limit the final number of results.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -168,7 +168,7 @@
           "argument": "FIELD",
           "argument_optional": false,
           "flag": "--sort-by",
-          "summary": "Sort resources",
+          "summary": "Sort instances by resource fields.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -228,13 +228,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass comma-separated field keys in priority order. Use ~ for descending order. Sorting follows flattening and precedes filtering and the final limit."
         },
         {
           "argument": "ZONES",
           "argument_optional": false,
           "flag": "--zones",
-          "summary": "Select zones",
+          "summary": "Query instances in selected zones.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -295,20 +296,22 @@
                 "subject": "Compute Engine zones"
               }
             ]
-          }
+          },
+          "detail": "Supply zone names separated by commas in one argument. Without this restriction the listing spans zones in the project."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--uri",
-          "summary": "Display resource URIs"
+          "summary": "Return only instance URIs.",
+          "detail": "Any --format projection then operates on the URI list. To display a URI alongside other instance fields, use the uri() transform."
         },
         {
           "argument": "SIZE",
           "argument_optional": false,
-          "detail": "Positive integer up to the SDK Python interpreter's sys.maxsize, or the case-sensitive literal unlimited. Zero and negative counts are rejected by BoundedInt. Per-service page constraints can reject or reduce a request; page size is not a byte size or a guarantee of returned entries. No SDK count bound; service pagination/limits still apply Reference scope: Google Cloud CLI 515.0.0.",
+          "detail": "Use a positive count or unlimited. The service controls its default page size and may return fewer. Use --limit for the total.",
           "flag": "--page-size",
-          "summary": "Set API page count; positive count or unlimited",
+          "summary": "Request a maximum number of resources per API page.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -393,7 +396,7 @@
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--format",
-          "summary": "Set output format",
+          "summary": "Choose an output format and field projection.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -460,13 +463,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a format name such as json or table, optionally with attributes and projected fields. A command-line format overrides the configured output format."
         },
         {
           "argument": "PROJECT",
           "argument_optional": false,
           "flag": "--project",
-          "summary": "Select project",
+          "summary": "Choose the resource project for this invocation.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -531,13 +535,14 @@
                 "subject": "Google Cloud project identifier"
               }
             ]
-          }
+          },
+          "detail": "Supply a project ID. Omission uses core/project. Use --billing-project to charge quota and billing to a different project."
         },
         {
           "argument": "NAME",
           "argument_optional": false,
           "flag": "--configuration",
-          "summary": "Select a named configuration",
+          "summary": "Use a named configuration for this invocation.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -602,13 +607,14 @@
                 "subject": "Named gcloud configuration"
               }
             ]
-          }
+          },
+          "detail": "The stored configuration supplies properties such as account and project. CLOUDSDK_ACTIVE_CONFIG_NAME can select the configuration for a shell session."
         },
         {
           "argument": "ACCOUNT",
           "argument_optional": false,
           "flag": "--account",
-          "summary": "Select account",
+          "summary": "Choose the account used for authorization.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -673,19 +679,21 @@
                 "subject": "Google Cloud credential account"
               }
             ]
-          }
+          },
+          "detail": "Supply an account with stored credentials. Omission uses the configured core/account."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--quiet",
-          "summary": "Disable interactive prompting"
+          "summary": "Suppress interactive prompts.",
+          "detail": "The CLI accepts prompt defaults where available and fails if required input has no default."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
           "flag": "--verbosity",
-          "summary": "Set logging detail",
+          "summary": "Choose the diagnostic logging level.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -804,6 +812,635 @@
                 "ordering": "debug, info, warning, error, critical, none progressively suppress lower-severity diagnostics"
               }
             ]
+          },
+          "detail": "Use debug, info, warning, error, critical or none. The built-in default is warning."
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--access-token-file",
+          "summary": "Read a Google access token from a file.",
+          "detail": "Supply a path to a file containing only the token. It replaces the active account credentials for this invocation.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read a Google access token from a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply a path to a file containing only the token. It replaces the active account credentials for this invocation."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured credentials unless another authentication option overrides them."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--access-token-file"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "root inherited flag or fixed gcloud compute instances list --help: --access-token-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "PROJECT",
+          "argument_optional": false,
+          "flag": "--billing-project",
+          "summary": "Choose the project charged for quota and billing.",
+          "detail": "Overrides the billing/quota_project setting for this invocation. The resource project can still be selected separately with --project.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Choose the project charged for quota and billing",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PROJECT",
+                    "grammar": "Overrides the billing/quota_project setting for this invocation. The resource project can still be selected separately with --project."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured quota project or normal resource-project billing."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--billing-project"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "root inherited flag or fixed gcloud compute instances list --help: --billing-project"
+                    }
+                  ]
+                },
+                "subject": "Quota and billing project"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "--flags-file",
+          "summary": "Read command flags from a file.",
+          "detail": "Supply a YAML or JSON mapping of flag names to values. Each occurrence expands to its flags, allowing complex values without shell quoting.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read command flags from a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Supply a YAML or JSON mapping of flag names to values. Each occurrence expands to its flags, allowing complex values without shell quoting."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not load flags from a file."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--flags-file"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "root inherited flag or fixed gcloud compute instances list --help: --flags-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEYS",
+          "argument_optional": false,
+          "flag": "--flatten",
+          "summary": "Expand repeated fields into separate result rows.",
+          "detail": "Supply comma-separated resource keys. Each selected list item produces a record available for formatting and filtering.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Expand repeated fields into separate result rows",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEYS",
+                    "grammar": "Supply comma-separated resource keys. Each selected list item produces a record available for formatting and filtering."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not request additional resource field flattening."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--flatten"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "root inherited flag or fixed gcloud compute instances list --help: --flatten"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--help",
+          "summary": "Display detailed command help.",
+          "detail": "Use -h for a short usage summary."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-h",
+          "summary": "Display a short usage summary.",
+          "detail": "Use --help for the complete command reference."
+        },
+        {
+          "argument": "EMAILS",
+          "argument_optional": false,
+          "flag": "--impersonate-service-account",
+          "summary": "Make requests as a service account.",
+          "detail": "Pass one target email, or comma-separated delegates followed by the target. In SDK 590.0.1 the last account is impersonated. Each identity needs permission to obtain a token for the next account.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Make requests as a service account",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EMAILS",
+                    "grammar": "Pass one target email, or comma-separated delegates followed by the target. In SDK 590.0.1 the last account is impersonated. Each identity needs permission to obtain a token for the next account."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured impersonation or the current credential identity."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--impersonate-service-account"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "lib/googlecloudsdk/core/credentials/store.py, ParseImpersonationAccounts: final account is the target and preceding accounts are delegates"
+                    }
+                  ]
+                },
+                "subject": "Google service account or delegation chain"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--log-http",
+          "summary": "Log HTTP traffic to standard error.",
+          "detail": "Includes request and response details for API calls during this invocation."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-q",
+          "summary": "Suppress interactive prompts.",
+          "detail": "The CLI accepts prompt defaults where available and fails if required input has no default."
+        },
+        {
+          "argument": "TOKEN",
+          "argument_optional": false,
+          "flag": "--trace-token",
+          "summary": "Attach a troubleshooting trace token to requests.",
+          "detail": "Supply the service-request tracing token used to investigate an issue.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Attach a troubleshooting trace token to requests",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TOKEN",
+                    "grammar": "Supply the service-request tracing token used to investigate an issue."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured trace token, if any."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference",
+                      "locator": "--trace-token"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "root inherited flag or fixed gcloud compute instances list --help: --trace-token"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--user-output-enabled",
+          "summary": "Enable output intended for the user.",
+          "detail": "Overrides core/user_output_enabled for this invocation. The opposite spelling is --no-user-output-enabled."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-user-output-enabled",
+          "summary": "Suppress output intended for the user.",
+          "detail": "Overrides core/user_output_enabled for this invocation. Diagnostic logging is controlled separately by --verbosity."
+        },
+        {
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "flag": "--regexp",
+          "summary": "Match entire instance names against a regular expression.",
+          "detail": "Deprecated. Use a name expression with --filter instead. Positional names and URIs are also deprecated in favor of --filter.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Match entire instance names against a regular expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REGEXP",
+                    "grammar": "Deprecated. Use a name expression with --filter instead. Positional names and URIs are also deprecated in favor of --filter."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no legacy whole-name regular expression."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                      "locator": "--regexp"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "fixed gcloud compute instances list --help: --regexp"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "flag": "-r",
+          "summary": "Match entire instance names against a regular expression.",
+          "detail": "Deprecated. Use a name expression with --filter instead. Positional names and URIs are also deprecated in favor of --filter.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Match entire instance names against a regular expression",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REGEXP",
+                    "grammar": "Deprecated. Use a name expression with --filter instead. Positional names and URIs are also deprecated in favor of --filter."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no legacy whole-name regular expression."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Google Cloud SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "590.0.1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://docs.cloud.google.com/sdk/gcloud/reference/compute/instances/list",
+                      "locator": "-r"
+                    },
+                    {
+                      "source": "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-590.0.1-linux-x86_64.tar.gz",
+                      "locator": "fixed gcloud compute instances list --help: -r"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
@@ -817,8 +1454,8 @@
   ],
   "description": "Options for gcloud compute instances list.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "kind": "Published command reference and versioned client help for Google Cloud SDK 590.0.1",
+    "reviewed": "2026-11-24",
     "source": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list"
   },
   "stop_at_positional": false

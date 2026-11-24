@@ -1,0 +1,31 @@
+{
+  "provenance": "Transcribed from the six vendor references and fixed Azure CLI 2.91.0 and Google Cloud SDK 590.0.1 help. Each group is one effect with aliases separated by spaces. A trailing = denotes one required value for every spelling in that group, independent of the menu's insertion spelling.",
+  "az": [
+    "--debug", "--help -h", "--only-show-errors", "--output -o=", "--query=", "--verbose"
+  ],
+  "gcloud": [
+    "--access-token-file=", "--account=", "--billing-project=", "--configuration=",
+    "--flags-file=", "--flatten=", "--format=", "--help", "-h",
+    "--impersonate-service-account=", "--log-http", "--project=", "--quiet -q",
+    "--trace-token=", "--user-output-enabled", "--no-user-output-enabled", "--verbosity="
+  ],
+  "commands": {
+    "az account show": ["--name --subscription -n -s="],
+    "az vm list": ["--resource-group -g=", "--show-details -d", "--vmss=", "--subscription="],
+    "az storage blob list": [
+      "--container-name -c=", "--auth-mode=", "--delimiter=", "--include=", "--marker=",
+      "--num-results=", "--prefix=", "--show-next-marker", "--timeout=", "--account-key=",
+      "--account-name=", "--blob-endpoint=", "--connection-string=", "--sas-token=", "--subscription="
+    ],
+    "gcloud config list": ["--all", "--filter=", "--limit=", "--sort-by="],
+    "gcloud compute instances list": [
+      "--regexp -r=", "--zones=", "--filter=", "--limit=", "--page-size=", "--sort-by=", "--uri"
+    ],
+    "gcloud storage ls": [
+      "--additional-headers=", "--all-versions -a", "--buckets -b", "--etag -e", "--exhaustive",
+      "--fetch-encrypted-object-hashes", "--metadata-filter=", "--next-page-token=",
+      "--read-paths-from-stdin -I", "--readable-sizes", "--recursive -R -r", "--soft-deleted",
+      "--full -L", "--json -j", "--long -l", "--decryption-keys="
+    ]
+  }
+}

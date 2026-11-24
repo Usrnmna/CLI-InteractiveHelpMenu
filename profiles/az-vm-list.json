@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Command options and applicable inherited flags.",
       "name": "Options",
       "options": [
         {
           "argument": "GROUP",
           "argument_optional": false,
           "flag": "-g",
-          "summary": "Select resource group",
+          "summary": "List VMs in a resource group.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,13 +68,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "A configured default group also restricts the results. Pass an empty string ('') to list across all groups in the subscription."
         },
         {
           "argument": "GROUP",
           "argument_optional": false,
           "flag": "--resource-group",
-          "summary": "Select resource group",
+          "summary": "List VMs in a resource group.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -134,25 +135,28 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "A configured default group also restricts the results. Pass an empty string ('') to list across all groups in the subscription."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-d",
-          "summary": "Include power and public IP details"
+          "summary": "Include VM power and public network details.",
+          "detail": "Includes the public IP address and fully qualified domain name when available. Gathering these details takes additional time."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--show-details",
-          "summary": "Include power and public IP details"
+          "summary": "Include VM power and public network details.",
+          "detail": "Includes the public IP address and fully qualified domain name when available. Gathering these details takes additional time."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -276,13 +280,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -406,14 +411,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "QUERY",
           "argument_optional": false,
-          "detail": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability. Reference scope: Azure CLI 2.71.0.",
+          "detail": "Use a JMESPath expression to select fields or filter returned JSON before output formatting. Array indices start at zero and negative indices count from the end. Quote shell metacharacters.",
           "flag": "--query",
-          "summary": "Filter output with JMESPath",
+          "summary": "Apply a client-side query to the result.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -494,7 +500,7 @@
           "argument": "SUBSCRIPTION",
           "argument_optional": false,
           "flag": "--subscription",
-          "summary": "Select subscription",
+          "summary": "Choose the subscription for this request.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -555,25 +561,113 @@
                 "subject": "Azure subscriptions"
               }
             ]
-          }
+          },
+          "detail": "Supply its name or ID. Omit this option to use the active subscription."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--only-show-errors",
-          "summary": "Suppress warnings"
+          "summary": "Suppress warning messages.",
+          "detail": "Normal command results still follow the selected output format."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--debug",
-          "summary": "Include debug logging"
+          "summary": "Include debug diagnostics.",
+          "detail": "Debug is the most detailed Azure CLI logging level."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase logging detail"
+          "summary": "Include informational diagnostics.",
+          "detail": "Use --debug when the full debug log is needed."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--help",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-h",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "SCALE_SET",
+          "argument_optional": false,
+          "flag": "--vmss",
+          "summary": "List the instances of one scale set.",
+          "detail": "Supply its name or resource ID.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "List the instances of one scale set",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SCALE_SET",
+                    "grammar": "Supply its name or resource ID."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply no explicit scale-set restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This spelling requires one operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.91.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific meaning."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/cli/azure/vm#az-vm-list",
+                      "locator": "--vmss"
+                    }
+                  ]
+                },
+                "subject": "Azure virtual machine scale set"
+              }
+            ]
+          }
         }
       ]
     }
@@ -585,8 +679,8 @@
   ],
   "description": "Options for az vm list.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "kind": "Published command reference and versioned client help for Azure CLI 2.91.0",
+    "reviewed": "2026-11-24",
     "source": "https://learn.microsoft.com/en-us/cli/azure/vm#az-vm-list"
   },
   "stop_at_positional": false

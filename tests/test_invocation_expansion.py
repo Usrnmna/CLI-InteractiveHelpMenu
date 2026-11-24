@@ -201,6 +201,32 @@ class StructuredEditingTests(unittest.TestCase):
             with self.subTest(line=line), self.assertRaises(HelpError):
                 self.context(line, target)
 
+    def test_flash_lists_preserve_file_and_pair_boundaries(self):
+        """Accept complete file lists and reject edits that split an encrypted address/file pair."""
+        for stem in ("esptool.py-write_flash", "esptool.py-write-flash", "esptool-write-flash"):
+            flash = json.loads((ROOT / "profiles" / (stem + ".json")).read_text())
+            command = " ".join(flash["command"])
+            prefix = command + " 0x1000 'app one.bin' "
+            options = {row["flag"]: row for cat in flash["categories"] for row in cat["options"]}
+
+            def context(line, point):
+                return find_context(line, point, [flash], discover=lambda *args, **kwargs: flash)
+
+            complete = ["--encrypt-files 0x2000 data.bin 0x3000 'more data.bin' "]
+            if "--diff-with" in options:
+                complete.append("--diff-with old.bin skip ")
+            for args in complete:
+                before = prefix + args
+                suffix = " --force"
+                found = context(before + suffix, len(before))
+                self.assertEqual(insert_option(found, options["--compress"]),
+                                 (before + "--compress" + suffix, len(before + "--compress ")))
+            for args in ("--encrypt-files ", "--encrypt-files 0x2000 data.bin 0x3000 ",
+                         "--encrypt-files 0x2000 --force "):
+                with self.subTest(command=command, args=args), self.assertRaises(HelpError) as error:
+                    context(prefix + args, len(prefix + args))
+                self.assertEqual(error.exception.code, "option_value_required")
+
     def test_schema_rejects_invalid_structured_metadata(self):
         for metadata in ({"stop_at_positional": "yes"}, {"identity": "execute-whatever"},
                          {"positional_group": {"argument": "PAIR", "argument_count": 1, "repeatable": True}}):

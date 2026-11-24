@@ -127,7 +127,13 @@ group. Complete pairs can be followed by another pair or an option. An incomplet
 pair blocks option insertion. `--` or an option-looking filename cannot complete
 a missing file slot; use an unambiguous path such as `./-firmware.bin` where the
 target supports it. The browser describes the group, but never inserts addresses,
-filenames, or placeholders. Discovery does not open serial ports or flash firmware.
+filenames, or placeholders. On guarded flash routes, `--encrypt-files` takes
+one or more complete address/file pairs. On v5, `--diff-with` takes one or
+more filenames or `skip` markers. The next option ends either list. An
+incomplete encrypted pair blocks option insertion. The v4 parser requires the
+ordinary positional pairs to stay together. The v5 parser permits options
+between complete pairs. Discovery does not open
+serial ports or flash firmware.
 
 Child-command boundaries stop parent option insertion after the SSH destination,
 container/service name, script or Go program, and comparable runner positionals.

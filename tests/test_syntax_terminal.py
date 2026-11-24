@@ -61,14 +61,23 @@ class SyntaxScreenTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (expected, len(expected)))
         self.assertFalse(shell.executed.exists())
 
-    def pending_stubbed_command(self, command, suffix, columns, rows, stub_names):
-        """Place the cursor before the suffix and record any target or child execution."""
+    def pending_stubbed_command(self, command, suffix, columns, rows, stub_names, flash_version=None):
+        """Place the cursor before a suffix. Guarded flash routes allow only fixed help probes."""
         shell = self.start()
+        export = "export PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"'
         for name in stub_names:
             stub = shell.folder / name
-            stub.write_text("#!/bin/sh\nprintf '%s\\n' \"$0\" >> " + shlex.quote(str(shell.executed)) + "\nexit 1\n")
+            script = "#!/bin/sh\n"
+            if flash_version:
+                leaf = command.split()[1]
+                script += ('if [ "$#" = 1 ] && [ "$1" = --help ]; then echo ' +
+                           shlex.quote("esptool v" + flash_version) + '; exit 0; fi\n')
+                script += ('if [ "$#" = 2 ] && [ "$1" = ' + shlex.quote(leaf) +
+                           ' ] && [ "$2" = --help ]; then printf "Options:\\n  --force  Force writing\\n"; exit 0; fi\n')
+                export += " CLI_HELP_DISCOVERY=auto CLI_HELP_DRIVERS=" + shlex.quote(str(ROOT / "config/drivers.example"))
+            stub.write_text(script + "echo executed >> " + shlex.quote(str(shell.executed)) + "\nexit 1\n")
             stub.chmod(0o700)
-        shell.text("export PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"')
+        shell.text(export)
         shell.keys("Enter")
         shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
         shell.resize(columns, rows)
@@ -142,11 +151,13 @@ class SyntaxScreenTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (edited + suffix, len(edited) + 1))
         self.assertFalse(shell.executed.exists())
 
-    def check_command_menu(self, command, suffix, narrow=None, listing=False):
+    def check_command_menu(self, command, suffix, narrow=None, listing=False, flash_version=None):
         """Inspect every row in tmux, then exercise a command-specific edit at minimum size."""
         profile = json.loads((ROOT / "profiles" / (command.replace(" ", "-") + ".json")).read_text())
         pending = command + " show" if listing else command
-        shell, prefix, suffix = self.pending_stubbed_command(pending, suffix, 220, 120, (command.split()[0],))
+        # Flash geometry includes per-chip value tables that need up to 63 Details lines.
+        height = 160 if flash_version else 120
+        shell, prefix, suffix = self.pending_stubbed_command(pending, suffix, 220, height, (command.split()[0],), flash_version)
         self.check_rendered_rows(profile, shell, prefix, suffix)
         if narrow is None:
             return  # An existing minimum-size regression covers this command.
@@ -273,6 +284,65 @@ class SyntaxScreenTests(TerminalTestCase):
         shell.wait_for(lambda state: state.alternate == 0 and "child_argument_boundary" in " ".join(state.cells))
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
+
+    def test_psql_and_playbook_manual_menus(self):
+        """Inspect command-file ordering and host-list syntax before pending operands."""
+        self.check_command_menu("psql", " demo", ("file line numbers", "--file", "without Readline.", "'input file.sql'"))
+        self.check_command_menu("ansible-playbook", " site.yml",
+                                ("inline host list", "--inventory", "trailing comma", "web1,"))
+
+    def test_cloud_manual_menus(self):
+        """Read leaf and inherited options without a cloud login or service request."""
+        cases = [
+            ("az account show", " --verbose", ("client-side query", "--query", "Quote shell metacharacters.", "'name'")),
+            ("az vm list", " --verbose", ("scale set", "--vmss", "Supply its name or resource ID.", "demo-scale-set")),
+            ("az storage blob list", " -c demo", ("per service call", "--timeout", "Pagination can take longer.", "30")),
+            ("gcloud config list", " core", ("sort matching properties", "--sort-by", "Use ~ for descending order.", "'~name'")),
+            ("gcloud compute instances list", " --uri", ("resources per API page", "--page-size", "Use --limit for the total.", "20")),
+            ("gcloud storage ls", " 'gs://example/*'", ("object contexts", "--metadata-filter", "Buckets and folders still appear.", """'contexts."team"="qa"'""")),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow)
+
+    def test_platformio_and_arduino_manual_menus(self):
+        """Inspect both PlatformIO executable names and the Arduino compilation menu."""
+        for executable in ("pio", "platformio"):
+            self.check_command_menu(executable + " run", " -e demo",
+                                    ("shared endpoint", "-p", "dedicated option", "ttyFIXTURE"))
+            self.check_command_menu(executable + " device monitor", " -e demo",
+                                    ("line ending", "--eol", "default is CRLF", "LF"))
+        self.check_command_menu("arduino-cli compile", " 'Sketch Dir'",
+                                ("intermediate files", "--build-path", "Quote paths with spaces", "'build cache'"))
+
+    def test_guarded_flash_manual_menus(self):
+        """Read all guarded menus, refuse incomplete pairs and reject mismatched versions."""
+        for command in ("esptool.py write_flash", "esptool.py write-flash", "esptool write-flash"):
+            legacy = command.endswith("write_flash")
+            version, wrong_version = ("4.8.1", "5.1.0") if legacy else ("5.1.0", "4.8.1")
+            with self.subTest(command=command):
+                self.check_command_menu(command, " 0x1000 app.bin",
+                                        ("custom pin mapping", "--spi-connection", "CLK,Q,D,HD,CS", "SPI"),
+                                        flash_version=version)
+                pair_shell, first, second = self.pending_stubbed_command(
+                    command + " 0x1000 one.bin", " 0x2000 two.bin", 100, 24, (command.split()[0],), version)
+                if legacy:
+                    pair_shell.keys("Escape", "h")
+                    pair_shell.wait_for(lambda state: state.alternate == 0 and "positional_group_boundary" in " ".join(state.cells))
+                    self.assertEqual(pair_shell.read_buffer(), (first + second, len(first)))
+                else:
+                    pair_shell.open_menu()
+                    pair_shell.cancel("Enter")
+                    self.assertEqual(pair_shell.read_buffer(), (first + "--flash-mode" + second, len(first + "--flash-mode ")))
+                self.assertFalse(pair_shell.executed.exists())
+                for extra, reported, diagnostic in ((" 0x1000", version, "positional_group_incomplete"),
+                                                    ("", wrong_version, "requires v5")):
+                    shell, prefix, suffix = self.pending_stubbed_command(
+                        command + extra, " app.bin", 100, 24, (command.split()[0],), reported)
+                    shell.keys("Escape", "h")
+                    shell.wait_for(lambda state: state.alternate == 0 and diagnostic in " ".join(state.cells))
+                    self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                    self.assertFalse(shell.executed.exists())
 
     def test_ffmpeg_all_rows_and_complete_details(self):
         """Read every FFmpeg selection between an existing input and a quoted output."""

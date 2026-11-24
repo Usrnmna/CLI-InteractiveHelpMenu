@@ -299,7 +299,8 @@ class NumericalMigrationTests(unittest.TestCase):
         false_review["variants"][0]["bare"] = {"state": "unverified", "reason": "Controlled missing bare-number evidence"}
         false_review["variants"][0]["review"]["status"] = "verified"
         self.assertIn("sem_false_verification", {d.code for d in validate_value_semantics(false_review)})
-        chips = deepcopy(self.option("esptool-write-flash", "--flash-freq")["value_semantics"])
+        metadata = self.option("esptool-write-flash", "--flash-freq")["value_semantics"]
+        chips = dict(metadata, variants=deepcopy(self.nodes("esptool-write-flash", metadata)))
         chips["variants"][1]["applicability"]["chip"] = deepcopy(chips["variants"][0]["applicability"]["chip"])
         self.assertIn("sem_variant_conflict", {d.code for d in validate_value_semantics(chips)})
         # A plausible but false positive multiplier is structurally valid. Source

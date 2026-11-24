@@ -63,6 +63,16 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                     self.assertEqual(len(curated), 17)
                     self.assertLessEqual(set(curated), set(flags))
                     flags = curated
+                if command == "psql":
+                    self.assertNotIn("--cluster", text)  # Added by Ubuntu's launcher.
+                    flags.remove("--cluster")
+                if command in {"esptool write-flash", "esptool.py write-flash"}:
+                    # Rich truncated one spelling on capture. The tagged 5.2
+                    # declaration independently covers the retired diff switch.
+                    self.assertEqual(record["version"], "esptool v5.6.0")
+                    self.assertIn("--ignore-flash-enc-efu…", text)
+                    flags.remove("--ignore-flash-enc-efuse")
+                    flags.remove("--no-diff-verify")
                 for flag in flags:
                     pattern = r"(?<![\w-])" + re.escape(flag.rstrip("=")) + r"(?![\w-])"
                     self.assertRegex(text, pattern)

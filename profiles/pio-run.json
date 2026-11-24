@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Documented options and aliases for this command.",
       "name": "Options",
       "options": [
         {
           "argument": "ENVIRONMENT",
           "argument_optional": false,
           "flag": "-e",
-          "summary": "Select build environments",
+          "summary": "Select project environments to process",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,13 +68,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat for multiple [env:NAME] sections. Without -e, run uses default_envs when configured, otherwise all project environments."
         },
         {
           "argument": "ENVIRONMENT",
           "argument_optional": false,
           "flag": "--environment",
-          "summary": "Select build environments",
+          "summary": "Select project environments to process",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -134,13 +135,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat for multiple [env:NAME] sections. Without -e, run uses default_envs when configured, otherwise all project environments."
         },
         {
           "argument": "TARGET",
           "argument_optional": false,
           "flag": "-t",
-          "summary": "Select project targets",
+          "summary": "Select a build-system target",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -200,13 +202,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat for multiple targets. The normal default builds the project unless targets are configured. The upload target transfers firmware. The monitor target opens the device monitor."
         },
         {
           "argument": "TARGET",
           "argument_optional": false,
           "flag": "--target",
-          "summary": "Select project targets",
+          "summary": "Select a build-system target",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -266,13 +269,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat for multiple targets. The normal default builds the project unless targets are configured. The upload target transfers firmware. The monitor target opens the device monitor."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "-d",
-          "summary": "Select project directory",
+          "summary": "Select the project directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -332,13 +336,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to the current working directory. Quote a project path containing spaces."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--project-dir",
-          "summary": "Select project directory",
+          "summary": "Select the project directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -398,13 +403,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to the current working directory. Quote a project path containing spaces."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "-c",
-          "summary": "Select project configuration",
+          "summary": "Load a different project configuration file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -464,13 +470,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass a readable file in platformio.ini format. Use --project-dir to select the project directory independently."
         },
         {
           "argument": "FILE",
           "argument_optional": false,
           "flag": "--project-conf",
-          "summary": "Select project configuration",
+          "summary": "Load a different project configuration file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -530,14 +537,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Pass a readable file in platformio.ini format. Use --project-dir to select the project directory independently."
         },
         {
           "argument": "JOBS",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name.",
+          "detail": "Supply a count of concurrent build jobs. Core 6.1.18 and 6.2.0 use PLATFORMIO_RUN_JOBS when set, otherwise the CPU count. Noble 4.3.4 uses the CPU count directly. Both fall back to 1 when unavailable.",
           "flag": "-j",
-          "summary": "Set concurrent jobs",
+          "summary": "Set the parallel build job limit",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -550,9 +558,9 @@
         {
           "argument": "JOBS",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: JOBS counts concurrent build jobs. PLATFORMIO_RUN_JOBS can override the CPU-count default. A zero/negative value is not documented here as an unlimited-job sentinel; target build-tool behavior must not be inferred from the option name.",
+          "detail": "Supply a count of concurrent build jobs. Core 6.1.18 and 6.2.0 use PLATFORMIO_RUN_JOBS when set, otherwise the CPU count. Noble 4.3.4 uses the CPU count directly. Both fall back to 1 when unavailable.",
           "flag": "--jobs",
-          "summary": "Set concurrent jobs",
+          "summary": "Set the parallel build job limit",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -565,9 +573,9 @@
         {
           "argument": "PORT",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: the endpoint can depend on the selected upload protocol/platform; it is not one universal numeric TCP-port value. Any numerical subvalues follow the owning grammar's rules. The help browser does not evaluate or execute this value. Reference scope: 6.1.18.",
+          "detail": "Overrides upload_port for a target that uploads. Choosing a port alone does not request an upload. The upload protocol determines the endpoint syntax.",
           "flag": "--upload-port",
-          "summary": "Select upload port",
+          "summary": "Select the firmware upload endpoint",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -640,37 +648,125 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "Increase output detail"
+          "summary": "Show detailed target processing output",
+          "detail": "Includes build command lines and additional build-system diagnostics. The selected platform and targets determine the output."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase output detail"
+          "summary": "Show detailed target processing output",
+          "detail": "Includes build command lines and additional build-system diagnostics. The selected platform and targets determine the output."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-s",
-          "summary": "Suppress progress output"
+          "summary": "Suppress build progress reporting",
+          "detail": "Errors can still appear. Use this when only essential build output is wanted."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--silent",
-          "summary": "Suppress progress output"
+          "summary": "Suppress build progress reporting",
+          "detail": "Errors can still appear. Use this when only essential build output is wanted."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--list-targets",
-          "summary": "List available targets"
+          "summary": "List the available project targets",
+          "detail": "Use -e to list targets in a particular environment. The available targets depend on the project and platform. Present in Core 6.1.18 and 6.2.0 and absent from Noble 4.3.4."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--disable-auto-clean",
-          "summary": "Disable automatic cleanup"
+          "summary": "Keep existing build files when the project changes",
+          "detail": "Disables automatic cleanup of build_dir after project configuration or source layout changes. An explicit clean target still requests a cleanup."
+        },
+        {
+          "flag": "--monitor-port",
+          "argument": "PORT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "monitor-port"
+              }
+            ]
+          },
+          "summary": "Select the endpoint for the monitor target",
+          "detail": "Use with -t monitor. This overrides the project's monitor port independently of the upload port. Present in Core 6.1.18 and 6.2.0 and absent from Noble 4.3.4."
+        },
+        {
+          "flag": "-p",
+          "argument": "PORT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "port"
+              }
+            ]
+          },
+          "summary": "Set a shared endpoint for uploading and monitoring",
+          "detail": "In Core 6.2.0, a dedicated option such as --upload-port overrides this shortcut for its operation. Noble 4.3.4 and Core 6.1.18 lack this shortcut. Select the upload or monitor target separately."
+        },
+        {
+          "flag": "--port",
+          "argument": "PORT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "port"
+              }
+            ]
+          },
+          "summary": "Set a shared endpoint for uploading and monitoring",
+          "detail": "In Core 6.2.0, a dedicated option such as --upload-port overrides this shortcut for its operation. Noble 4.3.4 and Core 6.1.18 lack this shortcut. Select the upload or monitor target separately."
+        },
+        {
+          "flag": "-a",
+          "argument": "ARG",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "program-arg"
+              }
+            ]
+          },
+          "summary": "Pass an argument to the Native program",
+          "detail": "Repeat for multiple program arguments. Shell-quote an argument containing spaces. This is for targets that launch a Native program. Present in Core 6.1.18 and 6.2.0 and absent from Noble 4.3.4."
+        },
+        {
+          "flag": "--program-arg",
+          "argument": "ARG",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "program-arg"
+              }
+            ]
+          },
+          "summary": "Pass an argument to the Native program",
+          "detail": "Repeat for multiple program arguments. Shell-quote an argument containing spaces. This is for targets that launch a Native program. Present in Core 6.1.18 and 6.2.0 and absent from Noble 4.3.4."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show run command help",
+          "detail": "Prints options for the installed PlatformIO Core and exits before processing a project."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show run command help",
+          "detail": "Prints options for the installed PlatformIO Core and exits before processing a project."
         }
       ]
     }
@@ -681,9 +777,9 @@
   ],
   "description": "Options for pio run.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://docs.platformio.org/en/latest/core/userguide/cmd_run.html"
+    "kind": "Manual and versioned parser inventory",
+    "reviewed": "2026-11-24",
+    "source": "https://docs.platformio.org/en/stable/core/userguide/cmd_run.html"
   },
   "stop_at_positional": false,
   "value_definitions": {
@@ -741,6 +837,200 @@
       "when_value_omitted": {
         "reason": "This option requires an operand",
         "state": "not_accepted"
+      }
+    },
+    "monitor-port": {
+      "kind": "delegated",
+      "meaning": "Select the endpoint for the monitor target",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "PORT",
+          "grammar": "Supply a monitor endpoint accepted by the serial backend, such as a device path."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the monitor target's configured or detected port."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.1.18",
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+            "locator": "--monitor-port"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Select the endpoint for the monitor target",
+        "reference": {
+          "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+          "locator": "--monitor-port"
+        }
+      }
+    },
+    "port": {
+      "kind": "delegated",
+      "meaning": "Set a shared endpoint for uploading and monitoring",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "PORT",
+          "grammar": "Supply one endpoint usable by the selected upload protocol and monitor backend."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the dedicated or configured endpoint for each operation."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+            "locator": "--port"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Set a shared endpoint for uploading and monitoring",
+        "reference": {
+          "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+          "locator": "--port"
+        }
+      }
+    },
+    "program-arg": {
+      "kind": "delegated",
+      "meaning": "Pass an argument to the Native program",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "ARG",
+          "grammar": "Pass one Native program argument per occurrence, quoting shell whitespace."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Pass no additional CLI program arguments."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "6.1.18",
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+            "locator": "--program-arg"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Pass an argument to the Native program",
+        "reference": {
+          "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/run/cli.py",
+          "locator": "--program-arg"
+        }
       }
     }
   }

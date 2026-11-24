@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Command options and applicable inherited flags.",
       "name": "Options",
       "options": [
         {
           "argument": "SUBSCRIPTION",
           "argument_optional": false,
           "flag": "-s",
-          "summary": "Select subscription",
+          "summary": "Show one subscription by name or ID.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -69,13 +69,14 @@
                 "subject": "Azure subscriptions"
               }
             ]
-          }
+          },
+          "detail": "Omit the selector to display the default subscription. This command reads subscription details without changing the active subscription."
         },
         {
           "argument": "SUBSCRIPTION",
           "argument_optional": false,
           "flag": "--subscription",
-          "summary": "Select subscription",
+          "summary": "Show one subscription by name or ID.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -136,13 +137,14 @@
                 "subject": "Azure subscriptions"
               }
             ]
-          }
+          },
+          "detail": "Omit the selector to display the default subscription. This command reads subscription details without changing the active subscription."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "-o",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -266,13 +268,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "FORMAT",
           "argument_optional": false,
           "flag": "--output",
-          "summary": "Set output format",
+          "summary": "Choose the result format.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -396,14 +399,15 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use json, jsonc, table, tsv, yaml, yamlc or none. The built-in default is json."
         },
         {
           "argument": "QUERY",
           "argument_optional": false,
-          "detail": "A JMESPath expression compiled by the CLI's query handler against returned JSON. Array indices start at zero and negative indices refer to the end; numeric literals/comparisons/function arguments retain JMESPath/JSON meaning rather than a physical unit. The installed JMESPath library owns parsing and function availability. Reference scope: Azure CLI 2.71.0.",
+          "detail": "Use a JMESPath expression to select fields or filter returned JSON before output formatting. Array indices start at zero and negative indices count from the end. Quote shell metacharacters.",
           "flag": "--query",
-          "summary": "Filter output with JMESPath",
+          "summary": "Apply a client-side query to the result.",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -484,19 +488,172 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--only-show-errors",
-          "summary": "Suppress warnings"
+          "summary": "Suppress warning messages.",
+          "detail": "Normal command results still follow the selected output format."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--debug",
-          "summary": "Include debug logging"
+          "summary": "Include debug diagnostics.",
+          "detail": "Debug is the most detailed Azure CLI logging level."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--verbose",
-          "summary": "Increase logging detail"
+          "summary": "Include informational diagnostics.",
+          "detail": "Use --debug when the full debug log is needed."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--help",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-h",
+          "summary": "Display help for this command.",
+          "detail": "The client prints its leaf documentation and exits."
+        },
+        {
+          "argument": "SUBSCRIPTION",
+          "argument_optional": false,
+          "flag": "--name",
+          "summary": "Show one subscription by name or ID.",
+          "detail": "Omit the selector to display the default subscription. This command reads subscription details without changing the active subscription.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Azure subscription identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Subscription name or ID resolved by the Azure account profile; digits in an ID are not a numerical quantity."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configured subscription."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/profile/__init__.py",
+                      "locator": "account show and subscription selection"
+                    }
+                  ]
+                },
+                "subject": "Azure subscriptions"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SUBSCRIPTION",
+          "argument_optional": false,
+          "flag": "-n",
+          "summary": "Show one subscription by name or ID.",
+          "detail": "Omit the selector to display the default subscription. This command reads subscription details without changing the active subscription.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Azure subscription identifier",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Subscription name or ID resolved by the Azure account profile; digits in an ID are not a numerical quantity."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the active configured subscription."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Azure CLI"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.71.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/Azure/azure-cli/azure-cli-2.71.0/src/azure-cli/azure/cli/command_modules/profile/__init__.py",
+                      "locator": "account show and subscription selection"
+                    }
+                  ]
+                },
+                "subject": "Azure subscriptions"
+              }
+            ]
+          }
         }
       ]
     }
@@ -508,8 +665,8 @@
   ],
   "description": "Options for az account show.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
+    "kind": "Published command reference and versioned client help for Azure CLI 2.91.0",
+    "reviewed": "2026-11-24",
     "source": "https://learn.microsoft.com/en-us/cli/azure/account#az-account-show"
   },
   "stop_at_positional": false

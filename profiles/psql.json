@@ -1,13 +1,13 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Connection, input, output and session options.",
       "name": "Arguments",
       "options": [
         {
           "argument": "HOST",
           "flag": "--host",
-          "summary": "Select the database server",
+          "summary": "Choose the database host or socket directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -67,13 +67,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "An absolute path selects a Unix-domain socket directory. A comma-separated host list can use one shared port or matching per-host ports."
         },
         {
           "argument": "HOST",
           "attached": true,
           "flag": "-h",
-          "summary": "Select the database server",
+          "summary": "Choose the database host or socket directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -133,13 +134,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "An absolute path selects a Unix-domain socket directory. A comma-separated host list can use one shared port or matching per-host ports."
         },
         {
           "argument": "PORT",
           "detail": "Decimal integer port identifier, without unit suffix; zero/negative ports are invalid. A single port applies to all hosts or a comma-separated port list matches the host list. Empty per-host entries use the default; list lengths must match unless one port is shared. Each explicit numeric port must be 1..65535. Reference scope: PostgreSQL psql 17.4.",
           "flag": "--port",
-          "summary": "Select the server port",
+          "summary": "Choose the server port or socket suffix",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -154,7 +156,7 @@
           "attached": true,
           "detail": "Decimal integer port identifier, without unit suffix; zero/negative ports are invalid. A single port applies to all hosts or a comma-separated port list matches the host list. Empty per-host entries use the default; list lengths must match unless one port is shared. Each explicit numeric port must be 1..65535. Reference scope: PostgreSQL psql 17.4.",
           "flag": "-p",
-          "summary": "Select the server port",
+          "summary": "Choose the server port or socket suffix",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -167,7 +169,7 @@
         {
           "argument": "USER",
           "flag": "--username",
-          "summary": "Select the database user",
+          "summary": "Choose the database login role",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -227,13 +229,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The second positional operand also selects the role when a database is given first."
         },
         {
           "argument": "USER",
           "attached": true,
           "flag": "-U",
-          "summary": "Select the database user",
+          "summary": "Choose the database login role",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -293,13 +296,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The second positional operand also selects the role when a database is given first."
         },
         {
           "argument": "DBNAME",
-          "detail": "Database name or a conninfo keyword=value string/connection URI when the operand contains the recognized conninfo syntax. Embedded hosts, ports, timeouts and other keys retain libpq's field-specific meanings; a database name has no universal numerical unit. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "The first positional operand also selects the database. A libpq connection URI or keyword=value string overrides conflicting connection options.",
           "flag": "--dbname",
-          "summary": "Select the database or connection string",
+          "summary": "Choose the database or connection string",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -312,9 +316,9 @@
         {
           "argument": "DBNAME",
           "attached": true,
-          "detail": "Database name or a conninfo keyword=value string/connection URI when the operand contains the recognized conninfo syntax. Embedded hosts, ports, timeouts and other keys retain libpq's field-specific meanings; a database name has no universal numerical unit. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "The first positional operand also selects the database. A libpq connection URI or keyword=value string overrides conflicting connection options.",
           "flag": "-d",
-          "summary": "Select the database",
+          "summary": "Choose the database or connection string",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -326,9 +330,9 @@
         },
         {
           "argument": "COMMAND",
-          "detail": "A server-parsable SQL command string without psql-specific mixing, or a single psql backslash command. Multiple SQL statements in one string are one server request; repeated -c/-f options supply additional requests. Numerical literals retain SQL/command-specific types and meanings; this is not an operating-system shell command. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "Supply SQL or one psql backslash command per -c. Each SQL string is one server request and normally one transaction. Mix repeated -c and -f inputs in execution order. Use another -c to switch between SQL and a backslash command.",
           "flag": "--command",
-          "summary": "Supply SQL or one psql backslash command",
+          "summary": "Execute one command string",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -341,9 +345,9 @@
         {
           "argument": "COMMAND",
           "attached": true,
-          "detail": "A server-parsable SQL command string without psql-specific mixing, or a single psql backslash command. Multiple SQL statements in one string are one server request; repeated -c/-f options supply additional requests. Numerical literals retain SQL/command-specific types and meanings; this is not an operating-system shell command. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "Supply SQL or one psql backslash command per -c. Each SQL string is one server request and normally one transaction. Mix repeated -c and -f inputs in execution order. Use another -c to switch between SQL and a backslash command.",
           "flag": "-c",
-          "summary": "Supply SQL or one psql backslash command",
+          "summary": "Execute one command string",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -356,7 +360,7 @@
         {
           "argument": "FILE",
           "flag": "--file",
-          "summary": "Read input commands from a file",
+          "summary": "Read commands from a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -416,13 +420,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Mix repeated -f and -c inputs in execution order. Errors can include file line numbers. Use -f - to read standard input at that point without Readline."
         },
         {
           "argument": "FILE",
           "attached": true,
           "flag": "-f",
-          "summary": "Read input commands from a file",
+          "summary": "Read commands from a file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -482,33 +487,38 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Mix repeated -f and -c inputs in execution order. Errors can include file line numbers. Use -f - to read standard input at that point without Readline."
         },
         {
           "argument": "",
           "flag": "--no-psqlrc",
-          "summary": "Skip startup files"
+          "summary": "Skip the system and user startup files",
+          "detail": "Suppresses both the system psqlrc and the personal startup file."
         },
         {
           "argument": "",
           "flag": "-X",
-          "summary": "Skip startup files"
+          "summary": "Skip the system and user startup files",
+          "detail": "Suppresses both the system psqlrc and the personal startup file."
         },
         {
           "argument": "",
           "flag": "--no-password",
-          "summary": "Never prompt for a password"
+          "summary": "Disable password prompts",
+          "detail": "A connection requiring a password fails unless another source supplies one. Applies to subsequent \\connect commands too."
         },
         {
           "argument": "",
           "flag": "--password",
-          "summary": "Prompt for a password"
+          "summary": "Prompt for a password before connecting",
+          "detail": "Prompts even if the server does not require a password. Applies to subsequent \\connect commands too."
         },
         {
           "argument": "NAME=VALUE",
-          "detail": "NAME=VALUE sets a psql variable; NAME alone unsets it and NAME= sets an empty value. Names/values use psql variable grammar, including key-specific boolean/integer settings; no universal numerical unit is implied. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "Use NAME=VALUE to assign, NAME= to set an empty string, or NAME alone to unset. The client processes these before connecting. Connection-state variables may be overwritten later.",
           "flag": "--set",
-          "summary": "Set a psql variable",
+          "summary": "Assign or unset a psql variable",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -521,9 +531,9 @@
         {
           "argument": "NAME=VALUE",
           "attached": true,
-          "detail": "NAME=VALUE sets a psql variable; NAME alone unsets it and NAME= sets an empty value. Names/values use psql variable grammar, including key-specific boolean/integer settings; no universal numerical unit is implied. Reference scope: PostgreSQL psql 17.4.",
+          "detail": "Use NAME=VALUE to assign, NAME= to set an empty string, or NAME alone to unset. The client processes these before connecting. Connection-state variables may be overwritten later.",
           "flag": "-v",
-          "summary": "Set a psql variable",
+          "summary": "Assign or unset a psql variable",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -536,17 +546,641 @@
         {
           "argument": "",
           "flag": "--tuples-only",
-          "summary": "Omit headings and footers"
+          "summary": "Omit headings and row-count footers",
+          "detail": "Only the result data rows are printed."
         },
         {
           "argument": "",
           "flag": "--csv",
-          "summary": "Use CSV output"
+          "summary": "Print query results as CSV",
+          "detail": "Equivalent to setting the result format to csv. Use --tuples-only to omit the header."
         },
         {
           "argument": "",
           "flag": "--single-transaction",
-          "summary": "Wrap input in one transaction"
+          "summary": "Wrap command and file inputs in one transaction",
+          "detail": "Requires at least one -c or -f. Issues BEGIN before the first input and COMMIT after the last. With ON_ERROR_STOP set, an error triggers ROLLBACK. Explicit transaction control can break the grouping. Commands forbidden in a transaction block cause it to fail."
+        },
+        {
+          "flag": "--echo-all",
+          "argument": "",
+          "summary": "Echo nonempty script lines as they are read",
+          "detail": "Writes the input to standard output. Interactive input is excluded."
+        },
+        {
+          "flag": "-a",
+          "argument": "",
+          "summary": "Echo nonempty script lines as they are read",
+          "detail": "Writes the input to standard output. Interactive input is excluded."
+        },
+        {
+          "flag": "--no-align",
+          "argument": "",
+          "summary": "Print unaligned results",
+          "detail": "Fields and records use configurable separators. The normal table format is aligned."
+        },
+        {
+          "flag": "-A",
+          "argument": "",
+          "summary": "Print unaligned results",
+          "detail": "Fields and records use configurable separators. The normal table format is aligned."
+        },
+        {
+          "flag": "--echo-queries",
+          "argument": "",
+          "summary": "Echo SQL sent to the server",
+          "detail": "Writes submitted SQL to standard output."
+        },
+        {
+          "flag": "-e",
+          "argument": "",
+          "summary": "Echo SQL sent to the server",
+          "detail": "Writes submitted SQL to standard output."
+        },
+        {
+          "flag": "--echo-errors",
+          "argument": "",
+          "summary": "Echo failed SQL commands",
+          "detail": "Writes the failed command to standard error."
+        },
+        {
+          "flag": "-b",
+          "argument": "",
+          "summary": "Echo failed SQL commands",
+          "detail": "Writes the failed command to standard error."
+        },
+        {
+          "flag": "--echo-hidden",
+          "argument": "",
+          "summary": "Show SQL generated by backslash commands",
+          "detail": "Reveals the queries behind commands such as \\d."
+        },
+        {
+          "flag": "-E",
+          "argument": "",
+          "summary": "Show SQL generated by backslash commands",
+          "detail": "Reveals the queries behind commands such as \\d."
+        },
+        {
+          "flag": "--field-separator",
+          "argument": "STRING",
+          "summary": "Separate fields in unaligned output",
+          "detail": "The default is a vertical bar. Quote shell metacharacters, for example -F '|'.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "field-separator-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-F",
+          "argument": "STRING",
+          "summary": "Separate fields in unaligned output",
+          "detail": "The default is a vertical bar. Quote shell metacharacters, for example -F '|'.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "field-separator-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--field-separator-zero",
+          "argument": "",
+          "summary": "Separate unaligned fields with a NUL byte",
+          "detail": "Use --record-separator-zero for the boundary between rows."
+        },
+        {
+          "flag": "-z",
+          "argument": "",
+          "summary": "Separate unaligned fields with a NUL byte",
+          "detail": "Use --record-separator-zero for the boundary between rows."
+        },
+        {
+          "flag": "--html",
+          "argument": "",
+          "summary": "Print results as an HTML table",
+          "detail": "Use --table-attr to supply attributes for the table tag."
+        },
+        {
+          "flag": "-H",
+          "argument": "",
+          "summary": "Print results as an HTML table",
+          "detail": "Use --table-attr to supply attributes for the table tag."
+        },
+        {
+          "flag": "--list",
+          "argument": "",
+          "summary": "List databases and exit",
+          "detail": "Connects to postgres unless the command line names a database, directly or via a service. Other non-connection options are ignored."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "summary": "List databases and exit",
+          "detail": "Connects to postgres unless the command line names a database, directly or via a service. Other non-connection options are ignored."
+        },
+        {
+          "flag": "--log-file",
+          "argument": "FILE",
+          "summary": "Copy query output to a log file",
+          "detail": "The file receives query output in addition to its normal destination.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "log-file-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-L",
+          "argument": "FILE",
+          "summary": "Copy query output to a log file",
+          "detail": "The file receives query output in addition to its normal destination.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "log-file-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--no-readline",
+          "argument": "",
+          "summary": "Disable interactive editing and history",
+          "detail": "Disables Readline and command history for this session."
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "summary": "Disable interactive editing and history",
+          "detail": "Disables Readline and command history for this session."
+        },
+        {
+          "flag": "-1",
+          "argument": "",
+          "summary": "Wrap command and file inputs in one transaction",
+          "detail": "Requires at least one -c or -f. Issues BEGIN before the first input and COMMIT after the last. With ON_ERROR_STOP set, an error triggers ROLLBACK. Explicit transaction control can break the grouping. Commands forbidden in a transaction block cause it to fail.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Wrap command and file inputs in one transaction",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The digit is part of the switch name."
+                },
+                "forms": [
+                  {
+                    "id": "switch",
+                    "notation": "literal",
+                    "tokens": [
+                      "-1"
+                    ],
+                    "syntax": "-1",
+                    "meaning": "Wrap command and file inputs in one transaction"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Each input follows normal transaction rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "16",
+                      "17",
+                      "18",
+                      "19"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://www.postgresql.org/docs/19/app-psql.html",
+                      "locator": "--single-transaction"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output",
+          "argument": "DESTINATION",
+          "summary": "Redirect subsequent query output",
+          "detail": "The destination receives result tables and command responses. Errors still go to standard error. Quote a leading pipe and command to send output to a shell pipeline.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-o",
+          "argument": "DESTINATION",
+          "summary": "Redirect subsequent query output",
+          "detail": "The destination receives result tables and command responses. Errors still go to standard error. Quote a leading pipe and command to send output to a shell pipeline.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--pset",
+          "argument": "NAME[=VALUE]",
+          "summary": "Set a result-printing option",
+          "detail": "Use NAME=VALUE, for example format=latex. Some settings toggle when only NAME is given. These are \\pset settings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "pset-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-P",
+          "argument": "NAME[=VALUE]",
+          "summary": "Set a result-printing option",
+          "detail": "Use NAME=VALUE, for example format=latex. Some settings toggle when only NAME is given. These are \\pset settings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "pset-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "summary": "Suppress startup and informational messages",
+          "detail": "Query results still appear."
+        },
+        {
+          "flag": "-q",
+          "argument": "",
+          "summary": "Suppress startup and informational messages",
+          "detail": "Query results still appear."
+        },
+        {
+          "flag": "--record-separator",
+          "argument": "STRING",
+          "summary": "Separate rows in unaligned output",
+          "detail": "The default separator is a newline. Use --record-separator-zero for NUL-delimited rows.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "record-separator-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-R",
+          "argument": "STRING",
+          "summary": "Separate rows in unaligned output",
+          "detail": "The default separator is a newline. Use --record-separator-zero for NUL-delimited rows.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "record-separator-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--record-separator-zero",
+          "argument": "",
+          "summary": "Separate unaligned rows with a NUL byte",
+          "detail": "Suitable for passing records to xargs -0. Field separation is configured separately."
+        },
+        {
+          "flag": "-0",
+          "argument": "",
+          "summary": "Separate unaligned rows with a NUL byte",
+          "detail": "Suitable for passing records to xargs -0. Field separation is configured separately.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Separate unaligned rows with a NUL byte",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The digit is part of the switch name."
+                },
+                "forms": [
+                  {
+                    "id": "switch",
+                    "notation": "literal",
+                    "tokens": [
+                      "-0"
+                    ],
+                    "syntax": "-0",
+                    "meaning": "Separate unaligned rows with a NUL byte"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured record separator."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "PostgreSQL psql"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "16",
+                      "17",
+                      "18",
+                      "19"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://www.postgresql.org/docs/19/app-psql.html",
+                      "locator": "--record-separator-zero"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--single-step",
+          "argument": "",
+          "summary": "Prompt before sending each SQL command",
+          "detail": "The prompt allows cancellation before execution."
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "summary": "Prompt before sending each SQL command",
+          "detail": "The prompt allows cancellation before execution."
+        },
+        {
+          "flag": "--single-line",
+          "argument": "",
+          "summary": "End SQL commands at a newline",
+          "detail": "A semicolon also ends a command. Mixing SQL and backslash commands on one line can change their execution order."
+        },
+        {
+          "flag": "-S",
+          "argument": "",
+          "summary": "End SQL commands at a newline",
+          "detail": "A semicolon also ends a command. Mixing SQL and backslash commands on one line can change their execution order."
+        },
+        {
+          "flag": "-t",
+          "argument": "",
+          "summary": "Omit headings and row-count footers",
+          "detail": "Only the result data rows are printed."
+        },
+        {
+          "flag": "--table-attr",
+          "argument": "TEXT",
+          "summary": "Set HTML table-tag attributes",
+          "detail": "Supply attribute text for HTML output. Quote spaces to pass one argument.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "table-attr-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-T",
+          "argument": "TEXT",
+          "summary": "Set HTML table-tag attributes",
+          "detail": "Supply attribute text for HTML output. Quote spaces to pass one argument.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "table-attr-operand"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "flag": "--variable",
+          "argument": "NAME=VALUE",
+          "summary": "Assign or unset a psql variable",
+          "detail": "Use NAME=VALUE to assign, NAME= to set an empty string, or NAME alone to unset. The client processes these before connecting. Connection-state variables may be overwritten later.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "variables"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "summary": "Print the psql client version",
+          "detail": "Exits without connecting to a database."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "summary": "Print the psql client version",
+          "detail": "Exits without connecting to a database."
+        },
+        {
+          "flag": "-w",
+          "argument": "",
+          "summary": "Disable password prompts",
+          "detail": "A connection requiring a password fails unless another source supplies one. Applies to subsequent \\connect commands too."
+        },
+        {
+          "flag": "-W",
+          "argument": "",
+          "summary": "Prompt for a password before connecting",
+          "detail": "Prompts even if the server does not require a password. Applies to subsequent \\connect commands too."
+        },
+        {
+          "flag": "--expanded",
+          "argument": "",
+          "summary": "Display each row vertically",
+          "detail": "Each column name appears beside its value."
+        },
+        {
+          "flag": "-x",
+          "argument": "",
+          "summary": "Display each row vertically",
+          "detail": "Each column name appears beside its value."
+        },
+        {
+          "flag": "--help",
+          "argument": "TOPIC",
+          "summary": "Show client help and exit",
+          "detail": "Bare --help lists command-line options. Use --help=commands for backslash commands or --help=variables for special variables. The short alias '-?' takes no topic. Quote it to prevent shell globbing.",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "help-operand"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cluster",
+          "argument": "VERSION/CLUSTER",
+          "summary": "Select a cluster through Ubuntu’s psql wrapper",
+          "detail": "With the Ubuntu pg_wrapper launcher, pass VERSION/NAME for a local cluster or VERSION/HOST:PORT for a remote server. A trailing colon uses port 5432. This overrides PGCLUSTER. Direct upstream psql binaries reject --cluster.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "PostgreSQL cluster selection by the Ubuntu launcher",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "cluster",
+                    "notation": "expression",
+                    "syntax": "VERSION/NAME or VERSION/HOST:[PORT]",
+                    "grammar": "With the Ubuntu pg_wrapper launcher, pass VERSION/NAME for a local cluster or VERSION/HOST:PORT for a remote server. A trailing colon uses port 5432. This overrides PGCLUSTER. Direct upstream psql binaries reject --cluster."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the wrapper’s normal cluster selection rules."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "postgresql-client-common pg_wrapper"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "257build1.1",
+                      "290ubuntu1"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Ubuntu 24.04",
+                      "Ubuntu 26.04"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/pg_wrapper.1.html",
+                      "locator": "OPTIONS and ENVIRONMENT"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/pg_wrapper.1.html",
+                      "locator": "OPTIONS and ENVIRONMENT"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "pg_wrapper cluster selector",
+                  "reference": {
+                    "source": "https://manpages.ubuntu.com/manpages/noble/man1/pg_wrapper.1.html",
+                    "locator": "OPTIONS and ENVIRONMENT"
+                  }
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -554,7 +1188,7 @@
   "command": [
     "psql"
   ],
-  "description": "psql shell argument reference.",
+  "description": "Run SQL and psql commands against a PostgreSQL database. Positional operands are the database, then the login role.",
   "value_definitions": {
     "command-string": {
       "kind": "delegated",
@@ -814,6 +1448,412 @@
           "source": "https://raw.githubusercontent.com/postgres/postgres/REL_17_4/doc/src/sgml/ref/psql-ref.sgml",
           "locator": "psql -d/-c/-v and variable processing"
         }
+      }
+    },
+    "field-separator-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Separate fields in unaligned output",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "STRING",
+          "grammar": "The default is a vertical bar. Quote shell metacharacters, for example -F '|'."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Unaligned fields use a vertical bar by default."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--field-separator"
+          }
+        ]
+      }
+    },
+    "log-file-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Copy query output to a log file",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "The file receives query output in addition to its normal destination."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No extra copy of query output is written."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--log-file"
+          }
+        ]
+      }
+    },
+    "output-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Redirect subsequent query output",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "DESTINATION",
+          "grammar": "The destination receives result tables and command responses. Errors still go to standard error. Quote a leading pipe and command to send output to a shell pipeline."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Query output normally goes to standard output."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--output"
+          }
+        ]
+      }
+    },
+    "pset-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Set a result-printing option",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "NAME[=VALUE]",
+          "grammar": "Use NAME=VALUE, for example format=latex. Some settings toggle when only NAME is given. These are \\pset settings."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use current printing settings."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--pset"
+          }
+        ]
+      }
+    },
+    "record-separator-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Separate rows in unaligned output",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "STRING",
+          "grammar": "The default separator is a newline. Use --record-separator-zero for NUL-delimited rows."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Unaligned records use a newline by default."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--record-separator"
+          }
+        ]
+      }
+    },
+    "table-attr-operand": {
+      "kind": "nonnumerical",
+      "meaning": "Set HTML table-tag attributes",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "TEXT",
+          "grammar": "Supply attribute text for HTML output. Quote spaces to pass one argument."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not supply additional HTML attributes."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--table-attr"
+          }
+        ]
+      }
+    },
+    "help-operand": {
+      "kind": "enumeration",
+      "meaning": "Show client help and exit",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "TOPIC",
+          "grammar": "Bare --help lists command-line options. Use --help=commands for backslash commands or --help=variables for special variables. The short alias '-?' takes no topic. Quote it to prevent shell globbing."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Continue with the requested session."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "List command-line options."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PostgreSQL psql"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "16",
+            "17",
+            "18",
+            "19"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://www.postgresql.org/docs/19/app-psql.html",
+            "locator": "--help"
+          }
+        ]
       }
     }
   }

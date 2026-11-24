@@ -189,8 +189,10 @@ class DevelopmentExpansionTests(unittest.TestCase):
                     for form in value_forms(entry):
                         separator = {"equals": "=", "attached": "", "separate": " "}[form]
                         for value in ("'日本 value'", "-1", "'--expression-flag'"):
-                            line = case["command"] + " " + flag + separator + value + " --"
-                            if form == "separate" and entry.get("argument_style") and value.startswith("'--"):
+                            extra_slots = " payload" * (entry.get("argument_count", 1) - 1)
+                            line = case["command"] + " " + flag + separator + value + extra_slots + " --"
+                            strict = entry.get("argument_style") or flag in ("--encrypt-files", "--diff-with")
+                            if form == "separate" and strict and value.startswith("'--"):
                                 with self.assertRaises(HelpError):
                                     context_for(line, len(line), profile)
                             else:

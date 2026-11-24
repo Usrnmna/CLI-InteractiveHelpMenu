@@ -1,15 +1,15 @@
 {
   "categories": [
     {
-      "description": "Selected documented options for this command path.",
+      "description": "Documented options and aliases for this command.",
       "name": "Options",
       "options": [
         {
           "argument": "PORT",
           "argument_optional": false,
-          "detail": "Device/port string or fnmatch-style device pattern passed through SerialPortFinder and the serial backend. An explicit non-pattern string, including digit-only text, is forwarded unchanged; it is not converted to an enumerated device index. Pattern selection uses the first matching enumerated device and ordering is not stable. Backend URL forms retain backend-specific meanings. Reference scope: PlatformIO Core 6.1.18.",
+          "detail": "Supply a device path or a supported serial URL. Quote wildcard patterns so PlatformIO can match the available ports. Without a CLI value, the project or device selection supplies the endpoint.",
           "flag": "-p",
-          "summary": "Select serial port",
+          "summary": "Select the device monitor endpoint",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -22,9 +22,9 @@
         {
           "argument": "PORT",
           "argument_optional": false,
-          "detail": "Device/port string or fnmatch-style device pattern passed through SerialPortFinder and the serial backend. An explicit non-pattern string, including digit-only text, is forwarded unchanged; it is not converted to an enumerated device index. Pattern selection uses the first matching enumerated device and ordering is not stable. Backend URL forms retain backend-specific meanings. Reference scope: PlatformIO Core 6.1.18.",
+          "detail": "Supply a device path or a supported serial URL. Quote wildcard patterns so PlatformIO can match the available ports. Without a CLI value, the project or device selection supplies the endpoint.",
           "flag": "--port",
-          "summary": "Select serial port",
+          "summary": "Select the device monitor endpoint",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -37,9 +37,9 @@
         {
           "argument": "BAUD",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified.",
+          "detail": "The default is 9600 baud unless monitor_speed supplies another rate. Framing overhead affects payload throughput. The adapter and driver determine the available rates.",
           "flag": "-b",
-          "summary": "Set serial signalling rate in baud",
+          "summary": "Set the serial signalling rate",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -52,9 +52,9 @@
         {
           "argument": "BAUD",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: BAUD is the configured serial signalling rate in baud, default 9600 unless monitor_speed overrides it. Framing and protocol overhead mean this is not a payload byte/second rate. Supported rates depend on the adapter and driver; hardware operation has not been verified.",
+          "detail": "The default is 9600 baud unless monitor_speed supplies another rate. Framing overhead affects payload throughput. The adapter and driver determine the available rates.",
           "flag": "--baud",
-          "summary": "Set serial signalling rate in baud",
+          "summary": "Set the serial signalling rate",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -68,7 +68,7 @@
           "argument": "PARITY",
           "argument_optional": false,
           "flag": "--parity",
-          "summary": "Set parity",
+          "summary": "Select serial parity checking",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -172,26 +172,29 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply N, E, O, S or M for none, even, odd, space or mark. The built-in default is N."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--rtscts",
-          "summary": "Enable hardware flow control"
+          "summary": "Enable hardware flow control",
+          "detail": "Uses the serial adapter's RTS and CTS lines for flow control. The peer and adapter must support it."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--xonxoff",
-          "summary": "Enable software flow control"
+          "summary": "Enable software flow control",
+          "detail": "Uses XON and XOFF control characters in the serial data stream. Enable this when the peer uses software flow control."
         },
         {
           "argument": "LEVEL",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage.",
+          "detail": "Use 0 for deasserted or 1 for asserted. Electrical polarity and effects on the board depend on the adapter and wiring.",
           "flag": "--rts",
-          "summary": "Set initial RTS logical state: 0 or 1",
+          "summary": "Set the initial RTS control-line state",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -270,9 +273,9 @@
         {
           "argument": "LEVEL",
           "argument_optional": false,
-          "detail": "PlatformIO Core 6.1.18: the integer is a logical state restricted to 0 or 1, not volts, a count, or a baud rate. Electrical polarity and effects depend on the serial adapter/driver; logical assertion must not be equated with a verified physical voltage.",
+          "detail": "Use 0 for deasserted or 1 for asserted. Electrical polarity and effects on the board depend on the adapter and wiring.",
           "flag": "--dtr",
-          "summary": "Set initial DTR logical state: 0 or 1",
+          "summary": "Set the initial DTR control-line state",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -352,13 +355,14 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--echo",
-          "summary": "Echo input locally"
+          "summary": "Display typed characters locally",
+          "detail": "Local echo displays transmitted input on the terminal. A device that also echoes input may display each character twice."
         },
         {
           "argument": "FILTER",
           "argument_optional": false,
           "flag": "-f",
-          "summary": "Select a stream filter",
+          "summary": "Apply monitor stream filters",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -418,13 +422,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat to build a filter chain, such as time or hexlify. Installed filters can transform incoming or outgoing text. Core 6.1.18 and 6.2.0 use monitor_filters when CLI filters are absent. Noble 4.3.4 adds CLI filters to the configured list."
         },
         {
           "argument": "FILTER",
           "argument_optional": false,
           "flag": "--filter",
-          "summary": "Select a stream filter",
+          "summary": "Apply monitor stream filters",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -484,13 +489,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat to build a filter chain, such as time or hexlify. Installed filters can transform incoming or outgoing text. Core 6.1.18 and 6.2.0 use monitor_filters when CLI filters are absent. Noble 4.3.4 adds CLI filters to the configured list."
         },
         {
           "argument": "ENCODING",
           "argument_optional": false,
           "flag": "--encoding",
-          "summary": "Set stream encoding",
+          "summary": "Set the serial terminal text encoding",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -550,13 +556,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Use a supported codec name, such as UTF-8 or Latin-1. UTF-8 is the built-in default. In raw mode received bytes bypass decoding."
         },
         {
           "argument": "ENVIRONMENT",
           "argument_optional": false,
           "flag": "-e",
-          "summary": "Select project environment",
+          "summary": "Load monitor settings from a project environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -617,13 +624,14 @@
                 "subject": "PlatformIO environments"
               }
             ]
-          }
+          },
+          "detail": "Supply one [env:NAME] from platformio.ini. In Core 6.1.18 and 6.2.0 the default is the first default_envs entry, or the first project environment if none is configured."
         },
         {
           "argument": "ENVIRONMENT",
           "argument_optional": false,
           "flag": "--environment",
-          "summary": "Select project environment",
+          "summary": "Load monitor settings from a project environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -684,13 +692,14 @@
                 "subject": "PlatformIO environments"
               }
             ]
-          }
+          },
+          "detail": "Supply one [env:NAME] from platformio.ini. In Core 6.1.18 and 6.2.0 the default is the first default_envs entry, or the first project environment if none is configured."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "-d",
-          "summary": "Select project directory",
+          "summary": "Find monitor settings in a project directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -750,13 +759,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to the current directory. Use -e to select the environment whose monitor settings apply."
         },
         {
           "argument": "DIRECTORY",
           "argument_optional": false,
           "flag": "--project-dir",
-          "summary": "Select project directory",
+          "summary": "Find monitor settings in a project directory",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -816,7 +826,80 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Defaults to the current directory. Use -e to select the environment whose monitor settings apply."
+        },
+        {
+          "flag": "--eol",
+          "argument": "MODE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "eol"
+              }
+            ]
+          },
+          "summary": "Select the line ending sent for Enter",
+          "detail": "Choose CR, LF or CRLF to match the device protocol. The built-in default is CRLF."
+        },
+        {
+          "flag": "--raw",
+          "argument": "",
+          "summary": "Write received device bytes directly to the terminal",
+          "detail": "Incoming data bypasses decoding and display filters. Keyboard input continues to use the terminal's transmit transformations."
+        },
+        {
+          "flag": "--exit-char",
+          "argument": "CODE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "exit-char"
+              }
+            ]
+          },
+          "summary": "Set the key that exits the monitor",
+          "detail": "Supply a decimal ASCII character code. The built-in default is 3 (Ctrl+C). Choose a different code from --menu-char."
+        },
+        {
+          "flag": "--menu-char",
+          "argument": "CODE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "menu-char"
+              }
+            ]
+          },
+          "summary": "Set the terminal menu prefix key",
+          "detail": "Supply a decimal ASCII character code. The built-in default is 20 (Ctrl+T). Press it before a menu key. Choose a different code from --exit-char."
+        },
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "summary": "Suppress routine monitor diagnostics",
+          "detail": "Device data still appears. The accepted spelling has two leading dashes."
+        },
+        {
+          "flag": "--no-reconnect",
+          "argument": "",
+          "summary": "Stop when an established monitor connection fails",
+          "detail": "Normally the monitor retries after a disconnect. This switch is present in Core 6.1.18 and 6.2.0 and absent from Noble 4.3.4."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show device monitor help",
+          "detail": "Prints the installed monitor options and exits before opening a device."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show device monitor help",
+          "detail": "Prints the installed monitor options and exits before opening a device."
         }
       ]
     }
@@ -828,9 +911,9 @@
   ],
   "description": "Options for pio device monitor.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-10-23",
-    "source": "https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html"
+    "kind": "Manual and versioned parser inventory",
+    "reviewed": "2026-11-24",
+    "source": "https://docs.platformio.org/en/stable/core/userguide/device/cmd_monitor.html"
   },
   "stop_at_positional": false,
   "value_definitions": {
@@ -958,6 +1041,185 @@
           "locator": "SerialPortFinder.find initial_port and match_serial_port"
         }
       }
+    },
+    "eol": {
+      "kind": "enumeration",
+      "meaning": "Select the line ending sent for Enter",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "MODE",
+          "grammar": "Choose CR, LF or CRLF. These names are case-sensitive."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured monitor setting or the built-in default CRLF."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "4.3.4",
+            "6.1.18",
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/device/monitor/command.py",
+            "locator": "--eol"
+          }
+        ]
+      }
+    },
+    "exit-char": {
+      "kind": "identifier",
+      "meaning": "Set the key that exits the monitor",
+      "bare": {
+        "state": "accepted",
+        "form": "operand"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "number",
+          "syntax": "CODE",
+          "grammar": "Decimal ASCII character code used to leave miniterm. For example, 3 identifies Ctrl+C."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default exit code 3."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "4.3.4",
+            "6.1.18",
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/device/monitor/command.py",
+            "locator": "--exit-char"
+          }
+        ]
+      },
+      "subject": "Terminal control character"
+    },
+    "menu-char": {
+      "kind": "identifier",
+      "meaning": "Set the terminal menu prefix key",
+      "bare": {
+        "state": "accepted",
+        "form": "operand"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "number",
+          "syntax": "CODE",
+          "grammar": "Decimal ASCII character code used as a menu prefix. For example, 20 identifies Ctrl+T."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default menu code 20."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "PlatformIO Core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "4.3.4",
+            "6.1.18",
+            "6.2.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/platformio/platformio-core/blob/v6.2.0/platformio/device/monitor/command.py",
+            "locator": "--menu-char"
+          }
+        ]
+      },
+      "subject": "Terminal control character"
     }
   }
 }

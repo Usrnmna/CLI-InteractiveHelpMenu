@@ -61,7 +61,7 @@ class NumericalDiagnosticTests(unittest.TestCase):
                 self.assertEqual(profile, original)
 
     def test_external_fixed_digits_classify_the_documented_action(self):
-        """Retain source-scoped action evidence for the unbundled digit switches."""
+        """Retain external evidence when a formerly discovery-only switch gains a menu row."""
         for name in ("du|-0", "psql|-0", "psql|-1"):
             identity = "option|" + name
             with self.subTest(identity=identity):
@@ -69,9 +69,15 @@ class NumericalDiagnosticTests(unittest.TestCase):
                 group = self.group(identity)
                 self.assertTrue(entry["numeric_fixed_spelling"])
                 self.assertEqual(group["classification"], "nonnumerical")
-                self.assertEqual(group["evidence"], "source-derived")
-                self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
-                self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+                roles = {o["role"] for o in entry["observations"]}
+                if name.startswith("psql|"):
+                    self.assertEqual(group["evidence"], "verified")
+                    self.assertIn("bundled_option", roles)
+                    self.assertTrue(roles & {"fixture_help", "captured_help"})
+                else:
+                    self.assertEqual(group["evidence"], "source-derived")
+                    self.assertNotIn("bundled_option", roles)
+                    self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
 
     def test_yq_nul_switch_retains_both_sources(self):
         """The digit selects output framing and consumes no numerical operand."""

@@ -350,7 +350,16 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
     boundary_options = set(profile.get("stop_at_options", [])) | set(route.stop_at_options if route else ())
     group = profile.get("positional_group")
     group_values = 0
+    saw_positional_group = False
+    repeated_value_width = 0
     for word in previous:
+        # Flash options can own several files or address/file pairs. A new
+        # switch ends the list only after its current group is complete.
+        if repeated_value_width and not values_remaining:
+            if word.startswith("-"):
+                repeated_value_width = 0
+            else:
+                values_remaining = repeated_value_width
         if optional_integer_pending:
             optional_integer_pending = False
             # Only an explicitly typed optional integer can consume a separate
@@ -382,6 +391,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         if any(name in boundary_options for name, _, _ in parsed):
             raise HelpError("Move before the declared child-argument boundary.", "child_argument_boundary")
         if group and not option and not word.startswith("-"):
+            saw_positional_group = True
             group_values = 1
             continue
         if group and not option:
@@ -393,8 +403,10 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
                 raise HelpError("An unrecognized option or short-option bundle makes the argument position ambiguous.", "unsupported_option")
         if option.get("argument") and not option.get("argument_optional", False):
             values_remaining = max(0, option.get("argument_count", 1) - int(bool(equal) or attached))
+            if group and profile.get("identity") in {"esptool-v4", "esptool-v5"} and key in {"--encrypt-files", "--diff-with"}:
+                repeated_value_width = option.get("argument_count", 1)
             # FFmpeg consumes the following word verbatim, including a negative map or pipe name.
-            strict_value = switch_syntax != "ffmpeg" and bool(option.get("argument_style") or len(parsed) > 1)
+            strict_value = switch_syntax != "ffmpeg" and bool(repeated_value_width or option.get("argument_style") or len(parsed) > 1)
         optional_integer_pending = option.get("optional_value_kind") == "nonnegative_integer" and not (equal or attached)
     if values_remaining:
         raise HelpError("Enter the preceding option's argument before choosing another option.", "option_value_required")
@@ -402,6 +414,13 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         raise HelpError("Move the cursor outside the optional integer argument.", "cursor_in_value")
     if group_values:
         raise HelpError("Complete the repeated positional argument group before choosing an option.", "positional_group_incomplete")
+    if saw_positional_group and profile.get("identity") == "esptool-v4":
+        # argparse consumes all positional address/file pairs in one run. An
+        # option inserted between pairs leaves the following offsets unparsed.
+        following = next((token for token in tokens if token.start > end), None)
+        if following and not following.value.startswith("-") and (not active or not options.get(query, {}).get("argument")):
+            raise HelpError("Place v4 write options before the first or after the last positional pair.",
+                            "positional_group_boundary")
     return Context(line, point, start, end, query, profile)
 
 

@@ -1,6 +1,6 @@
 # Project roadmap
 
-**Next task — complete the first-pass `psql` audit.** Start with its [21 bundled rows](profiles/psql.json) and reconcile the command with the upstream and both Ubuntu manuals. All 60 previously audited profiles have now completed their manual-coverage revisits. The [six-family verification record](docs/devtools-batch-verification.md) closes the final 18 menus.
+**Next task — audit the Essential tier of discovered command help, beginning with `ffmpeg`.** The [discovery matrix](tests/fixtures/help/matrix.json) lists 46 Essential paths. Compare the menu produced through each discovery route with its source, including qualifications lost during parsing or rendering. All 76 bundled profiles have completed the first-pass, manual-option and Menu Details reviews. The [final seven-family verification](docs/remaining-bundled-verification.md) covers the last 16 menus. The [preceding six-family verification](docs/devtools-batch-verification.md) covers the previous 18.
 The [combined iproute2, systemd and OpenSSL revisit](docs/iproute2-systemd-openssl-verification.md) is complete.
 The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
@@ -30,19 +30,11 @@ a batch finishes, a source discrepancy blocks work, or the scope changes.
 
 ## Bundled menu progress
 
-The first pass reviewed 718 of the 942 entries originally bundled, covering 60
-of 76 profiles. The remaining 224 original entries span 16 profiles. These are
-baseline counts. The number of options documented in the manuals must be
-established separately for each command.
-
-The last two columns track the revisit of the 60 previously audited profiles.
-Record each family’s option counts, detail gaps and test evidence in its linked
-audit. For a partial family, name the next command or option there and at the
-top of this page. The Podman revisits added 295 selectable rows (152 run,
+The first pass covered all 942 original entries across the 76 profiles. The final seven families completed the full manual comparison on their first pass, covering the remaining 224 original entries. The last two columns link the reconciled manual inventories and the rendered Details verification. The Podman revisits added 295 selectable rows (152 run,
 124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158, fzf added 192, FFmpeg added 1,743 and yq eval added 54.
 The combined revisit added 139 iproute2, 166 systemd and 337 OpenSSL rows.
 The six development-tool families added 969 rows to the previous 5,245.
-The bundled total is **6,214 rows across 76 profiles**, compared with the historical 942.
+The remaining seven families add 273 rows to the previous 6,214. The bundled total is **6,487 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -68,9 +60,13 @@ The bundled total is **6,214 rows across 76 profiles**, compared with the histor
 | .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Complete · [242 selectable rows](docs/dotnet-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
 | `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Complete · [121 selectable rows](docs/bun-run-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
 | Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | Complete · [168 run spellings](docs/podman-run-manual-coverage.md#option-inventory) and [171 build, exec and logs spellings](docs/podman-build-exec-logs-manual-coverage.md#build-inventory) | Complete on all three targets · [run](docs/podman-run-manual-coverage.md#verification) and [build, exec and logs](docs/podman-build-exec-logs-manual-coverage.md#verification) |
-| `psql` | 1 | 21 | Next | — | — |
-| `ansible-playbook`, `az`, `gcloud` | 7 | 90 | Pending | — | — |
-| `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending | — | — |
+| PostgreSQL — `psql` | 1 | 21 | Complete locally · [family audit](docs/psql-manual-coverage.md) | Complete · [70 selectable rows](docs/psql-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| Ansible — `ansible-playbook` | 1 | 21 | Complete locally · [family audit](docs/ansible-playbook-manual-coverage.md) | Complete · [61 selectable rows](docs/ansible-playbook-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| Azure CLI — `az` | 3 | 35 | Complete locally · [family audit](docs/azure-cli-manual-coverage.md) | Complete · [50 selectable rows](docs/azure-cli-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| Google Cloud CLI — `gcloud` | 3 | 34 | Complete locally · [family audit](docs/gcloud-manual-coverage.md) | Complete · [91 selectable rows](docs/gcloud-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| Espressif — `esptool`, `esptool.py` | 3 | 30 | Complete locally · [family audit](docs/esptool-manual-coverage.md) | Complete · [77 selectable rows](docs/esptool-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| PlatformIO — `pio`, `platformio` | 4 | 68 | Complete locally · [family audit](docs/platformio-manual-coverage.md) | Complete · [98 selectable rows](docs/platformio-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
+| Arduino — `arduino-cli compile` | 1 | 15 | Complete locally · [family audit](docs/arduino-cli-manual-coverage.md) | Complete · [50 selectable rows](docs/arduino-cli-manual-coverage.md) | Complete on all three targets · [combined results](docs/remaining-bundled-verification.md#compatibility-results) |
 
 ## Manual-coverage revisit
 
@@ -99,8 +95,7 @@ The bundled total is **6,214 rows across 76 profiles**, compared with the histor
    remaining gaps. Record material detail gaps fixed or still open separately.
    Verify the added and revised entries using the terminal and sandbox checks
    below. Mark each coverage column verified only when its inventory reconciles,
-   its open gaps are resolved and its checks pass. Apply the same coverage
-   standard when the first pass resumes with `psql`.
+   its open gaps are resolved and its checks pass.
 
 ## Reducing test duration
 

@@ -1,14 +1,14 @@
 {
   "categories": [
     {
-      "description": "Literal command arguments; values are entered separately.",
+      "description": "Documented options and aliases for this command.",
       "name": "Arguments",
       "options": [
         {
           "argument": "INVENTORY",
-          "detail": "Inventory file/directory/plugin source or a comma-separated inline host list; the host_list plugin recognizes comma-containing non-path input. Plugins own their source-specific grammar. A numeric host name is not a host-count limit. Reference scope: ansible-core 2.18.6.",
+          "detail": "Repeat for additional inventory sources. Use a trailing comma for a single inline host, as in -i 'web1,'. A file or directory is loaded through its inventory plugin.",
           "flag": "--inventory",
-          "summary": "Select an inventory path or host list",
+          "summary": "Read inventory from a source or inline host list",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -21,9 +21,9 @@
         {
           "argument": "INVENTORY",
           "attached": true,
-          "detail": "Inventory file/directory/plugin source or a comma-separated inline host list; the host_list plugin recognizes comma-containing non-path input. Plugins own their source-specific grammar. A numeric host name is not a host-count limit. Reference scope: ansible-core 2.18.6.",
+          "detail": "Repeat for additional inventory sources. Use a trailing comma for a single inline host, as in -i 'web1,'. A file or directory is loaded through its inventory plugin.",
           "flag": "-i",
-          "summary": "Select an inventory path or host list",
+          "summary": "Read inventory from a source or inline host list",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -36,7 +36,7 @@
         {
           "argument": "PATTERN",
           "flag": "--limit",
-          "summary": "Limit hosts",
+          "summary": "Restrict the play to matching inventory hosts",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -107,13 +107,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply an additional inventory pattern, or @file to read host patterns from a file. Quote shell metacharacters in patterns such as 'web:&staging'."
         },
         {
           "argument": "PATTERN",
           "attached": true,
           "flag": "-l",
-          "summary": "Limit hosts",
+          "summary": "Restrict the play to matching inventory hosts",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -184,13 +185,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply an additional inventory pattern, or @file to read host patterns from a file. Quote shell metacharacters in patterns such as 'web:&staging'."
         },
         {
           "argument": "EXTRA_VARS",
-          "detail": "Repeated key=value strings, JSON/YAML mappings or @filename; the loader requires a mapping. Variable names and the selected task/plugin own each value's numerical interpretation; key=value strings are not globally rescaled. Reference scope: ansible-core 2.18.6.",
+          "detail": "Repeat with key=value pairs, a quoted JSON or YAML mapping, or @file containing a mapping. The key=value form gives string values. Use JSON or YAML for typed values.",
           "flag": "--extra-vars",
-          "summary": "Set extra variables",
+          "summary": "Set playbook variables",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -203,9 +205,9 @@
         {
           "argument": "EXTRA_VARS",
           "attached": true,
-          "detail": "Repeated key=value strings, JSON/YAML mappings or @filename; the loader requires a mapping. Variable names and the selected task/plugin own each value's numerical interpretation; key=value strings are not globally rescaled. Reference scope: ansible-core 2.18.6.",
+          "detail": "Repeat with key=value pairs, a quoted JSON or YAML mapping, or @file containing a mapping. The key=value form gives string values. Use JSON or YAML for typed values.",
           "flag": "-e",
-          "summary": "Set extra variables",
+          "summary": "Set playbook variables",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -218,27 +220,31 @@
         {
           "argument": "",
           "flag": "--check",
-          "summary": "Predict changes without applying tasks"
+          "summary": "Predict changes on tasks that support check mode",
+          "detail": "Modules without check-mode support skip the simulated operation. A task with check_mode: false can still make changes. Use --diff for supported before-and-after comparisons."
         },
         {
           "argument": "",
           "flag": "-C",
-          "summary": "Enable check mode"
+          "summary": "Predict changes on tasks that support check mode",
+          "detail": "Modules without check-mode support skip the simulated operation. A task with check_mode: false can still make changes. Use --diff for supported before-and-after comparisons."
         },
         {
           "argument": "",
           "flag": "--diff",
-          "summary": "Display file differences"
+          "summary": "Show changes reported by diff-aware modules",
+          "detail": "Diff mode can reveal file contents. Combine with --check to preview supported changes. Used alone, diff mode still applies the task."
         },
         {
           "argument": "",
           "flag": "-D",
-          "summary": "Display file differences"
+          "summary": "Show changes reported by diff-aware modules",
+          "detail": "Diff mode can reveal file contents. Combine with --check to preview supported changes. Used alone, diff mode still applies the task."
         },
         {
           "argument": "TAGS",
           "flag": "--tags",
-          "summary": "Select task tags",
+          "summary": "Run tasks selected by tag",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -298,12 +304,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat or supply comma-separated tag names. The always tag normally still runs. Use --skip-tags to exclude matches."
         },
         {
           "argument": "TAGS",
           "flag": "--skip-tags",
-          "summary": "Exclude task tags",
+          "summary": "Skip tasks with matching tags",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -363,22 +370,26 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Repeat or supply comma-separated tag names. Skipping a tag takes precedence over selecting it with --tags."
         },
         {
           "argument": "",
           "flag": "--list-hosts",
-          "summary": "List targeted hosts"
+          "summary": "List the inventory hosts matched by each play",
+          "detail": "Inventory and --limit determine the list. Playbook tasks stay unexecuted."
         },
         {
           "argument": "",
           "flag": "--list-tasks",
-          "summary": "List selected tasks"
+          "summary": "List the tasks selected for execution",
+          "detail": "Tag selection applies. Tasks inside dynamic includes are resolved at run time and may be absent from this list."
         },
         {
           "argument": "",
           "flag": "--syntax-check",
-          "summary": "Check playbook syntax"
+          "summary": "Check playbook syntax without running its tasks",
+          "detail": "Pass one or more playbook paths. This checks what Ansible can load at parse time. Runtime conditions and module results still require execution."
         },
         {
           "argument": "REMOTE_USER",
@@ -443,12 +454,13 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply the account used by the connection plugin. Use --become-user to select the account used after privilege escalation."
         },
         {
           "argument": "FILE",
           "flag": "--private-key",
-          "summary": "Select an SSH private key",
+          "summary": "Authenticate the connection with a private key file",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -508,17 +520,19 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply the private key path on the controller for a connection plugin that supports key authentication."
         },
         {
           "argument": "",
           "flag": "--become",
-          "summary": "Enable privilege escalation"
+          "summary": "Enable privilege escalation for tasks",
+          "detail": "The become method and target user come from their settings. Request an escalation password separately with -K when needed."
         },
         {
           "argument": "USER",
           "flag": "--become-user",
-          "summary": "Select the privilege escalation user",
+          "summary": "Select the privilege escalation target user",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -578,13 +592,14 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "The built-in target is root. Enable escalation with --become or the equivalent play or configuration setting."
         },
         {
           "argument": "FORKS",
-          "detail": "Integer process count at least 1; zero and negatives are rejected. Actual concurrency can be lower when fewer hosts/tasks are available. Reference scope: ansible-core 2.18.6.",
+          "detail": "The built-in limit is 5 processes. Supply an integer of at least 1. Zero and negative counts are rejected. Fewer hosts can use fewer workers.",
           "flag": "--forks",
-          "summary": "Set parallel worker count; at least 1, default 5",
+          "summary": "Limit parallel Ansible worker processes",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -661,7 +676,7 @@
         {
           "argument": "FILE",
           "flag": "--vault-password-file",
-          "summary": "Select a vault password file",
+          "summary": "Get a Vault password from a file or script",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
@@ -721,7 +736,710 @@
                 }
               }
             ]
-          }
+          },
+          "detail": "Supply a controller-side password file or executable password script. Repeat for additional sources. Use the Vault prompt or the file option separately."
+        },
+        {
+          "flag": "--become-pass-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "become-password-file"
+              }
+            ]
+          },
+          "summary": "Read the privilege escalation password",
+          "detail": "Supply a controller file, an executable script that prints the password, or - for standard input. Choose this option or -K."
+        },
+        {
+          "flag": "--become-password-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "become-password-file"
+              }
+            ]
+          },
+          "summary": "Read the privilege escalation password",
+          "detail": "Supply a controller file, an executable script that prints the password, or - for standard input. Choose this option or -K."
+        },
+        {
+          "flag": "--conn-pass-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "connection-password-file"
+              }
+            ]
+          },
+          "summary": "Read the connection password",
+          "detail": "Supply a controller file, an executable script that prints the password, or - for standard input. Choose this option or -k."
+        },
+        {
+          "flag": "--connection-password-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "connection-password-file"
+              }
+            ]
+          },
+          "summary": "Read the connection password",
+          "detail": "Supply a controller file, an executable script that prints the password, or - for standard input. Choose this option or -k."
+        },
+        {
+          "flag": "--flush-cache",
+          "argument": "",
+          "summary": "Clear cached facts for inventory hosts",
+          "detail": "This clears the fact cache for every host in the inventory, including hosts outside a narrower play limit."
+        },
+        {
+          "flag": "--force-handlers",
+          "argument": "",
+          "summary": "Run notified handlers even after a task fails",
+          "detail": "Only previously notified handlers run. A lost connection can still prevent the handler from running on that host."
+        },
+        {
+          "flag": "--list-tags",
+          "argument": "",
+          "summary": "List the task tags available in the playbook",
+          "detail": "Lists tags without executing tasks. Dynamic includes can introduce more tags during execution."
+        },
+        {
+          "flag": "--start-at-task",
+          "argument": "TASK",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "start-at-task"
+              }
+            ]
+          },
+          "summary": "Begin execution at the named task",
+          "detail": "Quote task names containing spaces. Ansible can start at statically imported tasks. Tasks inside dynamic includes cannot be selected this way."
+        },
+        {
+          "flag": "--step",
+          "argument": "",
+          "summary": "Prompt before running each task",
+          "detail": "At each prompt choose to run the task, skip it, or continue the rest of the play without further prompts."
+        },
+        {
+          "flag": "--vault-id",
+          "argument": "IDENTITY",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "vault-id"
+              }
+            ]
+          },
+          "summary": "Select a Vault password source by identity",
+          "detail": "Supply a password source, optionally prefixed with a label and @. For example, dev@prompt asks for the dev password. Repeat for additional identities."
+        },
+        {
+          "flag": "--vault-pass-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Vault password source path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Path to a vault-password file or executable password client as supported by Ansible; the help browser does not run it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No CLI vault-password file is appended; other vault-password sources remain applicable."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--vault-password-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Get a Vault password from a file or script",
+          "detail": "Supply a controller-side password file or executable password script. Repeat for additional sources. Use the Vault prompt or the file option separately."
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "summary": "Show Ansible version and installation locations",
+          "detail": "Prints the active configuration, module search paths and executable location, then exits without loading playbooks."
+        },
+        {
+          "flag": "-J",
+          "argument": "",
+          "summary": "Prompt for the Vault decryption password",
+          "detail": "This prompt supplies a Vault secret. Use --vault-id LABEL@prompt for a labelled secret. Choose the prompt or --vault-password-file."
+        },
+        {
+          "flag": "--ask-vault-pass",
+          "argument": "",
+          "summary": "Prompt for the Vault decryption password",
+          "detail": "This prompt supplies a Vault secret. Use --vault-id LABEL@prompt for a labelled secret. Choose the prompt or --vault-password-file."
+        },
+        {
+          "flag": "--ask-vault-password",
+          "argument": "",
+          "summary": "Prompt for the Vault decryption password",
+          "detail": "This prompt supplies a Vault secret. Use --vault-id LABEL@prompt for a labelled secret. Choose the prompt or --vault-password-file."
+        },
+        {
+          "flag": "-K",
+          "argument": "",
+          "summary": "Prompt for the privilege escalation password",
+          "detail": "Use this prompt for become authentication, separately from the connection prompt. Enable escalation with --become when needed."
+        },
+        {
+          "flag": "--ask-become-pass",
+          "argument": "",
+          "summary": "Prompt for the privilege escalation password",
+          "detail": "Use this prompt for become authentication, separately from the connection prompt. Enable escalation with --become when needed."
+        },
+        {
+          "flag": "-M",
+          "argument": "PATHS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "module-path"
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Prepend directories to the module search path",
+          "detail": "On Linux, pass a colon-separated list of directories. Repeat the option to supply additional module search paths."
+        },
+        {
+          "flag": "--module-path",
+          "argument": "PATHS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "module-path"
+              }
+            ]
+          },
+          "summary": "Prepend directories to the module search path",
+          "detail": "On Linux, pass a colon-separated list of directories. Repeat the option to supply additional module search paths."
+        },
+        {
+          "flag": "-f",
+          "argument": "FORKS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Parallel worker-process limit",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer process count at least 1; zero and negatives are rejected. Actual concurrency can be lower when fewer hosts/tasks are available.",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured DEFAULT_FORKS, whose built-in value is 5."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "add_fork_options"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/__init__.py",
+                      "locator": "validate_conflicts requires forks >= 1"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/config/base.yml",
+                      "locator": "DEFAULT_FORKS"
+                    }
+                  ]
+                },
+                "subject": "Concurrent Ansible worker processes"
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Limit parallel Ansible worker processes",
+          "detail": "The built-in limit is 5 processes. Supply an integer of at least 1. Zero and negative counts are rejected. Fewer hosts can use fewer workers."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show playbook command help",
+          "detail": "Displays options and the positional playbook paths, then exits."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show playbook command help",
+          "detail": "Displays options and the positional playbook paths, then exits."
+        },
+        {
+          "flag": "--inventory-file",
+          "argument": "INVENTORY",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "inventory-source"
+              }
+            ]
+          },
+          "summary": "Read inventory from a source or inline host list",
+          "detail": "Repeat for additional inventory sources. Use a trailing comma for a single inline host, as in -i 'web1,'. A file or directory is loaded through its inventory plugin. Deprecated spelling. Use -i or --inventory in new commands."
+        },
+        {
+          "flag": "-k",
+          "argument": "",
+          "summary": "Prompt for the connection password",
+          "detail": "This authenticates the login to the host. The escalation password has its own prompt, -K."
+        },
+        {
+          "flag": "--ask-pass",
+          "argument": "",
+          "summary": "Prompt for the connection password",
+          "detail": "This authenticates the login to the host. The escalation password has its own prompt, -K."
+        },
+        {
+          "flag": "-t",
+          "argument": "TAGS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Task tag names",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated tag names and Ansible reserved selectors such as all, tagged and untagged; numbers are literal tag text."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured run tags; without a restriction the ordinary task-tag rules apply."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--tags"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Run tasks selected by tag",
+          "detail": "Repeat or supply comma-separated tag names. The always tag normally still runs. Use --skip-tags to exclude matches."
+        },
+        {
+          "flag": "-v",
+          "argument": "",
+          "summary": "Increase diagnostic verbosity",
+          "detail": "Repeat -v or combine it as -vvv. Connection debugging commonly needs -vvvv. Individual plugins choose which messages to show."
+        },
+        {
+          "flag": "--verbose",
+          "argument": "",
+          "summary": "Increase diagnostic verbosity",
+          "detail": "Repeat -v or combine it as -vvv. Connection debugging commonly needs -vvvv. Individual plugins choose which messages to show."
+        },
+        {
+          "flag": "--key-file",
+          "argument": "FILE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Private-key file path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filesystem path to a connection authentication key; interpreted by the connection plugin."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured connection authentication/key selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--private-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "summary": "Authenticate the connection with a private key file",
+          "detail": "Supply the private key path on the controller for a connection plugin that supports key authentication."
+        },
+        {
+          "flag": "--scp-extra-args",
+          "argument": "ARGS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "scp-extra-args"
+              }
+            ]
+          },
+          "summary": "Pass extra arguments to scp transfers",
+          "detail": "Supply one shell-quoted argument string for the SSH connection plugin's scp subprocess. Use --ssh-common-args for options shared by all three SSH tools."
+        },
+        {
+          "flag": "--sftp-extra-args",
+          "argument": "ARGS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "sftp-extra-args"
+              }
+            ]
+          },
+          "summary": "Pass extra arguments to sftp transfers",
+          "detail": "Supply one shell-quoted argument string for the SSH connection plugin's sftp subprocess."
+        },
+        {
+          "flag": "--ssh-common-args",
+          "argument": "ARGS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "ssh-common-args"
+              }
+            ]
+          },
+          "summary": "Pass common arguments to SSH and its transfer tools",
+          "detail": "One shell-quoted string supplies extra arguments to ssh, scp and sftp when the SSH connection plugin invokes them."
+        },
+        {
+          "flag": "--ssh-extra-args",
+          "argument": "ARGS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "ssh-extra-args"
+              }
+            ]
+          },
+          "summary": "Pass extra arguments to the ssh subprocess",
+          "detail": "Supply one shell-quoted argument string. The scp and sftp subprocesses have their own extra-argument options."
+        },
+        {
+          "flag": "-T",
+          "argument": "SECONDS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "timeout"
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Set the connection timeout in seconds",
+          "detail": "Supply an integer number of seconds. The default and timeout handling depend on the connection plugin. This controls the connection rather than the duration of a playbook task."
+        },
+        {
+          "flag": "--timeout",
+          "argument": "SECONDS",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "timeout"
+              }
+            ]
+          },
+          "summary": "Set the connection timeout in seconds",
+          "detail": "Supply an integer number of seconds. The default and timeout handling depend on the connection plugin. This controls the connection rather than the duration of a playbook task."
+        },
+        {
+          "flag": "-c",
+          "argument": "PLUGIN",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "connection"
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Select the connection plugin",
+          "detail": "Supply a connection type such as ssh or local. The selected plugin determines how Ansible reaches the host."
+        },
+        {
+          "flag": "--connection",
+          "argument": "PLUGIN",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "connection"
+              }
+            ]
+          },
+          "summary": "Select the connection plugin",
+          "detail": "Supply a connection type such as ssh or local. The selected plugin determines how Ansible reaches the host."
+        },
+        {
+          "flag": "-u",
+          "argument": "REMOTE_USER",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Remote login user name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Connection-plugin login user string; no physical unit or numerical user-count meaning."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured connection/login-user precedence."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "ansible-core"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "2.18.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/ansible/ansible/v2.18.6/lib/ansible/cli/arguments/option_helpers.py",
+                      "locator": "--user"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "attached": true,
+          "summary": "Select the remote login user",
+          "detail": "Supply the account used by the connection plugin. Use --become-user to select the account used after privilege escalation."
+        },
+        {
+          "flag": "--become-method",
+          "argument": "METHOD",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "become-method"
+              }
+            ]
+          },
+          "summary": "Select the privilege escalation plugin",
+          "detail": "The built-in default is sudo. Available methods depend on the installed become plugins. Enable escalation separately."
+        },
+        {
+          "flag": "-b",
+          "argument": "",
+          "summary": "Enable privilege escalation for tasks",
+          "detail": "The become method and target user come from their settings. Request an escalation password separately with -K when needed."
         }
       ]
     }
@@ -729,7 +1447,7 @@
   "command": [
     "ansible-playbook"
   ],
-  "description": "ansible-playbook shell argument reference.",
+  "description": "Run one or more playbook files against inventory hosts.",
   "value_definitions": {
     "extra-variables": {
       "kind": "delegated",
@@ -866,6 +1584,758 @@
           "locator": "host_list verify_file and parse; CLI inventory append"
         }
       }
+    },
+    "become-password-file": {
+      "kind": "nonnumerical",
+      "meaning": "Read the privilege escalation password",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Path to the password file or executable password script, or - for stdin."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use configured become credentials or the requested password prompt."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--become-password-file"
+          }
+        ]
+      }
+    },
+    "connection-password-file": {
+      "kind": "nonnumerical",
+      "meaning": "Read the connection password",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Path to the password file or executable password script, or - for stdin."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use configured connection credentials or the requested login prompt."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--connection-password-file"
+          }
+        ]
+      }
+    },
+    "start-at-task": {
+      "kind": "nonnumerical",
+      "meaning": "Begin execution at the named task",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "TASK",
+          "grammar": "Supply the task name as one shell argument."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Begin at the first applicable task."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/playbook.py",
+            "locator": "--start-at-task"
+          }
+        ]
+      }
+    },
+    "vault-id": {
+      "kind": "delegated",
+      "meaning": "Select a Vault password source by identity",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "IDENTITY",
+          "grammar": "Supply a password source, optionally prefixed by a Vault label and @, such as dev@prompt."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use other provided or configured Vault password sources."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--vault-id"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Select a Vault password source by identity",
+        "reference": {
+          "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+          "locator": "--vault-id"
+        }
+      }
+    },
+    "module-path": {
+      "kind": "nonnumerical",
+      "meaning": "Prepend directories to the module search path",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "PATHS",
+          "grammar": "On Linux, a colon-separated list of module directories. Repeatable."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured module library paths."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--module-path"
+          }
+        ]
+      }
+    },
+    "scp-extra-args": {
+      "kind": "delegated",
+      "meaning": "Pass extra arguments to scp transfers",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "ARGS",
+          "grammar": "The SSH connection plugin splits a single argument string for scp."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured scp extra arguments."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--scp-extra-args"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Pass extra arguments to scp transfers",
+        "reference": {
+          "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+          "locator": "--scp-extra-args"
+        }
+      }
+    },
+    "sftp-extra-args": {
+      "kind": "delegated",
+      "meaning": "Pass extra arguments to sftp transfers",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "ARGS",
+          "grammar": "The SSH connection plugin splits a single argument string for sftp."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured sftp extra arguments."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--sftp-extra-args"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Pass extra arguments to sftp transfers",
+        "reference": {
+          "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+          "locator": "--sftp-extra-args"
+        }
+      }
+    },
+    "ssh-common-args": {
+      "kind": "delegated",
+      "meaning": "Pass common arguments to SSH and its transfer tools",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "ARGS",
+          "grammar": "The SSH connection plugin splits a single argument string for ssh, sftp and scp."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured common SSH arguments."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--ssh-common-args"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Pass common arguments to SSH and its transfer tools",
+        "reference": {
+          "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+          "locator": "--ssh-common-args"
+        }
+      }
+    },
+    "ssh-extra-args": {
+      "kind": "delegated",
+      "meaning": "Pass extra arguments to the ssh subprocess",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "ARGS",
+          "grammar": "The SSH connection plugin splits a single argument string for ssh."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured ssh extra arguments."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--ssh-extra-args"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Pass extra arguments to the ssh subprocess",
+        "reference": {
+          "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+          "locator": "--ssh-extra-args"
+        }
+      }
+    },
+    "timeout": {
+      "kind": "duration",
+      "meaning": "Set the connection timeout in seconds",
+      "bare": {
+        "state": "accepted",
+        "form": "operand"
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "number",
+          "syntax": "SECONDS",
+          "grammar": "A whole number of seconds for establishing or waiting on the connection, as interpreted by its plugin.",
+          "unit": {
+            "base": "second",
+            "multiplier": "1"
+          }
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the timeout configured for the connection plugin."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--timeout"
+          }
+        ]
+      }
+    },
+    "connection": {
+      "kind": "nonnumerical",
+      "meaning": "Select the connection plugin",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "PLUGIN",
+          "grammar": "A connection plugin name such as ssh or local."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured transport."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--connection"
+          }
+        ]
+      }
+    },
+    "become-method": {
+      "kind": "nonnumerical",
+      "meaning": "Select the privilege escalation plugin",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand uses the documented text syntax."
+      },
+      "forms": [
+        {
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "METHOD",
+          "grammar": "A become plugin name, such as sudo or su."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured become method, normally sudo."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "ansible-core"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "2.16.3",
+            "2.20.1",
+            "2.22.0"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line grammar has no chip-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/ansible/ansible/blob/v2.22.0/lib/ansible/cli/arguments/option_helpers.py",
+            "locator": "--become-method"
+          }
+        ]
+      }
     }
+  },
+  "documentation": {
+    "kind": "Manual and versioned parser inventory",
+    "reviewed": "2026-11-24",
+    "source": "https://docs.ansible.com/projects/ansible/latest/cli/ansible-playbook.html"
   }
 }

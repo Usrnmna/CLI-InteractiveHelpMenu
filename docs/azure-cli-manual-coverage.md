@@ -1,0 +1,28 @@
+# Azure CLI command coverage
+
+The three menus cover the public options of the core Azure CLI commands below. Each spelling has its own insertion row. The effect count groups interchangeable aliases within each command. The [independent declaration inventory](../tests/fixtures/cloud-manual/inventory.json) lists every group and marks required operands.
+
+| Command and upstream manual | Original rows | Added | Final rows | Effects | Alias rows |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [az account show](https://learn.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az-account-show) | 8 | 4 | 12 | 7 | 5 |
+| [az vm list](https://learn.microsoft.com/en-us/cli/azure/vm?view=azure-cli-latest#az-vm-list) | 11 | 3 | 14 | 10 | 4 |
+| [az storage blob list](https://learn.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest#az-storage-blob-list) | 16 | 8 | 24 | 21 | 3 |
+
+## Sources and release coverage
+
+The Microsoft Learn references were checked against the [installed Azure CLI 2.91.0 fixed leaf help](../tests/fixtures/help/followup-cloud-captured.json). That capture used an isolated Ubuntu 24.04 environment and records the version and command for each leaf. The shorter [development specimens](../tests/fixtures/help/expansion-development-captured.json) have separate provenance. Existing structured grammar reviewed for 2.71.0 retains its version labels.
+
+The Ubuntu primary archive returned zero published source packages named `azure-cli` for both releases. Exact section 1 lookups for `az`, `az-account-show`, `az-vm-list` and `az-storage-blob-list` returned HTTP 404 in both suites. Ubuntu's installation guide uses Microsoft's package repository. Neither suite provides a separate manual for these leaves. [Noble manuals](https://manpages.ubuntu.com/manpages/noble/en/) · [Resolute manuals](https://manpages.ubuntu.com/manpages/resolute/en/) · [Ubuntu Azure CLI package instructions](https://ubuntu.com/azure/docs/azure-how-to/instances/install-azure-cli/)
+
+## Existing rows and additions
+
+- **Across the three commands**, the help spellings `--help` and `-h` were missing. The previous logging summaries were sufficient. Details now distinguish warnings, results and debug output. The original format and query rows were incomplete. `--query` applies a client-side JMESPath expression to returned JSON before formatting. Output supports seven choices, including `none`. [Microsoft query reference](https://learn.microsoft.com/en-us/cli/azure/query-azure-cli)
+- **Account** retained its original eight insertions. The subscription argument needed the distinction between viewing a subscription and changing the default. `--name` and `-n` join `--subscription` and `-s` as aliases for the same name-or-ID operand. The short subscription flags belong to this leaf. [Account profile](../profiles/az-account-show.json)
+- **VM** retained its eleven insertions and gained `--vmss` plus both help spellings. The resource group and details rows were incomplete. A configured group can narrow results even when omitted. An explicit empty string selects the whole subscription. Extra details include public IP, DNS name and power state and take additional time. A scale-set restriction takes its name or ID. [VM profile](../profiles/az-vm-list.json)
+- **Blob** retained its sixteen insertions. The required container name and the account, key and login choices needed their scopes. The new rows cover `--account-key`, `--blob-endpoint`, `--connection-string`, `--sas-token`, `--show-next-marker`, `--timeout` and both help spellings. Details distinguish the server prefix from the client query and the per-call timeout from total listing time. A quoted `'*'` removes the overall result cap. Pages can stop early and a previous continuation token belongs in `--marker`. With `--show-next-marker` the token appears in a result record. Otherwise any remaining token is logged as a warning. [Blob profile](../profiles/az-storage-blob-list.json) · [Tagged paging implementation](https://github.com/Azure/azure-cli/blob/azure-cli-2.91.0/src/azure-cli/azure/cli/command_modules/storage/operations/blob.py)
+
+## Blob include discrepancy
+
+The fixed help advertises immutability policy, legal hold and deleted-with-versions as extra datasets. Azure CLI 2.91.0's validator accepts a single word of selector letters and constructs an explicit list for the storage SDK. The isolated validator from the release wheel, with its actual storage SDK enumeration, mapped `cmsdvt` to snapshots, metadata, copy, deleted, versions and tags. Input `il` produced an empty list. Input `d` selected deleted alone. Input `x` raised a validation error. The menu records the release-specific behavior in Details. These observations concern argument translation only. [Tagged validator](https://github.com/Azure/azure-cli/blob/azure-cli-2.91.0/src/azure-cli/azure/cli/command_modules/storage/_validators.py) · [Option registration](https://github.com/Azure/azure-cli/blob/azure-cli-2.91.0/src/azure-cli/azure/cli/command_modules/storage/_params.py) · [Azure CLI 2.91.0](https://pypi.org/project/azure-cli/2.91.0/) · [Azure Storage Blob 12.29.0b1](https://pypi.org/project/azure-storage-blob/12.29.0b1/) · [Azure Core 1.39.0](https://pypi.org/project/azure-core/1.39.0/)
+
+The inventory excludes other leaf commands, extensions and settings on commands that change resources. Existing raw help remains available for discovery regressions. The [focused tests](../tests/test_cloud_captured.py) compare exact spellings and operand counts with the independent declarations. The [shared verification report](remaining-bundled-verification.md) records the rendered menu and full-suite checks.
