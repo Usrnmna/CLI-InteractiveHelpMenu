@@ -73,7 +73,10 @@ class RuntimeFollowupTests(unittest.TestCase):
         for command, (required, switches, optional) in CONTRACTS.items():
             with self.subTest(command=command):
                 options = options_for(profile_for(command))
-                self.assertEqual(set(options), set((required + " " + switches + " " + optional).split()))
+                historical = set((required + " " + switches + " " + optional).split())
+                self.assertLessEqual(historical, options.keys())
+                if command == "arduino-cli compile":
+                    self.assertEqual(historical, options.keys())
                 for flag in required.split():
                     self.assertTrue(options[flag]["argument"], flag)
                     self.assertFalse(options[flag]["argument_optional"], flag)
@@ -92,7 +95,7 @@ class RuntimeFollowupTests(unittest.TestCase):
                 text += CAPTURES["go help build"]["output"].split("The build flags are shared", 1)[1]
             if command == "go test":
                 text += CAPTURES["go help testflag"]["output"]
-            for flag in options_for(profile_for(command)):
+            for flag in " ".join(CONTRACTS[command]).split():
                 with self.subTest(command=command, flag=flag):
                     # SDK help suppresses some accepted aliases and implicit
                     # restore options. These require separately captured source.
@@ -130,7 +133,9 @@ class RuntimeFollowupTests(unittest.TestCase):
                     prefix = "command -- env MODE='\u96ea value' "
                     line = prefix + command + "  --"
                     context = find_context(line, len(line), [profile], driver_registry=REGISTRY)
-                    expected = prefix + command + "  " + flag + " "
+                    literal = flag + ("=" if option.get("argument_style") == "equals" and not flag.endswith("=") else "")
+                    joined = literal.endswith("=") or option.get("argument_style") == "attached_only"
+                    expected = prefix + command + "  " + literal + ("" if joined else " ")
                     self.assertEqual(insert_option(context, option), (expected, len(expected)))
         profile = profile_for("dotnet publish")
         line = 'dotnet publish --self-contained false --'

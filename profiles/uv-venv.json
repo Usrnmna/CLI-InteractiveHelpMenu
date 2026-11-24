@@ -16,7 +16,7 @@
           "argument_optional": false,
           "flag": "--clear",
           "summary": "Clear the target before creating the environment",
-          "detail": "In uv 0.13.9 this removes an existing virtual environment. Clearing a nonempty ordinary directory also requires --force. In 0.6.14 this flag has no effect. Existing virtual environments are replaced by default."
+          "detail": "In uv 0.13.9 this removes an existing virtual environment. Clearing a nonempty ordinary directory also requires --force. In 0.6.14 this flag has no effect. Existing virtual environments are replaced by default. Also written as -c."
         },
         {
           "argument": "",
@@ -66,7 +66,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -84,6 +85,14 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "uv-venv --prompt"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --prompt"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --prompt"
                     }
                   ]
                 }
@@ -109,77 +118,14 @@
         {
           "argument": "PYTHON",
           "argument_optional": false,
-          "detail": "Give a version such as 3.12 or an interpreter path. Automatic discovery skips interpreters in virtual environments.",
+          "detail": "Give a version such as 3.12 or an interpreter path. Automatic discovery skips interpreters in virtual environments. Also written as -p.",
           "flag": "--python",
           "summary": "Choose the base interpreter for the environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "uv Python interpreter request grammar",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use command-specific project/environment/Python discovery without an explicit CLI interpreter request."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "uv"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "0.6.14"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
-                      "locator": "Requesting Python versions and request forms"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-python/src/discovery.rs",
-                      "locator": "PythonRequest parsing/discovery boundary"
-                    }
-                  ]
-                },
-                "grammar": {
-                  "name": "uv Python interpreter request grammar",
-                  "reference": {
-                    "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
-                    "locator": "Requesting Python versions and request forms"
-                  }
-                }
+                "ref": "python"
               }
             ]
           }
@@ -196,7 +142,7 @@
           "argument_optional": false,
           "flag": "--no-cache",
           "summary": "Use a temporary cache for this command",
-          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
+          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set. Also written as -n, --no-cache-dir."
         },
         {
           "argument": "DIRECTORY",
@@ -239,7 +185,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -257,6 +204,14 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "--directory"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --directory"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --directory"
                     }
                   ]
                 }
@@ -306,7 +261,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -324,6 +280,14 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "--project"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --project"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --project"
                     }
                   ]
                 }
@@ -331,6 +295,1476 @@
             ]
           },
           "detail": "uv searches this directory and its parents. Relative command-line paths still use the working directory."
+        }
+      ]
+    },
+    {
+      "name": "Additional command options",
+      "description": "Command-specific settings and selectors.",
+      "options": [
+        {
+          "flag": "--no-project",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip project and workspace discovery",
+          "detail": "Project configuration normally helps choose the target environment path and interpreter constraints. Supply an explicit path or Python request as needed. Also written as --no-workspace."
+        },
+        {
+          "flag": "-c",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Clear the target before creating the environment",
+          "detail": "Alternate spelling of --clear. 0.13.9 only. Empty an existing virtual environment. Clearing a nonempty ordinary directory also requires --force. The older release rejects the short form.",
+          "bundle": true
+        },
+        {
+          "flag": "--force",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow clearing an ordinary directory",
+          "detail": "0.13.9 only. Combine with --clear to remove all contents of the target before creating the virtual environment. Check the positional target path before running."
+        },
+        {
+          "flag": "--link-mode",
+          "argument": "LINK_MODE",
+          "argument_optional": false,
+          "summary": "Choose how files are installed from the cache",
+          "detail": "Only applies when installing seed packages. clone uses copy-on-write, copy duplicates files, hardlink shares file data, and symlink points into the cache. Clearing the cache breaks symlinked installations. Linux defaults to hardlink in 0.6.14 and clone in 0.13.9. macOS defaults to clone and Windows to hardlink.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how files are installed from the cache",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --link-mode"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --link-mode"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "clone",
+                    "notation": "literal",
+                    "syntax": "clone",
+                    "tokens": [
+                      "clone"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use copy-on-write clones"
+                  },
+                  {
+                    "id": "copy",
+                    "notation": "literal",
+                    "syntax": "copy",
+                    "tokens": [
+                      "copy"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Copy package files"
+                  },
+                  {
+                    "id": "hardlink",
+                    "notation": "literal",
+                    "syntax": "hardlink",
+                    "tokens": [
+                      "hardlink"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use hard links"
+                  },
+                  {
+                    "id": "symlink",
+                    "notation": "literal",
+                    "syntax": "symlink",
+                    "tokens": [
+                      "symlink"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Create symbolic links into the cache"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "macOS defaults to clone and Windows to hardlink. On Linux 0.6.14 defaults to hardlink and 0.13.9 defaults to clone."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Python options",
+      "description": "Interpreter selection and discovery.",
+      "options": [
+        {
+          "flag": "-p",
+          "argument": "PYTHON",
+          "argument_optional": false,
+          "summary": "Choose the base interpreter for the environment",
+          "detail": "Alternate spelling of --python. Give a version such as 3.12 or an interpreter path. Automatic discovery skips interpreters in virtual environments.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "python"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--managed-python",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Require an interpreter managed by uv",
+          "detail": "A system Python installation cannot satisfy the request. Combine with --no-python-downloads to require an already installed managed interpreter."
+        },
+        {
+          "flag": "--no-managed-python",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use system Python installations only",
+          "detail": "uv ignores its managed Python installations and searches the system for a matching interpreter."
+        },
+        {
+          "flag": "--no-python-downloads",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Prevent automatic interpreter downloads",
+          "detail": "A matching interpreter must already be discoverable. Package network access is controlled separately by --offline."
+        }
+      ]
+    },
+    {
+      "name": "Index options",
+      "description": "Package repositories and authentication.",
+      "options": [
+        {
+          "flag": "--index",
+          "argument": "INDEX",
+          "argument_optional": false,
+          "summary": "Add a priority package index",
+          "detail": "Applies when resolving seed packages. Use a simple repository URL or matching directory layout. Earlier --index entries win, ahead of --default-index. In 0.13.9, a configured index name can also select an index.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add a priority package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --index"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --index"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "INDEX",
+                    "grammar": "Simple repository URL or compatible local directory. The named form NAME=URL also identifies the index. In 0.13.9 an existing configured index name can select it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured indexes and default index."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--default-index",
+          "argument": "DEFAULT_INDEX",
+          "argument_optional": false,
+          "summary": "Choose the lowest-priority package index",
+          "detail": "Applies when resolving seed packages. Supply a simple repository URL or a directory with the same layout. The built-in default is PyPI. Explicit --index entries take precedence.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the lowest-priority package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --default-index"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --default-index"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "INDEX",
+                    "grammar": "Simple-index URL or local directory. In 0.13.9 configured index names can also be used."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured default index, normally PyPI."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--index-url",
+          "argument": "INDEX_URL",
+          "argument_optional": false,
+          "summary": "Set the legacy default index URL",
+          "detail": "This deprecated spelling selects the simple repository used when higher-priority indexes do not supply the package. Prefer --default-index for new commands. Also written as -i.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "index-url"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-i",
+          "argument": "INDEX_URL",
+          "argument_optional": false,
+          "summary": "Set the legacy default index URL",
+          "detail": "Alternate spelling of --index-url. This deprecated spelling selects the simple repository used when higher-priority indexes do not supply the package. Prefer --default-index for new commands.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "index-url"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extra-index-url",
+          "argument": "EXTRA_INDEX_URL",
+          "argument_optional": false,
+          "summary": "Add another legacy package index",
+          "detail": "Supply a simple repository URL or compatible directory. This deprecated spelling accepts additional indexes. Prefer --index for new commands.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add another legacy package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --extra-index-url"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --extra-index-url"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "A simple repository URL or local directory using that repository layout."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the indexes otherwise configured."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-links",
+          "argument": "FIND_LINKS",
+          "argument_optional": false,
+          "summary": "Search a flat collection of distribution files",
+          "detail": "Applies when resolving seed packages. Use a directory containing wheels or source archives at its top level, or an HTML page linking to them. Combine with --no-index to exclude package registries. Also written as -f.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-links"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-f",
+          "argument": "FIND_LINKS",
+          "argument_optional": false,
+          "summary": "Search a flat collection of distribution files",
+          "detail": "Alternate spelling of --find-links. Applies when resolving seed packages. Use a directory containing wheels or source archives at its top level, or an HTML page linking to them. Combine with --no-index to exclude package registries.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-links"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-index",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip package registry indexes",
+          "detail": "Applies when resolving seed packages. Only direct source references and distributions available through --find-links can supply the required packages."
+        },
+        {
+          "flag": "--index-strategy",
+          "argument": "INDEX_STRATEGY",
+          "argument_optional": false,
+          "summary": "Choose how uv searches multiple indexes",
+          "detail": "Applies when resolving seed packages. first-index restricts each package to the first index containing it. unsafe-first-match falls through indexes in order. unsafe-best-match compares versions across all indexes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how uv searches multiple indexes",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --index-strategy"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --index-strategy"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "first-index",
+                    "notation": "literal",
+                    "syntax": "first-index",
+                    "tokens": [
+                      "first-index"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use the first index containing each name"
+                  },
+                  {
+                    "id": "unsafe-first-match",
+                    "notation": "literal",
+                    "syntax": "unsafe-first-match",
+                    "tokens": [
+                      "unsafe-first-match"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Exhaust versions on each index in order"
+                  },
+                  {
+                    "id": "unsafe-best-match",
+                    "notation": "literal",
+                    "syntax": "unsafe-best-match",
+                    "tokens": [
+                      "unsafe-best-match"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer the best candidate across indexes"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is first-index."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--keyring-provider",
+          "argument": "KEYRING_PROVIDER",
+          "argument_optional": false,
+          "summary": "Choose how uv reads index credentials",
+          "detail": "Applies when resolving seed packages. disabled skips keyring. subprocess invokes the keyring executable, which must be installed and available on PATH.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how uv reads index credentials",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --keyring-provider"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --keyring-provider"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "disabled",
+                    "notation": "literal",
+                    "syntax": "disabled",
+                    "tokens": [
+                      "disabled"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Skip keyring credential lookup"
+                  },
+                  {
+                    "id": "subprocess",
+                    "notation": "literal",
+                    "syntax": "subprocess",
+                    "tokens": [
+                      "subprocess"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Invoke the keyring CLI"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is disabled."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resolver options",
+      "description": "Package selection, versions and source overrides.",
+      "options": [
+        {
+          "flag": "--exclude-newer",
+          "argument": "EXCLUDE_NEWER",
+          "argument_optional": false,
+          "summary": "Limit packages by distribution upload time",
+          "detail": "Applies when resolving seed packages. Use an RFC 3339 timestamp or local date. In 0.13.9, '7 days' and P7D subtract a fixed interval from the current time. Months and years are rejected. false disables the cutoff in 0.13.9. A date includes the full local calendar day.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Limit packages by distribution upload time",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --exclude-newer"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-distribution-types/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset. Relative durations are subtracted from the current UTC instant. A day is 24 hours even across daylight-saving changes. Months and years are rejected.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  },
+                  {
+                    "id": "span",
+                    "notation": "expression",
+                    "syntax": "P7D",
+                    "grammar": "An ISO 8601 duration, such as PT24H or P7D."
+                  },
+                  {
+                    "id": "friendly",
+                    "notation": "expression",
+                    "syntax": "7 days",
+                    "grammar": "A unit-bearing duration. Quote the complete operand when it contains spaces."
+                  },
+                  {
+                    "id": "disable",
+                    "notation": "expression",
+                    "syntax": "false",
+                    "grammar": "The lowercase literal false cancels the global cutoff."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply any configured cutoff. Without one, uploads are unrestricted by age."
+                }
+              },
+              {
+                "kind": "timestamp",
+                "meaning": "Limit packages by distribution upload time",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --exclude-newer"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-resolver/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply any configured cutoff. Without one, uploads are unrestricted by age."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exclude-newer-package",
+          "argument": "EXCLUDE_NEWER_PACKAGE",
+          "argument_optional": false,
+          "summary": "Override the upload cutoff for one package",
+          "detail": "0.13.9 only. Applies when resolving seed packages. Use PACKAGE=DATE, PACKAGE=P7D or PACKAGE=false. Quote a duration containing spaces. Repeat to set independent limits on more packages.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Override the upload cutoff for one package",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-configuration/src/exclude_newer.rs",
+                      "locator": "uv venv --exclude-newer-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-distribution-types/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset. Relative durations are subtracted from the current UTC instant. A day is 24 hours even across daylight-saving changes. Months and years are rejected.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  },
+                  {
+                    "id": "span",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=P7D",
+                    "grammar": "An ISO 8601 duration, such as PT24H or P7D."
+                  },
+                  {
+                    "id": "friendly",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=7 days",
+                    "grammar": "A unit-bearing duration. Quote the complete operand when it contains spaces."
+                  },
+                  {
+                    "id": "disable",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=false",
+                    "grammar": "The lowercase literal false cancels the package cutoff even if a global cutoff applies."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the global cutoff unless overridden by package configuration."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache options",
+      "description": "Persistent cache location and package freshness.",
+      "options": [
+        {
+          "flag": "--refresh",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Refresh cached package data",
+          "detail": "Revalidate cached entries for this operation. To refresh only one distribution, use --refresh-package."
+        },
+        {
+          "flag": "--refresh-package",
+          "argument": "REFRESH_PACKAGE",
+          "argument_optional": false,
+          "summary": "Refresh one distribution's cached data",
+          "detail": "Applies when resolving seed packages. Supply its package name. Resolution still follows version constraints and lock policies.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Refresh one distribution's cached data",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --refresh-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --refresh-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use a temporary cache for this command",
+          "detail": "Alternate spelling of --no-cache. The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set.",
+          "bundle": true
+        },
+        {
+          "flag": "--cache-dir",
+          "argument": "CACHE_DIR",
+          "argument_optional": false,
+          "summary": "Choose the on-disk cache directory",
+          "detail": "Use a directory path. Run uv cache dir to see the effective default. --no-cache uses a temporary directory.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the on-disk cache directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --cache-dir"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --cache-dir"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DIRECTORY",
+                    "grammar": "A directory path for cached distributions and metadata."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured cache directory or the platform default."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Global options",
+      "description": "Output, configuration and network access.",
+      "options": [
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reduce command output",
+          "detail": "Repeat as -qq for silent stdout. --verbose conflicts with quiet output. Also written as -q.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-q",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reduce command output",
+          "detail": "Alternate spelling of --quiet. Repeat as -qq for silent stdout. --verbose conflicts with quiet output.",
+          "bundle": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--verbose",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Increase diagnostic detail",
+          "detail": "Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output. Also written as -v.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "verbose"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-v",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Increase diagnostic detail",
+          "detail": "Alternate spelling of --verbose. Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output.",
+          "bundle": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "verbose"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color",
+          "argument": "COLOR_CHOICE",
+          "argument_optional": false,
+          "summary": "Choose when to print terminal colors",
+          "detail": "Use auto for terminal detection, always to force color, or never to suppress it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose when to print terminal colors",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --color"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --color"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Detect terminal capabilities"
+                  },
+                  {
+                    "id": "always",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Force color"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress color"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is auto."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--system-certs",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Load trusted roots from the operating system",
+          "detail": "0.13.9 only. Use the platform store when a required trust root is missing from uv's bundled Mozilla certificates. The older public spelling is --native-tls."
+        },
+        {
+          "flag": "--allow-insecure-host",
+          "argument": "ALLOW_INSECURE_HOST",
+          "argument_optional": false,
+          "summary": "Trust a host without certificate verification",
+          "detail": "Supply HOST, HOST:PORT or a URL. Repeat for additional hosts. HTTPS certificate checks are bypassed for listed hosts. Also written as --trusted-host.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "allow-insecure-host"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-progress",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide progress bars and spinners",
+          "detail": "Use this when writing logs. Warnings and normal command output are controlled separately."
+        },
+        {
+          "flag": "--config-file",
+          "argument": "CONFIG_FILE",
+          "argument_optional": false,
+          "summary": "Read settings from a specific uv.toml file",
+          "detail": "Pass the configuration file path. Project configuration embedded in pyproject.toml cannot be supplied with this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read settings from a specific uv.toml file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv venv --config-file"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv venv --config-file"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "A path to a uv.toml configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal configuration discovery."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-config",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip configuration file discovery",
+          "detail": "uv ignores settings discovered in uv.toml and pyproject.toml in the project, its parents and user configuration locations."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command path",
+          "detail": "Use uv help followed by the command path for the expanded manual. Also written as -h."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command path",
+          "detail": "Alternate spelling of --help. Use uv help followed by the command path for the expanded manual.",
+          "bundle": true
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the release version",
+          "detail": "0.6.14 accepts this after the command path. In 0.13.9 place --version directly after uv. Also written as -V."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the release version",
+          "detail": "Alternate spelling of --version. 0.6.14 accepts this after the command path. In 0.13.9 place --version directly after uv.",
+          "bundle": true
+        }
+      ]
+    },
+    {
+      "name": "Compatibility options",
+      "description": "Alternate spellings and release-specific switches.",
+      "options": [
+        {
+          "flag": "--native-tls",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Load TLS roots from the operating system",
+          "detail": "This is the public spelling in 0.6.14. In 0.13.9 it is a deprecated equivalent of --system-certs. The default uses bundled Mozilla roots."
+        },
+        {
+          "flag": "--no-cache-dir",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use a temporary cache for this command",
+          "detail": "Alternate spelling of --no-cache. The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
+        },
+        {
+          "flag": "--no-preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable the general preview switch",
+          "detail": "Use this to override an enabled blanket preview setting. Feature availability depends on the uv release."
+        },
+        {
+          "flag": "--no-workspace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip project and workspace discovery",
+          "detail": "Alternate spelling of --no-project. Project configuration normally helps choose the target environment path and interpreter constraints. Supply an explicit path or Python request as needed."
+        },
+        {
+          "flag": "--preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable the release's experimental features",
+          "detail": "Preview behavior can change between releases. In 0.13.9, --preview-features can enable selected features individually."
+        },
+        {
+          "flag": "--preview-feature",
+          "argument": "FEATURE",
+          "argument_optional": false,
+          "summary": "Enable named experimental features",
+          "detail": "Alternate spelling of --preview-features. 0.13.9 only. Use a comma-separated list or repeat the option. For example, index-by-name gives configured index names priority over relative paths in 0.13.9.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preview-features"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--preview-features",
+          "argument": "FEATURE",
+          "argument_optional": false,
+          "summary": "Enable named experimental features",
+          "detail": "0.13.9 only. Use a comma-separated list or repeat the option. For example, index-by-name gives configured index names priority over relative paths in 0.13.9. Also written as --preview-feature.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preview-features"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--trusted-host",
+          "argument": "ALLOW_INSECURE_HOST",
+          "argument_optional": false,
+          "summary": "Trust a host without certificate verification",
+          "detail": "Alternate spelling of --allow-insecure-host. Supply HOST, HOST:PORT or a URL. Repeat for additional hosts. HTTPS certificate checks are bypassed for listed hosts.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "allow-insecure-host"
+              }
+            ]
+          }
         }
       ]
     }
@@ -341,9 +1775,443 @@
   ],
   "description": "Create a Python virtual environment at PATH (normally .venv).",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Upstream manual and release-specific CLI comparison for uv 0.6.14 and 0.13.9",
+    "reviewed": "2026-11-23",
     "source": "https://docs.astral.sh/uv/reference/cli/#uv-venv"
   },
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "python": {
+      "kind": "delegated",
+      "meaning": "uv Python interpreter request grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use command-specific project/environment/Python discovery without an explicit CLI interpreter request."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+            "locator": "Requesting Python versions and request forms"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-python/src/discovery.rs",
+            "locator": "PythonRequest parsing/discovery boundary"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --python"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --python"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "uv Python interpreter request grammar",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+          "locator": "Requesting Python versions and request forms"
+        }
+      }
+    },
+    "index-url": {
+      "kind": "nonnumerical",
+      "meaning": "Set the legacy default index URL",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --index-url"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --index-url"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "URL",
+          "grammar": "Simple repository URL or local directory in simple-repository layout."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured default index, normally PyPI."
+      }
+    },
+    "find-links": {
+      "kind": "nonnumerical",
+      "meaning": "Search a flat collection of distribution files",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --find-links"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --find-links"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "LOCATION",
+          "grammar": "A flat directory of distribution files or an HTML page of links to distributions."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the other configured distribution sources."
+      }
+    },
+    "quiet": {
+      "kind": "level",
+      "meaning": "Reduce command output",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Occurrences of the switch set the level."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --quiet"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --quiet"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This fixed switch takes no operand."
+      },
+      "ordering": "Each occurrence increases output suppression.",
+      "forms": [
+        {
+          "id": "repeat",
+          "notation": "expression",
+          "syntax": "-qq",
+          "grammar": "Repeat as -qq for silent stdout. --verbose conflicts with quiet output. Also written as -q."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Apply normal output settings."
+      }
+    },
+    "verbose": {
+      "kind": "level",
+      "meaning": "Increase diagnostic detail",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Occurrences of the switch set the level."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --verbose"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --verbose"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This fixed switch takes no operand."
+      },
+      "ordering": "Each occurrence increases diagnostic verbosity.",
+      "forms": [
+        {
+          "id": "repeat",
+          "notation": "expression",
+          "syntax": "-vv",
+          "grammar": "Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output. Also written as -v."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Apply normal output settings."
+      }
+    },
+    "allow-insecure-host": {
+      "kind": "nonnumerical",
+      "meaning": "Trust a host without certificate verification",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv venv --allow-insecure-host"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv venv --allow-insecure-host"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "HOST",
+          "grammar": "A hostname, HOST:PORT or URL. The port identifies a service on that host."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "TLS verification follows the configured trust roots."
+      }
+    },
+    "preview-features": {
+      "kind": "nonnumerical",
+      "meaning": "Enable named experimental features",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/docs/concepts/preview.md",
+            "locator": "uv venv --preview-features"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "FEATURE",
+          "grammar": "One named uv preview feature or comma-separated names. Multiple occurrences accumulate. Feature names depend on the release."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured preview feature set."
+      }
+    }
+  }
 }

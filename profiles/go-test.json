@@ -13,63 +13,11 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "Go test-name regular expression",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Unanchored regular expression for tests, examples and fuzz tests. Unbracketed slashes separate name components."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Do not restrict tests with a -run expression."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Go"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "1.24.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
-                      "locator": "testing flags -run"
-                    }
-                  ]
-                }
+                "ref": "run"
               }
             ]
           },
-          "detail": "Use an unanchored regular expression. A slash separates subtest levels. A matching parent runs to discover its children, as in -run '^TestAPI$/^Read$'."
+          "detail": "Use an unanchored regular expression. A slash separates subtest levels. A matching parent runs to discover its children, as in -run '^TestAPI$/^Read$'. The test binary spelling is -test.run."
         },
         {
           "argument": "REGEXP",
@@ -80,152 +28,23 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "Go benchmark-name regular expression",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Unanchored benchmark expression. Unbracketed slashes separate name components. The pattern . matches all benchmark names."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Do not run benchmarks through this flag."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Go"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "1.24.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
-                      "locator": "testing flags -bench"
-                    }
-                  ]
-                }
+                "ref": "bench"
               }
             ]
           },
-          "detail": "Benchmarks are off by default. Use -bench . for all benchmarks or -run '^$' -bench . to skip ordinary tests. A slash selects sub-benchmarks."
+          "detail": "Benchmarks are off by default. Use -bench . for all benchmarks or -run '^$' -bench . to skip ordinary tests. A slash selects sub-benchmarks. The test binary spelling is -test.bench."
         },
         {
           "argument": "N",
           "argument_optional": false,
-          "detail": "The default is one run. Explicit -count=1 bypasses cached test results. With -cpu the count applies to each setting. Examples run once and -fuzz targets ignore the count.",
+          "detail": "The default is one run. Explicit -count=1 bypasses cached test results. With -cpu the count applies to each setting. Examples run once and -fuzz targets ignore the count. The test binary spelling is -test.count.",
           "flag": "-count",
           "summary": "Repeat tests, benchmarks and fuzz seeds",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "applicability": {
-                  "chip": {
-                    "reason": "No chip-specific interpretation is claimed",
-                    "state": "not_applicable"
-                  },
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Go"
-                    ]
-                  },
-                  "platform": {
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
-                    "state": "not_applicable"
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "1.24.0"
-                    ]
-                  }
-                },
-                "bare": {
-                  "form": "number",
-                  "state": "accepted"
-                },
-                "forms": [
-                  {
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "grammar": "Decimal integer repetition count",
-                    "id": "number",
-                    "notation": "number",
-                    "special_values": [
-                      {
-                        "meaning": "Perform zero counted repetitions",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "N"
-                  },
-                  {
-                    "grammar": "Go flag.Uint uses base-0 parsing; the result is still a repetition count",
-                    "id": "based",
-                    "notation": "expression",
-                    "syntax": "0xHEX | 0oOCTAL | 0bBINARY | 0OCTAL"
-                  }
-                ],
-                "kind": "count",
-                "meaning": "Repetitions of each test, benchmark and fuzz seed",
-                "review": {
-                  "references": [
-                    {
-                      "locator": "test flag help for -count and -timeout",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go"
-                    },
-                    {
-                      "locator": "test.count uses flag.Uint; runTests repetition loop",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go"
-                    },
-                    {
-                      "locator": "uintValue.Set uses ParseUint with base 0",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/flag/flag.go"
-                    }
-                  ],
-                  "status": "verified"
-                },
-                "subject": "Runs of each test, benchmark and fuzz seed",
-                "when_absent": {
-                  "form": "number",
-                  "state": "known",
-                  "value": "1"
-                },
-                "when_value_omitted": {
-                  "reason": "This option requires an operand",
-                  "state": "not_accepted"
-                }
+                "ref": "count"
               }
             ]
           }
@@ -233,213 +52,14 @@
         {
           "argument": "DURATION",
           "argument_optional": false,
-          "detail": "The binary panics after 10m by default. Supply a duration like 30s or 1m30s, or use 0 to disable the alarm. Some versions also disable it for negative unit-bearing durations.",
+          "detail": "The binary panics after 10m by default. Supply a duration like 30s or 1m30s, or use 0 to disable the alarm. Some versions also disable it for negative unit-bearing durations. The test binary spelling is -test.timeout.",
           "flag": "-timeout",
           "summary": "Limit how long each test binary can run",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "applicability": {
-                  "chip": {
-                    "reason": "No chip-specific interpretation is claimed",
-                    "state": "not_applicable"
-                  },
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Go"
-                    ]
-                  },
-                  "platform": {
-                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
-                    "state": "not_applicable"
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "1.24.0"
-                    ]
-                  }
-                },
-                "bare": {
-                  "reason": "Nonzero ordinary bare numbers require a unit; signed literal zero is the exception",
-                  "state": "not_accepted"
-                },
-                "forms": [
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "ns",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Nns",
-                    "tokens": [
-                      "ns"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "0.000000001"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "us",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Nus",
-                    "tokens": [
-                      "us",
-                      "µs",
-                      "μs"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "0.000001"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "ms",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Nms",
-                    "tokens": [
-                      "ms"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "0.001"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "s",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Ns",
-                    "tokens": [
-                      "s"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "1"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "m",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Nm",
-                    "tokens": [
-                      "m"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "60"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
-                    "id": "h",
-                    "notation": "suffix",
-                    "special_values": [
-                      {
-                        "meaning": "Disable the test timeout alarm",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "Nh",
-                    "tokens": [
-                      "h"
-                    ],
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "3600"
-                    }
-                  },
-                  {
-                    "grammar": "Signed decimal components with unit suffixes; 1h30m is 5400 seconds; no d/day unit. Nonpositive totals disable the timeout alarm in Go 1.24.0",
-                    "id": "compound",
-                    "notation": "expression",
-                    "syntax": "[+|-]NUMBERunit[NUMBERunit...]",
-                    "unit": {
-                      "base": "second",
-                      "multiplier": "1"
-                    }
-                  },
-                  {
-                    "case": "sensitive",
-                    "id": "disabled",
-                    "meaning": "Disable the test timeout",
-                    "notation": "literal",
-                    "sentinel": true,
-                    "syntax": "0 | +0 | -0",
-                    "tokens": [
-                      "0",
-                      "+0",
-                      "-0"
-                    ]
-                  }
-                ],
-                "kind": "duration",
-                "meaning": "Maximum running time of a test binary",
-                "review": {
-                  "references": [
-                    {
-                      "locator": "test flag help for -count and -timeout",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go"
-                    },
-                    {
-                      "locator": "ParseDuration and unitMap",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/time/format.go"
-                    },
-                    {
-                      "locator": "M.startAlarm returns without an alarm when timeout <= 0",
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go"
-                    }
-                  ],
-                  "status": "verified"
-                },
-                "when_absent": {
-                  "meaning": "The default timeout is 10m, or 600 seconds",
-                  "state": "known"
-                },
-                "when_value_omitted": {
-                  "reason": "This option requires an operand",
-                  "state": "not_accepted"
-                }
+                "ref": "timeout"
               }
             ]
           }
@@ -460,63 +80,11 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "Coverage profile output file",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Filename for the coverage report; this option enables coverage profiling."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Do not request this coverage profile file."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Go"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "1.24.0"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
-                      "locator": "testing flags -coverprofile"
-                    }
-                  ]
-                }
+                "ref": "coverprofile"
               }
             ]
           },
-          "detail": "Enables -cover. Read the profile with go tool cover, as in go tool cover -func=coverage.out."
+          "detail": "Enables -cover. Read the profile with go tool cover, as in go tool cover -func=coverage.out. The test binary spelling is -test.coverprofile."
         },
         {
           "argument": "",
@@ -530,7 +98,7 @@
           "argument_optional": false,
           "flag": "-failfast",
           "summary": "Stop starting tests after the first failure",
-          "detail": "Tests already running in parallel can finish."
+          "detail": "Tests already running in parallel can finish. The test binary spelling is -test.failfast."
         },
         {
           "argument": "FILE",
@@ -604,19 +172,21 @@
           "argument_optional": false,
           "flag": "-v",
           "summary": "Show each test and its log output",
-          "detail": "Includes messages from Log and Logf even when a test passes."
+          "detail": "Includes messages from Log and Logf even when a test passes. The test binary spelling is -test.v."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-n",
-          "summary": "Print commands without running them"
+          "summary": "Print commands without running them",
+          "detail": "Display the build steps without executing the planned build or test commands."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-x",
-          "summary": "Print executed commands"
+          "summary": "Print executed commands",
+          "detail": "Print each tool command while it executes."
         },
         {
           "argument": "",
@@ -628,7 +198,7 @@
         {
           "argument": "LIST",
           "argument_optional": false,
-          "detail": "Pass comma-separated tags, as in -tags debug,integration. They can include files whose build constraints would otherwise exclude them.",
+          "detail": "Pass comma-separated tags as one value, as in -tags debug,integration. These satisfy additional build constraints. The older quoted space-separated list is deprecated.",
           "flag": "-tags",
           "summary": "Enable additional build tags",
           "value_semantics": {
@@ -946,6 +516,2129 @@
           "detail": "Recorded source filenames use import paths or module paths with versions, so stack traces omit local build directories."
         }
       ]
+    },
+    {
+      "name": "Additional options",
+      "description": "Build configuration, test execution and profiles.",
+      "options": [
+        {
+          "flag": "-C",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Change the working directory first",
+          "detail": "Place -C DIR immediately after the command name and before any other flag or operand. Go resolves subsequent paths from DIR. The global form go -C DIR COMMAND also works.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Change the working directory first",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "A directory path. Quote spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the invoking process’s working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-C"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-a",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rebuild up-to-date packages",
+          "detail": "Force recompilation even when the build cache contains usable results."
+        },
+        {
+          "flag": "-p",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Limit parallel build and test processes",
+          "detail": "Supply a positive integer. The default is GOMAXPROCS. This limits simultaneous build programs and package test binaries. Use -parallel for tests within one binary.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit parallel build and test processes",
+                "forms": [
+                  {
+                    "id": "integer",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "integer"
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use GOMAXPROCS."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/internal/work/init.go",
+                      "locator": "p flag and initialization"
+                    }
+                  ]
+                },
+                "subject": "Concurrent build programs or package test binaries"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-msan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Instrument for the memory sanitizer",
+          "detail": "Requires Clang/LLVM and a supported OS and architecture. The reviewed Linux targets are amd64, arm64 and loong64. Go uses PIE outside linux/amd64. Use one sanitizer at a time."
+        },
+        {
+          "flag": "-asan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Instrument for the address sanitizer",
+          "detail": "On linux/amd64 and linux/arm64 use GCC 7+ or Clang/LLVM 9+. On linux/loong64 use Clang/LLVM 16+. Use one sanitizer at a time."
+        },
+        {
+          "flag": "-covermode",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Choose the coverage counter mode",
+          "detail": "Enables -cover. set records whether each statement ran. count records executions. atomic counts safely across goroutines at higher cost. With -race use atomic.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the coverage counter mode",
+                "forms": [
+                  {
+                    "id": "set",
+                    "notation": "literal",
+                    "syntax": "set",
+                    "tokens": [
+                      "set"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Track whether a statement ran."
+                  },
+                  {
+                    "id": "count",
+                    "notation": "literal",
+                    "syntax": "count",
+                    "tokens": [
+                      "count"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Count executions."
+                  },
+                  {
+                    "id": "atomic",
+                    "notation": "literal",
+                    "syntax": "atomic",
+                    "tokens": [
+                      "atomic"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Count concurrent executions atomically."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use set when collecting coverage, or atomic with -race."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-covermode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-coverpkg",
+          "argument": "PATTERNS",
+          "argument_optional": false,
+          "summary": "Select packages to instrument for coverage",
+          "detail": "Pass comma-separated import-path patterns, for example -coverpkg=./...,example.org/lib/.... This enables -cover for the matching packages. By default each test instruments its own package.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go package pattern list",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Separate import-path patterns with commas. The ... wildcard includes matching package paths."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Instrument only the package under test when measuring test coverage."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-coverpkg"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go package pattern list",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-coverpkg"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-work",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep the temporary build directory",
+          "detail": "Go prints the directory path and leaves its intermediate files on disk after the command exits."
+        },
+        {
+          "flag": "-asmflags",
+          "argument": "FLAGS",
+          "argument_optional": false,
+          "summary": "Pass arguments to the assembler",
+          "detail": "Pass one shell word containing [pattern=] followed by a space-separated argument list. Quote an argument containing spaces within that list. Without a pattern, only command-line packages receive the flags. The last matching pattern wins.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go per-package assembler arguments",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "An optional package pattern and = precede a space-separated list. Quote individual list elements to preserve spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the tool’s normal arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-asmflags"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go per-package assembler arguments",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-asmflags"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-buildmode",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Choose the kind of build output",
+          "detail": "The default builds executables for main packages and archives for libraries. c-archive and c-shared each require one main package. Target support varies. See go help buildmode.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the kind of build output",
+                "forms": [
+                  {
+                    "id": "archive",
+                    "notation": "literal",
+                    "syntax": "archive",
+                    "tokens": [
+                      "archive"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Archives for non-main packages."
+                  },
+                  {
+                    "id": "c-archive",
+                    "notation": "literal",
+                    "syntax": "c-archive",
+                    "tokens": [
+                      "c-archive"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "One main package and its dependencies in a C archive."
+                  },
+                  {
+                    "id": "c-shared",
+                    "notation": "literal",
+                    "syntax": "c-shared",
+                    "tokens": [
+                      "c-shared"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "One main package as a C shared library, or a WASI reactor on supported releases."
+                  },
+                  {
+                    "id": "default",
+                    "notation": "literal",
+                    "syntax": "default",
+                    "tokens": [
+                      "default"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Executables for main packages and archives for other packages."
+                  },
+                  {
+                    "id": "shared",
+                    "notation": "literal",
+                    "syntax": "shared",
+                    "tokens": [
+                      "shared"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Combine non-main packages for use with -linkshared."
+                  },
+                  {
+                    "id": "exe",
+                    "notation": "literal",
+                    "syntax": "exe",
+                    "tokens": [
+                      "exe"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Executables for main packages."
+                  },
+                  {
+                    "id": "pie",
+                    "notation": "literal",
+                    "syntax": "pie",
+                    "tokens": [
+                      "pie"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Position-independent executables for main packages."
+                  },
+                  {
+                    "id": "plugin",
+                    "notation": "literal",
+                    "syntax": "plugin",
+                    "tokens": [
+                      "plugin"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Go plugins from main packages."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-buildmode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-buildvcs=",
+          "argument": "[MODE]",
+          "argument_optional": true,
+          "summary": "Control version-control metadata in the binary",
+          "detail": "Use -buildvcs=false to omit VCS metadata. The default auto stamps when the main package, main module and working directory share a repository. Bare -buildvcs requests true and reports errors if available metadata cannot be included. Attach the value with =.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Control version-control metadata in the binary",
+                "forms": [
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Stamp when the repository context allows it."
+                  },
+                  {
+                    "id": "true",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Report errors when available VCS information cannot be included."
+                  },
+                  {
+                    "id": "false",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit VCS metadata."
+                  },
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "BOOLEAN",
+                    "grammar": "Go also accepts 1, t, T, TRUE and True for true, or 0, f, F, FALSE and False for false. An empty attached value selects auto."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Bare -buildvcs selects true."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-buildvcs"
+                    },
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/internal/work/build.go",
+                      "locator": "buildvcsFlag.Set and IsBoolFlag"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-compiler",
+          "argument": "NAME",
+          "argument_optional": false,
+          "summary": "Select the Go compiler",
+          "detail": "Use gc for the standard Go compiler or gccgo for GCC’s Go frontend. The selected compiler must be available.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select the Go compiler",
+                "forms": [
+                  {
+                    "id": "gc",
+                    "notation": "literal",
+                    "syntax": "gc",
+                    "tokens": [
+                      "gc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Standard Go compiler."
+                  },
+                  {
+                    "id": "gccgo",
+                    "notation": "literal",
+                    "syntax": "gccgo",
+                    "tokens": [
+                      "gccgo"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "GCC Go frontend."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the compiler used to build the Go command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-compiler"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-gccgoflags",
+          "argument": "FLAGS",
+          "argument_optional": false,
+          "summary": "Pass arguments to the gccgo compiler and linker",
+          "detail": "Pass one shell word containing [pattern=] followed by a space-separated argument list. Quote an argument containing spaces within that list. Without a pattern, only command-line packages receive the flags. The last matching pattern wins.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go per-package gccgo compiler and linker arguments",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "An optional package pattern and = precede a space-separated list. Quote individual list elements to preserve spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the tool’s normal arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-gccgoflags"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go per-package gccgo compiler and linker arguments",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-gccgoflags"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-installsuffix",
+          "argument": "SUFFIX",
+          "argument_optional": false,
+          "summary": "Separate compiled package installations",
+          "detail": "Append a suffix to the package installation directory name. Instrumentation such as -race, -msan or -asan may add its own suffix.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Separate compiled package installations",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "SUFFIX",
+                    "grammar": "Directory-name suffix."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal directory or a mode-specific suffix."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-installsuffix"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-linkshared",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Link against shared Go libraries",
+          "detail": "Use libraries built with -buildmode=shared. Their installation and the target toolchain must support shared linking."
+        },
+        {
+          "flag": "-modcacherw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep new module-cache directories writable",
+          "detail": "Go normally makes newly created module-cache directories read-only. This affects directory permissions for new downloads. It does not rewrite existing cache entries."
+        },
+        {
+          "flag": "-modfile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Use an alternate module file",
+          "detail": "Supply a file ending in .mod. A go.mod must still exist to identify the module root. Go uses an alternate checksum file beside it, for example review.mod with review.sum. Workspace mode can restrict this flag.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Use an alternate module file",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE.mod",
+                    "grammar": "Path ending in .mod, resolved from the working directory."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the main module’s go.mod and go.sum."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-modfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-overlay",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Read source files through an overlay",
+          "detail": "Supply a JSON file whose Replace object maps each logical path to a replacement file. An empty replacement hides that path. Go reads the mapping during builds. Program and test filesystem reads still see the real files.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read source files through an overlay",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "JSON configuration path. Empty replacement values represent deleted files."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read source files from disk."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-overlay"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-pgo",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Choose a profile for profile-guided optimization",
+          "detail": "auto looks for default.pgo beside each main package and applies it to the package and its transitive dependencies. off disables PGO. An explicit filename supplies a profile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a profile for profile-guided optimization",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "auto | off | FILE",
+                    "grammar": "The literals auto, off, or a path to a CPU profile."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-pgo"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-pkgdir",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Use a separate compiled package directory",
+          "detail": "Load and install compiled packages in DIR. This can isolate artifacts produced with a nonstandard build configuration.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Use a separate compiled package directory",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Compiled-package directory path."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the toolchain’s regular locations."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-pkgdir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-toolexec",
+          "argument": "COMMAND",
+          "argument_optional": false,
+          "summary": "Wrap Go toolchain invocations",
+          "detail": "Quote the wrapper command and any fixed arguments as one shell word. Go appends the tool path and its arguments. TOOLEXEC_IMPORTPATH identifies the package being built.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go tool wrapper command",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A space-separated command and arguments. Single or double quotes can preserve spaces in individual list elements."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Invoke toolchain programs directly."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-toolexec"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go tool wrapper command",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-toolexec"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "COMMAND",
+          "argument_optional": false,
+          "detail": "Quote a wrapper and its fixed arguments as one value. Go appends the test binary path followed by its arguments. Cross-compiled binaries may need an emulator.",
+          "flag": "-exec",
+          "summary": "Run the test binary through a wrapper",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.24.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "A wrapper program with optional arguments, supplied as one flag value.",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "Go executable-wrapper command",
+                  "reference": {
+                    "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec",
+                    "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by Go executable-wrapper command",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Build flags -tags/-ldflags/-gcflags and go run -exec",
+                      "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Run the test binary directly, or use the target-specific Go cross-execution helper when available."
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-args",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Forward the remaining words to the test binary",
+          "detail": "Place package paths before -args. Every following word passes through unchanged, including words starting with a dash. The parser also accepts --args."
+        },
+        {
+          "flag": "--args",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Forward the remaining words to the test binary",
+          "detail": "Alias of -args. Place package paths first. After this marker Go passes every word directly to the test binary."
+        },
+        {
+          "flag": "-c",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Compile tests without running them",
+          "detail": "Writes a package-named .test binary in the current directory. Use -o for a different filename or directory."
+        },
+        {
+          "flag": "-artifacts",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep files created in test artifact directories",
+          "detail": "Go 1.26 and later retain files created under testing.T.ArtifactDir and its benchmark and fuzz equivalents. Choose the parent directory with -outputdir. Earlier versions lack this flag. The test binary spelling is -test.artifacts."
+        },
+        {
+          "flag": "-benchtime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Set benchmark time or iterations",
+          "detail": "Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for each benchmark. The default is 1s. An explicit limit must be positive. The test binary spelling is -test.benchtime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "benchtime"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-cpu",
+          "argument": "LIST",
+          "argument_optional": false,
+          "summary": "Run tests at selected GOMAXPROCS values",
+          "detail": "Pass positive decimal counts separated by commas, for example -cpu=1,2,4. Each setting runs the selected tests and benchmarks. Active fuzzing ignores this list. Empty components are skipped. The test binary spelling is -test.cpu.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "cpu"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-fullpath",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show full source paths in test errors",
+          "detail": "Use full filenames in test failure locations. The normal output shortens paths. The test binary spelling is -test.fullpath."
+        },
+        {
+          "flag": "-fuzz",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "Fuzz one matching target",
+          "detail": "Supply a regular expression matching exactly one fuzz target in one package in the main module. Fuzzing begins after the selected tests, benchmarks, examples and seed cases. A failing input can be saved under testdata/fuzz. The test binary spelling is -test.fuzz.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzz"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-fuzztime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Limit fuzzing time or target calls",
+          "detail": "Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for the fuzzing run. The default is unlimited. An explicit limit must be positive. The test binary spelling is -test.fuzztime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzztime"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-fuzzminimizetime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Limit work per minimization attempt",
+          "detail": "Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for each minimization attempt. The default is 60s. Zero duration or 0x disables minimization. The test binary spelling is -test.fuzzminimizetime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzzminimizetime"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-list",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "List matching top-level cases",
+          "detail": "List matching top-level tests, benchmarks, fuzz targets and examples without running them. Subtest names require executing the parent and do not appear. The test binary spelling is -test.list.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "list"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-outputdir",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Choose where test output files are written",
+          "detail": "Relative profile names use this directory, which defaults to the go test working directory. On Go 1.26 and later it also contains saved test artifacts selected by -artifacts. The test binary spelling is -test.outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "outputdir"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-parallel",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Limit concurrency inside a test binary",
+          "detail": "Defaults to GOMAXPROCS. Limits tests calling t.Parallel and simultaneous fuzz workers, even for fuzz targets without t.Parallel. Use -p to limit concurrent package binaries. The test binary spelling is -test.parallel.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "parallel"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-short",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ask long-running tests to shorten their work",
+          "detail": "Code that checks testing.Short() can skip or reduce expensive work. Tests that ignore it continue normally. The test binary spelling is -test.short."
+        },
+        {
+          "flag": "-shuffle",
+          "argument": "SEED_OR_MODE",
+          "argument_optional": false,
+          "summary": "Shuffle test and benchmark order",
+          "detail": "Use on for a time-derived seed, off for normal order, or a signed decimal 64-bit seed to replay the order. Go prints the selected seed. The default is off. The test binary spelling is -test.shuffle.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "shuffle"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-skip",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "Exclude matching tests or benchmarks",
+          "detail": "Exclude matching tests, examples, fuzz targets and benchmarks. Unbracketed / separates name expressions for successive test and benchmark levels. The test binary spelling is -test.skip.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "skip"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-vet",
+          "argument": "LIST",
+          "argument_optional": false,
+          "summary": "Choose vet checks for package tests",
+          "detail": "Supply comma-separated analyzer names without spaces, for example -vet=printf,structtag. Use all for all installed checks or off to skip vet. Supply either special word on its own. An empty list restores the curated default.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go vet analyzer list",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Comma-separated analyzer names, all, off or an empty value."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Run the Go release’s curated set of analyzers."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-vet"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go vet analyzer list",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-vet"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-benchmem",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report Go heap allocations in benchmarks",
+          "detail": "Print bytes and allocations per operation. The counters exclude allocations made in C, including C.malloc. The test binary spelling is -test.benchmem."
+        },
+        {
+          "flag": "-blockprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a goroutine blocking profile",
+          "detail": "Records blocking sites and retains the compiled test binary. Adjust sampling with -blockprofilerate. Relative output filenames are resolved under -outputdir. The test binary spelling is -test.blockprofile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "blockprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-blockprofilerate",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the blocking-profile sampling interval",
+          "detail": "With -blockprofile, N targets one event per N nanoseconds spent blocked. 1 records every event, 0 disables sampling and a negative value leaves the runtime rate unchanged. The default with a profile is 1. The test binary spelling is -test.blockprofilerate.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "blockprofilerate"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-cpuprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a CPU profile",
+          "detail": "Collects a profile until the test process exits and retains the compiled test binary for go tool pprof. Relative output filenames are resolved under -outputdir. The test binary spelling is -test.cpuprofile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "cpuprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-memprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a memory allocation profile",
+          "detail": "Records sampled allocations after the tests pass and retains the test binary. Adjust sampling with -memprofilerate. Relative output filenames are resolved under -outputdir. The test binary spelling is -test.memprofile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "memprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-memprofilerate",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the allocation-profile sampling interval",
+          "detail": "A positive N requests roughly one sample per N bytes allocated. Use 1 for every allocation. Zero and negative values leave the runtime rate unchanged. Its normal starting rate is 524288 bytes. The test binary spelling is -test.memprofilerate.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "memprofilerate"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-mutexprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a mutex contention profile",
+          "detail": "Records mutex contention and retains the compiled test binary. Adjust sampling with -mutexprofilefraction. Relative output filenames are resolved under -outputdir. The test binary spelling is -test.mutexprofile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "mutexprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-mutexprofilefraction",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the mutex contention sampling fraction",
+          "detail": "With -mutexprofile, collect roughly one in N contention events. The default 1 records all events. Zero disables sampling. Negative values leave the runtime setting unchanged. The test binary spelling is -test.mutexprofilefraction.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "mutexprofilefraction"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-trace",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write an execution trace",
+          "detail": "Writes runtime trace events before the test exits. Read the file with go tool trace. Relative output filenames are resolved under -outputdir. The test binary spelling is -test.trace.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "trace"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test binary flags",
+      "description": "Prefixed spellings accepted by go test and by a compiled test binary.",
+      "options": [
+        {
+          "flag": "-test.artifacts",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep files created in test artifact directories",
+          "detail": "Alias of -artifacts. Go 1.26 and later retain files created under testing.T.ArtifactDir and its benchmark and fuzz equivalents. Choose the parent directory with -outputdir. Earlier versions lack this flag."
+        },
+        {
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "flag": "-test.bench",
+          "summary": "Run benchmarks matching a name pattern",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "bench"
+              }
+            ]
+          },
+          "detail": "Alias of -bench. Benchmarks are off by default. Use -bench . for all benchmarks or -run '^$' -bench . to skip ordinary tests. A slash selects sub-benchmarks."
+        },
+        {
+          "flag": "-test.benchtime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Set benchmark time or iterations",
+          "detail": "Alias of -benchtime. Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for each benchmark. The default is 1s. An explicit limit must be positive.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "benchtime"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "N",
+          "argument_optional": false,
+          "detail": "Alias of -count. The default is one run. Explicit -count=1 bypasses cached test results. With -cpu the count applies to each setting. Examples run once and -fuzz targets ignore the count.",
+          "flag": "-test.count",
+          "summary": "Repeat tests, benchmarks and fuzz seeds",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "count"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.cpu",
+          "argument": "LIST",
+          "argument_optional": false,
+          "summary": "Run tests at selected GOMAXPROCS values",
+          "detail": "Alias of -cpu. Pass positive decimal counts separated by commas, for example -cpu=1,2,4. Each setting runs the selected tests and benchmarks. Active fuzzing ignores this list. Empty components are skipped.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "cpu"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-test.failfast",
+          "summary": "Stop starting tests after the first failure",
+          "detail": "Alias of -failfast. Tests already running in parallel can finish."
+        },
+        {
+          "flag": "-test.fullpath",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show full source paths in test errors",
+          "detail": "Alias of -fullpath. Use full filenames in test failure locations. The normal output shortens paths."
+        },
+        {
+          "flag": "-test.fuzz",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "Fuzz one matching target",
+          "detail": "Alias of -fuzz. Supply a regular expression matching exactly one fuzz target in one package in the main module. Fuzzing begins after the selected tests, benchmarks, examples and seed cases. A failing input can be saved under testdata/fuzz.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzz"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.fuzztime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Limit fuzzing time or target calls",
+          "detail": "Alias of -fuzztime. Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for the fuzzing run. The default is unlimited. An explicit limit must be positive.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzztime"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.fuzzminimizetime",
+          "argument": "TIME_OR_Nx",
+          "argument_optional": false,
+          "summary": "Limit work per minimization attempt",
+          "detail": "Alias of -fuzzminimizetime. Use a duration such as 1m30s or a decimal count ending in lowercase x, such as 100x, for each minimization attempt. The default is 60s. Zero duration or 0x disables minimization.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "fuzzminimizetime"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.list",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "List matching top-level cases",
+          "detail": "Alias of -list. List matching top-level tests, benchmarks, fuzz targets and examples without running them. Subtest names require executing the parent and do not appear.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "list"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.outputdir",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Choose where test output files are written",
+          "detail": "Alias of -outputdir. Relative profile names use this directory, which defaults to the go test working directory. On Go 1.26 and later it also contains saved test artifacts selected by -artifacts.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "outputdir"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.parallel",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Limit concurrency inside a test binary",
+          "detail": "Alias of -parallel. Defaults to GOMAXPROCS. Limits tests calling t.Parallel and simultaneous fuzz workers, even for fuzz targets without t.Parallel. Use -p to limit concurrent package binaries.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "parallel"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "flag": "-test.run",
+          "summary": "Select tests, examples and fuzz seeds by name",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "run"
+              }
+            ]
+          },
+          "detail": "Alias of -run. Use an unanchored regular expression. A slash separates subtest levels. A matching parent runs to discover its children, as in -run '^TestAPI$/^Read$'."
+        },
+        {
+          "flag": "-test.short",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ask long-running tests to shorten their work",
+          "detail": "Alias of -short. Code that checks testing.Short() can skip or reduce expensive work. Tests that ignore it continue normally."
+        },
+        {
+          "flag": "-test.shuffle",
+          "argument": "SEED_OR_MODE",
+          "argument_optional": false,
+          "summary": "Shuffle test and benchmark order",
+          "detail": "Alias of -shuffle. Use on for a time-derived seed, off for normal order, or a signed decimal 64-bit seed to replay the order. Go prints the selected seed. The default is off.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "shuffle"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.skip",
+          "argument": "REGEXP",
+          "argument_optional": false,
+          "summary": "Exclude matching tests or benchmarks",
+          "detail": "Alias of -skip. Exclude matching tests, examples, fuzz targets and benchmarks. Unbracketed / separates name expressions for successive test and benchmark levels.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "skip"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DURATION",
+          "argument_optional": false,
+          "detail": "Alias of -timeout. The binary panics after 10m by default. Supply a duration like 30s or 1m30s, or use 0 to disable the alarm. Some versions also disable it for negative unit-bearing durations.",
+          "flag": "-test.timeout",
+          "summary": "Limit how long each test binary can run",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-test.v",
+          "summary": "Show each test and its log output",
+          "detail": "Alias of -v. Includes messages from Log and Logf even when a test passes."
+        },
+        {
+          "flag": "-test.benchmem",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report Go heap allocations in benchmarks",
+          "detail": "Alias of -benchmem. Print bytes and allocations per operation. The counters exclude allocations made in C, including C.malloc."
+        },
+        {
+          "flag": "-test.blockprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a goroutine blocking profile",
+          "detail": "Alias of -blockprofile. Records blocking sites and retains the compiled test binary. Adjust sampling with -blockprofilerate. Relative output filenames are resolved under -outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "blockprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.blockprofilerate",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the blocking-profile sampling interval",
+          "detail": "Alias of -blockprofilerate. With -blockprofile, N targets one event per N nanoseconds spent blocked. 1 records every event, 0 disables sampling and a negative value leaves the runtime rate unchanged. The default with a profile is 1.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "blockprofilerate"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "argument_optional": false,
+          "flag": "-test.coverprofile",
+          "summary": "Write statement coverage to a file",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "coverprofile"
+              }
+            ]
+          },
+          "detail": "Alias of -coverprofile in go test. A compiled test binary must already have coverage instrumentation to write this profile. Read it with go tool cover -func=coverage.out."
+        },
+        {
+          "flag": "-test.cpuprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a CPU profile",
+          "detail": "Alias of -cpuprofile. Collects a profile until the test process exits and retains the compiled test binary for go tool pprof. Relative output filenames are resolved under -outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "cpuprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.memprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a memory allocation profile",
+          "detail": "Alias of -memprofile. Records sampled allocations after the tests pass and retains the test binary. Adjust sampling with -memprofilerate. Relative output filenames are resolved under -outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "memprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.memprofilerate",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the allocation-profile sampling interval",
+          "detail": "Alias of -memprofilerate. A positive N requests roughly one sample per N bytes allocated. Use 1 for every allocation. Zero and negative values leave the runtime rate unchanged. Its normal starting rate is 524288 bytes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "memprofilerate"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.mutexprofile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write a mutex contention profile",
+          "detail": "Alias of -mutexprofile. Records mutex contention and retains the compiled test binary. Adjust sampling with -mutexprofilefraction. Relative output filenames are resolved under -outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "mutexprofile"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.mutexprofilefraction",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Set the mutex contention sampling fraction",
+          "detail": "Alias of -mutexprofilefraction. With -mutexprofile, collect roughly one in N contention events. The default 1 records all events. Zero disables sampling. Negative values leave the runtime setting unchanged.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "mutexprofilefraction"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-test.trace",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Write an execution trace",
+          "detail": "Alias of -trace. Writes runtime trace events before the test exits. Read the file with go tool trace. Relative output filenames are resolved under -outputdir.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "trace"
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "command": [
@@ -954,12 +2647,1619 @@
   ],
   "description": "Build and run package tests. Test flags can follow packages. Use -args to pass the remaining arguments to the test binary.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned Go command reference and Ubuntu manual comparison",
+    "reviewed": "2026-11-23",
     "source": "https://pkg.go.dev/cmd/go@go1.27.4"
   },
   "stop_at_options": [
-    "-args"
+    "-args",
+    "--args"
   ],
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "bench": {
+      "kind": "nonnumerical",
+      "meaning": "Go benchmark-name regular expression",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Unanchored benchmark expression. Unbracketed slashes separate name components. The pattern . matches all benchmark names."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not run benchmarks through this flag."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.24.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+            "locator": "testing flags -bench"
+          }
+        ]
+      }
+    },
+    "benchtime": {
+      "kind": "duration_expression",
+      "meaning": "Set benchmark time or iterations",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "DURATION",
+          "grammar": "Go duration components accept ns, us, µs, μs, ms, s, m and h. Fractions and combined components such as 1m30s are accepted. Use a positive duration."
+        },
+        {
+          "id": "iterations",
+          "notation": "expression",
+          "syntax": "Nx",
+          "grammar": "Decimal integer followed by lowercase x. Use at least one iteration."
+        }
+      ],
+      "bare": {
+        "state": "not_accepted",
+        "reason": "A positive duration unit or x count suffix is required."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use 1s."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/benchmark.go",
+            "locator": "durationOrCountFlag.Set"
+          }
+        ]
+      },
+      "time_basis": "A wall-clock budget for each benchmark, or a number of target invocations when the value ends in x."
+    },
+    "count": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.24.0"
+          ]
+        }
+      },
+      "bare": {
+        "form": "number",
+        "state": "accepted"
+      },
+      "forms": [
+        {
+          "bounds": {
+            "min": "0"
+          },
+          "grammar": "Decimal integer repetition count",
+          "id": "number",
+          "notation": "number",
+          "special_values": [
+            {
+              "meaning": "Perform zero counted repetitions",
+              "value": "0"
+            }
+          ],
+          "syntax": "N"
+        },
+        {
+          "grammar": "Go flag.Uint uses base-0 parsing; the result is still a repetition count",
+          "id": "based",
+          "notation": "expression",
+          "syntax": "0xHEX | 0oOCTAL | 0bBINARY | 0OCTAL"
+        }
+      ],
+      "kind": "count",
+      "meaning": "Repetitions of each test, benchmark and fuzz seed",
+      "review": {
+        "references": [
+          {
+            "locator": "test flag help for -count and -timeout",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go"
+          },
+          {
+            "locator": "test.count uses flag.Uint; runTests repetition loop",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go"
+          },
+          {
+            "locator": "uintValue.Set uses ParseUint with base 0",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/flag/flag.go"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Runs of each test, benchmark and fuzz seed",
+      "when_absent": {
+        "form": "number",
+        "state": "known",
+        "value": "1"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
+    },
+    "cpu": {
+      "kind": "count",
+      "meaning": "Processor limits to try",
+      "forms": [
+        {
+          "id": "integer",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "1"
+          },
+          "grammar": "Positive decimal GOMAXPROCS count."
+        },
+        {
+          "id": "list",
+          "notation": "expression",
+          "syntax": "N[,N...]",
+          "grammar": "Comma-separated positive decimal counts. Whitespace is trimmed and empty elements are ignored."
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "integer"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the current GOMAXPROCS."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/testing.go",
+            "locator": "parseCpuList"
+          }
+        ]
+      },
+      "subject": "Go processors available concurrently per run"
+    },
+    "fuzz": {
+      "kind": "nonnumerical",
+      "meaning": "Fuzz one matching target",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "REGEXP",
+          "grammar": "Name-matching Go regular expression."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Run seed cases during ordinary testing, without generating new inputs."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-fuzz"
+          }
+        ]
+      }
+    },
+    "fuzztime": {
+      "kind": "duration_expression",
+      "meaning": "Limit fuzzing time or target calls",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "DURATION",
+          "grammar": "Go duration components accept ns, us, µs, μs, ms, s, m and h. Fractions and combined components such as 1m30s are accepted. Use a positive duration."
+        },
+        {
+          "id": "iterations",
+          "notation": "expression",
+          "syntax": "Nx",
+          "grammar": "Decimal integer followed by lowercase x. Use at least one iteration."
+        }
+      ],
+      "bare": {
+        "state": "not_accepted",
+        "reason": "A positive duration unit or x count suffix is required."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use unlimited."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/benchmark.go",
+            "locator": "durationOrCountFlag.Set"
+          },
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/fuzz.go",
+            "locator": "fuzzDuration and minimizeDuration"
+          }
+        ]
+      },
+      "time_basis": "A wall-clock budget for the fuzzing run, or a number of target invocations when the value ends in x."
+    },
+    "fuzzminimizetime": {
+      "kind": "duration_expression",
+      "meaning": "Limit work per minimization attempt",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "DURATION",
+          "grammar": "Go duration components accept ns, us, µs, μs, ms, s, m and h. Fractions and combined components such as 1m30s are accepted. Zero disables minimization."
+        },
+        {
+          "id": "iterations",
+          "notation": "expression",
+          "syntax": "Nx",
+          "grammar": "Decimal integer followed by lowercase x. Use zero to disable minimization."
+        },
+        {
+          "id": "zero",
+          "notation": "literal",
+          "syntax": "0",
+          "tokens": [
+            "0",
+            "+0",
+            "-0"
+          ],
+          "meaning": "Disable minimization.",
+          "sentinel": true
+        }
+      ],
+      "bare": {
+        "state": "not_accepted",
+        "reason": "Nonzero plain numbers require a duration unit or count suffix."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use 60s."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/benchmark.go",
+            "locator": "durationOrCountFlag.Set"
+          },
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/fuzz.go",
+            "locator": "fuzzDuration and minimizeDuration"
+          }
+        ]
+      },
+      "time_basis": "A wall-clock budget for each minimization attempt, or a number of target invocations when the value ends in x."
+    },
+    "list": {
+      "kind": "nonnumerical",
+      "meaning": "List matching top-level cases",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "REGEXP",
+          "grammar": "Go regular expression matched against top-level names."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Run the selected tests."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-list"
+          }
+        ]
+      }
+    },
+    "outputdir": {
+      "kind": "nonnumerical",
+      "meaning": "Choose where test output files are written",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "DIR",
+          "grammar": "Directory path, relative to the Go command’s working directory or absolute."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the directory where go test was invoked."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-outputdir"
+          }
+        ]
+      }
+    },
+    "parallel": {
+      "kind": "count",
+      "meaning": "Limit concurrency inside a test binary",
+      "forms": [
+        {
+          "id": "integer",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+          "bounds": {
+            "min": "1"
+          }
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "integer"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the current GOMAXPROCS."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/testing.go",
+            "locator": "parallel flag and initialization"
+          }
+        ]
+      },
+      "subject": "Parallel test functions or fuzzing workers"
+    },
+    "run": {
+      "kind": "nonnumerical",
+      "meaning": "Go test-name regular expression",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Unanchored regular expression for tests, examples and fuzz tests. Unbracketed slashes separate name components."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not restrict tests with a -run expression."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.24.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+            "locator": "testing flags -run"
+          }
+        ]
+      }
+    },
+    "shuffle": {
+      "kind": "identifier",
+      "meaning": "Shuffle mode or reproducible seed",
+      "forms": [
+        {
+          "id": "off",
+          "notation": "literal",
+          "syntax": "off",
+          "tokens": [
+            "off"
+          ],
+          "case": "sensitive",
+          "meaning": "Preserve the normal test order."
+        },
+        {
+          "id": "on",
+          "notation": "literal",
+          "syntax": "on",
+          "tokens": [
+            "on"
+          ],
+          "case": "sensitive",
+          "meaning": "Use a clock-derived seed."
+        },
+        {
+          "id": "seed",
+          "notation": "number",
+          "syntax": "N",
+          "bounds": {
+            "min": "-9223372036854775808",
+            "max": "9223372036854775807"
+          },
+          "grammar": "Signed base-10 64-bit random seed."
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "seed"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use off."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/internal/test/testflag.go",
+            "locator": "shuffleFlag.Set"
+          }
+        ]
+      },
+      "subject": "Test shuffle seed"
+    },
+    "skip": {
+      "kind": "nonnumerical",
+      "meaning": "Exclude matching tests or benchmarks",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "REGEXP",
+          "grammar": "Go regular expression with slash-separated name components."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Apply no name exclusion."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-skip"
+          }
+        ]
+      }
+    },
+    "timeout": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "platform": {
+          "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.24.0"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "Nonzero ordinary bare numbers require a unit; signed literal zero is the exception",
+        "state": "not_accepted"
+      },
+      "forms": [
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "ns",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Nns",
+          "tokens": [
+            "ns"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "0.000000001"
+          }
+        },
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "us",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Nus",
+          "tokens": [
+            "us",
+            "µs",
+            "μs"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "0.000001"
+          }
+        },
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "ms",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Nms",
+          "tokens": [
+            "ms"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "0.001"
+          }
+        },
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "s",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Ns",
+          "tokens": [
+            "s"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "1"
+          }
+        },
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "m",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Nm",
+          "tokens": [
+            "m"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "60"
+          }
+        },
+        {
+          "case": "sensitive",
+          "grammar": "Signed duration component; a nonpositive resolved duration disables the test timeout alarm in Go 1.24.0",
+          "id": "h",
+          "notation": "suffix",
+          "special_values": [
+            {
+              "meaning": "Disable the test timeout alarm",
+              "value": "0"
+            }
+          ],
+          "syntax": "Nh",
+          "tokens": [
+            "h"
+          ],
+          "unit": {
+            "base": "second",
+            "multiplier": "3600"
+          }
+        },
+        {
+          "grammar": "Signed decimal components with unit suffixes; 1h30m is 5400 seconds; no d/day unit. Nonpositive totals disable the timeout alarm in Go 1.24.0",
+          "id": "compound",
+          "notation": "expression",
+          "syntax": "[+|-]NUMBERunit[NUMBERunit...]",
+          "unit": {
+            "base": "second",
+            "multiplier": "1"
+          }
+        },
+        {
+          "case": "sensitive",
+          "id": "disabled",
+          "meaning": "Disable the test timeout",
+          "notation": "literal",
+          "sentinel": true,
+          "syntax": "0 | +0 | -0",
+          "tokens": [
+            "0",
+            "+0",
+            "-0"
+          ]
+        }
+      ],
+      "kind": "duration",
+      "meaning": "Maximum running time of a test binary",
+      "review": {
+        "references": [
+          {
+            "locator": "test flag help for -count and -timeout",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/internal/test/test.go"
+          },
+          {
+            "locator": "ParseDuration and unitMap",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/time/format.go"
+          },
+          {
+            "locator": "M.startAlarm returns without an alarm when timeout <= 0",
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/testing/testing.go"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "The default timeout is 10m, or 600 seconds",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
+    },
+    "blockprofile": {
+      "kind": "nonnumerical",
+      "meaning": "Write a goroutine blocking profile",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Output filename for this test run."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not write this output file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-blockprofile"
+          }
+        ]
+      }
+    },
+    "blockprofilerate": {
+      "kind": "quantity",
+      "meaning": "Set the blocking-profile sampling interval",
+      "forms": [
+        {
+          "id": "integer",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+          "unit": {
+            "base": "second",
+            "multiplier": "0.000000001"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Disable sampling."
+            },
+            {
+              "value": "1",
+              "meaning": "Record every blocking event."
+            }
+          ]
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "integer"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use 1 when collecting a blocking profile."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/testing.go",
+            "locator": "blockprofilerate flag and initialization"
+          },
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/runtime/mprof.go",
+            "locator": "SetBlockProfileRate, MemProfileRate and SetMutexProfileFraction"
+          }
+        ]
+      }
+    },
+    "coverprofile": {
+      "kind": "nonnumerical",
+      "meaning": "Coverage profile output file",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Filename for the coverage report; this option enables coverage profiling."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not request this coverage profile file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.24.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/golang/go/go1.24.0/src/cmd/go/alldocs.go",
+            "locator": "testing flags -coverprofile"
+          }
+        ]
+      }
+    },
+    "cpuprofile": {
+      "kind": "nonnumerical",
+      "meaning": "Write a CPU profile",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Output filename for this test run."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not write this output file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-cpuprofile"
+          }
+        ]
+      }
+    },
+    "memprofile": {
+      "kind": "nonnumerical",
+      "meaning": "Write a memory allocation profile",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Output filename for this test run."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not write this output file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-memprofile"
+          }
+        ]
+      }
+    },
+    "memprofilerate": {
+      "kind": "quantity",
+      "meaning": "Set the allocation-profile sampling interval",
+      "forms": [
+        {
+          "id": "integer",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1"
+          },
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Leave the runtime rate unchanged."
+            },
+            {
+              "value": "1",
+              "meaning": "Record every allocation."
+            }
+          ]
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "integer"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Leave runtime.MemProfileRate unchanged."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/testing.go",
+            "locator": "memprofilerate flag and initialization"
+          },
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/runtime/mprof.go",
+            "locator": "SetBlockProfileRate, MemProfileRate and SetMutexProfileFraction"
+          }
+        ]
+      }
+    },
+    "mutexprofile": {
+      "kind": "nonnumerical",
+      "meaning": "Write a mutex contention profile",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Output filename for this test run."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not write this output file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-mutexprofile"
+          }
+        ]
+      }
+    },
+    "mutexprofilefraction": {
+      "kind": "count",
+      "meaning": "Set the mutex contention sampling fraction",
+      "forms": [
+        {
+          "id": "integer",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+          "special_values": [
+            {
+              "value": "0",
+              "meaning": "Disable sampling."
+            },
+            {
+              "value": "1",
+              "meaning": "Record every contention event."
+            }
+          ]
+        }
+      ],
+      "bare": {
+        "state": "accepted",
+        "form": "integer"
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use 1 when collecting a mutex contention profile."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/testing/testing.go",
+            "locator": "mutexprofilefraction flag and initialization"
+          },
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/runtime/mprof.go",
+            "locator": "SetBlockProfileRate, MemProfileRate and SetMutexProfileFraction"
+          }
+        ]
+      },
+      "subject": "Contended mutex events per sample"
+    },
+    "trace": {
+      "kind": "nonnumerical",
+      "meaning": "Write an execution trace",
+      "forms": [
+        {
+          "id": "grammar",
+          "notation": "expression",
+          "syntax": "FILE",
+          "grammar": "Output filename for this test run."
+        }
+      ],
+      "bare": {
+        "state": "not_applicable",
+        "reason": "The operand follows the indicated grammar."
+      },
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not write this output file."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires a value."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Go"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.22.12",
+            "1.26.0",
+            "1.27.4"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of target support."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "Operand syntax is independent of the processor."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+            "locator": "-trace"
+          }
+        ]
+      }
+    }
+  }
 }

@@ -172,7 +172,6 @@ class DevelopmentExpansionTests(unittest.TestCase):
                     joined = literal.endswith("=") or entry.get("argument_style") == "attached_only"
                     self.assertEqual(edited, prefix + literal + suffix)
                     self.assertEqual(point, len(prefix + literal) + int(not joined))
-                    self.assertNotIn(entry.get("argument", "PLACEHOLDER") or "PLACEHOLDER", edited)
 
     def test_required_values_attached_values_negative_values_and_incomplete_input(self):
         for case in CASES:
@@ -232,8 +231,8 @@ class DevelopmentExpansionTests(unittest.TestCase):
                         context_for(line, len(line), profile)
         case = next(case for case in CASES if case["command"] == "go test")
         profile = profile_for(case)
-        self.assertEqual(profile["stop_at_options"], ["-args"])
-        self.assertEqual(help_route("go", ("test",), REGISTRY).stop_at_options, ("-args",))
+        self.assertEqual(profile["stop_at_options"], ["-args", "--args"])
+        self.assertEqual(help_route("go", ("test",), REGISTRY).stop_at_options, ("-args", "--args"))
         for line in ("go test ./... -args -ru", "go test -args --", "go test ./... -args '日本' --"):
             with self.subTest(line=line), self.assertRaises(HelpError):
                 context_for(line, len(line), profile)

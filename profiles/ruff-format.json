@@ -706,6 +706,450 @@
           "flag": "--verbose",
           "summary": "Show detailed logging",
           "detail": "Include debug messages about configuration and file discovery."
+        },
+        {
+          "flag": "--preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable preview behavior",
+          "detail": "Enables unstable formatting changes."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command",
+          "detail": "The short form displays a condensed listing. Use --help for longer explanations. Alias of --help."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command",
+          "detail": "The short form displays a condensed listing. Use --help for longer explanations."
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip reading cached results",
+          "detail": "Process the selected files again. Existing cache files are left in place. Alias of --no-cache."
+        },
+        {
+          "flag": "--cache-dir",
+          "argument": "CACHE_DIR",
+          "argument_optional": false,
+          "summary": "Choose the directory for cached results",
+          "detail": "RUFF_CACHE_DIR also sets the cache path.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the directory for cached results",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CACHE_DIR",
+                    "grammar": "RUFF_CACHE_DIR also sets the cache path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--cache-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exit-non-zero-on-format",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Return a failure status if formatting changed files",
+          "detail": "Files are still rewritten. Use --check to inspect them without writing."
+        },
+        {
+          "flag": "--respect-gitignore",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Apply repository ignore files during discovery",
+          "detail": "Includes .gitignore and related ignore files."
+        },
+        {
+          "flag": "--force-exclude",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enforce exclusions on explicitly named files",
+          "detail": "Useful when another tool passes individual file paths to Ruff."
+        },
+        {
+          "flag": "--range",
+          "argument": "RANGE",
+          "argument_optional": false,
+          "summary": "Format a range within one file",
+          "detail": "Use one-based line:column positions, such as 2:1-5:1. The end is exclusive. Ruff may expand the edit to complete a statement. Notebook ranges are unsupported.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Format a range within one file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RANGE",
+                    "grammar": "Use one-based line:column positions, such as 2:1-5:1. The end is exclusive. Ruff may expand the edit to complete a statement. Notebook ranges are unsupported."
+                  }
+                ],
+                "grammar": {
+                  "name": "Ruff --range argument syntax",
+                  "reference": {
+                    "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                    "locator": "--range"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--range"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress Ruff’s diagnostic and summary output",
+          "detail": "Exit status still reports lint violations or formatting-check changes. Alias of --silent."
+        },
+        {
+          "flag": "--silent",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress Ruff’s diagnostic and summary output",
+          "detail": "Exit status still reports lint violations or formatting-check changes."
+        },
+        {
+          "flag": "--no-preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable preview behavior",
+          "detail": "Overrides a configured preview setting."
+        },
+        {
+          "flag": "--no-respect-gitignore",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore repository ignore files during discovery",
+          "detail": "Explicit Ruff include and exclude settings still apply."
+        },
+        {
+          "flag": "--no-force-exclude",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow explicitly named files through exclusions"
+        },
+        {
+          "flag": "--exit-non-zero-on-fix",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Return a failure status if formatting changed files",
+          "detail": "Files are still rewritten. Use --check to inspect them without writing. This is the compatibility alias of --exit-non-zero-on-format."
+        },
+        {
+          "flag": "--output-format",
+          "argument": "OUTPUT_FORMAT",
+          "argument_optional": false,
+          "summary": "Choose the formatting-check report format",
+          "detail": "Use with --check. The default is full. JSON or another supported report format can feed a tool. Available in Ruff 0.17.6 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the formatting-check report format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OUTPUT_FORMAT",
+                    "grammar": "Use with --check. The default is full. JSON or another supported report format can feed a tool."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--output-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extend-exclude",
+          "argument": "FILE_PATTERN",
+          "argument_optional": false,
+          "summary": "Add file patterns to the exclusion list",
+          "detail": "Quote comma-separated patterns. Explicit paths still require --force-exclude to enforce exclusions. Available in Ruff 0.17.6 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add file patterns to the exclusion list",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE_PATTERN",
+                    "grammar": "Quote comma-separated patterns. Explicit paths still require --force-exclude to enforce exclusions."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-exclude"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color",
+          "argument": "WHEN",
+          "argument_optional": false,
+          "summary": "Choose when to use colored output",
+          "detail": "auto follows terminal detection. always forces color and never disables it. Available in Ruff 0.17.6 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose when to use colored output",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "WHEN",
+                    "grammar": "auto follows terminal detection. always forces color and never disables it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--color"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -716,8 +1160,8 @@
   ],
   "description": "Format Python files in place or preview the changes.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned manual and client option inventory",
+    "reviewed": "2026-11-23",
     "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface"
   },
   "stop_at_positional": false

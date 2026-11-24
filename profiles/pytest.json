@@ -277,7 +277,7 @@
           "argument_optional": false,
           "flag": "--collect-only",
           "summary": "List collected tests without running test bodies",
-          "detail": "Collection still imports test modules and conftest.py and runs collection hooks. Add -q for a list of node IDs."
+          "detail": "Collection still imports test modules and conftest.py and runs collection hooks. Add -q for a list of node IDs. A positional path or node ID narrows collection. Third-party plugins can add selectors to the installed command."
         },
         {
           "argument": "STYLE",
@@ -581,63 +581,7 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "pytest configuration file",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Filename selecting a supported pytest configuration file."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Discover configuration using pytest's normal search rules."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "pytest"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "8.3.5"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py",
-                      "locator": "-c option registration"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/findpaths.py",
-                      "locator": "determine_setup chooses the configuration file and root path"
-                    }
-                  ]
-                }
+                "ref": "c_1"
               }
             ]
           },
@@ -868,27 +812,77 @@
             "schema_version": 1,
             "variants": [
               {
+                "ref": "junit_xml_1"
+              }
+            ]
+          },
+          "detail": "Give the output file path, such as reports/tests.xml. The XML report can accompany the normal terminal report."
+        },
+        {
+          "flag": "--markers",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List the available test markers",
+          "detail": "Includes markers registered by the project and loaded plugins."
+        },
+        {
+          "flag": "--fixtures",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List fixtures available to tests",
+          "detail": "Use -v to include names beginning with an underscore."
+        },
+        {
+          "flag": "--funcargs",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List fixtures available to tests",
+          "detail": "Use -v to include names beginning with an underscore."
+        },
+        {
+          "flag": "--fixtures-per-test",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List the fixtures requested by each test",
+          "detail": "Collects selected tests and reports their fixtures."
+        },
+        {
+          "flag": "--pdb",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enter the debugger on a failure or interrupt"
+        },
+        {
+          "flag": "--pdbcls",
+          "argument": "modulename:classname",
+          "argument_optional": false,
+          "summary": "Select a debugger class",
+          "detail": "Use module:class with --pdb, for example IPython.terminal.debugger:TerminalPdb.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
                 "kind": "nonnumerical",
-                "meaning": "JUnit XML report path",
+                "meaning": "Select a debugger class",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                  "reason": "The operand uses the documented text syntax."
                 },
                 "forms": [
                   {
-                    "id": "text",
+                    "id": "operand",
                     "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Output filename for JUnit XML test results."
+                    "syntax": "modulename:classname",
+                    "grammar": "Use module:class with --pdb, for example IPython.terminal.debugger:TerminalPdb."
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Do not request a JUnit XML report through this option."
+                  "meaning": "Use the normal command settings without this override."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "The option requires its operand"
+                  "reason": "This option requires its operand."
                 },
                 "applicability": {
                   "implementation": {
@@ -900,31 +894,3111 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "8.3.5"
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
                     ]
                   },
                   "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                    "reason": "No processor-specific interpretation."
                   }
                 },
                 "review": {
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/junitxml.py",
-                      "locator": "--junit-xml"
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--pdbcls"
                     }
                   ]
                 }
               }
             ]
-          },
-          "detail": "Give the output file path, such as reports/tests.xml. The XML report can accompany the normal terminal report."
+          }
+        },
+        {
+          "flag": "--trace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enter the debugger at the start of each test"
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable output capturing",
+          "detail": "Equivalent to --capture=no."
+        },
+        {
+          "flag": "--runxfail",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run expected failures as ordinary tests",
+          "detail": "Ignores xfail markers so the actual pass or failure counts."
+        },
+        {
+          "flag": "--lf",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rerun tests that failed last time",
+          "detail": "Without cached failures the default is to run every selected test. Use --lfnf none to exit successfully instead."
+        },
+        {
+          "flag": "--last-failed",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rerun tests that failed last time",
+          "detail": "Without cached failures the default is to run every selected test. Use --lfnf none to exit successfully instead."
+        },
+        {
+          "flag": "--ff",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run previous failures before the remaining tests",
+          "detail": "Reordering can cause additional fixture setup and teardown."
+        },
+        {
+          "flag": "--failed-first",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run previous failures before the remaining tests",
+          "detail": "Reordering can cause additional fixture setup and teardown."
+        },
+        {
+          "flag": "--nf",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run new test files first",
+          "detail": "The remaining files follow modification-time order."
+        },
+        {
+          "flag": "--new-first",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run new test files first",
+          "detail": "The remaining files follow modification-time order."
+        },
+        {
+          "flag": "--cache-show",
+          "argument": "GLOB",
+          "argument_optional": true,
+          "summary": "Display cached data and exit",
+          "detail": "An optional quoted glob selects keys. Omitting the pattern shows all keys and skips collection.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Display cached data and exit",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "GLOB",
+                    "grammar": "An optional quoted glob selects keys. Omitting the pattern shows all keys and skips collection."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "List every cached key."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--cache-show"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cache-clear",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Clear pytest’s cache before starting",
+          "detail": "This discards saved failure and stepwise state for this project."
+        },
+        {
+          "flag": "--lfnf",
+          "argument": "LAST_FAILED_NO_FAILURES",
+          "argument_optional": false,
+          "summary": "Choose what to run when no failures were saved",
+          "detail": "With --lf, all runs the selected suite and none exits successfully without running it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "lfnf_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--last-failed-no-failures",
+          "argument": "LAST_FAILED_NO_FAILURES",
+          "argument_optional": false,
+          "summary": "Choose what to run when no failures were saved",
+          "detail": "With --lf, all runs the selected suite and none exits successfully without running it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "lfnf_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--sw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Resume at the last failure and stop on the next",
+          "detail": "Stores the failing node ID for the next stepwise run."
+        },
+        {
+          "flag": "--stepwise",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Resume at the last failure and stop on the next",
+          "detail": "Stores the failing node ID for the next stepwise run."
+        },
+        {
+          "flag": "--sw-skip",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Continue after the first stepwise failure",
+          "detail": "Enables stepwise mode and stops on the following failure."
+        },
+        {
+          "flag": "--stepwise-skip",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Continue after the first stepwise failure",
+          "detail": "Enables stepwise mode and stops on the following failure."
+        },
+        {
+          "flag": "--durations-min",
+          "argument": "SECONDS",
+          "argument_optional": false,
+          "summary": "Filter the slow-phase report by elapsed time",
+          "detail": "Supply seconds, including fractions. With --durations, zero includes even the fastest phases. In 9.x an explicit threshold also applies at -vv.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Filter the slow-phase report by elapsed time",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "SECONDS",
+                    "grammar": "Supply seconds, including fractions. With --durations, zero includes even the fastest phases. In 9.x an explicit threshold also applies at -vv.",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--durations-min"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-header",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide the session header"
+        },
+        {
+          "flag": "--no-summary",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide the end-of-session summary"
+        },
+        {
+          "flag": "--verbosity",
+          "argument": "VERBOSE",
+          "argument_optional": false,
+          "summary": "Set the reporting verbosity explicitly",
+          "detail": "Supply a signed integer. Zero is normal, negative levels reduce output and positive levels increase detail.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "Set the reporting verbosity explicitly",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "VERBOSE",
+                    "grammar": "Supply a signed integer. Zero is normal, negative levels reduce output and positive levels increase detail."
+                  }
+                ],
+                "ordering": "Higher integers increase terminal reporting detail.",
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--verbosity"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-r",
+          "argument": "chars",
+          "argument_optional": false,
+          "summary": "Select outcomes for the short summary",
+          "detail": "Use f for failures, E for errors, s for skips, x/X for expected/unexpected passes, p/P for passes, a for all except passes, A for all or N to reset. Alias of --report-chars.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select outcomes for the short summary",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "chars",
+                    "grammar": "Use f for failures, E for errors, s for skips, x/X for expected/unexpected passes, p/P for passes, a for all except passes, A for all or N to reset. Alias of --report-chars."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "-r"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--disable-warnings",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide the warnings summary",
+          "detail": "Warning filters and their effects still apply."
+        },
+        {
+          "flag": "--disable-pytest-warnings",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide the warnings summary",
+          "detail": "Warning filters and their effects still apply."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include local variables in tracebacks",
+          "detail": "Local values can appear in the failure report. Alias of --showlocals."
+        },
+        {
+          "flag": "--showlocals",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include local variables in tracebacks",
+          "detail": "Local values can appear in the failure report."
+        },
+        {
+          "flag": "--no-showlocals",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide local variables in tracebacks",
+          "detail": "Overrides --showlocals inherited from configured addopts."
+        },
+        {
+          "flag": "--show-capture",
+          "argument": "SHOWCAPTURE",
+          "argument_optional": false,
+          "summary": "Choose captured output for failure reports",
+          "detail": "Select stdout, stderr, log, all or no. This changes the report while capture remains configured separately.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose captured output for failure reports",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SHOWCAPTURE",
+                    "grammar": "Choose one of no, stdout, stderr, log, all."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--show-capture"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--fulltrace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display complete tracebacks",
+          "detail": "Also shows the stack when the run is interrupted."
+        },
+        {
+          "flag": "--full-trace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display complete tracebacks",
+          "detail": "Also shows the stack when the run is interrupted."
+        },
+        {
+          "flag": "--color",
+          "argument": "color",
+          "argument_optional": false,
+          "summary": "Control terminal colors",
+          "detail": "Use yes, no or auto.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Control terminal colors",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "color",
+                    "grammar": "Choose one of yes, no, auto."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--color"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--code-highlight",
+          "argument": "CODE_HIGHLIGHT",
+          "argument_optional": false,
+          "summary": "Control source highlighting in tracebacks",
+          "detail": "Highlighting also requires color output.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Control source highlighting in tracebacks",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CODE_HIGHLIGHT",
+                    "grammar": "Choose one of yes, no."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--code-highlight"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--pastebin",
+          "argument": "mode",
+          "argument_optional": false,
+          "summary": "Upload a test report to a paste service",
+          "detail": "Use failed for failure information or all for the complete session. This sends report content outside the machine.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Upload a test report to a paste service",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "mode",
+                    "grammar": "Choose one of failed, all."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--pastebin"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--junitxml",
+          "argument": "PATH",
+          "argument_optional": false,
+          "summary": "Write test results to a JUnit XML file",
+          "detail": "Give the output file path, such as reports/tests.xml. The XML report can accompany the normal terminal report. Alias of --junit-xml.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "junit_xml_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--junitprefix",
+          "argument": "str",
+          "argument_optional": false,
+          "summary": "Prefix class names in JUnit XML reports",
+          "detail": "Use alongside --junitxml when consumers need a project-specific class prefix.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "junitprefix_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--junit-prefix",
+          "argument": "str",
+          "argument_optional": false,
+          "summary": "Prefix class names in JUnit XML reports",
+          "detail": "Use alongside --junitxml when consumers need a project-specific class prefix.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "junitprefix_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-W",
+          "argument": "PYTHONWARNINGS",
+          "argument_optional": false,
+          "summary": "Set a Python warning filter",
+          "detail": "Repeat for multiple filters. Use the Python -W action:message:category:module:lineno syntax. Alias of --pythonwarnings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set a Python warning filter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PYTHONWARNINGS",
+                    "grammar": "Repeat for multiple filters. Use the Python -W action:message:category:module:lineno syntax. Alias of --pythonwarnings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--pythonwarnings"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--pythonwarnings",
+          "argument": "PYTHONWARNINGS",
+          "argument_optional": false,
+          "summary": "Set a Python warning filter",
+          "detail": "Repeat for multiple filters. Use the Python -W action:message:category:module:lineno syntax.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set a Python warning filter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PYTHONWARNINGS",
+                    "grammar": "Repeat for multiple filters. Use the Python -W action:message:category:module:lineno syntax."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--pythonwarnings"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--strict-config",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Treat configuration warnings as errors"
+        },
+        {
+          "flag": "--strict-markers",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reject unregistered test markers"
+        },
+        {
+          "flag": "--strict",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable pytest’s strict checks",
+          "detail": "In 7.4.4 and 8.3.5 this is the deprecated alias for --strict-markers. The 9.x strict setting enables multiple checks."
+        },
+        {
+          "flag": "--config-file",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Load a specific pytest configuration file",
+          "detail": "The file replaces automatic config discovery. Its directory becomes the root unless --rootdir overrides it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "c_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--continue-on-collection-errors",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run collected tests despite collection errors"
+        },
+        {
+          "flag": "--collectonly",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List collected tests without running test bodies",
+          "detail": "Collection still imports test modules and conftest.py and runs collection hooks. Add -q for a list of node IDs. Alias of --collect-only."
+        },
+        {
+          "flag": "--co",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List collected tests without running test bodies",
+          "detail": "Collection still imports test modules and conftest.py and runs collection hooks. Add -q for a list of node IDs. Alias of --collectonly."
+        },
+        {
+          "flag": "--pyargs",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Resolve positional names as Python packages",
+          "detail": "Useful for collecting tests from an installed package."
+        },
+        {
+          "flag": "--ignore",
+          "argument": "path",
+          "argument_optional": false,
+          "summary": "Skip a path during collection",
+          "detail": "Repeat for additional paths.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Skip a path during collection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "path",
+                    "grammar": "Repeat for additional paths."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--ignore"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ignore-glob",
+          "argument": "path",
+          "argument_optional": false,
+          "summary": "Skip matching paths during collection",
+          "detail": "Quote glob patterns so pytest receives the wildcard. Repeat for more patterns.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Skip matching paths during collection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "path",
+                    "grammar": "Quote glob patterns so pytest receives the wildcard. Repeat for more patterns."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--ignore-glob"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--deselect",
+          "argument": "nodeid_prefix",
+          "argument_optional": false,
+          "summary": "Remove tests with a matching node-ID prefix",
+          "detail": "Repeat for several prefixes, such as tests/test_cli.py::test_network.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Remove tests with a matching node-ID prefix",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "nodeid_prefix",
+                    "grammar": "Repeat for several prefixes, such as tests/test_cli.py::test_network."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--deselect"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--confcutdir",
+          "argument": "dir",
+          "argument_optional": false,
+          "summary": "Limit upward discovery of conftest.py files",
+          "detail": "Supply the directory above which parent conftest.py files should be ignored.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Limit upward discovery of conftest.py files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "dir",
+                    "grammar": "Supply the directory above which parent conftest.py files should be ignored."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--confcutdir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--noconftest",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable loading project conftest.py files"
+        },
+        {
+          "flag": "--keepduplicates",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep duplicate collection paths",
+          "detail": "Repeated directory operands can collect and run the same tests more than once."
+        },
+        {
+          "flag": "--keep-duplicates",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep duplicate collection paths",
+          "detail": "Repeated directory operands can collect and run the same tests more than once."
+        },
+        {
+          "flag": "--collect-in-virtualenv",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include local virtual environments in collection"
+        },
+        {
+          "flag": "--import-mode",
+          "argument": "IMPORTMODE",
+          "argument_optional": false,
+          "summary": "Choose how pytest imports tests and conftest files",
+          "detail": "prepend and append change sys.path. importlib uses importlib without adding test directories to sys.path.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how pytest imports tests and conftest files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "IMPORTMODE",
+                    "grammar": "Choose one of prepend, append, importlib."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--import-mode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--doctest-modules",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Collect doctests from Python modules"
+        },
+        {
+          "flag": "--doctest-report",
+          "argument": "DOCTESTREPORT",
+          "argument_optional": false,
+          "summary": "Choose how doctest differences are displayed",
+          "detail": "Choose none, cdiff, ndiff, udiff or only_first_failure.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how doctest differences are displayed",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DOCTESTREPORT",
+                    "grammar": "Choose one of none, cdiff, ndiff, udiff, only_first_failure."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--doctest-report"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--doctest-glob",
+          "argument": "pat",
+          "argument_optional": false,
+          "summary": "Collect doctest text files matching a pattern",
+          "detail": "Quote the glob. The ordinary default is test*.txt.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Collect doctest text files matching a pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "pat",
+                    "grammar": "Quote the glob. The ordinary default is test*.txt."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--doctest-glob"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--doctest-ignore-import-errors",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip modules with import errors during doctest collection"
+        },
+        {
+          "flag": "--doctest-continue-on-failure",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep running examples after a doctest failure",
+          "detail": "Applies to later examples within the same doctest."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the installed pytest version",
+          "detail": "Repeat for additional plugin information. Alias of --version."
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the installed pytest version",
+          "detail": "Repeat for additional plugin information."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show options and configuration settings",
+          "detail": "Installed plugins can contribute additional flags. Alias of --help."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show options and configuration settings",
+          "detail": "Installed plugins can contribute additional flags."
+        },
+        {
+          "flag": "--traceconfig",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report plugin and conftest loading"
+        },
+        {
+          "flag": "--trace-config",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report plugin and conftest loading"
+        },
+        {
+          "flag": "--debug",
+          "argument": "DEBUG_FILE_NAME",
+          "argument_optional": true,
+          "summary": "Write an internal debug log",
+          "detail": "The optional filename defaults to pytestdebug.log. Opening the log truncates any existing file.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write an internal debug log",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DEBUG_FILE_NAME",
+                    "grammar": "The optional filename defaults to pytestdebug.log. Opening the log truncates any existing file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Write pytestdebug.log."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--debug"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-o",
+          "argument": "OVERRIDE_INI",
+          "argument_optional": false,
+          "summary": "Override a configuration setting",
+          "detail": "Pass name=value as one argument. Repeat for more settings. Alias of --override-ini.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Override a configuration setting",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OVERRIDE_INI",
+                    "grammar": "Pass name=value as one argument. Repeat for more settings. Alias of --override-ini."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--override-ini"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--override-ini",
+          "argument": "OVERRIDE_INI",
+          "argument_optional": false,
+          "summary": "Override a configuration setting",
+          "detail": "Pass name=value as one argument. Repeat for more settings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Override a configuration setting",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OVERRIDE_INI",
+                    "grammar": "Pass name=value as one argument. Repeat for more settings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--override-ini"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--assert",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Choose how test assertions are reported",
+          "detail": "rewrite adds expression details while importing test modules. plain preserves native Python assertions.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how test assertions are reported",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MODE",
+                    "grammar": "Choose one of rewrite, plain."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--assert"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--setuponly",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run fixture setup and teardown without test bodies"
+        },
+        {
+          "flag": "--setup-only",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run fixture setup and teardown without test bodies"
+        },
+        {
+          "flag": "--setupshow",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display fixture setup and teardown while running tests"
+        },
+        {
+          "flag": "--setup-show",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Display fixture setup and teardown while running tests"
+        },
+        {
+          "flag": "--setupplan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List planned fixtures and tests without running them"
+        },
+        {
+          "flag": "--setup-plan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List planned fixtures and tests without running them"
+        },
+        {
+          "flag": "--log-level",
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "summary": "Set the minimum captured logging level",
+          "detail": "Accepts a logging level name such as INFO or its integer level.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Set the minimum captured logging level",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LEVEL",
+                    "grammar": "Accepts a logging level name such as INFO or its integer level."
+                  }
+                ],
+                "grammar": {
+                  "name": "pytest --log-level argument syntax",
+                  "reference": {
+                    "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                    "locator": "--log-level"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-level"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-format",
+          "argument": "LOG_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the captured log message format",
+          "detail": "Use a Python logging format string such as '%(levelname)s %(message)s'.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the captured log message format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FORMAT",
+                    "grammar": "Use a Python logging format string such as '%(levelname)s %(message)s'."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-date-format",
+          "argument": "LOG_DATE_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the timestamp format for captured logs",
+          "detail": "Uses strftime directives where the log format includes asctime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the timestamp format for captured logs",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_DATE_FORMAT",
+                    "grammar": "Uses strftime directives where the log format includes asctime."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-date-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-cli-level",
+          "argument": "LOG_CLI_LEVEL",
+          "argument_optional": false,
+          "summary": "Set the level for live terminal logging",
+          "detail": "A level such as INFO enables live log output during the run.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Set the level for live terminal logging",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_CLI_LEVEL",
+                    "grammar": "A level such as INFO enables live log output during the run."
+                  }
+                ],
+                "grammar": {
+                  "name": "pytest --log-cli-level argument syntax",
+                  "reference": {
+                    "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                    "locator": "--log-cli-level"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-cli-level"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-cli-format",
+          "argument": "LOG_CLI_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the live terminal log format",
+          "detail": "Uses a Python logging format string.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the live terminal log format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_CLI_FORMAT",
+                    "grammar": "Uses a Python logging format string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-cli-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-cli-date-format",
+          "argument": "LOG_CLI_DATE_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the live log timestamp format",
+          "detail": "Uses strftime directives where the live format includes asctime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the live log timestamp format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_CLI_DATE_FORMAT",
+                    "grammar": "Uses strftime directives where the live format includes asctime."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-cli-date-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-file",
+          "argument": "LOG_FILE",
+          "argument_optional": false,
+          "summary": "Write session logs to a file",
+          "detail": "Relative paths resolve from the working directory. The default mode overwrites the file.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write session logs to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FILE",
+                    "grammar": "Relative paths resolve from the working directory. The default mode overwrites the file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-file-level",
+          "argument": "LOG_FILE_LEVEL",
+          "argument_optional": false,
+          "summary": "Set the level for messages written to the log file",
+          "detail": "Supply a logging level name or number.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Set the level for messages written to the log file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FILE_LEVEL",
+                    "grammar": "Supply a logging level name or number."
+                  }
+                ],
+                "grammar": {
+                  "name": "pytest --log-file-level argument syntax",
+                  "reference": {
+                    "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                    "locator": "--log-file-level"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-file-level"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-file-format",
+          "argument": "LOG_FILE_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the message format in the log file",
+          "detail": "Uses a Python logging format string.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the message format in the log file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FILE_FORMAT",
+                    "grammar": "Uses a Python logging format string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-file-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-file-date-format",
+          "argument": "LOG_FILE_DATE_FORMAT",
+          "argument_optional": false,
+          "summary": "Set the timestamp format in the log file",
+          "detail": "Uses strftime directives where the file format includes asctime.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the timestamp format in the log file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FILE_DATE_FORMAT",
+                    "grammar": "Uses strftime directives where the file format includes asctime."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-file-date-format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-auto-indent",
+          "argument": "INDENT",
+          "argument_optional": false,
+          "summary": "Indent continuation lines of multiline log messages",
+          "detail": "Use true or on for automatic alignment, false or off to disable it, or an integer number of spaces.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Indent continuation lines of multiline log messages",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "INDENT",
+                    "grammar": "Use true or on for automatic alignment, false or off to disable it, or an integer number of spaces."
+                  }
+                ],
+                "grammar": {
+                  "name": "pytest --log-auto-indent argument syntax",
+                  "reference": {
+                    "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                    "locator": "--log-auto-indent"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-auto-indent"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--log-disable",
+          "argument": "LOGGER_DISABLE",
+          "argument_optional": false,
+          "summary": "Disable a logger by name",
+          "detail": "Repeat to suppress messages from several named loggers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Disable a logger by name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOGGER_DISABLE",
+                    "grammar": "Repeat to suppress messages from several named loggers."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "7.4.4",
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-disable"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-fold-skipped",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show skipped tests individually in the short summary",
+          "detail": "Available in pytest 8.3.5, 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--xfail-tb",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show tracebacks for expected failures",
+          "detail": "Requires a traceback style other than no. Available in pytest 8.3.5, 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--log-file-mode",
+          "argument": "LOG_FILE_MODE",
+          "argument_optional": false,
+          "summary": "Choose whether to append or overwrite the log",
+          "detail": "Use a to append or w to truncate when opening --log-file. Available in pytest 8.3.5, 9.0.2, 9.2.0 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose whether to append or overwrite the log",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "LOG_FILE_MODE",
+                    "grammar": "Choose one of w, a."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "8.3.5",
+                      "9.0.2",
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--log-file-mode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--disable-plugin-autoload",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable automatic loading of third-party entry points",
+          "detail": "Explicit plugins supplied through -p and PYTEST_PLUGINS still load. Available in pytest 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--force-short-summary",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep the summary compact at higher verbosity",
+          "detail": "Available in pytest 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--sw-reset",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Start a fresh stepwise run",
+          "detail": "Discards the saved starting point and enables stepwise mode. Available in pytest 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--stepwise-reset",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Start a fresh stepwise run",
+          "detail": "Discards the saved starting point and enables stepwise mode. Available in pytest 9.0.2, 9.2.0 among the reviewed releases."
+        },
+        {
+          "flag": "--max-warnings",
+          "argument": "num",
+          "argument_optional": false,
+          "summary": "Fail a passing run that exceeds a warning limit",
+          "detail": "Supply a warning count. Zero permits no warnings. Available in pytest 9.2.0 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Fail a passing run that exceeds a warning limit",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "num",
+                    "grammar": "Supply a warning count. Zero permits no warnings."
+                  }
+                ],
+                "subject": "warnings",
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "--max-warnings"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--report-chars",
+          "argument": "chars",
+          "argument_optional": false,
+          "summary": "Select outcomes for the short summary",
+          "detail": "Use f for failures, E for errors, s for skips, x/X for expected/unexpected passes, p/P for passes, a for all except passes, A for all or N to reset. Available in pytest 9.2.0 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select outcomes for the short summary",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "chars",
+                    "grammar": "Use f for failures, E for errors, s for skips, x/X for expected/unexpected passes, p/P for passes, a for all except passes, A for all or N to reset."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "pytest"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.2.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest",
+                      "locator": "-r"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -934,9 +4008,245 @@
   ],
   "description": "Collect and run Python tests. Plugins can add options.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned manual and client option inventory",
+    "reviewed": "2026-11-23",
     "source": "https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags"
   },
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "c_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed by this parameter contract",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "pytest"
+          ]
+        },
+        "platform": {
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "8.3.5"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "Filename selecting a supported pytest configuration file.",
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE"
+        }
+      ],
+      "kind": "nonnumerical",
+      "meaning": "pytest configuration file",
+      "review": {
+        "references": [
+          {
+            "locator": "-c option registration",
+            "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/main.py"
+          },
+          {
+            "locator": "determine_setup chooses the configuration file and root path",
+            "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/config/findpaths.py"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Discover configuration using pytest's normal search rules.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "The option requires its operand",
+        "state": "not_accepted"
+      }
+    },
+    "junit_xml_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed by this parameter contract",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "pytest"
+          ]
+        },
+        "platform": {
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "8.3.5"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "Output filename for JUnit XML test results.",
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE"
+        }
+      ],
+      "kind": "nonnumerical",
+      "meaning": "JUnit XML report path",
+      "review": {
+        "references": [
+          {
+            "locator": "--junit-xml",
+            "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8.3.5/src/_pytest/junitxml.py"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Do not request a JUnit XML report through this option.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "The option requires its operand",
+        "state": "not_accepted"
+      }
+    },
+    "lfnf_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No processor-specific interpretation.",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "pytest"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "7.4.4",
+            "8.3.5",
+            "9.0.2",
+            "9.2.0"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "The operand uses the documented text syntax.",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "Choose one of all, none.",
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "LAST_FAILED_NO_FAILURES"
+        }
+      ],
+      "kind": "enumeration",
+      "meaning": "Choose what to run when no failures were saved",
+      "review": {
+        "references": [
+          {
+            "locator": "--lfnf",
+            "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Use the normal command settings without this override.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires its operand.",
+        "state": "not_accepted"
+      }
+    },
+    "junitprefix_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No processor-specific interpretation.",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "pytest"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "7.4.4",
+            "8.3.5",
+            "9.0.2",
+            "9.2.0"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "The operand uses the documented text syntax.",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "Use alongside --junitxml when consumers need a project-specific class prefix.",
+          "id": "operand",
+          "notation": "expression",
+          "syntax": "str"
+        }
+      ],
+      "kind": "nonnumerical",
+      "meaning": "Prefix class names in JUnit XML reports",
+      "review": {
+        "references": [
+          {
+            "locator": "--junit-prefix",
+            "source": "https://github.com/pytest-dev/pytest/tree/9.2.0/src/_pytest"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Use the normal command settings without this override.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires its operand.",
+        "state": "not_accepted"
+      }
+    }
+  }
 }

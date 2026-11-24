@@ -1,0 +1,20 @@
+# Bun run manual coverage
+
+The run menu grew from eight to 121 spellings. The command-specific declaration inventory has 48 groups and 58 spellings for Bun 1.2.5, and 111 groups and 121 spellings for 1.4.5. It includes the run command’s shared runtime, transpiler and configuration flags. The individual rows identify release-specific choices. [Profile](../profiles/bun-run.json) · [Versioned spellings and operand requirements](../tests/fixtures/bun/bun-run-declarations.tsv)
+
+## Sources and scope
+
+Both published Linux x64 clients supplied `bun run --help`. Their npm archives matched the SHA-512 integrity values in the release metadata. The tagged run parser resolves details omitted by fixed help, including optional debugger endpoints and the optional config path. Ubuntu Noble and Resolute had no matching `bin/bun`, `bun(1)` or `bun-run(1)` package manual in the distribution checks. [Runtime manual](https://bun.com/docs/runtime) · [1.2.5 parser](https://github.com/oven-sh/bun/blob/bun-v1.2.5/src/cli.zig) · [1.4.5 parser](https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs) · [Ubuntu checks and archive metadata](bun-run-option-audit.md#sources-and-versions)
+
+- A package script can run matching pre- and post-scripts. The main script receives the arguments. A bare name resolves a matching script before a source file, then a local executable. An explicit relative path selects the file. Place runtime flags before the target. An option-looking argument after the target reaches the child.
+- Workspace filtering and the number of visible output lines are separate controls. Zero shows all output. The help default for `--elide-lines` changed from 10 to zero. The newer client adds parallel and sequential script execution and a control for continuing after failure.
+- The newer help describes `--heap-prof-interval` as a byte sampling interval. Its parser shows that JavaScriptCore’s heap profiler does not apply the setting. A nondefault interval supplied without a heap profiling mode exits 9. The CPU interval is effective and measured in microseconds. [Profiler option handling](https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs)
+- The hidden `-u` and `--origin` select the runtime origin. The newer release also declares internal imports, string-compilation restrictions and Node-compatible tracing controls outside its printed help. The bootstrap implements event tracing, JavaScript environment-access stacks and explicit-exit tracing. It accepts the native-stack spelling without producing a native environment backtrace. [Tracing implementation](https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/js/internal/process/pre_execution.ts)
+
+Build outputs, test-only filters and reporters, top-level version switches and debug-build-only parser flags are outside the release `run` menu. Options belonging to a script remain script arguments even when their spelling matches a Bun option.
+
+## Disposable native checks
+
+On each target both clients used a temporary package with a script, source file and local executable named `task.js`. The script ran a Python argument recorder. `bun run --silent task.js 'two words' --watch` yielded pre-hook `["pre"]`, main `["script", "two words", "--watch"]`, and post-hook `["post"]`. Inserting a standalone `--` immediately before or after the target gave those same vectors. For the explicit source file, `./task.js -- 'two words' --watch` likewise yielded `["file", "two words", "--watch"]`. Removing the script selected the file. Removing the file then selected the local executable. [Reproducible probe](../tests/fixtures/bun/probe-run.py)
+
+These observations come from running Bun against disposable files. The separate menu test inserts a Bun option before a script and quoted arguments, restores the original pending line on cancellation and refuses a parent edit inside the script arguments. [Inventory and boundary tests](../tests/test_devtools_manual_inventories.py) · [Rendered menu and full suites](devtools-batch-verification.md#compatibility-results)

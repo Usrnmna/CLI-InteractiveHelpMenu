@@ -34,60 +34,7 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "identifier",
-                "meaning": "Ruff rule-code selectors",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Comma-separated rule codes or prefixes, including ALL where supported; numeric portions identify lint rules rather than counts or severity levels."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use the configured/default rule selection without this CLI override."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Ruff"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "0.11.13"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff/src/args.rs",
-                      "locator": "select/ignore RuleSelector fields"
-                    }
-                  ]
-                },
-                "subject": "Ruff lint rules"
+                "ref": "select_1"
               }
             ]
           },
@@ -102,60 +49,7 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "identifier",
-                "meaning": "Ruff rule-code selectors",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Comma-separated rule codes or prefixes, including ALL where supported; numeric portions identify lint rules rather than counts or severity levels."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use the configured/default rule selection without this CLI override."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "Ruff"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "0.11.13"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff/src/args.rs",
-                      "locator": "select/ignore RuleSelector fields"
-                    }
-                  ]
-                },
-                "subject": "Ruff lint rules"
+                "ref": "select_1"
               }
             ]
           },
@@ -576,6 +470,1582 @@
           "flag": "--verbose",
           "summary": "Show detailed logging",
           "detail": "Include debug messages about configuration and file discovery."
+        },
+        {
+          "flag": "--show-fixes",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List the lint violations Ruff fixed",
+          "detail": "Use with a fix mode to see which rules changed the files."
+        },
+        {
+          "flag": "-w",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rerun lint checks after file changes",
+          "detail": "Keeps the process running until interrupted. Alias of --watch."
+        },
+        {
+          "flag": "--watch",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rerun lint checks after file changes",
+          "detail": "Keeps the process running until interrupted."
+        },
+        {
+          "flag": "--fix-only",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Apply eligible fixes without reporting remaining violations",
+          "detail": "Implies --fix. Remaining unfixable violations do not determine the exit status."
+        },
+        {
+          "flag": "--ignore-noqa",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report violations suppressed by noqa comments"
+        },
+        {
+          "flag": "-o",
+          "argument": "OUTPUT_FILE",
+          "argument_optional": false,
+          "summary": "Write lint results to a file",
+          "detail": "Ordinarily results go to stdout. RUFF_OUTPUT_FILE can also select the destination. Alias of --output-file.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write lint results to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OUTPUT_FILE",
+                    "grammar": "Ordinarily results go to stdout. RUFF_OUTPUT_FILE can also select the destination. Alias of --output-file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--output-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--output-file",
+          "argument": "OUTPUT_FILE",
+          "argument_optional": false,
+          "summary": "Write lint results to a file",
+          "detail": "Ordinarily results go to stdout. RUFF_OUTPUT_FILE can also select the destination.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write lint results to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OUTPUT_FILE",
+                    "grammar": "Ordinarily results go to stdout. RUFF_OUTPUT_FILE can also select the destination."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--output-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable preview behavior",
+          "detail": "Includes unstable rules and fixes."
+        },
+        {
+          "flag": "--extension",
+          "argument": "EXTENSION",
+          "argument_optional": false,
+          "summary": "Choose a language for a file extension",
+          "detail": "Use colon-separated pairs such as ipy:ipynb or tmpl:python. The Python language token is python, not py. Ruff 0.17.6 also accepts md for Markdown code blocks.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a language for a file extension",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXTENSION",
+                    "grammar": "Use colon-separated pairs such as ipy:ipynb or tmpl:python. The Python language token is python, not py. Ruff 0.17.6 also accepts md for Markdown code blocks."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extension"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--statistics",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Count lint violations by rule"
+        },
+        {
+          "flag": "--add-noqa",
+          "argument": "REASON",
+          "argument_optional": true,
+          "summary": "Write noqa suppressions on failing lines",
+          "detail": "Edits source files. In 0.11.13 remove the inserted equals sign and use the bare switch. In 0.17.6 an attached =REASON adds a reason to the comment.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write noqa suppressions on failing lines",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REASON",
+                    "grammar": "Edits source files. In 0.11.13 this is a switch. In 0.17.6 append =REASON to include a reason."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Write suppression comments without an extra reason."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--add-noqa"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--show-files",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List the files selected for linting",
+          "detail": "Uses the active configuration and discovery rules."
+        },
+        {
+          "flag": "--show-settings",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show the resolved lint settings for a file",
+          "detail": "Provide one Python file to see how its configuration resolves."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command",
+          "detail": "The short form displays a condensed listing. Use --help for longer explanations. Alias of --help."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command",
+          "detail": "The short form displays a condensed listing. Use --help for longer explanations."
+        },
+        {
+          "flag": "--extend-select",
+          "argument": "RULE_CODE",
+          "argument_optional": false,
+          "summary": "Add rules to the current lint selection",
+          "detail": "Use comma-separated codes or prefixes, for example F401,B.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add rules to the current lint selection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULE_CODE",
+                    "grammar": "Use comma-separated codes or prefixes, for example F401,B."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-select"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--per-file-ignores",
+          "argument": "PER_FILE_IGNORES",
+          "argument_optional": false,
+          "summary": "Suppress selected rules for matching paths",
+          "detail": "Quote mappings such as 'tests/*.py:S101' to preserve the pattern.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Suppress selected rules for matching paths",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PER_FILE_IGNORES",
+                    "grammar": "Quote mappings such as 'tests/*.py:S101' to preserve the pattern."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--per-file-ignores"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extend-per-file-ignores",
+          "argument": "EXTEND_PER_FILE_IGNORES",
+          "argument_optional": false,
+          "summary": "Add path-specific rule suppressions",
+          "detail": "Appends pattern:code mappings to existing per-file ignores.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add path-specific rule suppressions",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXTEND_PER_FILE_IGNORES",
+                    "grammar": "Appends pattern:code mappings to existing per-file ignores."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-per-file-ignores"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--fixable",
+          "argument": "RULE_CODE",
+          "argument_optional": false,
+          "summary": "Choose which rules may be fixed",
+          "detail": "Accepts comma-separated rule selectors. Changes require a fix mode.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose which rules may be fixed",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULE_CODE",
+                    "grammar": "Accepts comma-separated rule selectors. Changes require a fix mode."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--fixable"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--unfixable",
+          "argument": "RULE_CODE",
+          "argument_optional": false,
+          "summary": "Prevent fixes for selected rules",
+          "detail": "Use comma-separated rule selectors. Diagnostics for those rules still appear.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prevent fixes for selected rules",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULE_CODE",
+                    "grammar": "Use comma-separated rule selectors. Diagnostics for those rules still appear."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--unfixable"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extend-fixable",
+          "argument": "RULE_CODE",
+          "argument_optional": false,
+          "summary": "Add rules eligible for fixing",
+          "detail": "Extends the configured fixable selection. Requires a fix mode to write changes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add rules eligible for fixing",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULE_CODE",
+                    "grammar": "Extends the configured fixable selection. Requires a fix mode to write changes."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-fixable"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extend-exclude",
+          "argument": "FILE_PATTERN",
+          "argument_optional": false,
+          "summary": "Add file patterns to the exclusion list",
+          "detail": "Quote comma-separated patterns. Explicit paths still require --force-exclude to enforce exclusions.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add file patterns to the exclusion list",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE_PATTERN",
+                    "grammar": "Quote comma-separated patterns. Explicit paths still require --force-exclude to enforce exclusions."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-exclude"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--respect-gitignore",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Apply repository ignore files during discovery",
+          "detail": "Includes .gitignore and related ignore files."
+        },
+        {
+          "flag": "--force-exclude",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enforce exclusions on explicitly named files",
+          "detail": "Useful when another tool passes individual file paths to Ruff."
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip reading cached results",
+          "detail": "Process the selected files again. Existing cache files are left in place. Alias of --no-cache."
+        },
+        {
+          "flag": "--cache-dir",
+          "argument": "CACHE_DIR",
+          "argument_optional": false,
+          "summary": "Choose the directory for cached results",
+          "detail": "RUFF_CACHE_DIR also sets the cache path.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the directory for cached results",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CACHE_DIR",
+                    "grammar": "RUFF_CACHE_DIR also sets the cache path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--cache-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--stdin-filename",
+          "argument": "STDIN_FILENAME",
+          "argument_optional": false,
+          "summary": "Name the file supplied on standard input",
+          "detail": "Use - as the file operand and provide a path for file-specific settings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the file supplied on standard input",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "STDIN_FILENAME",
+                    "grammar": "Use - as the file operand and provide a path for file-specific settings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--stdin-filename"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-e",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Return success for lint violations",
+          "detail": "Diagnostics still print. Invalid options, invalid configuration and internal errors still return exit status 2. Alias of --exit-zero."
+        },
+        {
+          "flag": "--exit-non-zero-on-fix",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Return a failure status if fixes changed files",
+          "detail": "Can report a nonzero status even when no violations remain."
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress Ruff’s diagnostic and summary output",
+          "detail": "Exit status still reports lint violations or formatting-check changes. Alias of --silent."
+        },
+        {
+          "flag": "--silent",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress Ruff’s diagnostic and summary output",
+          "detail": "Exit status still reports lint violations or formatting-check changes."
+        },
+        {
+          "flag": "--no-preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable preview behavior",
+          "detail": "Overrides a configured preview setting."
+        },
+        {
+          "flag": "--no-respect-gitignore",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore repository ignore files during discovery",
+          "detail": "Explicit Ruff include and exclude settings still apply."
+        },
+        {
+          "flag": "--no-force-exclude",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow explicitly named files through exclusions"
+        },
+        {
+          "flag": "--no-fix",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable automatic lint fixes",
+          "detail": "Overrides fix mode enabled in configuration."
+        },
+        {
+          "flag": "--no-unsafe-fixes",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Restrict lint fixes to safe changes"
+        },
+        {
+          "flag": "--no-show-fixes",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide the list of applied fixes"
+        },
+        {
+          "flag": "--no-fix-only",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable the fix-only reporting mode"
+        },
+        {
+          "flag": "--extend-ignore",
+          "argument": "RULES",
+          "argument_optional": false,
+          "summary": "Disable additional lint rules",
+          "detail": "Deprecated compatibility spelling. Use --ignore with comma-separated rule selectors.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Disable additional lint rules",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULES",
+                    "grammar": "Deprecated compatibility spelling. Use --ignore with comma-separated rule selectors."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-ignore"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extend-unfixable",
+          "argument": "RULES",
+          "argument_optional": false,
+          "summary": "Prevent additional lint fixes",
+          "detail": "Deprecated compatibility spelling. Use --unfixable with comma-separated rule selectors.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Prevent additional lint fixes",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "RULES",
+                    "grammar": "Deprecated compatibility spelling. Use --unfixable with comma-separated rule selectors."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--extend-unfixable"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--line-length",
+          "argument": "LENGTH",
+          "argument_optional": false,
+          "summary": "Set the width used by length-sensitive rules",
+          "detail": "Use a positive integer. The maximum is 320 in 0.11.13 and 65535 in 0.17.6. Configuration and dedicated options set the effective width.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "width",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "bounds": {
+                      "max": "320",
+                      "min": "1"
+                    },
+                    "id": "width",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "custom",
+                      "definition": "Characters normally count as one; East Asian characters and emoji use Unicode display width",
+                      "multiplier": "1",
+                      "name": "Ruff width units"
+                    }
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "Preferred formatted line width",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_linter/src/line_width.rs",
+                      "locator": "LineLength integer bounds and default"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff_workspace/src/options.rs",
+                      "locator": "line-length Unicode width and wrapping preference"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use configured line-length, default 88 in this reference",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              },
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "platform": {
+                    "reason": "This parameter definition does not select an operating system; platform availability is not asserted",
+                    "state": "not_applicable"
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "width",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "bounds": {
+                      "max": "65535",
+                      "min": "1"
+                    },
+                    "id": "width",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "custom",
+                      "definition": "Characters normally count as one; East Asian characters and emoji use Unicode display width",
+                      "multiplier": "1",
+                      "name": "Ruff width units"
+                    }
+                  }
+                ],
+                "kind": "quantity",
+                "meaning": "Preferred formatted line width",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_linter/src/line_width.rs",
+                      "locator": "LineLength integer bounds and default"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.17.6/crates/ruff_workspace/src/options.rs",
+                      "locator": "line-length Unicode width and wrapping preference"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Use configured line-length, default 88 in this reference",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--dummy-variable-rgx",
+          "argument": "REGEX",
+          "argument_optional": false,
+          "summary": "Select names treated as intentionally unused",
+          "detail": "Pass a quoted regular expression for dummy variable names.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select names treated as intentionally unused",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REGEX",
+                    "grammar": "Pass a quoted regular expression for dummy variable names."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.11.13",
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--dummy-variable-rgx"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--add-ignore",
+          "argument": "REASON",
+          "argument_optional": true,
+          "summary": "Write Ruff suppression comments on failing lines",
+          "detail": "Edits source files. Supply an optional reason with =REASON. Preview mode uses rule names. Available in Ruff 0.17.6 among the reviewed releases.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write Ruff suppression comments on failing lines",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REASON",
+                    "grammar": "Edits source files. Supply an optional reason with =REASON. Preview mode uses rule names."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Write suppression comments without an extra reason."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--add-ignore"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color",
+          "argument": "WHEN",
+          "argument_optional": false,
+          "summary": "Choose when to use colored output",
+          "detail": "auto follows terminal detection. always forces color and never disables it. Available in Ruff 0.17.6 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose when to use colored output",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "WHEN",
+                    "grammar": "auto follows terminal detection. always forces color and never disables it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Ruff"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.17.6"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff/src/args.rs",
+                      "locator": "--color"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -586,9 +2056,67 @@
   ],
   "description": "Find lint violations in Python files and optionally fix them.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned manual and client option inventory",
+    "reviewed": "2026-11-23",
     "source": "https://docs.astral.sh/ruff/configuration/#full-command-line-interface"
   },
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "select_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed by this parameter contract",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Ruff"
+          ]
+        },
+        "platform": {
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.11.13"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "Comma-separated rule codes or prefixes, including ALL where supported; numeric portions identify lint rules rather than counts or severity levels.",
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE"
+        }
+      ],
+      "kind": "identifier",
+      "meaning": "Ruff rule-code selectors",
+      "review": {
+        "references": [
+          {
+            "locator": "select/ignore RuleSelector fields",
+            "source": "https://raw.githubusercontent.com/astral-sh/ruff/0.11.13/crates/ruff/src/args.rs"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Ruff lint rules",
+      "when_absent": {
+        "meaning": "Use the configured/default rule selection without this CLI override.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "The option requires its operand",
+        "state": "not_accepted"
+      }
+    }
+  }
 }

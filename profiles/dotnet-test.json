@@ -937,7 +937,8 @@
           "argument": "",
           "argument_optional": false,
           "flag": "--nologo",
-          "summary": "Hide the VSTest startup banner"
+          "summary": "Hide the VSTest startup banner",
+          "detail": "Other banner spellings in SDK 10.0.402 and 11.0.100 include --no-logo, -nologo and /nologo. Error and diagnostic output still appears."
         },
         {
           "argument": "",
@@ -1245,6 +1246,1843 @@
           "flag": "--list-tests",
           "summary": "List discovered tests without running them",
           "detail": "VSTest loads the test assembly and adapter during discovery. Add --no-build to use an existing assembly."
+        },
+        {
+          "flag": "-h",
+          "summary": "Show this SDK’s command help",
+          "detail": "The SDK prints help for this command and exits. The help aliases include -h, -? and /?. Quote question-mark spellings in Bash.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--help",
+          "summary": "Show this SDK’s command help",
+          "detail": "The SDK prints help for this command and exits. The help aliases include -h, -? and /?. Quote question-mark spellings in Bash.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "-a",
+          "summary": "Choose the target architecture",
+          "detail": "Use a RID architecture such as x64 or arm64. The SDK combines it with the host OS or with --os. Supply a complete RID with --runtime instead of combining it with --arch. In VSTest, SDKs before 7 used -a for the adapter path.",
+          "argument": "ARCH",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target architecture",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "ARCH",
+                    "grammar": "RID architecture component such as x64 or arm64."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the architecture from the host or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "-a option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--arch",
+          "summary": "Choose the target architecture",
+          "detail": "Use a RID architecture such as x64 or arm64. The SDK combines it with the host OS or with --os. Supply a complete RID with --runtime instead of combining it with --arch. In VSTest, SDKs before 7 used -a for the adapter path.",
+          "argument": "ARCH",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target architecture",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "ARCH",
+                    "grammar": "RID architecture component such as x64 or arm64."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the architecture from the host or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--arch option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--artifacts-path",
+          "summary": "Group project outputs under one directory",
+          "detail": "SDK 8 and later place each project’s outputs in subdirectories beneath this root. Use this layout to keep different projects’ binaries and intermediates separate. Repeat the same root on later restore, build or no-build commands that share the outputs.",
+          "argument": "DIR",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Group project outputs under one directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Root directory for the SDK artifacts layout."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project and SDK output paths."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--artifacts-path option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--disable-build-servers",
+          "summary": "Bypass persistent build servers",
+          "detail": "SDK 7 and later disable MSBuild node reuse and shared compiler servers for this invocation. Existing build products and NuGet packages remain available.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--interactive",
+          "summary": "Allow prompts during authentication",
+          "detail": "A credential provider can pause for input. SDK 10.0.402 and 11.0.100 also accept an explicit false to suppress prompts and normally disable them in CI or with redirected output.",
+          "argument": "[BOOL]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Allow prompts during authentication",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Allow interactive input"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Suppress interactive input on SDKs supporting explicit false"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the selected SDK’s interaction policy."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "A bare --interactive allows prompting."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--interactive option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--os",
+          "summary": "Choose the target operating system",
+          "detail": "Use a RID OS such as linux or win. The SDK combines it with the current architecture or --arch. Supply a full RID separately with --runtime.",
+          "argument": "OS",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target operating system",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "OS",
+                    "grammar": "Operating system component of a runtime identifier."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the host OS or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--os option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--tl:",
+          "summary": "Set Terminal Logger output",
+          "detail": "SDK 8 and later. Type --tl:auto, --tl:on or --tl:off as one token. Auto checks terminal capabilities and redirected output.",
+          "argument": "MODE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Set Terminal Logger output",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Enable on a supported interactive terminal"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "on",
+                    "tokens": [
+                      "on"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Enable terminal logging"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "off",
+                    "tokens": [
+                      "off"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Use conventional build output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the SDK’s default terminal detection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--tl option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-verbosity",
+          "summary": "Set test command logging detail",
+          "detail": "The SDK 10 family adds MSBuild-compatible aliases including -verbosity, --v, /verbosity and /v. Use -v or --verbosity on SDK 9. For console test output, configure the logger separately, as in --logger \"console;verbosity=detailed\".",
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set test command logging detail",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "LEVEL",
+                    "grammar": "Use quiet/q, minimal/m, normal/n, detailed/d or diagnostic/diag."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command’s logging default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-verbosity option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--v",
+          "summary": "Set test command logging detail",
+          "detail": "The SDK 10 family adds MSBuild-compatible aliases including -verbosity, --v, /verbosity and /v. Use -v or --verbosity on SDK 9. For console test output, configure the logger separately, as in --logger \"console;verbosity=detailed\".",
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set test command logging detail",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "LEVEL",
+                    "grammar": "Use quiet/q, minimal/m, normal/n, detailed/d or diagnostic/diag."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command’s logging default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--v option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-logo",
+          "summary": "Hide the VSTest startup banner",
+          "detail": "SDK 10.0.402 and 11.0.100 expose --no-logo and -nologo. Their parser also accepts /nologo. Logging and error reporting continue.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "-nologo",
+          "summary": "Hide the VSTest startup banner",
+          "detail": "SDK 10.0.402 and 11.0.100 expose --no-logo and -nologo. Their parser also accepts /nologo. Logging and error reporting continue.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "-p:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-p option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--property:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--property option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-property:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-property option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--p:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--p option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-e",
+          "summary": "Set an environment variable for the test host",
+          "detail": "VSTest runs tests in an isolated process with these variables. Use -e NAME=value and repeat for more variables. Quote values containing spaces.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an environment variable for the test host",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "One assignment per occurrence."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inherit the process and launch settings applicable to this command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "-e option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--environment",
+          "summary": "Set an environment variable for the test host",
+          "detail": "VSTest runs tests in an isolated process with these variables. Use -e NAME=value and repeat for more variables. Quote values containing spaces.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an environment variable for the test host",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "One assignment per occurrence."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inherit the process and launch settings applicable to this command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--environment option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-s",
+          "summary": "Load VSTest run settings",
+          "detail": "Supply a .runsettings XML file for this run. To override a setting inline, place Name=Value after the -- delimiter.",
+          "argument": "FILE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load VSTest run settings",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Path to a .runsettings file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the test platform and project settings."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "-s option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--settings",
+          "summary": "Load VSTest run settings",
+          "detail": "Supply a .runsettings XML file for this run. To override a setting inline, place Name=Value after the -- delimiter.",
+          "argument": "FILE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load VSTest run settings",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Path to a .runsettings file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the test platform and project settings."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--settings option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-d",
+          "summary": "Write VSTest diagnostic logs",
+          "detail": "Supply a writable log filename. Related test host and collector logs are placed beside it. Use this to investigate discovery, adapters or test host failures.",
+          "argument": "FILE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write VSTest diagnostic logs",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Diagnostic log filename."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not enable VSTest file diagnostics."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "-d option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--diag",
+          "summary": "Write VSTest diagnostic logs",
+          "detail": "Supply a writable log filename. Related test host and collector logs are placed beside it. Use this to investigate discovery, adapters or test host failures.",
+          "argument": "FILE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write VSTest diagnostic logs",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Diagnostic log filename."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not enable VSTest file diagnostics."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--diag option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--test-adapter-path",
+          "summary": "Load test adapters from a directory",
+          "detail": "Provide a directory of custom adapters. Repeat for other directories. Since SDK 7, -a selects the target architecture.",
+          "argument": "DIR",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load test adapters from a directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Directory containing the adapter binaries."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use adapters supplied by the test project or platform."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--test-adapter-path option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LOGGER",
+          "argument_optional": false,
+          "flag": "-l",
+          "summary": "Choose a test-results logger",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "VSTest logger specification",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A logger name or URI followed by optional semicolon-separated parameters."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use default test logging without additional CLI logger specifications."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                      "locator": "--logger"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "VSTest logger specification",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-test/TestCommandParser.cs",
+                    "locator": "--logger"
+                  }
+                }
+              }
+            ]
+          },
+          "detail": "Use --logger \"trx;LogFilePrefix=tests\" for separate TRX files per target framework. A fixed LogFileName can overwrite earlier results. Repeat the option for multiple loggers."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "-t",
+          "summary": "List discovered tests without running them",
+          "detail": "VSTest loads the test assembly and adapter during discovery. Add --no-build to use an existing assembly."
+        },
+        {
+          "flag": "--no-dependencies",
+          "summary": "Skip building referenced test projects",
+          "detail": "SDK 11.0.100 sets BuildProjectReferences=false. SDK 9.0.200, 10.0.100 and 10.0.402 reject this switch. The selected project still needs usable reference outputs.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--blame",
+          "summary": "Record the test order before a host crash",
+          "detail": "Find the sequence XML under TestResults after a test host crashes. Use --blame-crash for a process dump or --blame-hang for a timeout.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--blame-crash",
+          "summary": "Collect a dump after a test host crash",
+          "detail": "Enables blame mode. On Linux a managed .NET 5+ process can produce a dump after a managed crash. Native crash collection has different platform requirements.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--blame-crash-collect-always",
+          "summary": "Collect a dump even after a clean exit",
+          "detail": "Collect a test host dump after normal exit as well as after a crash. This enables crash collection and can produce large files.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--blame-hang",
+          "summary": "Collect diagnostics when a test hangs",
+          "detail": "When a test exceeds the timeout, VSTest dumps and terminates the test host and its children. Use --blame-hang-timeout to set the per-test limit.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--blame-crash-dump-type",
+          "summary": "Choose the crash dump contents",
+          "detail": "Use full (default) or mini. Supplying a type enables crash collection.",
+          "argument": "TYPE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the crash dump contents",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "full",
+                    "tokens": [
+                      "full"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Write a full process dump"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "mini",
+                    "tokens": [
+                      "mini"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Write a smaller diagnostic dump"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use full dumps when this collector is enabled."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--blame-crash-dump-type option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--blame-hang-dump-type",
+          "summary": "Choose the hang dump contents",
+          "detail": "Use full (default), mini or none. With none, a timeout still terminates the host. Supplying a type enables hang detection.",
+          "argument": "TYPE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the hang dump contents",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "full",
+                    "tokens": [
+                      "full"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Write a full process dump"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "mini",
+                    "tokens": [
+                      "mini"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Write a smaller diagnostic dump"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "none",
+                    "tokens": [
+                      "none"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Terminate without writing a dump"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use full dumps when this collector is enabled."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--blame-hang-dump-type option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--blame-hang-timeout",
+          "summary": "Set the per-test hang timeout",
+          "detail": "A bare number is milliseconds. Use 90s, 1.5h or another supported duration. With hang collection enabled the default is one hour. On timeout VSTest terminates the host and its children. Data-driven timeout renewal depends on the adapter.",
+          "argument": "TIMESPAN",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Set the per-test hang timeout",
+                "bare": {
+                  "state": "accepted",
+                  "form": "ms-bare"
+                },
+                "forms": [
+                  {
+                    "id": "ms-bare",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    }
+                  },
+                  {
+                    "id": "ms",
+                    "notation": "suffix",
+                    "syntax": "Nms",
+                    "case": "insensitive",
+                    "tokens": [
+                      "ms",
+                      "mil",
+                      "millisecond",
+                      "milliseconds"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    }
+                  },
+                  {
+                    "id": "s",
+                    "notation": "suffix",
+                    "syntax": "Ns",
+                    "case": "insensitive",
+                    "tokens": [
+                      "s",
+                      "sec",
+                      "second",
+                      "seconds"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "case": "insensitive",
+                    "tokens": [
+                      "m",
+                      "min",
+                      "minute",
+                      "minutes"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "60"
+                    }
+                  },
+                  {
+                    "id": "h",
+                    "notation": "suffix",
+                    "syntax": "Nh",
+                    "case": "insensitive",
+                    "tokens": [
+                      "h",
+                      "hour",
+                      "hours"
+                    ],
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "3600"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "One hour when hang collection is enabled."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest",
+                      "locator": "--blame-hang-timeout option or corresponding long spelling"
+                    }
+                  ]
+                },
+                "time_basis": "Elapsed time for the current test. Current xUnit, NUnit and MSTest adapters renew the timer per data-driven case. Older MSTest adapters share one timer across cases."
+              }
+            ]
+          }
         }
       ]
     }
@@ -1253,10 +3091,10 @@
     "dotnet",
     "test"
   ],
-  "description": "Build and run tests with VSTest. Microsoft.Testing.Platform mode uses different options.",
+  "description": "Run VSTest on a project, solution, directory, DLL or EXE. Place inline RunSettings after --. MTP mode uses different options.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Microsoft SDK command reference and version-qualified help",
+    "reviewed": "2026-11-23",
     "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest"
   },
   "stop_at_positional": false

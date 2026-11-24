@@ -100,7 +100,9 @@ def validate_profile(profile: dict, source: Path):
                 raise HelpError(f"{source}: each option must be an object.")
             flag = option.get("flag")
             kind = option.get("kind", "flag")
-            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*=?"
+            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?"
+            if kind == "flag" and option.get("argument_style") == "attached_only" and isinstance(flag, str) and flag.endswith(":"):
+                pattern = r"--?[A-Za-z0-9][A-Za-z0-9_-]*:"
             end_marker = switch_syntax == "7zip" and kind == "flag" and flag == "--" and not option.get("argument")
             if not isinstance(kind, str) or kind not in {"flag", "keyword"} or not isinstance(flag, str) or not (end_marker or re.fullmatch(pattern, flag)):
                 raise HelpError(f"{source}: invalid literal option flag; inspect the literal flag schema.")
@@ -328,7 +330,10 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         # A joined payload is a real value, never an editable flag prefix.
         exact_name = query in options or (switch_syntax == "7zip" and query.isascii()
                                           and any(key.lower() == query.lower() for key in options))
-        if switch_syntax != "ffmpeg" and not exact_name and any((option.get("attached") or len(key) == 2 and option.get("argument"))
+        # Go's flag package takes a separate word or =value. A partial -overlay
+        # or -parallel therefore has no attached value belonging to -o or -p.
+        implicit_short_value = profile["command"][0] != "go"
+        if switch_syntax != "ffmpeg" and not exact_name and any((option.get("attached") or implicit_short_value and len(key) == 2 and option.get("argument"))
                and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
             raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")

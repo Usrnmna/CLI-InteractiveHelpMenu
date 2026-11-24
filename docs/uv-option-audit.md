@@ -1,6 +1,6 @@
 # uv option audit
 
-The five bundled profiles contain 56 selectable entries. The comparison covers Astral uv 0.13.9 and the 0.6.14 reference used by the bundled structured value guidance. Option order, operand labels and literal insertions are preserved.
+The first-pass profiles contained 56 selectable entries. The [full manual revisit](uv-manual-coverage.md) records the expanded inventory, release differences and verification. The comparison covers Astral uv 0.13.9 and the 0.6.14 reference used by the bundled structured value guidance. Option order, operand labels and literal insertions are preserved.
 
 ## Sources
 
@@ -94,7 +94,7 @@ The 0.6.14 prerelease default accepts packages that publish only prereleases and
 
 In 0.6.14, creating at an existing virtual environment replaces it by default. It accepts the undocumented `--clear` spelling and warns that the flag has no effect. A nonempty ordinary directory is refused. On 0.13.9, `--clear` can replace a virtual environment, while clearing a nonempty ordinary directory requires the additional `--force` option. Both versions can create in place with `--allow-existing`. [0.6.14 compatibility flag and warning](https://github.com/astral-sh/uv/blob/0.6.14/crates/uv-cli/src/compat.rs#L269-L298) · [0.13.9 venv options](https://github.com/astral-sh/uv/blob/0.13.9/crates/uv-cli/src/lib.rs)
 
-The maintained selection omits other documented options. Examples include `add --requirements`, `--branch` and `--tag`, `lock --refresh`, `sync --inexact` and `--no-default-groups`, `tool install --with-requirements`, and `venv --no-project`. Package index configuration, build isolation and interpreter download settings also remain in the upstream reference. These bundled-menu checks do not count toward the separate discovery audit.
+The first-pass selection omitted other documented options. Examples include `add --requirements`, `--branch` and `--tag`, `lock --refresh`, `sync --inexact` and `--no-default-groups`, `tool install --with-requirements`, and `venv --no-project`. Package index configuration, build isolation and interpreter download settings also remain in the upstream reference. These bundled-menu checks do not count toward the separate discovery audit.
 
 ## Executable checks
 

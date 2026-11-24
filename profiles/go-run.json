@@ -7,7 +7,7 @@
         {
           "argument": "COMMAND",
           "argument_optional": false,
-          "detail": "The wrapper receives the built executable followed by the program arguments. Place -exec before the package. Flags after the package go to the program.",
+          "detail": "The wrapper receives its fixed arguments, the built executable and the program arguments, in that order. Place -exec before the package. Without it, a cross-build can use go_GOOS_GOARCH_exec from PATH.",
           "flag": "-exec",
           "summary": "Run the compiled program through a wrapper",
           "value_semantics": {
@@ -82,19 +82,22 @@
           "argument": "",
           "argument_optional": false,
           "flag": "-v",
-          "summary": "List compiled packages"
+          "summary": "List compiled packages",
+          "detail": "Report package names as Go compiles them."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-n",
-          "summary": "Print commands without running them"
+          "summary": "Print commands without running them",
+          "detail": "Display the build steps without executing the planned build or test commands."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "-x",
-          "summary": "Print executed commands"
+          "summary": "Print executed commands",
+          "detail": "Print each tool command while it executes."
         },
         {
           "argument": "",
@@ -106,7 +109,7 @@
         {
           "argument": "LIST",
           "argument_optional": false,
-          "detail": "Pass comma-separated tags, as in -tags debug,integration. They can include files whose build constraints would otherwise exclude them.",
+          "detail": "Pass comma-separated tags as one value, as in -tags debug,integration. These satisfy additional build constraints. The older quoted space-separated list is deprecated.",
           "flag": "-tags",
           "summary": "Enable additional build tags",
           "value_semantics": {
@@ -424,16 +427,1291 @@
           "detail": "Recorded source filenames use import paths or module paths with versions, so stack traces omit local build directories."
         }
       ]
+    },
+    {
+      "name": "Additional options",
+      "description": "Build configuration before the main package.",
+      "options": [
+        {
+          "flag": "-C",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Change the working directory first",
+          "detail": "Place -C DIR immediately after the command name and before any other flag or operand. Go resolves subsequent paths from DIR. The global form go -C DIR COMMAND also works.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Change the working directory first",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "A directory path. Quote spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the invoking process’s working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-C"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-a",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Rebuild up-to-date packages",
+          "detail": "Force recompilation even when the build cache contains usable results."
+        },
+        {
+          "flag": "-p",
+          "argument": "N",
+          "argument_optional": false,
+          "summary": "Limit parallel build and test processes",
+          "detail": "Supply a positive integer. The default is GOMAXPROCS. This limits simultaneous build programs and package test binaries. Use -parallel for tests within one binary.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit parallel build and test processes",
+                "forms": [
+                  {
+                    "id": "integer",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Integer in Go flag syntax, including decimal and base-prefixed forms.",
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "bare": {
+                  "state": "accepted",
+                  "form": "integer"
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use GOMAXPROCS."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/internal/work/init.go",
+                      "locator": "p flag and initialization"
+                    }
+                  ]
+                },
+                "subject": "Concurrent build programs or package test binaries"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-msan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Instrument for the memory sanitizer",
+          "detail": "Requires Clang/LLVM and a supported OS and architecture. The reviewed Linux targets are amd64, arm64 and loong64. Go uses PIE outside linux/amd64. Use one sanitizer at a time."
+        },
+        {
+          "flag": "-asan",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Instrument for the address sanitizer",
+          "detail": "On linux/amd64 and linux/arm64 use GCC 7+ or Clang/LLVM 9+. On linux/loong64 use Clang/LLVM 16+. Use one sanitizer at a time."
+        },
+        {
+          "flag": "-cover",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Instrument statements for coverage",
+          "detail": "Builds of main packages instrument packages in the main module by default. Set GOCOVERDIR to an existing directory when running the executable to collect counter and metadata files."
+        },
+        {
+          "flag": "-covermode",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Choose the coverage counter mode",
+          "detail": "Enables -cover. set records whether each statement ran. count records executions. atomic counts safely across goroutines at higher cost. With -race use atomic.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the coverage counter mode",
+                "forms": [
+                  {
+                    "id": "set",
+                    "notation": "literal",
+                    "syntax": "set",
+                    "tokens": [
+                      "set"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Track whether a statement ran."
+                  },
+                  {
+                    "id": "count",
+                    "notation": "literal",
+                    "syntax": "count",
+                    "tokens": [
+                      "count"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Count executions."
+                  },
+                  {
+                    "id": "atomic",
+                    "notation": "literal",
+                    "syntax": "atomic",
+                    "tokens": [
+                      "atomic"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Count concurrent executions atomically."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use set when collecting coverage, or atomic with -race."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-covermode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-coverpkg",
+          "argument": "PATTERNS",
+          "argument_optional": false,
+          "summary": "Select packages to instrument for coverage",
+          "detail": "Pass comma-separated import-path patterns as one value, for example -coverpkg=./...,example.org/lib/.... This enables -cover. Instrumentation in a main build normally covers packages in its main module.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go package pattern list",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Separate import-path patterns with commas. The ... wildcard includes matching package paths."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Instrument packages of the main module when building a program with coverage."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-coverpkg"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go package pattern list",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-coverpkg"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-work",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep the temporary build directory",
+          "detail": "Go prints the directory path and leaves its intermediate files on disk after the command exits."
+        },
+        {
+          "flag": "-asmflags",
+          "argument": "FLAGS",
+          "argument_optional": false,
+          "summary": "Pass arguments to the assembler",
+          "detail": "Pass one shell word containing [pattern=] followed by a space-separated argument list. Quote an argument containing spaces within that list. Without a pattern, only command-line packages receive the flags. The last matching pattern wins.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go per-package assembler arguments",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "An optional package pattern and = precede a space-separated list. Quote individual list elements to preserve spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the tool’s normal arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-asmflags"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go per-package assembler arguments",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-asmflags"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-buildmode",
+          "argument": "MODE",
+          "argument_optional": false,
+          "summary": "Choose the kind of build output",
+          "detail": "The default builds executables for main packages and archives for libraries. c-archive and c-shared each require one main package. Target support varies. See go help buildmode.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the kind of build output",
+                "forms": [
+                  {
+                    "id": "archive",
+                    "notation": "literal",
+                    "syntax": "archive",
+                    "tokens": [
+                      "archive"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Archives for non-main packages."
+                  },
+                  {
+                    "id": "c-archive",
+                    "notation": "literal",
+                    "syntax": "c-archive",
+                    "tokens": [
+                      "c-archive"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "One main package and its dependencies in a C archive."
+                  },
+                  {
+                    "id": "c-shared",
+                    "notation": "literal",
+                    "syntax": "c-shared",
+                    "tokens": [
+                      "c-shared"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "One main package as a C shared library, or a WASI reactor on supported releases."
+                  },
+                  {
+                    "id": "default",
+                    "notation": "literal",
+                    "syntax": "default",
+                    "tokens": [
+                      "default"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Executables for main packages and archives for other packages."
+                  },
+                  {
+                    "id": "shared",
+                    "notation": "literal",
+                    "syntax": "shared",
+                    "tokens": [
+                      "shared"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Combine non-main packages for use with -linkshared."
+                  },
+                  {
+                    "id": "exe",
+                    "notation": "literal",
+                    "syntax": "exe",
+                    "tokens": [
+                      "exe"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Executables for main packages."
+                  },
+                  {
+                    "id": "pie",
+                    "notation": "literal",
+                    "syntax": "pie",
+                    "tokens": [
+                      "pie"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Position-independent executables for main packages."
+                  },
+                  {
+                    "id": "plugin",
+                    "notation": "literal",
+                    "syntax": "plugin",
+                    "tokens": [
+                      "plugin"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Go plugins from main packages."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-buildmode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-buildvcs=",
+          "argument": "[MODE]",
+          "argument_optional": true,
+          "summary": "Control version-control metadata in the binary",
+          "detail": "Use -buildvcs=false to omit VCS metadata. The default auto stamps when the main package, main module and working directory share a repository. Bare -buildvcs requests true and reports errors if available metadata cannot be included. Attach the value with =.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Control version-control metadata in the binary",
+                "forms": [
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Stamp when the repository context allows it."
+                  },
+                  {
+                    "id": "true",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Report errors when available VCS information cannot be included."
+                  },
+                  {
+                    "id": "false",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Omit VCS metadata."
+                  },
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "BOOLEAN",
+                    "grammar": "Go also accepts 1, t, T, TRUE and True for true, or 0, f, F, FALSE and False for false. An empty attached value selects auto."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Bare -buildvcs selects true."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-buildvcs"
+                    },
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/internal/work/build.go",
+                      "locator": "buildvcsFlag.Set and IsBoolFlag"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-compiler",
+          "argument": "NAME",
+          "argument_optional": false,
+          "summary": "Select the Go compiler",
+          "detail": "Use gc for the standard Go compiler or gccgo for GCC’s Go frontend. The selected compiler must be available.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select the Go compiler",
+                "forms": [
+                  {
+                    "id": "gc",
+                    "notation": "literal",
+                    "syntax": "gc",
+                    "tokens": [
+                      "gc"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Standard Go compiler."
+                  },
+                  {
+                    "id": "gccgo",
+                    "notation": "literal",
+                    "syntax": "gccgo",
+                    "tokens": [
+                      "gccgo"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "GCC Go frontend."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the compiler used to build the Go command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-compiler"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-gccgoflags",
+          "argument": "FLAGS",
+          "argument_optional": false,
+          "summary": "Pass arguments to the gccgo compiler and linker",
+          "detail": "Pass one shell word containing [pattern=] followed by a space-separated argument list. Quote an argument containing spaces within that list. Without a pattern, only command-line packages receive the flags. The last matching pattern wins.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go per-package gccgo compiler and linker arguments",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "An optional package pattern and = precede a space-separated list. Quote individual list elements to preserve spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the tool’s normal arguments."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-gccgoflags"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go per-package gccgo compiler and linker arguments",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-gccgoflags"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-installsuffix",
+          "argument": "SUFFIX",
+          "argument_optional": false,
+          "summary": "Separate compiled package installations",
+          "detail": "Append a suffix to the package installation directory name. Instrumentation such as -race, -msan or -asan may add its own suffix.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Separate compiled package installations",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "SUFFIX",
+                    "grammar": "Directory-name suffix."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal directory or a mode-specific suffix."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-installsuffix"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-json",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Emit build events as JSON",
+          "detail": "Go 1.24 and later can emit JSON events for the build step. Output written by the launched program retains its own format. Go 1.22 rejects -json on this command."
+        },
+        {
+          "flag": "-linkshared",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Link against shared Go libraries",
+          "detail": "Use libraries built with -buildmode=shared. Their installation and the target toolchain must support shared linking."
+        },
+        {
+          "flag": "-modcacherw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep new module-cache directories writable",
+          "detail": "Go normally makes newly created module-cache directories read-only. This affects directory permissions for new downloads. It does not rewrite existing cache entries."
+        },
+        {
+          "flag": "-modfile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Use an alternate module file",
+          "detail": "Supply a file ending in .mod. A go.mod must still exist to identify the module root. Go uses an alternate checksum file beside it, for example review.mod with review.sum. Workspace mode can restrict this flag.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Use an alternate module file",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE.mod",
+                    "grammar": "Path ending in .mod, resolved from the working directory."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the main module’s go.mod and go.sum."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-modfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-overlay",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Read source files through an overlay",
+          "detail": "Supply a JSON file whose Replace object maps each logical path to a replacement file. An empty replacement hides that path. Go reads the mapping during builds. Program and test filesystem reads still see the real files.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read source files through an overlay",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "JSON configuration path. Empty replacement values represent deleted files."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read source files from disk."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-overlay"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-pgo",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Choose a profile for profile-guided optimization",
+          "detail": "auto looks for default.pgo beside each main package and applies it to the package and its transitive dependencies. off disables PGO. An explicit filename supplies a profile.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a profile for profile-guided optimization",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "auto | off | FILE",
+                    "grammar": "The literals auto, off, or a path to a CPU profile."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use auto."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-pgo"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-pkgdir",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Use a separate compiled package directory",
+          "detail": "Load and install compiled packages in DIR. This can isolate artifacts produced with a nonstandard build configuration.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Use a separate compiled package directory",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Compiled-package directory path."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the toolchain’s regular locations."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-pkgdir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-toolexec",
+          "argument": "COMMAND",
+          "argument_optional": false,
+          "summary": "Wrap Go toolchain invocations",
+          "detail": "Quote the wrapper command and any fixed arguments as one shell word. Go appends the tool path and its arguments. TOOLEXEC_IMPORTPATH identifies the package being built.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Go tool wrapper command",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A space-separated command and arguments. Single or double quotes can preserve spaces in individual list elements."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Invoke toolchain programs directly."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-toolexec"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Go tool wrapper command",
+                  "reference": {
+                    "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                    "locator": "-toolexec"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "command": [
     "go",
     "run"
   ],
-  "description": "Compile and run a main package. Arguments after the package go to the program.",
+  "description": "Compile and run a main package or .go files. Put Go flags before the package. A package@version runs outside the current module. Trailing words go to the program.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned Go command reference and Ubuntu manual comparison",
+    "reviewed": "2026-11-23",
     "source": "https://pkg.go.dev/cmd/go@go1.27.4"
   },
   "stop_at_positional": true

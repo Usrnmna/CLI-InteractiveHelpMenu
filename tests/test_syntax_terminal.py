@@ -9,7 +9,7 @@ import unittest
 from test_terminal_screen import TerminalTestCase, TMUX_AVAILABLE, PROMPT, HISTORY, ROOT
 from test_argument_syntax import PROFILE
 from presentation import option_label, option_text
-from ui import ellipsize_cells, wrap_cells
+from ui import ellipsize_cells, option_label_width, wrap_cells
 
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
@@ -152,13 +152,17 @@ class SyntaxScreenTests(TerminalTestCase):
             return  # An existing minimum-size regression covers this command.
         query, flag, qualification, operand = narrow
         shell.resize(60, 16)
+        category, option = next((category, opt) for category in profile["categories"]
+                                for opt in category["options"] if opt["flag"] == flag)
+        # A 60-column menu has 39 cells for the options column.
+        label = ellipsize_cells(option_label(option), option_label_width(category, 39))
         for action in ("Escape", "Enter"):
             self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
             shell.keys("/")
             shell.text(query)
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query
-                                   and "> " + flag in state.cells[4])
+                                   and "> " + label in state.cells[4])
             if action == "Escape":
                 self.reach_detail(shell, found, qualification)
             shell.cancel(action)
@@ -205,6 +209,70 @@ class SyntaxScreenTests(TerminalTestCase):
         for command, suffix, narrow in cases:
             with self.subTest(command=command):
                 self.check_command_menu(command, suffix, narrow)
+
+    def test_uv_manual_menus(self):
+        """Inspect each uv menu before a pending package, environment or resolver option."""
+        cases = [
+            ("uv add", " 'example[cli]'", ("new requirement", "--bounds", "With --frozen, uv adds no inferred bound.", "minor")),
+            ("uv lock", " --offline", ("distribution upload time", "--exclude-newer", "Months and years are rejected.", "'7 days'")),
+            ("uv sync", " --extra docs", ("only the named distribution", "--only-install-package", "dependencies, are left out", "example")),
+            ("uv tool install", " example", ("pytorch package index", "--torch-backend", "This option is in preview.", "cpu")),
+            ("uv venv", " '.venv debug'", ("activation prompt label", "--prompt", "current directory supplies the label.", "debug")),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow)
+
+    def test_ruff_manual_menus(self):
+        """Read configuration-dependent lint and formatting choices with a pending filename."""
+        cases = [
+            ("ruff check", ("suppress selected rules", "--per-file-ignores", "to preserve the pattern.", "'*.py:S101'")),
+            ("ruff format", ("range within one file", "--range", "Notebook ranges are unsupported.", "2:1-5:1")),
+        ]
+        for command, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, " 'demo file.py'", narrow)
+
+    def test_pytest_manual_menu(self):
+        """Walk the core options, including the optional log operand, before a quoted node ID."""
+        self.check_command_menu("pytest", " 'test_cli.py::test_args[two words]'",
+                                ("internal debug log", "--debug", "Opening the log truncates any existing file.", "trace.log"))
+
+    def test_go_manual_menus(self):
+        """Read Go build, test, program and module options at their insertion boundaries."""
+        cases = [
+            ("go build", " ./cmd/demo", ("replacement file", "-overlay", "still see the real files.", "overlay.json")),
+            ("go test", " ./...", ("minimization attempt", "-fuzzminimizetime", "0x disables minimization.", "100x")),
+            ("go run", " main.go --child", ("TOOLEXEC_IMPORTPATH", "-toolexec", "identifies the package being built.", "wrapper")),
+            ("go mod tidy", " -v", ("alternate checksum", "-modfile", "review.mod with review.sum.", "review.mod")),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow)
+
+    def test_dotnet_manual_menus(self):
+        """Read SDK options without building, restoring, publishing or running a project."""
+        cases = [
+            ("dotnet build", ("multi-targeted project", "-o", "mix files from different projects.", "'out dir'")),
+            ("dotnet publish", ("nested publish folders", "-o", "avoids nested publish folders", "'out dir'")),
+            ("dotnet restore", ("global packages folder for this restore", "--packages", "unless configuration or the environment overrides it.", "packages")),
+            ("dotnet run", ("apply a named launch profile", "--launch-profile", "such as environment variables.", "Local")),
+            ("dotnet test", ("vstest expression", "--filter", "Available properties depend on the test adapter.", "'Name~Demo'")),
+        ]
+        for command, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, " 'Demo Project.csproj'", narrow)
+
+    def test_bun_manual_menu_and_script_arguments(self):
+        """Insert before a script and reject parent edits while its arguments are under the cursor."""
+        self.check_command_menu("bun run", " task 'two words' --watch",
+                                ("absolute path", "--cwd", "restart can find the directory again.", "'app dir'"))
+        shell, prefix, suffix = self.pending_stubbed_command("bun run task 'two words' --watch", " --child-end",
+                                                            60, 16, ("bun", "task"))
+        shell.keys("Escape", "h")
+        shell.wait_for(lambda state: state.alternate == 0 and "child_argument_boundary" in " ".join(state.cells))
+        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        self.assertFalse(shell.executed.exists())
 
     def test_ffmpeg_all_rows_and_complete_details(self):
         """Read every FFmpeg selection between an existing input and a quoted output."""

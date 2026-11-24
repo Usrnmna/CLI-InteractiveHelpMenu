@@ -21,6 +21,9 @@ An option with one required or optional value can set `argument_style`:
 The explicit styles require a flag, a nonempty display-only `argument`, and
 `argument_count` of one. A flag ending in `=` requires style `equals` when a
 style is specified. Styles cannot be combined with the legacy `attached` field.
+Literal names can contain dotted segments, as in Go’s `-test.run` and Bun’s
+`--tls-min-v1.2`. An attached-only literal can end in a colon. Selecting
+`-t:` leaves the cursor immediately after the colon for the MSBuild target.
 Omission retains the old grammar: separate and equals values, plus joined values
 when `attached: true` is declared. Existing JSON does not acquire bundle support.
 Explicit syntax profiles reject duplicate canonical names such as separate

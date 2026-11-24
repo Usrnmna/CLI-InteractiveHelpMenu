@@ -1,6 +1,6 @@
 # Project roadmap
 
-**Next task — revisit the five `uv` menus for full manual coverage.** Start with `uv add`, then `uv lock`, `uv sync`, `uv tool install` and `uv venv`. Use the [original uv audit](docs/uv-option-audit.md).
+**Next task — complete the first-pass `psql` audit.** Start with its [21 bundled rows](profiles/psql.json) and reconcile the command with the upstream and both Ubuntu manuals. All 60 previously audited profiles have now completed their manual-coverage revisits. The [six-family verification record](docs/devtools-batch-verification.md) closes the final 18 menus.
 The [combined iproute2, systemd and OpenSSL revisit](docs/iproute2-systemd-openssl-verification.md) is complete.
 The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
@@ -13,7 +13,6 @@ The [OpenSSH family revisit](docs/openssh-manual-coverage.md) is complete.
 The [ls revisit](docs/ls-manual-coverage.md), [GNU grep revisit](docs/grep-manual-coverage.md),
 [rsync client and daemon revisit](docs/rsync-manual-coverage.md), [GNU tar revisit](docs/tar-manual-coverage.md)
 and [Podman family revisit](docs/podman-option-audit.md) are complete.
-Resume [the 21-entry `psql` menu](profiles/psql.json) after the revisits are verified.
 
 ## Purpose and scope
 
@@ -42,7 +41,8 @@ audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
 124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158, fzf added 192, FFmpeg added 1,743 and yq eval added 54.
 The combined revisit added 139 iproute2, 166 systemd and 337 OpenSSL rows.
-The bundled total is **5,245 rows across 76 profiles**, compared with the historical 942.
+The six development-tool families added 969 rows to the previous 5,245.
+The bundled total is **6,214 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -61,14 +61,14 @@ The bundled total is **5,245 rows across 76 profiles**, compared with the histor
 | iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Complete · [175 selectable rows](docs/iproute2-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
 | systemd — `systemctl`, `journalctl` | 4 | 50 | Complete locally. [Manual comparison and sandbox results](docs/systemd-option-audit.md) | Complete · [216 selectable rows](docs/systemd-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
 | OpenSSL — `s_client`, `x509`, `dgst` | 3 | 33 | Complete locally. [Manual comparison and sandbox results](docs/openssl-option-audit.md) | Complete · [370 selectable rows](docs/openssl-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
-| `uv` | 5 | 56 | Complete locally. [Manual comparison and sandbox results](docs/uv-option-audit.md) | Pending | Pending |
-| Ruff — `ruff check`, `ruff format` | 2 | 30 | Complete locally. [Manual comparison and sandbox results](docs/ruff-option-audit.md) | Pending | Pending |
-| `pytest` | 1 | 18 | Complete locally. [Manual comparison and sandbox results](docs/pytest-option-audit.md) | Pending | Pending |
-| Go — `go build`, `go test`, `go run`, `go mod tidy` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/go-option-audit.md) | Pending | Pending |
-| .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Pending | Pending |
-| `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Pending | Pending |
+| `uv` | 5 | 56 | Complete locally. [Manual comparison and sandbox results](docs/uv-option-audit.md) | Complete · [454 selectable rows](docs/uv-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
+| Ruff — `ruff check`, `ruff format` | 2 | 30 | Complete locally. [Manual comparison and sandbox results](docs/ruff-option-audit.md) | Complete · [92 selectable rows](docs/ruff-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
+| `pytest` | 1 | 18 | Complete locally. [Manual comparison and sandbox results](docs/pytest-option-audit.md) | Complete · [121 selectable rows](docs/pytest-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
+| Go — `go build`, `go test`, `go run`, `go mod tidy` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/go-option-audit.md) | Complete · [171 selectable rows](docs/go-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
+| .NET — `dotnet build`, `publish`, `restore`, `run`, `test` | 5 | 76 | Complete locally. [Manual comparison and sandbox results](docs/dotnet-option-audit.md) | Complete · [242 selectable rows](docs/dotnet-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
+| `bun run` | 1 | 8 | Complete locally. [Manual comparison and sandbox results](docs/bun-run-option-audit.md) | Complete · [121 selectable rows](docs/bun-run-manual-coverage.md) | Complete on all three targets · [combined results](docs/devtools-batch-verification.md#compatibility-results) |
 | Podman — `run`, `build`, `exec`, `logs` | 4 | 44 | Complete locally. [Manual comparison and sandbox results](docs/podman-option-audit.md) | Complete · [168 run spellings](docs/podman-run-manual-coverage.md#option-inventory) and [171 build, exec and logs spellings](docs/podman-build-exec-logs-manual-coverage.md#build-inventory) | Complete on all three targets · [run](docs/podman-run-manual-coverage.md#verification) and [build, exec and logs](docs/podman-build-exec-logs-manual-coverage.md#verification) |
-| `psql` | 1 | 21 | After revisits | — | — |
+| `psql` | 1 | 21 | Next | — | — |
 | `ansible-playbook`, `az`, `gcloud` | 7 | 90 | Pending | — | — |
 | `esptool`, `esptool.py`, `pio`, `platformio`, `arduino-cli` | 8 | 113 | Pending | — | — |
 

@@ -565,7 +565,7 @@
           "argument_optional": false,
           "flag": "--no-restore",
           "summary": "Skip the implicit NuGet restore",
-          "detail": "Restore first with the same target framework and runtime so the required assets are available."
+          "detail": "Restore first with the same target framework and runtime so the required assets are available. The tested SDKs pass --force, --source and --no-dependencies to the app. Use dotnet restore first for those controls."
         },
         {
           "argument": "LEVEL",
@@ -946,6 +946,1503 @@
             ]
           },
           "detail": "Controls CLI and build messages. Arguments for the application itself go after --."
+        },
+        {
+          "flag": "-h",
+          "summary": "Show this SDK’s command help",
+          "detail": "The SDK prints help for this command and exits. The help aliases include -h, -? and /?. Quote question-mark spellings in Bash.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--help",
+          "summary": "Show this SDK’s command help",
+          "detail": "The SDK prints help for this command and exits. The help aliases include -h, -? and /?. Quote question-mark spellings in Bash.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "-a",
+          "summary": "Choose the target architecture",
+          "detail": "Use a RID architecture such as x64 or arm64. The SDK combines it with the host OS or with --os. Supply a complete RID with --runtime instead of combining it with --arch.",
+          "argument": "ARCH",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target architecture",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "ARCH",
+                    "grammar": "RID architecture component such as x64 or arm64."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the architecture from the host or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "-a option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--arch",
+          "summary": "Choose the target architecture",
+          "detail": "Use a RID architecture such as x64 or arm64. The SDK combines it with the host OS or with --os. Supply a complete RID with --runtime instead of combining it with --arch.",
+          "argument": "ARCH",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target architecture",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "ARCH",
+                    "grammar": "RID architecture component such as x64 or arm64."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the architecture from the host or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--arch option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--artifacts-path",
+          "summary": "Group project outputs under one directory",
+          "detail": "SDK 8 and later place each project’s outputs in subdirectories beneath this root. Use this layout to keep different projects’ binaries and intermediates separate. Repeat the same root on later restore, build or no-build commands that share the outputs.",
+          "argument": "DIR",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Group project outputs under one directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Root directory for the SDK artifacts layout."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project and SDK output paths."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--artifacts-path option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--disable-build-servers",
+          "summary": "Bypass persistent build servers",
+          "detail": "SDK 7 and later disable MSBuild node reuse and shared compiler servers for this invocation. Existing build products and NuGet packages remain available.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--interactive",
+          "summary": "Allow prompts during authentication",
+          "detail": "A credential provider can pause for input. SDK 10.0.402 and 11.0.100 also accept an explicit false to suppress prompts and normally disable them in CI or with redirected output.",
+          "argument": "[BOOL]",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Allow prompts during authentication",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Allow interactive input"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Suppress interactive input on SDKs supporting explicit false"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the selected SDK’s interaction policy."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "A bare --interactive allows prompting."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--interactive option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--os",
+          "summary": "Choose the target operating system",
+          "detail": "Use a RID OS such as linux or win. The SDK combines it with the current architecture or --arch. Supply a full RID separately with --runtime.",
+          "argument": "OS",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the target operating system",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "OS",
+                    "grammar": "Operating system component of a runtime identifier."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the host OS or the project’s runtime selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--os option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--tl:",
+          "summary": "Set Terminal Logger output",
+          "detail": "SDK 10.0.402 and 11.0.100 consume this switch. SDK 9.0.200 and 10.0.100 pass it to the application. Type --tl:auto, --tl:on or --tl:off as one token. Auto checks terminal capabilities and redirected output.",
+          "argument": "MODE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Set Terminal Logger output",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "choice-0",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Enable on a supported interactive terminal"
+                  },
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "on",
+                    "tokens": [
+                      "on"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Enable terminal logging"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "off",
+                    "tokens": [
+                      "off"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Use conventional build output"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the SDK’s default terminal detection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--tl option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-verbosity",
+          "summary": "Set SDK logging detail",
+          "detail": "The SDK 10 family adds MSBuild-compatible aliases including -verbosity, --v, /verbosity and /v. Use -v or --verbosity on SDK 9. Controls CLI and build messages. Arguments for the application itself go after --.",
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set SDK logging detail",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "LEVEL",
+                    "grammar": "Use quiet/q, minimal/m, normal/n, detailed/d or diagnostic/diag."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command’s logging default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-verbosity option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--v",
+          "summary": "Set SDK logging detail",
+          "detail": "The SDK 10 family adds MSBuild-compatible aliases including -verbosity, --v, /verbosity and /v. Use -v or --verbosity on SDK 9. Controls CLI and build messages. Arguments for the application itself go after --.",
+          "argument": "LEVEL",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set SDK logging detail",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "LEVEL",
+                    "grammar": "Use quiet/q, minimal/m, normal/n, detailed/d or diagnostic/diag."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the command’s logging default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--v option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "[BOOL]",
+          "argument_optional": true,
+          "flag": "--self-contained",
+          "summary": "Include the runtime for the target platform",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Self-contained deployment selection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Include the selected .NET runtime"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Use a framework-dependent deployment"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use SDK/project SelfContained policy without a CLI override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "A supplied --self-contained without BOOL selects true."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "SelfContainedOption forwarding"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "detail": "A bare switch selects true. An explicit false selects framework-dependent output. Select a RID for the deployment OS and architecture."
+        },
+        {
+          "argument": "[BOOL]",
+          "argument_optional": true,
+          "flag": "--sc",
+          "summary": "Include the runtime for the target platform",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Self-contained deployment selection",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "true",
+                    "tokens": [
+                      "true"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Include the selected .NET runtime"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "false",
+                    "tokens": [
+                      "false"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Use a framework-dependent deployment"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use SDK/project SelfContained policy without a CLI override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "A supplied --self-contained without BOOL selects true."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/CommonOptions.cs",
+                      "locator": "SelfContainedOption forwarding"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "detail": "A bare switch selects true. An explicit false selects framework-dependent output. Select a RID for the deployment OS and architecture."
+        },
+        {
+          "argument": "",
+          "argument_optional": false,
+          "flag": "--no-self-contained",
+          "summary": "Require a runtime on the destination",
+          "detail": "A compatible .NET runtime must be installed where the application runs. A RID can still select platform-specific assets."
+        },
+        {
+          "flag": "-p:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-p option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--property:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--property option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-property:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "-property option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--p:",
+          "summary": "Set an MSBuild property",
+          "detail": "Append NAME=VALUE in the same token, for example -p:Configuration=Release. Repeat for other properties or quote a semicolon-separated list. MSBuild also accepts /p: and /property:.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an MSBuild property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "An MSBuild property name and its assigned value separated by an equals sign."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use project, environment and SDK property values."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Common/CommonOptions.cs",
+                      "locator": "--p option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "argument_optional": false,
+          "flag": "-lp",
+          "summary": "Apply a named launch profile",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Launch profile name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A profile name from launchSettings.json."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal launch-profile selection unless launch-profile use is disabled."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/dotnet/sdk/v9.0.200/src/Cli/dotnet/commands/dotnet-run/RunCommandParser.cs",
+                      "locator": "--launch-profile"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "detail": "Use a profile from Properties/launchSettings.json to supply launch settings such as environment variables."
+        },
+        {
+          "flag": "--file",
+          "summary": "Run a file-based C# application",
+          "detail": "SDK 10 and later accept a C# source file. Use --file to choose the file explicitly when the directory also contains a project. Place application arguments after --.",
+          "argument": "FILE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Run a file-based C# application",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Path to the .cs entry file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use ordinary project or file-based app selection."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--file option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-cache",
+          "summary": "Rebuild a file-based app before launch",
+          "detail": "SDK 10 and later skip file-based app up-to-date checks. On SDK 9.0.200 the token reaches the application as an argument. NuGet HTTP cache settings belong to restore.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "--device",
+          "summary": "Launch on a target device",
+          "detail": "SDK 10.0.402 and 11.0.100 accept a device identifier reported by --list-devices. Device availability depends on the target framework and installed workloads.",
+          "argument": "DEVICE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Launch on a target device",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DEVICE",
+                    "grammar": "Identifier reported by the project’s target platform tools."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the project’s normal launch target."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/dotnet/sdk/blob/v11.0.100/src/Cli/Microsoft.DotNet.Cli.Definitions/Commands/Run/RunCommandDefinition.cs",
+                      "locator": "--device option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--list-devices",
+          "summary": "List available launch devices",
+          "detail": "SDK 10.0.402 and 11.0.100 query the selected project’s supported devices. Pass the reported identifier to --device.",
+          "argument": "",
+          "argument_optional": false
+        },
+        {
+          "flag": "-e",
+          "summary": "Set an environment variable for the app",
+          "detail": "SDK 9.0.200 and later pass variables to the launched app, overriding inherited and launch-profile values. Use -e NAME=value and repeat for more variables. Quote values containing spaces.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an environment variable for the app",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "One assignment per occurrence."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inherit the process and launch settings applicable to this command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "-e option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--environment",
+          "summary": "Set an environment variable for the app",
+          "detail": "SDK 9.0.200 and later pass variables to the launched app, overriding inherited and launch-profile values. Use -e NAME=value and repeat for more variables. Quote values containing spaces.",
+          "argument": "NAME=VALUE",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set an environment variable for the app",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "One assignment per occurrence."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inherit the process and launch settings applicable to this command."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "--environment option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-p",
+          "summary": "Choose a project or set a property",
+          "detail": "Prefer --project PATH. The deprecated -p PATH project form is accepted by the four reviewed SDKs. With an equals sign, -p NAME=VALUE sets an MSBuild property. Use -p:NAME=VALUE for an unambiguous assignment.",
+          "argument": "PATH_OR_ASSIGNMENT",
+          "argument_optional": false,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a project or set a property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand names or selects a value."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATH_OR_ASSIGNMENT",
+                    "grammar": "Project path or MSBuild NAME=VALUE assignment."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use ordinary project selection and project-defined properties."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the displayed operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      ".NET SDK"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.200",
+                      "10.0.100",
+                      "10.0.402",
+                      "11.0.100"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run",
+                      "locator": "-p option or corresponding long spelling"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -954,10 +2451,10 @@
     "dotnet",
     "run"
   ],
-  "description": "Build and launch an application. Place application arguments after --.",
+  "description": "Launch a project or, with SDK 10+, a file-based C# app. Place application arguments after --.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Microsoft SDK command reference and version-qualified help",
+    "reviewed": "2026-11-23",
     "source": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run"
   },
   "stop_at_positional": true

@@ -21,7 +21,8 @@
           "flag": "-v",
           "argument": "",
           "argument_optional": false,
-          "summary": "List removed modules on stderr"
+          "summary": "List removed modules on stderr",
+          "detail": "Write the names of removed modules to standard error."
         },
         {
           "flag": "-x",
@@ -182,12 +183,232 @@
           "detail": "Keeps the checksums the selected release needs and reports imports that would resolve to a different module version. The default follows the go directive for Go 1.21 and newer and uses the previous release for older directives."
         }
       ]
+    },
+    {
+      "name": "Additional options",
+      "description": "Working directory, module cache and alternate inputs.",
+      "options": [
+        {
+          "flag": "-C",
+          "argument": "DIR",
+          "argument_optional": false,
+          "summary": "Change the working directory first",
+          "detail": "Place -C DIR immediately after the command name and before any other flag or operand. Go resolves subsequent paths from DIR. The global form go -C DIR COMMAND also works.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Change the working directory first",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "A directory path. Quote spaces."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the invoking process’s working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-C"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-modcacherw",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep new module-cache directories writable",
+          "detail": "Go normally makes newly created module-cache directories read-only. This affects directory permissions for new downloads. It does not rewrite existing cache entries."
+        },
+        {
+          "flag": "-modfile",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Use an alternate module file",
+          "detail": "Supply a file ending in .mod. A go.mod must still exist to identify the module root. Go uses an alternate checksum file beside it, for example review.mod with review.sum. Workspace mode can restrict this flag.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Use an alternate module file",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE.mod",
+                    "grammar": "Path ending in .mod, resolved from the working directory."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the main module’s go.mod and go.sum."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-modfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-overlay",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Read source files through an overlay",
+          "detail": "Read source through a JSON Replace mapping while discovering imports. Each entry maps a logical path to a replacement file. An empty replacement hides the path. Use -diff on Go 1.23 or later to preview module-file edits.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read source files through an overlay",
+                "forms": [
+                  {
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "JSON configuration path. Empty replacement values represent deleted files."
+                  }
+                ],
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand follows the indicated grammar."
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read source files from disk."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires a value."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Go"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.22.12",
+                      "1.26.0",
+                      "1.27.4"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of target support."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "Operand syntax is independent of the processor."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/golang/go/blob/go1.26.0/src/cmd/go/alldocs.go",
+                      "locator": "-overlay"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "stop_at_positional": false,
   "documentation": {
     "source": "https://pkg.go.dev/cmd/go@go1.27.4",
-    "reviewed": "2026-11-22",
-    "kind": "curated subset; not an installed-version guarantee"
+    "reviewed": "2026-11-23",
+    "kind": "Versioned Go command reference and Ubuntu manual comparison"
   }
 }

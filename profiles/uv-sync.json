@@ -45,7 +45,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -63,6 +64,10 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "uv-sync --extra"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --extra"
                     }
                   ]
                 }
@@ -83,7 +88,7 @@
           "argument_optional": false,
           "flag": "--no-dev",
           "summary": "Exclude the dev dependency group",
-          "detail": "Equivalent to --no-group dev. Other default groups remain selected."
+          "detail": "Equivalent to --no-group dev. Other default groups remain selected. Equivalent to --no-group dev."
         },
         {
           "argument": "",
@@ -116,77 +121,14 @@
         {
           "argument": "PYTHON",
           "argument_optional": false,
-          "detail": "A supplied virtual environment selects its interpreter. Packages are synced into the project environment.",
+          "detail": "A supplied virtual environment selects its interpreter. Packages are synced into the project environment. Also written as -p.",
           "flag": "--python",
           "summary": "Choose Python for the project environment",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "kind": "delegated",
-                "meaning": "uv Python interpreter request grammar",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Use command-specific project/environment/Python discovery without an explicit CLI interpreter request."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "uv"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "0.6.14"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
-                      "locator": "Requesting Python versions and request forms"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-python/src/discovery.rs",
-                      "locator": "PythonRequest parsing/discovery boundary"
-                    }
-                  ]
-                },
-                "grammar": {
-                  "name": "uv Python interpreter request grammar",
-                  "reference": {
-                    "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
-                    "locator": "Requesting Python versions and request forms"
-                  }
-                }
+                "ref": "python"
               }
             ]
           }
@@ -203,7 +145,7 @@
           "argument_optional": false,
           "flag": "--no-cache",
           "summary": "Use a temporary cache for this command",
-          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
+          "detail": "The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set. Also written as -n, --no-cache-dir."
         },
         {
           "argument": "DIRECTORY",
@@ -246,7 +188,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -264,6 +207,14 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "--directory"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --directory"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --directory"
                     }
                   ]
                 }
@@ -313,7 +264,8 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "0.6.14"
+                      "0.6.14",
+                      "0.13.9"
                     ]
                   },
                   "platform": {
@@ -331,6 +283,14 @@
                     {
                       "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
                       "locator": "--project"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --project"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --project"
                     }
                   ]
                 }
@@ -338,6 +298,3487 @@
             ]
           },
           "detail": "uv searches this directory and its parents. Relative command-line paths still use the working directory."
+        }
+      ]
+    },
+    {
+      "name": "Additional command options",
+      "description": "Command-specific settings and selectors.",
+      "options": [
+        {
+          "flag": "--output-format",
+          "argument": "OUTPUT_FORMAT",
+          "argument_optional": false,
+          "summary": "Choose the sync report format",
+          "detail": "0.13.9 only. Use text for a readable report or json for structured stdout. Diagnostics go to stderr. The JSON schema is experimental.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose the sync report format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --output-format"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "literal",
+                    "syntax": "text",
+                    "tokens": [
+                      "text"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Write a human-readable report"
+                  },
+                  {
+                    "id": "json",
+                    "notation": "literal",
+                    "syntax": "json",
+                    "tokens": [
+                      "json"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Write experimental JSON to stdout"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is text."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-extra",
+          "argument": "NO_EXTRA",
+          "argument_optional": false,
+          "summary": "Exclude one extra from an all-extras sync",
+          "detail": "Use with --all-extras and repeat for each extra to leave out.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Exclude one extra from an all-extras sync",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-extra"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-extra"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "EXTRA",
+                    "grammar": "Name of an optional dependency extra to omit from --all-extras."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Include extras according to the other requested selections."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--only-dev",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install only the dev dependency group",
+          "detail": "Equivalent to --only-group dev. The project itself, its runtime dependencies and other default groups are omitted unless also required by the selected group."
+        },
+        {
+          "flag": "--group",
+          "argument": "GROUP",
+          "argument_optional": false,
+          "summary": "Include a named dependency group",
+          "detail": "Repeat for multiple groups. Explicitly incompatible extras or groups produce an error.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Include a named dependency group",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --group"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --group"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "GROUP",
+                    "grammar": "A project dependency-group name. Repeat when selecting several groups for sync."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal project group selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-group",
+          "argument": "NO_GROUP",
+          "argument_optional": false,
+          "summary": "Exclude a named dependency group",
+          "detail": "An exclusion takes precedence if the same group was selected, including through --all-groups.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Exclude a named dependency group",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-group"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-group"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "GROUP",
+                    "grammar": "A project dependency-group name to exclude."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the selected and default groups without this exclusion."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-default-groups",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Omit groups selected by the project defaults",
+          "detail": "Explicit --group selections still apply. The project's tool.uv.default-groups setting otherwise controls the default set."
+        },
+        {
+          "flag": "--only-group",
+          "argument": "ONLY_GROUP",
+          "argument_optional": false,
+          "summary": "Install only dependencies of the named groups",
+          "detail": "Repeat to combine groups. This implies --no-default-groups and omits the project and its ordinary dependencies.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Install only dependencies of the named groups",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --only-group"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --only-group"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "GROUP",
+                    "grammar": "Dependency-group name. Repeat to include several groups and omit the ordinary project installation."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use ordinary project and dependency-group selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--all-groups",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Include every dependency group",
+          "detail": "Exclude individual groups with --no-group. Groups or extras declared mutually incompatible cannot be installed together."
+        },
+        {
+          "flag": "--no-editable",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install editable packages as regular distributions",
+          "detail": "The project and workspace members are also installed as regular packages. Later source edits then require reinstallation."
+        },
+        {
+          "flag": "--no-editable-package",
+          "argument": "NO_EDITABLE_PACKAGE",
+          "argument_optional": false,
+          "summary": "Install one editable package as a regular distribution",
+          "detail": "0.13.9 only. Supply its distribution name. Other editable packages retain the normal installation mode.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Install one editable package as a regular distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-editable-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inexact",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep unrelated packages during synchronization",
+          "detail": "uv normally removes packages outside the requested environment. This mode makes the changes needed to satisfy the selected dependencies. Also written as --no-exact."
+        },
+        {
+          "flag": "--active",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Prefer the active virtual environment",
+          "detail": "If VIRTUAL_ENV points to a different environment, use it in place of the project's environment. Activating the project environment already satisfies this preference."
+        },
+        {
+          "flag": "--no-install-workspace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip installation of all workspace members",
+          "detail": "The current project is also skipped. External dependencies of workspace members remain eligible for installation."
+        },
+        {
+          "flag": "--no-install-local",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip installation of local packages",
+          "detail": "0.13.9 only. Omit the current project, workspace members and other local path or editable packages. Remote dependencies can still be installed."
+        },
+        {
+          "flag": "--no-install-package",
+          "argument": "NO_INSTALL_PACKAGE",
+          "argument_optional": false,
+          "summary": "Skip installation of a named distribution",
+          "detail": "Its dependencies can still be installed. Omitting a required package can leave the environment unable to import it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Skip installation of a named distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-install-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-install-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--all-packages",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Sync every workspace member",
+          "detail": "The workspace shares one environment. Extra and group selections apply to all members."
+        },
+        {
+          "flag": "--package",
+          "argument": "PACKAGE",
+          "argument_optional": false,
+          "summary": "Sync a particular workspace member",
+          "detail": "Supply the member's package name. Use --all-packages to install every member into the shared environment.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Sync a particular workspace member",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A workspace member's distribution name."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the default project selected from the current workspace."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--script",
+          "argument": "SCRIPT",
+          "argument_optional": false,
+          "summary": "Sync an environment for a Python script",
+          "detail": "Supply a script with PEP 723 inline metadata. Its dependencies determine the environment.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Sync an environment for a Python script",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --script"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --script"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "SCRIPT",
+                    "grammar": "A path to a Python script with PEP 723 inline dependency metadata. The add command can create the metadata block."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply the operation to the project."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--python-platform",
+          "argument": "PYTHON_PLATFORM",
+          "argument_optional": false,
+          "summary": "Select a target platform for installations",
+          "detail": "0.13.9 only. Use a platform alias such as linux or a target triple such as aarch64-apple-darwin. Wheel selection targets that platform, but source builds still run on the current host.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select a target platform for installations",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --python-platform"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "target",
+                    "notation": "expression",
+                    "syntax": "TARGET",
+                    "grammar": "Accepted release-specific names include windows, linux, macos, x86_64-pc-windows-msvc, aarch64-pc-windows-msvc, i686-pc-windows-msvc, x86_64-unknown-linux-gnu, aarch64-apple-darwin, x86_64-apple-darwin, aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl, x86_64-unknown-linux-musl, riscv64-unknown-linux, x86_64-manylinux2014, x86_64-manylinux_2_17, x86_64-manylinux_2_28, x86_64-manylinux_2_31, x86_64-manylinux_2_32, x86_64-manylinux_2_33, x86_64-manylinux_2_34, x86_64-manylinux_2_35, x86_64-manylinux_2_36, x86_64-manylinux_2_37, x86_64-manylinux_2_38, x86_64-manylinux_2_39, x86_64-manylinux_2_40, aarch64-manylinux2014, aarch64-manylinux_2_17, aarch64-manylinux_2_28, aarch64-manylinux_2_31, aarch64-manylinux_2_32, aarch64-manylinux_2_33, aarch64-manylinux_2_34, aarch64-manylinux_2_35, aarch64-manylinux_2_36, aarch64-manylinux_2_37, aarch64-manylinux_2_38, aarch64-manylinux_2_39, aarch64-manylinux_2_40, aarch64-linux-android, x86_64-linux-android, wasm32-pyodide2024, wasm32-pyodide2025, arm64-apple-ios, arm64-apple-ios-simulator, x86_64-apple-ios-simulator. Each token selects the corresponding target platform and ABI for distribution compatibility."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current platform."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--check",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Check whether the environment is in sync",
+          "detail": "Exit with an error if the environment needs changes. Use --dry-run to inspect the proposed operations."
+        }
+      ]
+    },
+    {
+      "name": "Index options",
+      "description": "Package repositories and authentication.",
+      "options": [
+        {
+          "flag": "--index",
+          "argument": "INDEX",
+          "argument_optional": false,
+          "summary": "Add a priority package index",
+          "detail": "Use a simple repository URL or matching directory layout. Earlier --index entries win, ahead of --default-index. In 0.13.9, a configured index name can also select an index.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add a priority package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --index"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --index"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "INDEX",
+                    "grammar": "Simple repository URL or compatible local directory. The named form NAME=URL also identifies the index. In 0.13.9 an existing configured index name can select it."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured indexes and default index."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--default-index",
+          "argument": "DEFAULT_INDEX",
+          "argument_optional": false,
+          "summary": "Choose the lowest-priority package index",
+          "detail": "Supply a simple repository URL or a directory with the same layout. The built-in default is PyPI. Explicit --index entries take precedence.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the lowest-priority package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --default-index"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --default-index"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "INDEX",
+                    "grammar": "Simple-index URL or local directory. In 0.13.9 configured index names can also be used."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured default index, normally PyPI."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--index-url",
+          "argument": "INDEX_URL",
+          "argument_optional": false,
+          "summary": "Set the legacy default index URL",
+          "detail": "This deprecated spelling selects the simple repository used when higher-priority indexes do not supply the package. Prefer --default-index for new commands. Also written as -i.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "index-url"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-i",
+          "argument": "INDEX_URL",
+          "argument_optional": false,
+          "summary": "Set the legacy default index URL",
+          "detail": "Alternate spelling of --index-url. This deprecated spelling selects the simple repository used when higher-priority indexes do not supply the package. Prefer --default-index for new commands.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "index-url"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extra-index-url",
+          "argument": "EXTRA_INDEX_URL",
+          "argument_optional": false,
+          "summary": "Add another legacy package index",
+          "detail": "Supply a simple repository URL or compatible directory. This deprecated spelling accepts additional indexes. Prefer --index for new commands.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add another legacy package index",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --extra-index-url"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --extra-index-url"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "A simple repository URL or local directory using that repository layout."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the indexes otherwise configured."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--find-links",
+          "argument": "FIND_LINKS",
+          "argument_optional": false,
+          "summary": "Search a flat collection of distribution files",
+          "detail": "Use a directory containing wheels or source archives at its top level, or an HTML page linking to them. Combine with --no-index to exclude package registries. Also written as -f.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-links"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-f",
+          "argument": "FIND_LINKS",
+          "argument_optional": false,
+          "summary": "Search a flat collection of distribution files",
+          "detail": "Alternate spelling of --find-links. Use a directory containing wheels or source archives at its top level, or an HTML page linking to them. Combine with --no-index to exclude package registries.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "find-links"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-index",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip package registry indexes",
+          "detail": "Only direct source references and distributions available through --find-links can supply the required packages."
+        },
+        {
+          "flag": "--index-strategy",
+          "argument": "INDEX_STRATEGY",
+          "argument_optional": false,
+          "summary": "Choose how uv searches multiple indexes",
+          "detail": "first-index restricts each package to the first index containing it. unsafe-first-match falls through indexes in order. unsafe-best-match compares versions across all indexes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how uv searches multiple indexes",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --index-strategy"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --index-strategy"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "first-index",
+                    "notation": "literal",
+                    "syntax": "first-index",
+                    "tokens": [
+                      "first-index"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use the first index containing each name"
+                  },
+                  {
+                    "id": "unsafe-first-match",
+                    "notation": "literal",
+                    "syntax": "unsafe-first-match",
+                    "tokens": [
+                      "unsafe-first-match"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Exhaust versions on each index in order"
+                  },
+                  {
+                    "id": "unsafe-best-match",
+                    "notation": "literal",
+                    "syntax": "unsafe-best-match",
+                    "tokens": [
+                      "unsafe-best-match"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer the best candidate across indexes"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is first-index."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--keyring-provider",
+          "argument": "KEYRING_PROVIDER",
+          "argument_optional": false,
+          "summary": "Choose how uv reads index credentials",
+          "detail": "disabled skips keyring. subprocess invokes the keyring executable, which must be installed and available on PATH.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how uv reads index credentials",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --keyring-provider"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --keyring-provider"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "disabled",
+                    "notation": "literal",
+                    "syntax": "disabled",
+                    "tokens": [
+                      "disabled"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Skip keyring credential lookup"
+                  },
+                  {
+                    "id": "subprocess",
+                    "notation": "literal",
+                    "syntax": "subprocess",
+                    "tokens": [
+                      "subprocess"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Invoke the keyring CLI"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is disabled."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resolver options",
+      "description": "Package selection, versions and source overrides.",
+      "options": [
+        {
+          "flag": "--upgrade",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reconsider all previously selected package versions",
+          "detail": "Refresh package data and allow newer versions that still satisfy the dependency constraints. Also written as -U."
+        },
+        {
+          "flag": "-U",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reconsider all previously selected package versions",
+          "detail": "Alternate spelling of --upgrade. Refresh package data and allow newer versions that still satisfy the dependency constraints.",
+          "bundle": true
+        },
+        {
+          "flag": "--upgrade-package",
+          "argument": "UPGRADE_PACKAGE",
+          "argument_optional": false,
+          "summary": "Allow a named distribution to upgrade",
+          "detail": "Use a package name or constrained requirement, such as 'demo<2'. The package's cached data is refreshed. Also written as -P.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "upgrade-package"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-P",
+          "argument": "UPGRADE_PACKAGE",
+          "argument_optional": false,
+          "summary": "Allow a named distribution to upgrade",
+          "detail": "Alternate spelling of --upgrade-package. Use a package name or constrained requirement, such as 'demo<2'. The package's cached data is refreshed.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "upgrade-package"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--upgrade-group",
+          "argument": "UPGRADE_GROUP",
+          "argument_optional": false,
+          "summary": "Allow upgrades within a dependency group",
+          "detail": "0.13.9 only. Supply the group name. Existing pins can change for packages in that group within applicable constraints.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Allow upgrades within a dependency group",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --upgrade-group"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "GROUP",
+                    "grammar": "The name of the dependency group whose members may upgrade."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Existing locks continue to guide resolution subject to other upgrade requests."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--resolution",
+          "argument": "RESOLUTION",
+          "argument_optional": false,
+          "summary": "Choose how compatible versions are ranked",
+          "detail": "highest prefers latest versions, lowest prefers the oldest, and lowest-direct minimizes only direct dependencies while maximizing transitive ones.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Dependency resolution strategy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "highest",
+                    "tokens": [
+                      "highest"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer the highest compatible versions"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "lowest",
+                    "tokens": [
+                      "lowest"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer the lowest compatible versions"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "lowest-direct",
+                    "tokens": [
+                      "lowest-direct"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer lowest direct dependencies and highest transitive versions"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use configured strategy; the built-in default is highest."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "--resolution"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --resolution"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --resolution"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--prerelease",
+          "argument": "PRERELEASE",
+          "argument_optional": false,
+          "summary": "Choose when prereleases may be selected",
+          "detail": "0.13.9 defaults to if-necessary and tries stable candidates first. In 0.6.14 the default if-necessary-or-explicit also admitted explicit first-party prerelease requests.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Prerelease dependency policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "disallow",
+                    "tokens": [
+                      "disallow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Reject prereleases"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "allow",
+                    "tokens": [
+                      "allow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow prereleases"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "if-necessary",
+                    "tokens": [
+                      "if-necessary"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Prefer stable candidates, then allow prereleases when no compatible stable candidate works"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "explicit",
+                    "tokens": [
+                      "explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Permit prerelease fallback only for first-party packages with explicit prerelease specifiers"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "if-necessary-or-explicit",
+                    "tokens": [
+                      "if-necessary-or-explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Deprecated alias for if-necessary"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "In uv 0.13.9 the built-in default is if-necessary."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/astral-sh/uv/blob/0.13.9/crates/uv-configuration/src/prerelease.rs",
+                      "locator": "PrereleaseMode default, stable-candidate fallback and deprecated alias"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "enumeration",
+                "meaning": "Prerelease dependency policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "choice-1",
+                    "notation": "literal",
+                    "syntax": "disallow",
+                    "tokens": [
+                      "disallow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Reject prereleases"
+                  },
+                  {
+                    "id": "choice-2",
+                    "notation": "literal",
+                    "syntax": "allow",
+                    "tokens": [
+                      "allow"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow prereleases"
+                  },
+                  {
+                    "id": "choice-3",
+                    "notation": "literal",
+                    "syntax": "if-necessary",
+                    "tokens": [
+                      "if-necessary"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow if the package publishes only prereleases"
+                  },
+                  {
+                    "id": "choice-4",
+                    "notation": "literal",
+                    "syntax": "explicit",
+                    "tokens": [
+                      "explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow first-party requirements with an explicit prerelease specifier"
+                  },
+                  {
+                    "id": "choice-5",
+                    "notation": "literal",
+                    "syntax": "if-necessary-or-explicit",
+                    "tokens": [
+                      "if-necessary-or-explicit"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Allow if needed or explicitly requested"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "In uv 0.6.14 the built-in default is if-necessary-or-explicit."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "--prerelease"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--prerelease-package",
+          "argument": "PRERELEASE_PACKAGE",
+          "argument_optional": false,
+          "summary": "Choose a prerelease policy for one package",
+          "detail": "0.13.9 only. Use PACKAGE=MODE, such as demo=allow. MODE accepts the same choices as --prerelease. Repeat for more packages.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a prerelease policy for one package",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --prerelease-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=MODE",
+                    "grammar": "A distribution name followed by = and a --prerelease policy (allow, disallow, explicit, if-necessary or the deprecated if-necessary-or-explicit)."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the global prerelease policy for this package unless already overridden."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--fork-strategy",
+          "argument": "FORK_STRATEGY",
+          "argument_optional": false,
+          "summary": "Choose how to resolve across Python versions",
+          "detail": "requires-python favors newer versions for each supported Python version. fewest minimizes the number of distinct package versions across platforms and interpreters.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how to resolve across Python versions",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --fork-strategy"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --fork-strategy"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "requires-python",
+                    "notation": "literal",
+                    "syntax": "requires-python",
+                    "tokens": [
+                      "requires-python"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Favor recent packages for each supported Python version"
+                  },
+                  {
+                    "id": "fewest",
+                    "notation": "literal",
+                    "syntax": "fewest",
+                    "tokens": [
+                      "fewest"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Minimize the number of different package versions"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is requires-python."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exclude-newer",
+          "argument": "EXCLUDE_NEWER",
+          "argument_optional": false,
+          "summary": "Limit packages by distribution upload time",
+          "detail": "Use an RFC 3339 timestamp or local date. In 0.13.9, '7 days' and P7D subtract a fixed interval from the current time. Months and years are rejected. false disables the cutoff in 0.13.9. A date includes the full local calendar day.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Limit packages by distribution upload time",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --exclude-newer"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-distribution-types/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset. Relative durations are subtracted from the current UTC instant. A day is 24 hours even across daylight-saving changes. Months and years are rejected.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  },
+                  {
+                    "id": "span",
+                    "notation": "expression",
+                    "syntax": "P7D",
+                    "grammar": "An ISO 8601 duration, such as PT24H or P7D."
+                  },
+                  {
+                    "id": "friendly",
+                    "notation": "expression",
+                    "syntax": "7 days",
+                    "grammar": "A unit-bearing duration. Quote the complete operand when it contains spaces."
+                  },
+                  {
+                    "id": "disable",
+                    "notation": "expression",
+                    "syntax": "false",
+                    "grammar": "The lowercase literal false cancels the global cutoff."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply any configured cutoff. Without one, uploads are unrestricted by age."
+                }
+              },
+              {
+                "kind": "timestamp",
+                "meaning": "Limit packages by distribution upload time",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --exclude-newer"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-resolver/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply any configured cutoff. Without one, uploads are unrestricted by age."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exclude-newer-package",
+          "argument": "EXCLUDE_NEWER_PACKAGE",
+          "argument_optional": false,
+          "summary": "Override the upload cutoff for one package",
+          "detail": "0.13.9 only. Use PACKAGE=DATE, PACKAGE=P7D or PACKAGE=false. Quote a duration containing spaces. Repeat to set independent limits on more packages.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Override the upload cutoff for one package",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-configuration/src/exclude_newer.rs",
+                      "locator": "uv sync --exclude-newer-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-distribution-types/src/exclude_newer.rs",
+                      "locator": "ExcludeNewer date and timestamp parser"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "time_basis": "Dates select the start of the following local day. Timestamps specify their own UTC offset. Relative durations are subtracted from the current UTC instant. A day is 24 hours even across daylight-saving changes. Months and years are rejected.",
+                "forms": [
+                  {
+                    "id": "instant",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=YYYY-MM-DDThh:mm:ssZ",
+                    "grammar": "RFC 3339 instant with an explicit offset, applied to each distribution file upload."
+                  },
+                  {
+                    "id": "date",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=YYYY-MM-DD",
+                    "grammar": "A calendar date counts through the end of that day in the system time zone."
+                  },
+                  {
+                    "id": "span",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=P7D",
+                    "grammar": "An ISO 8601 duration, such as PT24H or P7D."
+                  },
+                  {
+                    "id": "friendly",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=7 days",
+                    "grammar": "A unit-bearing duration. Quote the complete operand when it contains spaces."
+                  },
+                  {
+                    "id": "disable",
+                    "notation": "expression",
+                    "syntax": "PACKAGE=false",
+                    "grammar": "The lowercase literal false cancels the package cutoff even if a global cutoff applies."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the global cutoff unless overridden by package configuration."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-sources",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore uv-specific dependency source declarations",
+          "detail": "Resolve against publishable dependency metadata. Local, workspace and Git sources supplied only through tool.uv.sources are ignored."
+        },
+        {
+          "flag": "--no-sources-package",
+          "argument": "NO_SOURCES_PACKAGE",
+          "argument_optional": false,
+          "summary": "Ignore a named package's source override",
+          "detail": "0.13.9 only. Supply the distribution name whose tool.uv.sources entry should be ignored. Source overrides for other packages remain active.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Ignore a named package's source override",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-sources-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Installer options",
+      "description": "Package installation and cache linking.",
+      "options": [
+        {
+          "flag": "--reinstall",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reinstall packages already present",
+          "detail": "Refresh cached data and reinstall packages even when their installed versions match the resolution. Also written as --force-reinstall."
+        },
+        {
+          "flag": "--reinstall-package",
+          "argument": "REINSTALL_PACKAGE",
+          "argument_optional": false,
+          "summary": "Reinstall a named distribution",
+          "detail": "Refresh that package's cached data and reinstall it even if the chosen version is already present.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Reinstall a named distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --reinstall-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --reinstall-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--link-mode",
+          "argument": "LINK_MODE",
+          "argument_optional": false,
+          "summary": "Choose how files are installed from the cache",
+          "detail": "clone uses copy-on-write, copy duplicates files, hardlink shares file data, and symlink points into the cache. Clearing the cache breaks symlinked installations. Linux defaults to hardlink in 0.6.14 and clone in 0.13.9. macOS defaults to clone and Windows to hardlink.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose how files are installed from the cache",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --link-mode"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --link-mode"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "clone",
+                    "notation": "literal",
+                    "syntax": "clone",
+                    "tokens": [
+                      "clone"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use copy-on-write clones"
+                  },
+                  {
+                    "id": "copy",
+                    "notation": "literal",
+                    "syntax": "copy",
+                    "tokens": [
+                      "copy"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Copy package files"
+                  },
+                  {
+                    "id": "hardlink",
+                    "notation": "literal",
+                    "syntax": "hardlink",
+                    "tokens": [
+                      "hardlink"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Use hard links"
+                  },
+                  {
+                    "id": "symlink",
+                    "notation": "literal",
+                    "syntax": "symlink",
+                    "tokens": [
+                      "symlink"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Create symbolic links into the cache"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "macOS defaults to clone and Windows to hardlink. On Linux 0.6.14 defaults to hardlink and 0.13.9 defaults to clone."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--compile-bytecode",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Precompile Python modules after installation",
+          "detail": "uv processes Python files throughout site-packages, including previously installed modules. Installation takes longer but the first import can start faster. Also written as --compile."
+        }
+      ]
+    },
+    {
+      "name": "Build options",
+      "description": "Build sources, isolation, constraints and verification.",
+      "options": [
+        {
+          "flag": "--config-setting",
+          "argument": "CONFIG_SETTING",
+          "argument_optional": false,
+          "summary": "Pass a setting to the package build backend",
+          "detail": "Supply KEY=VALUE for a PEP 517 build. Repeat for additional settings. The backend defines the accepted keys and values. Also written as -C, --config-settings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "config-setting"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-C",
+          "argument": "CONFIG_SETTING",
+          "argument_optional": false,
+          "summary": "Pass a setting to the package build backend",
+          "detail": "Alternate spelling of --config-setting. Supply KEY=VALUE for a PEP 517 build. Repeat for additional settings. The backend defines the accepted keys and values.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "config-setting"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--config-settings-package",
+          "argument": "CONFIG_SETTINGS_PACKAGE",
+          "argument_optional": false,
+          "summary": "Pass a build setting for one distribution",
+          "detail": "0.13.9 only. Supply PACKAGE:KEY=VALUE. Only the named package's build backend receives that setting.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Pass a build setting for one distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --config-settings-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "grammar": {
+                  "name": "Package-specific PEP 517 build backend settings",
+                  "reference": {
+                    "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                    "locator": "uv sync --config-settings-package"
+                  }
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE:KEY=VALUE",
+                    "grammar": "Distribution name, colon, backend key, equals sign and its value."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the package's configured or default backend settings."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-build-isolation",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Build in the existing Python environment",
+          "detail": "Install the build backend and its declared build requirements beforehand. Build isolation is normally enabled."
+        },
+        {
+          "flag": "--no-build-isolation-package",
+          "argument": "NO_BUILD_ISOLATION_PACKAGE",
+          "argument_optional": false,
+          "summary": "Disable build isolation for a named package",
+          "detail": "Provide this package's build dependencies in advance. Other packages retain their normal isolation policy.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Disable build isolation for a named package",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-build-isolation-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-build-isolation-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-build",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Avoid building third-party source distributions",
+          "detail": "Cached wheels from earlier builds can still be used. If a required wheel is unavailable the operation fails. In 0.13.9 first-party and editable builds are exceptions."
+        },
+        {
+          "flag": "--no-build-package",
+          "argument": "NO_BUILD_PACKAGE",
+          "argument_optional": false,
+          "summary": "Avoid building one named distribution",
+          "detail": "Supply a distribution name. A compatible wheel must be available. In 0.13.9 first-party packages remain eligible for building.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Avoid building one named distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-build-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-build-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-binary",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install packages from source",
+          "detail": "uv can still read wheel metadata during resolution. Installation requires a usable source distribution and build environment."
+        },
+        {
+          "flag": "--no-binary-package",
+          "argument": "NO_BINARY_PACKAGE",
+          "argument_optional": false,
+          "summary": "Install one named package from source",
+          "detail": "Specify a distribution name. Other packages may use wheels, and the resolver can still inspect wheel metadata.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Install one named package from source",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --no-binary-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --no-binary-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--require-build-hashes",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Require hashes for all build dependencies",
+          "detail": "0.13.9 only. Record hashes in tool.uv.build-constraint-dependencies or build-system.requires URL fragments. This checks build inputs separately from runtime dependency hashes."
+        },
+        {
+          "flag": "--no-require-build-hashes",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow build dependencies without recorded hashes",
+          "detail": "0.13.9 only. Overrides the requirement for a hash on every build dependency. Runtime requirement hash policy is separate."
+        }
+      ]
+    },
+    {
+      "name": "Cache options",
+      "description": "Persistent cache location and package freshness.",
+      "options": [
+        {
+          "flag": "-n",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use a temporary cache for this command",
+          "detail": "Alternate spelling of --no-cache. The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set.",
+          "bundle": true
+        },
+        {
+          "flag": "--cache-dir",
+          "argument": "CACHE_DIR",
+          "argument_optional": false,
+          "summary": "Choose the on-disk cache directory",
+          "detail": "Use a directory path. Run uv cache dir to see the effective default. --no-cache uses a temporary directory.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the on-disk cache directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --cache-dir"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --cache-dir"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "DIRECTORY",
+                    "grammar": "A directory path for cached distributions and metadata."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured cache directory or the platform default."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--refresh",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Refresh cached package data",
+          "detail": "Revalidate cached entries for this operation. To refresh only one distribution, use --refresh-package."
+        },
+        {
+          "flag": "--refresh-package",
+          "argument": "REFRESH_PACKAGE",
+          "argument_optional": false,
+          "summary": "Refresh one distribution's cached data",
+          "detail": "Supply its package name. Resolution still follows version constraints and lock policies.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Refresh one distribution's cached data",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --refresh-package"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --refresh-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Python options",
+      "description": "Interpreter selection and discovery.",
+      "options": [
+        {
+          "flag": "-p",
+          "argument": "PYTHON",
+          "argument_optional": false,
+          "summary": "Choose Python for the project environment",
+          "detail": "Alternate spelling of --python. A supplied virtual environment selects its interpreter. Packages are synced into the project environment.",
+          "bundle": true,
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "python"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--managed-python",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Require an interpreter managed by uv",
+          "detail": "A system Python installation cannot satisfy the request. Combine with --no-python-downloads to require an already installed managed interpreter."
+        },
+        {
+          "flag": "--no-managed-python",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use system Python installations only",
+          "detail": "uv ignores its managed Python installations and searches the system for a matching interpreter."
+        },
+        {
+          "flag": "--no-python-downloads",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Prevent automatic interpreter downloads",
+          "detail": "A matching interpreter must already be discoverable. Package network access is controlled separately by --offline."
+        }
+      ]
+    },
+    {
+      "name": "Global options",
+      "description": "Output, configuration and network access.",
+      "options": [
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reduce command output",
+          "detail": "Repeat as -qq for silent stdout. --verbose conflicts with quiet output. Also written as -q.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-q",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reduce command output",
+          "detail": "Alternate spelling of --quiet. Repeat as -qq for silent stdout. --verbose conflicts with quiet output.",
+          "bundle": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--verbose",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Increase diagnostic detail",
+          "detail": "Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output. Also written as -v.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "verbose"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-v",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Increase diagnostic detail",
+          "detail": "Alternate spelling of --verbose. Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output.",
+          "bundle": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "verbose"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color",
+          "argument": "COLOR_CHOICE",
+          "argument_optional": false,
+          "summary": "Choose when to print terminal colors",
+          "detail": "Use auto for terminal detection, always to force color, or never to suppress it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Choose when to print terminal colors",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --color"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --color"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "auto",
+                    "notation": "literal",
+                    "syntax": "auto",
+                    "tokens": [
+                      "auto"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Detect terminal capabilities"
+                  },
+                  {
+                    "id": "always",
+                    "notation": "literal",
+                    "syntax": "always",
+                    "tokens": [
+                      "always"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Force color"
+                  },
+                  {
+                    "id": "never",
+                    "notation": "literal",
+                    "syntax": "never",
+                    "tokens": [
+                      "never"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress color"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the configured value. The built-in default is auto."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--system-certs",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Load trusted roots from the operating system",
+          "detail": "0.13.9 only. Use the platform store when a required trust root is missing from uv's bundled Mozilla certificates. The older public spelling is --native-tls."
+        },
+        {
+          "flag": "--allow-insecure-host",
+          "argument": "ALLOW_INSECURE_HOST",
+          "argument_optional": false,
+          "summary": "Trust a host without certificate verification",
+          "detail": "Supply HOST, HOST:PORT or a URL. Repeat for additional hosts. HTTPS certificate checks are bypassed for listed hosts. Also written as --trusted-host.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "allow-insecure-host"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-progress",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Hide progress bars and spinners",
+          "detail": "Use this when writing logs. Warnings and normal command output are controlled separately."
+        },
+        {
+          "flag": "--config-file",
+          "argument": "CONFIG_FILE",
+          "argument_optional": false,
+          "summary": "Read settings from a specific uv.toml file",
+          "detail": "Pass the configuration file path. Project configuration embedded in pyproject.toml cannot be supplied with this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read settings from a specific uv.toml file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.6.14",
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+                      "locator": "uv sync --config-file"
+                    },
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --config-file"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "A path to a uv.toml configuration file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal configuration discovery."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-config",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Skip configuration file discovery",
+          "detail": "uv ignores settings discovered in uv.toml and pyproject.toml in the project, its parents and user configuration locations."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command path",
+          "detail": "Use uv help followed by the command path for the expanded manual. Also written as -h."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show help for this command path",
+          "detail": "Alternate spelling of --help. Use uv help followed by the command path for the expanded manual.",
+          "bundle": true
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the release version",
+          "detail": "0.6.14 accepts this after the command path. In 0.13.9 place --version directly after uv. Also written as -V."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print the release version",
+          "detail": "Alternate spelling of --version. 0.6.14 accepts this after the command path. In 0.13.9 place --version directly after uv.",
+          "bundle": true
+        }
+      ]
+    },
+    {
+      "name": "Compatibility options",
+      "description": "Alternate spellings and release-specific switches.",
+      "options": [
+        {
+          "flag": "--compile",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Precompile Python modules after installation",
+          "detail": "Alternate spelling of --compile-bytecode. uv processes Python files throughout site-packages, including previously installed modules. Installation takes longer but the first import can start faster."
+        },
+        {
+          "flag": "--config-settings",
+          "argument": "CONFIG_SETTING",
+          "argument_optional": false,
+          "summary": "Pass a setting to the package build backend",
+          "detail": "Alternate spelling of --config-setting. Supply KEY=VALUE for a PEP 517 build. Repeat for additional settings. The backend defines the accepted keys and values.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "config-setting"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exact",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Remove packages outside the selected environment",
+          "detail": "This is the normal sync policy. It restores exact synchronization when --inexact would otherwise preserve extra installations."
+        },
+        {
+          "flag": "--force-reinstall",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reinstall packages already present",
+          "detail": "Alternate spelling of --reinstall. Refresh cached data and reinstall packages even when their installed versions match the resolution."
+        },
+        {
+          "flag": "--native-tls",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Load TLS roots from the operating system",
+          "detail": "This is the public spelling in 0.6.14. In 0.13.9 it is a deprecated equivalent of --system-certs. The default uses bundled Mozilla roots."
+        },
+        {
+          "flag": "--no-cache-dir",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use a temporary cache for this command",
+          "detail": "Alternate spelling of --no-cache. The persistent cache is neither read nor updated. Downloads can still occur unless --offline is set."
+        },
+        {
+          "flag": "--no-compile",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Leave Python bytecode compilation to imports",
+          "detail": "Alternate spelling of --no-compile-bytecode. Overrides a request to precompile site-packages during installation. Python can still produce bytecode at runtime."
+        },
+        {
+          "flag": "--no-compile-bytecode",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Leave Python bytecode compilation to imports",
+          "detail": "Overrides a request to precompile site-packages during installation. Python can still produce bytecode at runtime. Also written as --no-compile."
+        },
+        {
+          "flag": "--no-exact",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep unrelated packages during synchronization",
+          "detail": "Alternate spelling of --inexact. uv normally removes packages outside the requested environment. This mode makes the changes needed to satisfy the selected dependencies."
+        },
+        {
+          "flag": "--no-preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable the general preview switch",
+          "detail": "Use this to override an enabled blanket preview setting. Feature availability depends on the uv release."
+        },
+        {
+          "flag": "--only-install-local",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install only local packages",
+          "detail": "0.13.9 only. Select local paths, workspace members and the current project. Remote dependencies may need to be supplied by an earlier installation."
+        },
+        {
+          "flag": "--only-install-package",
+          "argument": "PACKAGE",
+          "argument_optional": false,
+          "summary": "Install only the named distribution",
+          "detail": "0.13.9 only. Repeat for more distribution names. Other packages, including dependencies, are left out of this installation step.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Install only the named distribution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand uses a named or structured token."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "uv"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "0.13.9"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "The release defines the command-line grammar."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The command-line form has no chip-specific unit."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+                      "locator": "uv sync --only-install-package"
+                    }
+                  ]
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply one operand."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PACKAGE",
+                    "grammar": "A Python distribution name, such as packaging. Repeat the option to name another distribution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal package policy without this per-package selection."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--only-install-project",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install only the current project",
+          "detail": "0.13.9 only. Dependencies are omitted. Pair this install step with a previously populated dependency environment."
+        },
+        {
+          "flag": "--only-install-workspace",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install only workspace members",
+          "detail": "0.13.9 only. External dependencies are omitted. They may need to be installed in a separate step."
+        },
+        {
+          "flag": "--preview",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable the release's experimental features",
+          "detail": "Preview behavior can change between releases. In 0.13.9, --preview-features can enable selected features individually."
+        },
+        {
+          "flag": "--preview-feature",
+          "argument": "FEATURE",
+          "argument_optional": false,
+          "summary": "Enable named experimental features",
+          "detail": "Alternate spelling of --preview-features. 0.13.9 only. Use a comma-separated list or repeat the option. For example, index-by-name gives configured index names priority over relative paths in 0.13.9.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preview-features"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--preview-features",
+          "argument": "FEATURE",
+          "argument_optional": false,
+          "summary": "Enable named experimental features",
+          "detail": "0.13.9 only. Use a comma-separated list or repeat the option. For example, index-by-name gives configured index names priority over relative paths in 0.13.9. Also written as --preview-feature.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preview-features"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--trusted-host",
+          "argument": "ALLOW_INSECURE_HOST",
+          "argument_optional": false,
+          "summary": "Trust a host without certificate verification",
+          "detail": "Alternate spelling of --allow-insecure-host. Supply HOST, HOST:PORT or a URL. Repeat for additional hosts. HTTPS certificate checks are bypassed for listed hosts.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "allow-insecure-host"
+              }
+            ]
+          }
         }
       ]
     }
@@ -348,9 +3789,581 @@
   ],
   "description": "Install the project’s locked packages and remove unneeded packages by default.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Upstream manual and release-specific CLI comparison for uv 0.6.14 and 0.13.9",
+    "reviewed": "2026-11-23",
     "source": "https://docs.astral.sh/uv/reference/cli/#uv-sync"
   },
-  "stop_at_positional": false
+  "stop_at_positional": false,
+  "value_definitions": {
+    "python": {
+      "kind": "delegated",
+      "meaning": "uv Python interpreter request grammar",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "A version such as 3.12, version constraint, implementation-qualified request, executable name/path or installation directory. Digits identify Python releases, not measured decimal values. Variant/build suffixes and matching follow uv's PythonRequest parser; the requested interpreter still must be found or managed according to command policy."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use command-specific project/environment/Python discovery without an explicit CLI interpreter request."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+            "locator": "Requesting Python versions and request forms"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/crates/uv-python/src/discovery.rs",
+            "locator": "PythonRequest parsing/discovery boundary"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --python"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --python"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "uv Python interpreter request grammar",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/concepts/python-versions.md",
+          "locator": "Requesting Python versions and request forms"
+        }
+      }
+    },
+    "index-url": {
+      "kind": "nonnumerical",
+      "meaning": "Set the legacy default index URL",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --index-url"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --index-url"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "URL",
+          "grammar": "Simple repository URL or local directory in simple-repository layout."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured default index, normally PyPI."
+      }
+    },
+    "find-links": {
+      "kind": "nonnumerical",
+      "meaning": "Search a flat collection of distribution files",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --find-links"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --find-links"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "LOCATION",
+          "grammar": "A flat directory of distribution files or an HTML page of links to distributions."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the other configured distribution sources."
+      }
+    },
+    "upgrade-package": {
+      "kind": "delegated",
+      "meaning": "Package upgrade request",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Package name optionally followed by a version constraint; constraint numbers are package versions, not measured values."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Preserve existing locked versions where permitted by the resolution."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv-lock --upgrade-package"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --upgrade-package"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --upgrade-package"
+          }
+        ]
+      },
+      "grammar": {
+        "name": "Package upgrade request",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+          "locator": "uv-lock --upgrade-package"
+        }
+      }
+    },
+    "config-setting": {
+      "kind": "delegated",
+      "meaning": "Pass a setting to the package build backend",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --config-setting"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --config-setting"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "grammar": {
+        "name": "PEP 517 build backend settings",
+        "reference": {
+          "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+          "locator": "uv sync --config-setting"
+        }
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "KEY=VALUE",
+          "grammar": "Build-backend key and value joined by an equals sign. Repeat the option for more entries."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the backend's defaults and any configured build settings."
+      }
+    },
+    "quiet": {
+      "kind": "level",
+      "meaning": "Reduce command output",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Occurrences of the switch set the level."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --quiet"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --quiet"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This fixed switch takes no operand."
+      },
+      "ordering": "Each occurrence increases output suppression.",
+      "forms": [
+        {
+          "id": "repeat",
+          "notation": "expression",
+          "syntax": "-qq",
+          "grammar": "Repeat as -qq for silent stdout. --verbose conflicts with quiet output. Also written as -q."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Apply normal output settings."
+      }
+    },
+    "verbose": {
+      "kind": "level",
+      "meaning": "Increase diagnostic detail",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Occurrences of the switch set the level."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --verbose"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --verbose"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This fixed switch takes no operand."
+      },
+      "ordering": "Each occurrence increases diagnostic verbosity.",
+      "forms": [
+        {
+          "id": "repeat",
+          "notation": "expression",
+          "syntax": "-vv",
+          "grammar": "Repeat the flag for more detail, for example -vv. RUST_LOG allows finer-grained filtering. --quiet conflicts with verbose output. Also written as -v."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Apply normal output settings."
+      }
+    },
+    "allow-insecure-host": {
+      "kind": "nonnumerical",
+      "meaning": "Trust a host without certificate verification",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.6.14",
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.6.14/docs/reference/cli.md",
+            "locator": "uv sync --allow-insecure-host"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/crates/uv-cli/src/lib.rs",
+            "locator": "uv sync --allow-insecure-host"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "HOST",
+          "grammar": "A hostname, HOST:PORT or URL. The port identifies a service on that host."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "TLS verification follows the configured trust roots."
+      }
+    },
+    "preview-features": {
+      "kind": "nonnumerical",
+      "meaning": "Enable named experimental features",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand uses a named or structured token."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "uv"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "0.13.9"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "The release defines the command-line grammar."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "The command-line form has no chip-specific unit."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/astral-sh/uv/0.13.9/docs/concepts/preview.md",
+            "locator": "uv sync --preview-features"
+          }
+        ]
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "Supply one operand."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "FEATURE",
+          "grammar": "One named uv preview feature or comma-separated names. Multiple occurrences accumulate. Feature names depend on the release."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the configured preview feature set."
+      }
+    }
+  }
 }

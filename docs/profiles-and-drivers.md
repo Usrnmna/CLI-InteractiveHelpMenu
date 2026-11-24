@@ -91,8 +91,9 @@ completed migration without asserting complete external-help coverage.
 | `positional_group` | Object with `argument`, `argument_count` (2–16), and `repeatable: true`; complete repeated groups delimit safe insertion positions |
 | `identity` | Built-in guard: `mikefarah-yq-v4`, `javascript-yarn`, `esptool-v4`, or `esptool-v5`; cannot contain code or an executable path |
 
-Concrete selectors such as `-c:v:0` are valid flags; `-c:`, placeholder selectors,
-whitespace, and shell operators are rejected. Keywords cannot contain shell
+Concrete names can include segments such as `-c:v:0` or `-test.run`. A trailing
+colon requires an attached-only operand, as in MSBuild’s `-t:TARGET`. Placeholder
+selectors, whitespace and shell operators are rejected. Keywords cannot contain shell
 syntax. All argument labels remain display-only. Repeated groups are entered
 manually; the browser never supplies placeholder values. Guided edits preserve
 these JSON fields; clearing a value argument also clears its `attached`, `argument_style`, and

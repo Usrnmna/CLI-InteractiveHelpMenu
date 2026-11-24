@@ -30,14 +30,14 @@
           "argument_optional": false,
           "flag": "--silent",
           "summary": "Hide the package script’s command line",
-          "detail": "The script still runs and can write to stdout and stderr."
+          "detail": "The script still runs and can write to stdout and stderr. A package script runs preNAME, NAME and postNAME hooks in order when defined. Arguments go to NAME. An option-looking argument after the target goes to the target. A standalone -- immediately before or after the target is consumed in both reviewed releases."
         },
         {
           "argument": "",
           "argument_optional": false,
           "flag": "--if-present",
           "summary": "Succeed if the requested entry point is missing",
-          "detail": "Bun still looks for a file or executable when no package script matches. A command it finds can still exit with an error."
+          "detail": "Bun still looks for a file or executable when no package script matches. A command it finds can still exit with an error. For a bare name, a package script takes precedence over a source file, followed by a local executable. Use ./file.js to select the file explicitly."
         },
         {
           "argument": "DIRECTORY",
@@ -182,27 +182,44 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "nonnumerical",
-                "meaning": "Preloaded module specifier",
+                "ref": "preload_1"
+              }
+            ]
+          },
+          "detail": "Use a module specifier such as ./setup.ts. Repeat the flag to load several modules in order. The short spelling is -r."
+        },
+        {
+          "flag": "--elide-lines",
+          "argument": "LINES",
+          "argument_optional": false,
+          "summary": "Limit visible output per filtered workspace script",
+          "detail": "Supply a line count. Zero shows all output. The documented default changed from 10 in 1.2.5 to zero in 1.4.5.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit visible output per filtered workspace script",
                 "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                  "state": "accepted",
+                  "form": "operand"
                 },
                 "forms": [
                   {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "A module name or path to import before the entry module."
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "LINES",
+                    "grammar": "Supply a line count. Zero shows all output. The documented default changed from 10 in 1.2.5 to zero in 1.4.5."
                   }
                 ],
+                "subject": "script output lines",
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Use any preloads configured in bunfig.toml."
+                  "meaning": "Use the normal command settings without this override."
                 },
                 "when_value_omitted": {
                   "state": "not_accepted",
-                  "reason": "The option requires its operand"
+                  "reason": "This option requires its operand."
                 },
                 "applicability": {
                   "implementation": {
@@ -214,31 +231,4134 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "1.2.5"
+                      "1.2.5",
+                      "1.4.5"
                     ]
                   },
                   "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
                   },
                   "chip": {
                     "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                    "reason": "No processor-specific interpretation."
                   }
                 },
                 "review": {
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.2.5/src/cli.zig",
-                      "locator": "--preload"
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--elide-lines"
                     }
                   ]
                 }
               }
             ]
-          },
-          "detail": "Use a module specifier such as ./setup.ts. Repeat the flag to load several modules in order. The short spelling is -r."
+          }
+        },
+        {
+          "flag": "-F",
+          "argument": "PATTERN",
+          "argument_optional": false,
+          "summary": "Run a script in matching workspace packages",
+          "detail": "Pass a quoted package-name or path pattern before the script name. Repeat to select more packages. Alias of --filter.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Run a script in matching workspace packages",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PATTERN",
+                    "grammar": "Pass a quoted package-name or path pattern before the script name. Repeat to select more packages. Alias of --filter."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--filter"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--filter",
+          "argument": "PATTERN",
+          "argument_optional": false,
+          "summary": "Run a script in matching workspace packages",
+          "detail": "Pass a quoted package-name or path pattern before the script name. Repeat to select more packages.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Run a script in matching workspace packages",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PATTERN",
+                    "grammar": "Pass a quoted package-name or path pattern before the script name. Repeat to select more packages."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--filter"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-b",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use Bun for Node.js scripts",
+          "detail": "Package scripts and executables that invoke node through PATH, including a #!/usr/bin/env node shebang, use the Bun runtime. Alias of --bun."
+        },
+        {
+          "flag": "--shell",
+          "argument": "SHELL",
+          "argument_optional": false,
+          "summary": "Select the shell used for package scripts",
+          "detail": "Use bun for Bun Shell or system for the system shell. The choice applies to package.json scripts.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select the shell used for package scripts",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SHELL",
+                    "grammar": "Use bun for Bun Shell or system for the system shell. The choice applies to package.json scripts."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--shell"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-clear-screen",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Keep earlier terminal output during reloads",
+          "detail": "Applies to --watch and --hot."
+        },
+        {
+          "flag": "--smol",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Reduce the runtime’s memory footprint",
+          "detail": "Garbage collection may run more often."
+        },
+        {
+          "flag": "-r",
+          "argument": "MODULE",
+          "argument_optional": false,
+          "summary": "Import a module before the entry point",
+          "detail": "Use a module specifier such as ./setup.ts. Repeat the flag to load several modules in order. The short spelling is -r. Alias of --preload.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preload_1"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inspect",
+          "argument": "ENDPOINT",
+          "argument_optional": true,
+          "summary": "Enable the JavaScript debugger",
+          "detail": "The bare switch uses the default endpoint. Attach =HOST:PORT to choose another listener.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Enable the JavaScript debugger",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ENDPOINT",
+                    "grammar": "The bare switch uses the default endpoint. Attach =HOST:PORT to choose another listener."
+                  }
+                ],
+                "grammar": {
+                  "name": "Bun --inspect argument syntax",
+                  "reference": {
+                    "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                    "locator": "--inspect"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Enable the default debugger endpoint."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--inspect"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inspect-wait",
+          "argument": "ENDPOINT",
+          "argument_optional": true,
+          "summary": "Wait for a debugger before starting",
+          "detail": "An attached endpoint overrides the default listener.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Wait for a debugger before starting",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ENDPOINT",
+                    "grammar": "An attached endpoint overrides the default listener."
+                  }
+                ],
+                "grammar": {
+                  "name": "Bun --inspect-wait argument syntax",
+                  "reference": {
+                    "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                    "locator": "--inspect-wait"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Wait at the default debugger endpoint."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--inspect-wait"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--inspect-brk",
+          "argument": "ENDPOINT",
+          "argument_optional": true,
+          "summary": "Pause on the first line for a debugger",
+          "detail": "Attach =HOST:PORT to override the default listener.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Pause on the first line for a debugger",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ENDPOINT",
+                    "grammar": "Attach =HOST:PORT to override the default listener."
+                  }
+                ],
+                "grammar": {
+                  "name": "Bun --inspect-brk argument syntax",
+                  "reference": {
+                    "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                    "locator": "--inspect-brk"
+                  }
+                },
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Pause at the default debugger endpoint."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--inspect-brk"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-install",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable automatic package installation at runtime",
+          "detail": "Use this when module resolution should rely on existing files."
+        },
+        {
+          "flag": "--install",
+          "argument": "INSTALL",
+          "argument_optional": false,
+          "summary": "Choose when Bun installs missing dependencies",
+          "detail": "auto enables installation without node_modules, fallback tries after normal resolution, force always uses the runtime installer. disable turns it off.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose when Bun installs missing dependencies",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "INSTALL",
+                    "grammar": "auto enables installation without node_modules, fallback tries after normal resolution, force always uses the runtime installer. disable turns it off."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--install"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-i",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Install unresolved dependencies at runtime",
+          "detail": "Shorthand for --install=fallback in bun run."
+        },
+        {
+          "flag": "-e",
+          "argument": "CODE",
+          "argument_optional": false,
+          "summary": "Execute JavaScript supplied on the command line",
+          "detail": "Quote the expression so the shell passes it as one operand. Alias of --eval.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Execute JavaScript supplied on the command line",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CODE",
+                    "grammar": "Quote the expression so the shell passes it as one operand. Alias of --eval."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--eval"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--eval",
+          "argument": "CODE",
+          "argument_optional": false,
+          "summary": "Execute JavaScript supplied on the command line",
+          "detail": "Quote the expression so the shell passes it as one operand.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Execute JavaScript supplied on the command line",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CODE",
+                    "grammar": "Quote the expression so the shell passes it as one operand."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--eval"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-p",
+          "argument": "CODE",
+          "argument_optional": false,
+          "summary": "Evaluate JavaScript and print the result",
+          "detail": "Quote the expression so the shell passes it as one operand. Alias of --print.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Evaluate JavaScript and print the result",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CODE",
+                    "grammar": "Quote the expression so the shell passes it as one operand. Alias of --print."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--print"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--print",
+          "argument": "CODE",
+          "argument_optional": false,
+          "summary": "Evaluate JavaScript and print the result",
+          "detail": "Quote the expression so the shell passes it as one operand.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Evaluate JavaScript and print the result",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CODE",
+                    "grammar": "Quote the expression so the shell passes it as one operand."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--print"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--prefer-offline",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Prefer cached packages during runtime resolution",
+          "detail": "Skips freshness checks. Use --no-install to disable automatic installation."
+        },
+        {
+          "flag": "--prefer-latest",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Check the registry for the latest matching packages"
+        },
+        {
+          "flag": "--port",
+          "argument": "PORT",
+          "argument_optional": false,
+          "summary": "Choose the default port for Bun.serve",
+          "detail": "Supply a decimal port from 0 to 65535. An explicit port in the application can override the default.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Choose the default port for Bun.serve",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "PORT",
+                    "grammar": "Supply a decimal port from 0 to 65535. An explicit port in the application can override the default."
+                  }
+                ],
+                "subject": "TCP port",
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--port"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--conditions",
+          "argument": "CONDITION",
+          "argument_optional": false,
+          "summary": "Add a package export condition",
+          "detail": "Repeat to add conditions considered during module resolution.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Add a package export condition",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CONDITION",
+                    "grammar": "Repeat to add conditions considered during module resolution."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--conditions"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--fetch-preconnect",
+          "argument": "URL",
+          "argument_optional": false,
+          "summary": "Start connecting to a URL during program startup",
+          "detail": "Repeat for more URLs. The given hosts can receive connections before application code runs.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Start connecting to a URL during program startup",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "Repeat for more URLs. The given hosts can receive connections before application code runs."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--fetch-preconnect"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--max-http-header-size",
+          "argument": "BYTES",
+          "argument_optional": false,
+          "summary": "Limit the size of HTTP headers",
+          "detail": "The operand counts bytes. The documented default is 16384 bytes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Limit the size of HTTP headers",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "BYTES",
+                    "grammar": "The operand counts bytes. The documented default is 16384 bytes.",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--max-http-header-size"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--dns-result-order",
+          "argument": "DNS_RESULT_ORDER",
+          "argument_optional": false,
+          "summary": "Choose the order of DNS results",
+          "detail": "Use verbatim, ipv4first or ipv6first. The default is verbatim.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the order of DNS results",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DNS_RESULT_ORDER",
+                    "grammar": "Use verbatim, ipv4first or ipv6first. The default is verbatim."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--dns-result-order"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--expose-gc",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Expose garbage collection as global gc()",
+          "detail": "Bun.gc() remains available independently."
+        },
+        {
+          "flag": "--no-deprecation",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress deprecation warnings"
+        },
+        {
+          "flag": "--throw-deprecation",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Turn deprecation warnings into errors"
+        },
+        {
+          "flag": "--title",
+          "argument": "TITLE",
+          "argument_optional": false,
+          "summary": "Set the process title",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the process title",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TITLE",
+                    "grammar": "Set the process title"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--title"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--zero-fill-buffers",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Zero-initialize unsafe buffer allocations",
+          "detail": "Affects Buffer.allocUnsafe()."
+        },
+        {
+          "flag": "--main-fields",
+          "argument": "FIELD",
+          "argument_optional": false,
+          "summary": "Set package.json fields consulted for entry points",
+          "detail": "Supply field names in resolution order. The defaults depend on the target.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set package.json fields consulted for entry points",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FIELD",
+                    "grammar": "Supply field names in resolution order. The defaults depend on the target."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--main-fields"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--extension-order",
+          "argument": "EXT",
+          "argument_optional": false,
+          "summary": "Choose the order of extensions tried during resolution",
+          "detail": "The defaults include .tsx, .ts, .jsx, .js and .json, in that order.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the order of extensions tried during resolution",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXT",
+                    "grammar": "The defaults include .tsx, .ts, .jsx, .js and .json, in that order."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--extension-order"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--tsconfig-override",
+          "argument": "FILE",
+          "argument_optional": false,
+          "summary": "Read TypeScript configuration from another file",
+          "detail": "The default path is tsconfig.json in the working directory.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read TypeScript configuration from another file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "The default path is tsconfig.json in the working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--tsconfig-override"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-d",
+          "argument": "KEY:JSON",
+          "argument_optional": false,
+          "summary": "Replace an expression during transpilation",
+          "detail": "Supply KEY:JSON as one argument. Preserve the JSON quotes when replacing a key with a string. Alias of --define.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Replace an expression during transpilation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY:JSON",
+                    "grammar": "Supply KEY:JSON as one argument. Preserve the JSON quotes when replacing a key with a string. Alias of --define."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--define"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--define",
+          "argument": "KEY:JSON",
+          "argument_optional": false,
+          "summary": "Replace an expression during transpilation",
+          "detail": "Supply KEY:JSON as one argument. Preserve the JSON quotes when replacing a key with a string.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Replace an expression during transpilation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY:JSON",
+                    "grammar": "Supply KEY:JSON as one argument. Preserve the JSON quotes when replacing a key with a string."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--define"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--drop",
+          "argument": "NAME",
+          "argument_optional": false,
+          "summary": "Remove calls on a named object during transpilation",
+          "detail": "For example, --drop=console removes console method calls.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Remove calls on a named object during transpilation",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "For example, --drop=console removes console method calls."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--drop"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-l",
+          "argument": "EXT:LOADER",
+          "argument_optional": false,
+          "summary": "Map a file extension to a loader",
+          "detail": "Use .extension:loader, for example .js:jsx. Repeat for more mappings. Alias of --loader.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Map a file extension to a loader",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXT:LOADER",
+                    "grammar": "Use .extension:loader, for example .js:jsx. Repeat for more mappings. Alias of --loader."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--loader"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--loader",
+          "argument": "EXT:LOADER",
+          "argument_optional": false,
+          "summary": "Map a file extension to a loader",
+          "detail": "Use .extension:loader, for example .js:jsx. Repeat for more mappings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Map a file extension to a loader",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXT:LOADER",
+                    "grammar": "Use .extension:loader, for example .js:jsx. Repeat for more mappings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--loader"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-macros",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable macro execution while transpiling"
+        },
+        {
+          "flag": "--jsx-factory",
+          "argument": "JSX_FACTORY",
+          "argument_optional": false,
+          "summary": "Select the classic JSX element factory",
+          "detail": "Supply the function name used when compiling elements in classic JSX mode.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select the classic JSX element factory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "JSX_FACTORY",
+                    "grammar": "Supply the function name used when compiling elements in classic JSX mode."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--jsx-factory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--jsx-fragment",
+          "argument": "JSX_FRAGMENT",
+          "argument_optional": false,
+          "summary": "Select the classic JSX fragment factory",
+          "detail": "Supply the fragment symbol used with classic JSX.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select the classic JSX fragment factory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "JSX_FRAGMENT",
+                    "grammar": "Supply the fragment symbol used with classic JSX."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--jsx-fragment"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--jsx-import-source",
+          "argument": "JSX_IMPORT_SOURCE",
+          "argument_optional": false,
+          "summary": "Choose the package supplying JSX runtime functions",
+          "detail": "The automatic JSX runtime imports from react by default.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the package supplying JSX runtime functions",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "JSX_IMPORT_SOURCE",
+                    "grammar": "The automatic JSX runtime imports from react by default."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--jsx-import-source"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--jsx-runtime",
+          "argument": "JSX_RUNTIME",
+          "argument_optional": false,
+          "summary": "Choose how JSX is transformed",
+          "detail": "Use automatic or classic. The former imports runtime helpers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose how JSX is transformed",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "JSX_RUNTIME",
+                    "grammar": "Use automatic or classic. The former imports runtime helpers."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--jsx-runtime"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ignore-dce-annotations",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Ignore annotations that mark expressions as removable",
+          "detail": "Applies to annotations such as @__PURE__ during transpilation."
+        },
+        {
+          "flag": "-c",
+          "argument": "PATH",
+          "argument_optional": true,
+          "summary": "Choose Bun’s configuration file",
+          "detail": "Attach =PATH to select a bunfig.toml explicitly. Ordinarily Bun looks in the working directory. Alias of --config.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose Bun’s configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "Attach =PATH to select a bunfig.toml explicitly. Ordinarily Bun looks in the working directory. Alias of --config."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use the default bunfig.toml lookup."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--config"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--config",
+          "argument": "PATH",
+          "argument_optional": true,
+          "summary": "Choose Bun’s configuration file",
+          "detail": "Attach =PATH to select a bunfig.toml explicitly. Ordinarily Bun looks in the working directory.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose Bun’s configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "Attach =PATH to select a bunfig.toml explicitly. Ordinarily Bun looks in the working directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use the default bunfig.toml lookup."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--config"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List options for the run command",
+          "detail": "Alias of --help."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "List options for the run command"
+        },
+        {
+          "flag": "-u",
+          "argument": "URL",
+          "argument_optional": false,
+          "summary": "Set the runtime origin URL",
+          "detail": "Undocumented parser spelling. Supply the origin as one URL. Alias of --origin.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the runtime origin URL",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "Undocumented parser spelling. Supply the origin as one URL. Alias of --origin."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--origin"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--origin",
+          "argument": "URL",
+          "argument_optional": false,
+          "summary": "Set the runtime origin URL",
+          "detail": "Undocumented parser spelling. Supply the origin as one URL.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the runtime origin URL",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "URL",
+                    "grammar": "Undocumented parser spelling. Supply the origin as one URL."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.2.5",
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--origin"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-orphans",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Tie the lifetime of the process tree to its parent",
+          "detail": "Bun exits when its parent dies and terminates descendants when it exits. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--workspaces",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run the script across all workspace packages",
+          "detail": "The package.json workspaces field selects the packages. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--parallel",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run multiple scripts concurrently",
+          "detail": "Each script’s output is labeled. Use --no-exit-on-error to continue past a failure. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--sequential",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Run multiple scripts in sequence",
+          "detail": "Use --no-exit-on-error to continue with later scripts after a failure. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--no-exit-on-error",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Continue after a script fails",
+          "detail": "Applies to --parallel and --sequential runs. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--watch-kill-signal",
+          "argument": "SIGNAL",
+          "argument_optional": false,
+          "summary": "Choose the signal used during a watch restart",
+          "detail": "Pass a signal name such as SIGTERM. The default is SIGTERM. Without a watch restart the setting has no effect. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the signal used during a watch restart",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SIGNAL",
+                    "grammar": "Pass a signal name such as SIGTERM. The default is SIGTERM. Without a watch restart the setting has no effect."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--watch-kill-signal"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--check",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Check types before running the program",
+          "detail": "Type errors prevent the program from starting. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--interactive",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Open an interactive JavaScript session",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--require",
+          "argument": "MODULE",
+          "argument_optional": false,
+          "summary": "Import a module before the entry point",
+          "detail": "Alias of --preload in Bun 1.4.5. Repeat module specifiers to run them in order before the entry point.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preload_alias_145"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--import",
+          "argument": "MODULE",
+          "argument_optional": false,
+          "summary": "Import a module before the entry point",
+          "detail": "Alias of --preload in Bun 1.4.5. Repeat module specifiers to run them in order before the entry point.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "preload_alias_145"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cpu-prof",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write a CPU profile when the process exits",
+          "detail": "Use --cpu-prof-md as well to emit Markdown alongside JSON. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--cpu-prof-name",
+          "argument": "CPU_PROF_NAME",
+          "argument_optional": false,
+          "summary": "Name the CPU profile file",
+          "detail": "Requires --cpu-prof or --cpu-prof-md. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the CPU profile file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CPU_PROF_NAME",
+                    "grammar": "Requires --cpu-prof or --cpu-prof-md."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--cpu-prof-name"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cpu-prof-dir",
+          "argument": "CPU_PROF_DIR",
+          "argument_optional": false,
+          "summary": "Choose the CPU profile output directory",
+          "detail": "Requires --cpu-prof or --cpu-prof-md. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CPU profile output directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CPU_PROF_DIR",
+                    "grammar": "Requires --cpu-prof or --cpu-prof-md."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--cpu-prof-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cpu-prof-md",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write a CPU profile in Markdown",
+          "detail": "Enables profiling by itself. Add --cpu-prof for JSON as well. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--cpu-prof-interval",
+          "argument": "US",
+          "argument_optional": false,
+          "summary": "Choose the CPU sampling interval",
+          "detail": "Use microseconds. The default is 1000. Changing the interval requires --cpu-prof or --cpu-prof-md. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Choose the CPU sampling interval",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "US",
+                    "grammar": "Use microseconds. The default is 1000. Changing the interval requires --cpu-prof or --cpu-prof-md.",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.000001"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--cpu-prof-interval"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--heap-prof",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write a heap profile on exit",
+          "detail": "The default output has a .heapprofile extension. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--heap-prof-name",
+          "argument": "HEAP_PROF_NAME",
+          "argument_optional": false,
+          "summary": "Name the heap profile file",
+          "detail": "Requires --heap-prof or --heap-prof-md. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Name the heap profile file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "HEAP_PROF_NAME",
+                    "grammar": "Requires --heap-prof or --heap-prof-md."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--heap-prof-name"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--heap-prof-dir",
+          "argument": "HEAP_PROF_DIR",
+          "argument_optional": false,
+          "summary": "Choose the heap profile output directory",
+          "detail": "Requires --heap-prof or --heap-prof-md. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the heap profile output directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "HEAP_PROF_DIR",
+                    "grammar": "Requires --heap-prof or --heap-prof-md."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--heap-prof-dir"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--heap-prof-md",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Write a heap profile in Markdown",
+          "detail": "When both heap output modes are selected, Bun writes Markdown. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--heap-prof-interval",
+          "argument": "BYTES",
+          "argument_optional": false,
+          "summary": "Accept a Node-compatible heap sampling interval",
+          "detail": "The operand counts bytes. Bun 1.4.5 accepts it for compatibility, but its heap profiler has no allocation-site sampler. A nondefault value without heap profiling exits 9. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Accept a Node-compatible heap sampling interval",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "BYTES",
+                    "grammar": "The operand counts bytes. Bun 1.4.5 accepts it for compatibility, but its heap profiler has no allocation-site sampler. A nondefault value without heap profiling exits 9.",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--heap-prof-interval"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--experimental-http2-fetch",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow fetch to negotiate HTTP/2",
+          "detail": "Offers h2 during TLS protocol negotiation. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--experimental-http3-fetch",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow fetch to upgrade to HTTP/3",
+          "detail": "Requires an HTTP/3 Alt-Svc advertisement from the server. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--insecure-http-parser",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Accept invalid HTTP headers when parsing requests",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--experimental-stream-iter",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable the experimental stream iteration API",
+          "detail": "Applies to node:stream/iter and node:zlib/iter. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--no-warnings",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Suppress process warnings",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-warnings",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show stack traces with process warnings",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-deprecation",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Show stack traces for deprecation warnings",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--pending-deprecation",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable pending deprecation warnings",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--redirect-warnings",
+          "argument": "REDIRECT_WARNINGS",
+          "argument_optional": false,
+          "summary": "Write process warnings to a file",
+          "detail": "Provide the destination path in place of the usual stderr output. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write process warnings to a file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REDIRECT_WARNINGS",
+                    "grammar": "Provide the destination path in place of the usual stderr output."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--redirect-warnings"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--disable-warning",
+          "argument": "DISABLE_WARNING",
+          "argument_optional": false,
+          "summary": "Suppress a warning code or type",
+          "detail": "Repeat to suppress additional codes or warning types. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Suppress a warning code or type",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DISABLE_WARNING",
+                    "grammar": "Repeat to suppress additional codes or warning types."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--disable-warning"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--use-system-ca",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Trust certificates from the system store",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--use-openssl-ca",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use OpenSSL’s default certificate store",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--use-bundled-ca",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Use the certificate authorities bundled with Bun",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-min-v1.0",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default minimum TLS version to 1.0",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-min-v1.1",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default minimum TLS version to 1.1",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-min-v1.2",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default minimum TLS version to 1.2",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-min-v1.3",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default minimum TLS version to 1.3",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-max-v1.2",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default maximum TLS version to 1.2",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--tls-max-v1.3",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Set the default maximum TLS version to 1.3",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--redis-preconnect",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Connect to Redis during startup",
+          "detail": "Uses REDIS_URL before ordinary application operations. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--sql-preconnect",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Connect to PostgreSQL during startup",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--no-addons",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable native addons and the FFI C compiler",
+          "detail": "Calls to process.dlopen and bun:ffi cc() fail. Also disables the node-addons export condition. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--no-ffi-cc",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable the FFI C compiler",
+          "detail": "Calls to bun:ffi cc() fail. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--unhandled-rejections",
+          "argument": "UNHANDLED_REJECTIONS",
+          "argument_optional": false,
+          "summary": "Choose how unhandled promise rejections are reported",
+          "detail": "Use strict, throw, warn, none or warn-with-error-code. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose how unhandled promise rejections are reported",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "UNHANDLED_REJECTIONS",
+                    "grammar": "Use strict, throw, warn, none or warn-with-error-code."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--unhandled-rejections"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--console-depth",
+          "argument": "DEPTH",
+          "argument_optional": false,
+          "summary": "Limit nested objects shown by console.log",
+          "detail": "Use a decimal depth. The default is 2. Zero requests the maximum depth. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit nested objects shown by console.log",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "DEPTH",
+                    "grammar": "Use a decimal depth. The default is 2. Zero requests the maximum depth."
+                  }
+                ],
+                "subject": "nested object levels",
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--console-depth"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--user-agent",
+          "argument": "USER_AGENT",
+          "argument_optional": false,
+          "summary": "Set the default HTTP User-Agent header",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the default HTTP User-Agent header",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "USER_AGENT",
+                    "grammar": "Available in Bun 1.4.5 among the reviewed releases."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--user-agent"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cron-title",
+          "argument": "CRON_TITLE",
+          "argument_optional": false,
+          "summary": "Set the name used in cron execution mode",
+          "detail": "Supply both --cron-title and --cron-period with nonempty values. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the name used in cron execution mode",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CRON_TITLE",
+                    "grammar": "Supply both --cron-title and --cron-period with nonempty values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--cron-title"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--cron-period",
+          "argument": "CRON_PERIOD",
+          "argument_optional": false,
+          "summary": "Set the schedule used in cron execution mode",
+          "detail": "Supply both --cron-period and --cron-title with nonempty values. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the schedule used in cron execution mode",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CRON_PERIOD",
+                    "grammar": "Supply both --cron-period and --cron-title with nonempty values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--cron-period"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--preserve-symlinks",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Preserve symlink paths when resolving modules",
+          "detail": "Use --preserve-symlinks-main separately for the main entry point. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--preserve-symlinks-main",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Preserve the entry point’s symlink path",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--feature",
+          "argument": "FEATURE",
+          "argument_optional": false,
+          "summary": "Enable a named transpiler feature",
+          "detail": "Use the feature name used by the source code for dead-code elimination. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Enable a named transpiler feature",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FEATURE",
+                    "grammar": "Use the feature name used by the source code for dead-code elimination."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--feature"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--jsx-side-effects",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Preserve potentially side-effecting JSX elements",
+          "detail": "Disables pure annotations for JSX. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--no-env-file",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Disable automatic dotenv file loading",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--disallow-code-generation-from-strings",
+          "argument": "MODE",
+          "argument_optional": true,
+          "summary": "Restrict runtime compilation of JavaScript strings",
+          "detail": "The optional attached mode is strict. The runtime rejects other nonempty values. Available in Bun 1.4.5 among the reviewed releases.",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Restrict runtime compilation of JavaScript strings",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MODE",
+                    "grammar": "The optional attached mode is strict. The runtime rejects other nonempty values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Enable the default string compilation restriction."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--disallow-code-generation-from-strings"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--expose-internals",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Allow imports of Bun’s internal testing modules",
+          "detail": "Hidden release-build switch for modules such as bun:internal-for-testing. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-events-enabled",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Enable the default Node-compatible event trace",
+          "detail": "Selects v8,node,node.async_hooks. A later category selection overrides it. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-event-categories",
+          "argument": "TRACE_EVENT_CATEGORIES",
+          "argument_optional": false,
+          "summary": "Select event trace categories",
+          "detail": "Pass comma-separated categories. The last category selection wins. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select event trace categories",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TRACE_EVENT_CATEGORIES",
+                    "grammar": "Pass comma-separated categories. The last category selection wins."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--trace-event-categories"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--trace-event-file-pattern",
+          "argument": "TRACE_EVENT_FILE_PATTERN",
+          "argument_optional": false,
+          "summary": "Choose the trace output filename pattern",
+          "detail": "Sets the pattern even if tracing is first enabled by application code. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the trace output filename pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The operand uses the documented text syntax."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TRACE_EVENT_FILE_PATTERN",
+                    "grammar": "Sets the pattern even if tracing is first enabled by application code."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--trace-event-file-pattern"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--trace-env",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report access to environment variables",
+          "detail": "The trace identifies operations and variable names on stderr. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-env-js-stack",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Print JavaScript stacks for environment accesses",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-env-native-stack",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Accept the Node native environment-tracing switch",
+          "detail": "Bun 1.4.5 accepts the spelling for compatibility. Its environment accessors produce no native backtrace. Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--trace-exit",
+          "argument": "",
+          "argument_optional": false,
+          "summary": "Report explicit process exits with a stack",
+          "detail": "Available in Bun 1.4.5 among the reviewed releases."
+        },
+        {
+          "flag": "--stack-trace-limit",
+          "argument": "STACK_TRACE_LIMIT",
+          "argument_optional": false,
+          "summary": "Set the number of stack frames retained",
+          "detail": "Supply the stack frame limit as an integer. Available in Bun 1.4.5 among the reviewed releases.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Set the number of stack frames retained",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "STACK_TRACE_LIMIT",
+                    "grammar": "Supply the stack frame limit as an integer."
+                  }
+                ],
+                "subject": "stack frames",
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal command settings without this override."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires its operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "Bun"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "1.4.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+                      "locator": "--stack-trace-limit"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -247,11 +4367,123 @@
     "bun",
     "run"
   ],
-  "description": "Run a package script, source file or executable. Put Bun flags before its name.",
+  "description": "Run a package script, source file or executable. Place Bun options before the target. Later arguments go to the target.",
   "documentation": {
-    "kind": "curated subset; not an installed-version guarantee",
-    "reviewed": "2026-11-22",
+    "kind": "Versioned manual and client option inventory",
+    "reviewed": "2026-11-23",
     "source": "https://bun.sh/docs/runtime"
   },
-  "stop_at_positional": true
+  "stop_at_positional": true,
+  "value_definitions": {
+    "preload_1": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed by this parameter contract",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Bun"
+          ]
+        },
+        "platform": {
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.2.5"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "A module name or path to import before the entry module.",
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE"
+        }
+      ],
+      "kind": "nonnumerical",
+      "meaning": "Preloaded module specifier",
+      "review": {
+        "references": [
+          {
+            "locator": "--preload",
+            "source": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.2.5/src/cli.zig"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Use any preloads configured in bunfig.toml.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "The option requires its operand",
+        "state": "not_accepted"
+      }
+    },
+    "preload_alias_145": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed by this parameter contract",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "Bun"
+          ]
+        },
+        "platform": {
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted",
+          "state": "not_applicable"
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "1.4.5"
+          ]
+        }
+      },
+      "bare": {
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement",
+        "state": "not_applicable"
+      },
+      "forms": [
+        {
+          "grammar": "A module name or path to import before the entry module.",
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE"
+        }
+      ],
+      "kind": "nonnumerical",
+      "meaning": "Preloaded module specifier",
+      "review": {
+        "references": [
+          {
+            "source": "https://github.com/oven-sh/bun/blob/bun-v1.4.5/src/runtime/cli/Arguments.rs",
+            "locator": "RUNTIME_PARAMS_ preload, import and require registrations"
+          }
+        ],
+        "status": "verified"
+      },
+      "when_absent": {
+        "meaning": "Use any preloads configured in bunfig.toml.",
+        "state": "known"
+      },
+      "when_value_omitted": {
+        "reason": "The option requires its operand",
+        "state": "not_accepted"
+      }
+    }
+  }
 }
