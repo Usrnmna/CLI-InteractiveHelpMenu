@@ -28,6 +28,15 @@ class SystemDependencyFollowupTests(unittest.TestCase):
                 self.assertEqual(record["returncode"], 0)
                 text = (fixture_root / record["file"]).read_text()
                 profile = self.profile(command.replace(" ", "-"))
+                if command in {"fd", "fdfind"}:
+                    # The historical installed captures and the new Noble run describe
+                    # the same release. Newer releases and hidden aliases have separate
+                    # versioned coverage in test_fd_manual_inventory.
+                    self.assertEqual(record["version"], "fdfind 9.0.0")
+                    captures = json.loads((ROOT / "tests/fixtures/fd-manual/root-help.json").read_text())
+                    headers = re.findall(r"^ {2,6}(-[\w-].*)$", text.split("Options:", 1)[1], re.MULTILINE)
+                    self.assertEqual(headers, captures["captures"]["9.0.0"]["declarations"])
+                    continue
                 if command == "podman run":
                     self.assert_podman_run_coverage(text, profile)
                     continue

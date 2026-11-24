@@ -62,8 +62,8 @@ class NumericalDiagnosticTests(unittest.TestCase):
 
     def test_fixed_digits_classify_the_documented_action_or_count(self):
         """Pinned fd/fzf/psql/yq and coreutils sections support these distinctions."""
-        actions = ["du|-0", "fd|-0", "fdfind|-0", "psql|-0", "psql|-1", "yq eval|-0"]
-        counts = ["fd|-1", "fdfind|-1", "fzf|-0", "fzf|-1"]
+        actions = ["du|-0", "psql|-0", "psql|-1", "yq eval|-0"]
+        counts = ["fzf|-0", "fzf|-1"]
         for classification, names in (("nonnumerical", actions), ("count", counts)):
             for name in names:
                 identity = "option|" + name
@@ -75,6 +75,22 @@ class NumericalDiagnosticTests(unittest.TestCase):
                     self.assertEqual(group["evidence"], "source-derived")
                     self.assertFalse(any(o["role"] == "bundled_option" for o in entry["observations"]))
                     self.assertTrue(any(ref.startswith("https://") for ref in group["references"]))
+
+    def test_fd_fixed_digit_rows_preserve_bundled_and_external_evidence(self):
+        """The two digit switches select a delimiter or a result count without a value."""
+        for command in ("fd", "fdfind"):
+            for flag, classification in (("-0", "nonnumerical"), ("-1", "count")):
+                with self.subTest(command=command, flag=flag):
+                    identity = f"option|{command}|{flag}"
+                    entry = self.entries[identity]
+                    self.assertTrue(entry["numeric_fixed_spelling"])
+                    self.assertEqual(self.group(identity)["classification"], classification)
+                    self.assertEqual(self.group(identity)["evidence"], "verified")
+                    observations = entry["observations"]
+                    self.assertTrue(any(o["role"] == "fixture_help" for o in observations))
+                    option, = (o["option"] for o in observations if o["role"] == "bundled_option")
+                    self.assertFalse(option.get("argument"))
+                    self.assertIn("value_semantics", option)
 
     def test_scp_relay_mode_preserves_external_and_bundled_evidence(self):
         """The digit selects a transfer route and takes no numerical operand."""

@@ -94,7 +94,6 @@ class SystemsExpansionTests(unittest.TestCase):
         self.assertTrue(journal["--lines="]["argument_optional"])
         self.assertTrue(options_for(profile_for("fzf"))["--multi"]["argument_optional"])
         self.assertNotIn("\\dt", options_for(profile_for("psql")))
-        self.assertNotIn("--exec", options_for(profile_for("fd")))
         self.assertEqual(profile_for("fd")["categories"], profile_for("fdfind")["categories"])
         self.assertEqual(profile_for("yq eval")["identity"], "mikefarah-yq-v4")
 
@@ -110,8 +109,11 @@ class SystemsExpansionTests(unittest.TestCase):
                 with self.subTest(command=command, flag=option["flag"]):
                     context = context_for(line, len(prefix) + 1, profile)
                     edited, point = insert_option(context, option)
-                    self.assertEqual(edited, prefix + option["flag"] + suffix)
-                    self.assertEqual(point, len(prefix + option["flag"]) + (0 if option["flag"].endswith("=") else 1))
+                    literal = option["flag"]
+                    if option.get("argument_style") == "equals" and not literal.endswith("="):
+                        literal += "="
+                    self.assertEqual(edited, prefix + literal + suffix)
+                    self.assertEqual(point, len(prefix + literal) + (0 if literal.endswith("=") else 1))
                     self.assertNotIn(option.get("argument", "NOT_A_VALUE") or "NOT_A_VALUE", edited)
 
     def test_values_are_opaque_and_missing_values_block_parent_options(self):
@@ -125,12 +127,34 @@ class SystemsExpansionTests(unittest.TestCase):
                     line = command + " " + option["flag"] + " "
                     with self.assertRaises(HelpError):
                         context_for(line, len(line), profile)
+                    if option["flag"] in profile.get("stop_at_options", []):
+                        # A child-command operand starts a separate argument list.
+                        continue
                     for value in ("'café 日本'", "'-123'", "'--child-option'", "'$(literal text)'"):
                         completed = line + value + " "
                         self.assertEqual(context_for(completed, len(completed), profile).query, "")
                     if option.get("attached"):
                         completed = command + " " + option["flag"] + "value "
                         self.assertEqual(context_for(completed, len(completed), profile).query, "")
+
+    def test_fd_execution_switches_insert_literally_and_protect_child_arguments(self):
+        """Parent options stay available before the switch and never replace a child option."""
+        for command in ("fd", "fdfind"):
+            profile = profile_for(command)
+            options = options_for(profile)
+            prefix, suffix = command + " --hidden ", " 'some pattern' 'search root'"
+            ctx = find_context(prefix + suffix, len(prefix), [profile], driver_registry={})
+            for flag in ("--exec", "-x", "--exec-batch", "-X"):
+                with self.subTest(command=command, flag=flag):
+                    self.assertEqual(insert_option(ctx, options[flag]), (prefix + flag + suffix, len(prefix + flag) + 1))
+                    separate = flag + " fd-child"
+                    joined = flag + ("=" if flag.startswith("--") else "") + "fd-child"
+                    for child in (flag + " ", separate + " --hidden", joined + " --hidden",
+                                  separate + " {} ';' --hidden"):
+                        line = prefix + child
+                        with self.assertRaises(HelpError) as error:
+                            find_context(line, len(line), [profile], driver_registry={})
+                        self.assertEqual(error.exception.code, "child_argument_boundary", line)
 
     def test_child_commands_expressions_and_end_markers_are_not_parent_options(self):
         boundaries = {

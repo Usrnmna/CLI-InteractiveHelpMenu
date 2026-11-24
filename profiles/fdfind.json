@@ -14,19 +14,21 @@
           "argument": "",
           "flag": "-H",
           "summary": "Search hidden files and directories",
-          "detail": "Ignore files still apply. With --hidden alone, fd 9.0 skips .git/ by default. From fd 10.0 onward, use --exclude .git to omit it."
+          "detail": "Ignore files still apply. With --hidden alone, fd 9.0 skips .git/ by default. From fd 10.0 onward, use --exclude .git to omit it.",
+          "bundle": true
         },
         {
           "argument": "",
           "flag": "--no-ignore",
           "summary": "Disable standard ignore files",
-          "detail": "Includes paths excluded by .gitignore, .ignore and .fdignore. Add --hidden to include dot-prefixed paths. Explicit --exclude patterns still apply."
+          "detail": "Disables .gitignore, .git/info/exclude, global Git rules, .ignore, .fdignore and the global fd ignore file. Add --hidden for dot-prefixed paths. Explicit --exclude and --ignore-file rules still apply."
         },
         {
           "argument": "",
           "flag": "-I",
           "summary": "Disable standard ignore files",
-          "detail": "Includes paths excluded by .gitignore, .ignore and .fdignore. Add --hidden to include dot-prefixed paths. Explicit --exclude patterns still apply."
+          "detail": "Disables .gitignore, .git/info/exclude, global Git rules, .ignore, .fdignore and the global fd ignore file. Add --hidden for dot-prefixed paths. Explicit --exclude and --ignore-file rules still apply.",
+          "bundle": true
         },
         {
           "argument": "TYPE",
@@ -167,7 +169,8 @@
               }
             ]
           },
-          "detail": "Combine ordinary types to include either, as in -tf -tl for files and symlinks. Use -tx for executable files or -te -td for empty directories."
+          "detail": "Combine ordinary types to include either, as in -tf -tl for files and symlinks. Use -tx for executable files or -te -td for empty directories.",
+          "bundle": true
         },
         {
           "argument": "EXT",
@@ -300,7 +303,8 @@
               }
             ]
           },
-          "detail": "Matches extensions regardless of case, including on directories. Repeat -e to allow multiple extensions. Add -tf to select only regular files."
+          "detail": "Matches extensions regardless of case, including on directories. Repeat -e to allow multiple extensions. Add -tf to select only regular files.",
+          "bundle": true
         },
         {
           "argument": "DEPTH",
@@ -329,7 +333,8 @@
                 "ref": "maximum-depth"
               }
             ]
-          }
+          },
+          "bundle": true
         },
         {
           "argument": "PATTERN",
@@ -462,7 +467,8 @@
               }
             ]
           },
-          "detail": "Quote wildcards, as in -E '*.log'. Matching directories and their contents are skipped. Repeat -E for more patterns. Exclusions apply even with --no-ignore."
+          "detail": "Quote wildcards, as in -E '*.log'. Matching directories and their contents are skipped. Repeat -E for more patterns. Exclusions apply even with --no-ignore.",
+          "bundle": true
         },
         {
           "argument": "",
@@ -486,7 +492,7 @@
           "argument": "",
           "flag": "--fixed-strings",
           "summary": "Match a literal substring",
-          "detail": "Punctuation such as a dot matches itself. A longer name can contain the same substring. For a whole name without wildcards, use --glob."
+          "detail": "Punctuation matches literally. A longer name can contain the same substring. For whole-name matching use --exact in fd 10.5 or later, or --glob for a name without wildcards on either Ubuntu release."
         },
         {
           "argument": "",
@@ -504,7 +510,1883 @@
           "argument": "",
           "flag": "--print0",
           "summary": "Separate paths with NUL bytes",
-          "detail": "Pipe to xargs -0 to preserve filenames containing spaces or newlines."
+          "detail": "Pipe to xargs -0 to preserve filenames containing spaces or newlines. With --exec, fd 10.4 and later append NUL after the child output for each match. Both Ubuntu packages leave child output undelimited."
+        },
+        {
+          "flag": "--no-hidden",
+          "argument": "",
+          "summary": "Skip hidden files and directories",
+          "detail": "Restores the default exclusion of dot-prefixed names after --hidden. Placed after -u on either Ubuntu package, this override also restores ignore files. In fd 10.5.2 it changes only hidden-path handling."
+        },
+        {
+          "flag": "--ignore",
+          "argument": "",
+          "summary": "Respect standard ignore files",
+          "detail": "Restores the default after --no-ignore. Placed after -u on either Ubuntu package, this override also restores hidden-path filtering. In fd 10.5.2 it changes only ignore-file handling."
+        },
+        {
+          "flag": "--unrestricted",
+          "argument": "",
+          "summary": "Search ignored and hidden paths",
+          "detail": "One -u enables both --no-ignore and --hidden. Repeating it as -uu adds no further traversal. Explicit --exclude patterns and --ignore-file rules still apply."
+        },
+        {
+          "flag": "-u",
+          "argument": "",
+          "summary": "Search ignored and hidden paths",
+          "detail": "Alias for --unrestricted. One -u enables both --no-ignore and --hidden. Repeating it as -uu adds no further traversal. Explicit --exclude patterns and --ignore-file rules still apply.",
+          "bundle": true
+        },
+        {
+          "flag": "--no-ignore-vcs",
+          "argument": "",
+          "summary": "Ignore Git exclusion rules",
+          "detail": "Skips .gitignore, .git/info/exclude and the global Git ignore file. Rules in .ignore, .fdignore and the global fd ignore file still apply. Hidden paths require --hidden."
+        },
+        {
+          "flag": "--ignore-vcs",
+          "argument": "",
+          "summary": "Respect Git exclusion rules",
+          "detail": "Reverses --no-ignore-vcs. Git rules normally require a repository. --no-ignore still disables standard ignore files."
+        },
+        {
+          "flag": "--no-require-git",
+          "argument": "",
+          "summary": "Apply Git ignore rules outside repositories",
+          "detail": "Searches outside a Git repository can use .gitignore and global Git rules. Use --require-git to restore the repository requirement."
+        },
+        {
+          "flag": "--require-git",
+          "argument": "",
+          "summary": "Require a repository for Git ignore rules",
+          "detail": "Restores the default after --no-require-git. Rules in .ignore and .fdignore apply independently of repository detection."
+        },
+        {
+          "flag": "--no-ignore-parent",
+          "argument": "",
+          "summary": "Skip ignore files above each search root",
+          "detail": "Ignore files inside the search tree still apply. Upstream fd 10.5 adds --ignore-parent to reverse this switch."
+        },
+        {
+          "flag": "--ignore-parent",
+          "argument": "",
+          "summary": "Read ignore files above each search root",
+          "detail": "Restores the default after --no-ignore-parent. Requires fd 10.5 or later. Both Ubuntu packages accept --no-ignore-parent only."
+        },
+        {
+          "flag": "--no-global-ignore-file",
+          "argument": "",
+          "summary": "Skip the global fd ignore file",
+          "detail": "This hidden switch skips $XDG_CONFIG_HOME/fd/ignore (normally ~/.config/fd/ignore). Local .fdignore and Git rules still apply."
+        },
+        {
+          "flag": "--ignore-file",
+          "argument": "PATH",
+          "summary": "Load an additional ignore file",
+          "detail": "Supply a path to rules in gitignore format. Repeat for additional files. These low-priority rules still apply with --no-ignore.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Additional ignore-file path",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "Path to a file containing gitignore patterns."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Only the standard ignore sources apply unless other exclusions are given."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--ignore-file"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--ignore-contain",
+          "argument": "NAME",
+          "summary": "Skip directories containing a named entry",
+          "detail": "Supply a marker name such as CACHEDIR.TAG. Each matching directory and its descendants are skipped. Repeat for other markers. Requires fd 10.4 or later, beyond both Ubuntu packages.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Directory exclusion marker",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Name of an entry directly inside the directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Directories are searched regardless of marker names."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--ignore-contain"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--follow",
+          "argument": "",
+          "summary": "Traverse symbolic links",
+          "detail": "By default the walker lists links without descending through symlinked directories. Following a link can find its target under another path. --no-follow reverses this choice."
+        },
+        {
+          "flag": "-L",
+          "argument": "",
+          "summary": "Traverse symbolic links",
+          "detail": "Alias for --follow. By default the walker lists links without descending through symlinked directories. Following a link can find its target under another path. --no-follow reverses this choice.",
+          "bundle": true
+        },
+        {
+          "flag": "--dereference",
+          "argument": "",
+          "summary": "Traverse symbolic links",
+          "detail": "Alias for --follow. By default the walker lists links without descending through symlinked directories. Following a link can find its target under another path. --no-follow reverses this choice."
+        },
+        {
+          "flag": "--no-follow",
+          "argument": "",
+          "summary": "Skip traversal through symbolic links",
+          "detail": "Restores the default after --follow. A symlink can still appear as a search result."
+        },
+        {
+          "flag": "--one-file-system",
+          "argument": "",
+          "summary": "Keep each search on its starting filesystem",
+          "detail": "Mount points on other filesystems form traversal boundaries. This constraint applies separately to each search root."
+        },
+        {
+          "flag": "--mount",
+          "argument": "",
+          "summary": "Keep each search on its starting filesystem",
+          "detail": "Alias for --one-file-system. Mount points on other filesystems form traversal boundaries. This constraint applies separately to each search root."
+        },
+        {
+          "flag": "--xdev",
+          "argument": "",
+          "summary": "Keep each search on its starting filesystem",
+          "detail": "Alias for --one-file-system. Mount points on other filesystems form traversal boundaries. This constraint applies separately to each search root."
+        },
+        {
+          "flag": "--prune",
+          "argument": "",
+          "summary": "Stop below matching directories",
+          "detail": "A matching directory can itself be reported. Use --exclude to remove a directory and its contents from results. Incompatible with --size and --exact-depth."
+        },
+        {
+          "flag": "--regex",
+          "argument": "",
+          "summary": "Match a regular expression",
+          "detail": "The default mode matches anywhere in the entry name. Use ^ and $ for anchors. --regex can reset an earlier --glob. To pass a positional pattern starting with a dash, precede it with --."
+        },
+        {
+          "flag": "--exact",
+          "argument": "",
+          "summary": "Match an entire literal name",
+          "detail": "Requires fd 10.5 or later. With --full-path, the complete absolute path must match. Smart case still applies. Incompatible with --glob and --fixed-strings. On either Ubuntu package, use a glob for a whole name without wildcard characters."
+        },
+        {
+          "flag": "--and",
+          "argument": "PATTERN",
+          "summary": "Require an additional search pattern",
+          "detail": "Every pattern, including the positional pattern, must match the same entry. Repeat to add conditions. The selected matching mode and --full-path apply to these patterns too.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Additional required pattern",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATTERN",
+                    "grammar": "An additional pattern interpreted in the selected matching mode."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Only the primary pattern is applied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--and"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--min-depth",
+          "argument": "DEPTH",
+          "summary": "Show entries at or below a minimum depth",
+          "detail": "Count levels from each search root. Depth 1 admits its immediate children and deeper entries. Combine with --max-depth to select a range. The alias --mindepth requires fd 10.3 or later.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Minimum result depth",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative directory levels from each search root.",
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No lower bound is added. The root itself is omitted."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--min-depth"
+                    }
+                  ]
+                },
+                "subject": "Minimum result depth"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--mindepth",
+          "argument": "DEPTH",
+          "summary": "Show entries at or below a minimum depth",
+          "detail": "Alias for --min-depth. Count levels from each search root. Depth 1 admits its immediate children and deeper entries. Combine with --max-depth to select a range. The alias --mindepth requires fd 10.3 or later.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Minimum result depth",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative directory levels from each search root.",
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No lower bound is added. The root itself is omitted."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--min-depth"
+                    }
+                  ]
+                },
+                "subject": "Minimum result depth"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exact-depth",
+          "argument": "DEPTH",
+          "summary": "Show entries at one depth",
+          "detail": "Depth 1 lists immediate children only. Depth 0 returns no entries. This sets both depth bounds and conflicts with explicit --min-depth, --max-depth and --prune.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Exact result depth",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative directory levels from each search root.",
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "There is no exact-depth filter."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--exact-depth"
+                    }
+                  ]
+                },
+                "subject": "Exact result depth"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--size",
+          "argument": "SIZE",
+          "summary": "Filter files by byte length",
+          "detail": "Write an integer and a unit. Use b for bytes, k/m/g/t for powers of 1000, or ki/mi/gi/ti for powers of 1024. Use + for at least, - for at most, or no sign for equality. For example, -S +1k -S -2ki selects 1000 through 2048 bytes inclusive. Units ignore case. Repeated constraints must all hold. Incompatible with --prune.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "size"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-S",
+          "argument": "SIZE",
+          "summary": "Filter files by byte length",
+          "detail": "Alias for --size. Write an integer and a unit. Use b for bytes, k/m/g/t for powers of 1000, or ki/mi/gi/ti for powers of 1024. Use + for at least, - for at most, or no sign for equality. For example, -S +1k -S -2ki selects 1000 through 2048 bytes inclusive. Units ignore case. Repeated constraints must all hold. Incompatible with --prune.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "size"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--changed-within",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified after a cutoff",
+          "detail": "Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-within"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--change-newer-than",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified after a cutoff",
+          "detail": "Alias for --changed-within. Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-within"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--newer",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified after a cutoff",
+          "detail": "Alias for --changed-within. Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-within"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--changed-after",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified after a cutoff",
+          "detail": "Alias for --changed-within. Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-within"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--changed-before",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified before a cutoff",
+          "detail": "Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-before"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--change-older-than",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified before a cutoff",
+          "detail": "Alias for --changed-before. Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-before"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--older",
+          "argument": "DATE|DURATION",
+          "summary": "Select entries modified before a cutoff",
+          "detail": "Alias for --changed-before. Uses modification time. Entries exactly at the cutoff are excluded. Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "changed-before"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--owner",
+          "argument": "USER:GROUP",
+          "summary": "Filter by owning user or group",
+          "detail": "On Unix, use USER, :GROUP or USER:GROUP. Names and numeric IDs work. Prefix either side with ! to exclude it. Quote the expression in Bash, as in '!root:staff'. Both supplied tests must hold.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-o",
+          "argument": "USER:GROUP",
+          "summary": "Filter by owning user or group",
+          "detail": "Alias for --owner. On Unix, use USER, :GROUP or USER:GROUP. Names and numeric IDs work. Prefix either side with ! to exclude it. Quote the expression in Bash, as in '!root:staff'. Both supplied tests must hold.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "owner"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--relative-path",
+          "argument": "",
+          "summary": "Print paths relative to the search location",
+          "detail": "Reverses an earlier --absolute-path. Explicit absolute search roots still produce absolute paths. Use --full-path to change where the pattern matches."
+        },
+        {
+          "flag": "--base-directory",
+          "argument": "PATH",
+          "summary": "Change the working directory before searching",
+          "detail": "Relative search roots and output paths are resolved from this directory. --base-directory is supported on both Ubuntu releases. Its -C alias is available in upstream 10.5.2 only among the three versions reviewed.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Base directory for the search",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "An existing directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--base-directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-C",
+          "argument": "PATH",
+          "summary": "Change the working directory before searching",
+          "detail": "Upstream 10.5.2 supports this alias for --base-directory. Use the long spelling on both Ubuntu packages. Relative search roots resolve from the supplied directory.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Base directory for the search",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "An existing directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the current working directory."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--base-directory"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--search-path",
+          "argument": "PATH",
+          "summary": "Set a search root without a positional path",
+          "detail": "Repeat for multiple roots. A positional pattern is optional. Positional search roots conflict with this option. Without --search-path, use '' as the pattern to search all names below a supplied root.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filesystem search root",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "PATH",
+                    "grammar": "An existing directory. Repeat the option for additional directories."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use positional roots, or the current directory when no root is supplied."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--search-path"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--list-details",
+          "argument": "",
+          "summary": "List metadata for each result",
+          "detail": "Runs an external ls in batches with long-listing options. Its output includes permissions, owners and symlink targets. Incompatible with --absolute-path, --print0, --format, --exec, --exec-batch and result-limit modes."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "summary": "List metadata for each result",
+          "detail": "Alias for --list-details. Runs an external ls in batches with long-listing options. Its output includes permissions, owners and symlink targets. Incompatible with --absolute-path, --print0, --format, --exec, --exec-batch and result-limit modes.",
+          "bundle": true
+        },
+        {
+          "flag": "--max-results",
+          "argument": "COUNT",
+          "summary": "Stop after a specified number of results",
+          "detail": "Zero leaves the search unlimited. A positive count limits the number of matches without guaranteeing which paths arrive first. -1 selects one result. Incompatible with command execution and detailed listings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum number of search results",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative integer result count.",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Unlimited results."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Return every match."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--max-results"
+                    }
+                  ]
+                },
+                "subject": "Maximum number of search results"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-1",
+          "argument": "",
+          "summary": "Stop after the first match",
+          "detail": "Equivalent to --max-results=1. The first path depends on traversal order. Use --quiet to test for a match without printing it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Limit the result set to a single match.",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The digit is part of a fixed switch spelling."
+                },
+                "forms": [
+                  {
+                    "id": "switch",
+                    "notation": "literal",
+                    "tokens": [
+                      "-1"
+                    ],
+                    "syntax": "-1",
+                    "meaning": "Limit the result set to a single match."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Return all matches unless an explicit result limit is given."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This literal switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "-1"
+                    }
+                  ]
+                },
+                "subject": "Search results"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "-0",
+          "argument": "",
+          "summary": "Separate paths with NUL bytes",
+          "detail": "Alias for --print0. Pipe to xargs -0 to preserve filenames containing spaces or newlines. With --exec, fd 10.4 and later append NUL after the child output for each match. Both Ubuntu packages leave child output undelimited. The separate -1 switch limits the result count.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Terminate each path with a NUL byte.",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The digit is part of a fixed switch spelling."
+                },
+                "forms": [
+                  {
+                    "id": "switch",
+                    "notation": "literal",
+                    "tokens": [
+                      "-0"
+                    ],
+                    "syntax": "-0",
+                    "meaning": "Terminate each path with a NUL byte."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Ordinary printed paths end with newlines."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This literal switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "-0"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--quiet",
+          "argument": "",
+          "summary": "Report match existence through the exit status",
+          "detail": "Prints no result paths. A match gives status 0 and an empty result gives status 1. An ordinary search can return status 0 with no output. Incompatible with --max-results and command execution."
+        },
+        {
+          "flag": "-q",
+          "argument": "",
+          "summary": "Report match existence through the exit status",
+          "detail": "Alias for --quiet. Prints no result paths. A match gives status 0 and an empty result gives status 1. An ordinary search can return status 0 with no output. Incompatible with --max-results and command execution.",
+          "bundle": true
+        },
+        {
+          "flag": "--has-results",
+          "argument": "",
+          "summary": "Report match existence through the exit status",
+          "detail": "Alias for --quiet. Prints no result paths. A match gives status 0 and an empty result gives status 1. An ordinary search can return status 0 with no output. Incompatible with --max-results and command execution."
+        },
+        {
+          "flag": "--show-errors",
+          "argument": "",
+          "summary": "Display filesystem traversal errors",
+          "detail": "Reports problems such as inaccessible directories encountered during the walk. Most such diagnostics are hidden by default."
+        },
+        {
+          "flag": "--strip-cwd-prefix",
+          "argument": "WHEN",
+          "summary": "Control the leading ./ on relative results",
+          "detail": "With an implicit root, bare --strip-cwd-prefix removes ./ even for -0, -x and -X. On Resolute and upstream, attach =never to preserve ./ or =auto for the default, which keeps ./ in those three modes. The menu inserts a trailing =. Remove it to use the bare flag, the only spelling Noble accepts. Explicit search roots conflict with this option.",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Policy for the current-directory prefix",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "WHEN",
+                    "grammar": "Attach =always, =never or =auto. Noble accepts only the switch with no operand."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Automatic prefix handling."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Always strip the implicit current-directory prefix."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--strip-cwd-prefix"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--path-separator",
+          "argument": "TEXT",
+          "summary": "Change the separator used in printed paths",
+          "detail": "The default on Linux is /. This changes characters between path components, including paths supplied to child commands. Use --print0 to change the separator between results.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Path component separator",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "TEXT",
+                    "grammar": "A literal replacement for the separators within a path."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the platform path separator."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--path-separator"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--format",
+          "argument": "TEMPLATE",
+          "summary": "Print each result using a template",
+          "detail": "Available on Resolute and upstream. {} is the path, {/} the basename, {//} the parent, {.} the path without its final extension, and {/.} the basename without that extension. Double braces {{ and }} print literal braces. Quote the template. On Resolute, attach a template starting with - using =, as in --format='-{/}'.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Printed path template",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "TEMPLATE",
+                    "grammar": "Literal text and fd path placeholders."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Print each result path normally."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--format"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--color",
+          "argument": "WHEN",
+          "summary": "Control color in printed paths",
+          "detail": "Use auto for color on a terminal, always to force it or never to disable it. NO_COLOR disables automatic color. LS_COLORS configures the colors.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "color"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-c",
+          "argument": "WHEN",
+          "summary": "Control color in printed paths",
+          "detail": "Alias for --color. Use auto for color on a terminal, always to force it or never to disable it. NO_COLOR disables automatic color. LS_COLORS configures the colors.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "color"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--hyperlink",
+          "argument": "WHEN",
+          "summary": "Add terminal file hyperlinks to results",
+          "detail": "Available on Resolute and upstream. Omission disables links. The bare switch means auto, linking when color is enabled. After the inserted =, type always or never to force a choice, or remove the = to use the bare switch. These escapes apply to printed paths.",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "hyperlink"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--hyper",
+          "argument": "WHEN",
+          "summary": "Add terminal file hyperlinks to results",
+          "detail": "Alias for --hyperlink. Available on Resolute and upstream. Omission disables links. The bare switch means auto, linking when color is enabled. After the inserted =, type always or never to force a choice, or remove the = to use the bare switch. These escapes apply to printed paths.",
+          "argument_optional": true,
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "hyperlink"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--threads",
+          "argument": "COUNT",
+          "summary": "Set parallel search and execution workers",
+          "detail": "Supply a positive count. The default uses available parallelism up to 64 workers. Use -j1 for sequential --exec calls. Even with one worker the search order is unspecified.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "threads"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-j",
+          "argument": "COUNT",
+          "summary": "Set parallel search and execution workers",
+          "detail": "Alias for --threads. Supply a positive count. The default uses available parallelism up to 64 workers. Use -j1 for sequential --exec calls. Even with one worker the search order is unspecified.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "threads"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--max-buffer-time",
+          "argument": "MILLISECONDS",
+          "summary": "Limit initial output buffering",
+          "detail": "This hidden option takes milliseconds. Ordinary output is sorted if the search finishes within the initial buffer. When the time or capacity limit is reached, results stream in traversal order. The default is 100 milliseconds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Initial path-buffer timeout",
+                "bare": {
+                  "state": "accepted",
+                  "form": "milliseconds"
+                },
+                "forms": [
+                  {
+                    "id": "milliseconds",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative integer milliseconds.",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "0.001"
+                    },
+                    "bounds": {
+                      "min": "0"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Buffer for up to 100 milliseconds."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/walk.rs",
+                      "locator": "DEFAULT_MAX_BUFFER_TIME and ReceiverBuffer"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--exec",
+          "argument": "COMMAND",
+          "summary": "Run a child command for each match",
+          "detail": "A command and its arguments follow this switch. Child flags stay with that command. Pass a quoted ';' to resume fd options or repeat -x for another command per match. Jobs run in parallel unless -j1 is used. {} is the path, {/} the basename, {//} the parent, {.} the path without its final extension, and {/.} the basename without that extension. Double braces {{ and }} print literal braces. With no placeholder, fd appends the path as one argument. A failed child makes fd return 1. --exec and --exec-batch cannot be combined.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "exec"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-x",
+          "argument": "COMMAND",
+          "summary": "Run a child command for each match",
+          "detail": "Alias for --exec. A command and its arguments follow this switch. Child flags stay with that command. Pass a quoted ';' to resume fd options or repeat -x for another command per match. Jobs run in parallel unless -j1 is used. {} is the path, {/} the basename, {//} the parent, {.} the path without its final extension, and {/.} the basename without that extension. Double braces {{ and }} print literal braces. With no placeholder, fd appends the path as one argument. A failed child makes fd return 1. --exec and --exec-batch cannot be combined.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "exec"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--exec-batch",
+          "argument": "COMMAND",
+          "summary": "Pass matching paths to a child command in batches",
+          "detail": "A batch placeholder expands to one argument per match. Only one child argument may contain placeholders. Use a fixed executable. {} is the path, {/} the basename, {//} the parent, {.} the path without its final extension, and {/.} the basename without that extension. Double braces {{ and }} print literal braces. With no placeholder, fd appends the paths. Order is unspecified. --batch-size and operating-system limits can split a batch. Repeat -X for additional commands. No matches means no invocation. A failed child makes fd return 1. Child flags stay with the child. Pass a quoted semicolon to resume fd options.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "exec-batch"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-X",
+          "argument": "COMMAND",
+          "summary": "Pass matching paths to a child command in batches",
+          "detail": "Alias for --exec-batch. A batch placeholder expands to one argument per match. Only one child argument may contain placeholders. Use a fixed executable. {} is the path, {/} the basename, {//} the parent, {.} the path without its final extension, and {/.} the basename without that extension. Double braces {{ and }} print literal braces. With no placeholder, fd appends the paths. Order is unspecified. --batch-size and operating-system limits can split a batch. Repeat -X for additional commands. No matches means no invocation. A failed child makes fd return 1. Child flags stay with the child. Pass a quoted semicolon to resume fd options.",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "exec-batch"
+              }
+            ]
+          },
+          "bundle": true
+        },
+        {
+          "flag": "--batch-size",
+          "argument": "COUNT",
+          "summary": "Limit results per child-command batch",
+          "detail": "Requires -X or --exec-batch. Each batch gets at most this many matches. Zero leaves only the operating-system argument-length limit. The last batch can be smaller.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Maximum matched paths in a child-command batch",
+                "bare": {
+                  "state": "accepted",
+                  "form": "count"
+                },
+                "forms": [
+                  {
+                    "id": "count",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Nonnegative integer number of matches.",
+                    "bounds": {
+                      "min": "0"
+                    },
+                    "special_values": [
+                      {
+                        "value": "0",
+                        "meaning": "Use only the operating-system argument-length limit."
+                      }
+                    ]
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No count limit is set. The operating-system limit still applies."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "This option requires an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--batch-size"
+                    }
+                  ]
+                },
+                "subject": "Maximum matched paths in a child-command batch"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--gen-completions",
+          "argument": "SHELL",
+          "summary": "Write shell completions to standard output",
+          "detail": "A hidden option in builds compiled with completions. Use it alone. Supply the shell name, for example --gen-completions bash. With no value fd tries to infer the shell from the environment.",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Shell completion output format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This operand names a choice or uses a text grammar."
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "SHELL",
+                    "grammar": "A supported shell such as bash, elvish, fish, powershell or zsh."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Perform an ordinary search."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Infer the shell from the environment or report an error."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "fd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "9.0.0",
+                      "10.3.0",
+                      "10.5.2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No processor-specific interpretation."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+                      "locator": "--gen-completions"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Print detailed command help",
+          "detail": "The long spelling prints the expanded option descriptions. Use -h for the short overview."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Print a short help overview",
+          "detail": "Use --help for the complete visible option list and examples.",
+          "bundle": true
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "summary": "Print the executable version",
+          "detail": "Use the reported fd version to check which release-specific options are available."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "summary": "Print the executable version",
+          "detail": "Alias for --version. Use the reported fd version to check which release-specific options are available.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "-p",
+          "summary": "Match the pattern against the absolute path",
+          "detail": "Alias for --full-path. Normally only the entry name is matched. Use --absolute-path to print absolute paths as well.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "-a",
+          "summary": "Display absolute paths",
+          "detail": "Alias for --absolute-path. Changes how results are printed. To match the pattern against the absolute path, add --full-path.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "-g",
+          "summary": "Match the whole name with a glob",
+          "detail": "Alias for --glob. Quote shell wildcards, as in '*.txt'. With --full-path, ** can span multiple directories.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "-F",
+          "summary": "Match a literal substring",
+          "detail": "Alias for --fixed-strings. Punctuation matches literally. A longer name can contain the same substring. For whole-name matching use --exact in fd 10.5 or later, or --glob for a name without wildcards on either Ubuntu release.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "--literal",
+          "summary": "Match a literal substring",
+          "detail": "Alias for --fixed-strings. Punctuation matches literally. A longer name can contain the same substring. For whole-name matching use --exact in fd 10.5 or later, or --glob for a name without wildcards on either Ubuntu release."
+        },
+        {
+          "argument": "",
+          "flag": "-s",
+          "summary": "Match case sensitively",
+          "detail": "Alias for --case-sensitive. Override smart case to distinguish uppercase and lowercase even for a lowercase pattern.",
+          "bundle": true
+        },
+        {
+          "argument": "",
+          "flag": "-i",
+          "summary": "Match without case sensitivity",
+          "detail": "Alias for --ignore-case. Override smart case to ignore case even when the pattern contains uppercase letters.",
+          "bundle": true
+        },
+        {
+          "argument": "DEPTH",
+          "detail": "Alias for --max-depth. Count levels from each search root. A depth of 1 searches its immediate children. A depth of 0 returns no entries. Omit the option for unlimited depth.",
+          "flag": "--maxdepth",
+          "summary": "Limit search depth",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "maximum-depth"
+              }
+            ]
+          }
         }
       ]
     }
@@ -512,7 +2394,7 @@
   "command": [
     "fdfind"
   ],
-  "description": "Find filesystem entries by name using a regular expression by default.",
+  "description": "Find filesystem entries by name using a regular expression by default. An optional pattern precedes any search roots.",
   "stop_at_positional": true,
   "value_definitions": {
     "maximum-depth": {
@@ -573,6 +2455,667 @@
         "reason": "This option requires an operand",
         "state": "not_accepted"
       }
+    },
+    "size": {
+      "kind": "quantity",
+      "meaning": "File length threshold",
+      "bare": {
+        "state": "not_accepted",
+        "reason": "A unit suffix is required."
+      },
+      "forms": [
+        {
+          "id": "size-b",
+          "notation": "suffix",
+          "syntax": "[+|-]Nb",
+          "tokens": [
+            "b"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1"
+          }
+        },
+        {
+          "id": "size-k",
+          "notation": "suffix",
+          "syntax": "[+|-]Nk",
+          "tokens": [
+            "k",
+            "kb"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1000"
+          }
+        },
+        {
+          "id": "size-ki",
+          "notation": "suffix",
+          "syntax": "[+|-]Nki",
+          "tokens": [
+            "ki",
+            "kib"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1024"
+          }
+        },
+        {
+          "id": "size-m",
+          "notation": "suffix",
+          "syntax": "[+|-]Nm",
+          "tokens": [
+            "m",
+            "mb"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1000000"
+          }
+        },
+        {
+          "id": "size-mi",
+          "notation": "suffix",
+          "syntax": "[+|-]Nmi",
+          "tokens": [
+            "mi",
+            "mib"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1048576"
+          }
+        },
+        {
+          "id": "size-g",
+          "notation": "suffix",
+          "syntax": "[+|-]Ng",
+          "tokens": [
+            "g",
+            "gb"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1000000000"
+          }
+        },
+        {
+          "id": "size-gi",
+          "notation": "suffix",
+          "syntax": "[+|-]Ngi",
+          "tokens": [
+            "gi",
+            "gib"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1073741824"
+          }
+        },
+        {
+          "id": "size-t",
+          "notation": "suffix",
+          "syntax": "[+|-]Nt",
+          "tokens": [
+            "t",
+            "tb"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1000000000000"
+          }
+        },
+        {
+          "id": "size-ti",
+          "notation": "suffix",
+          "syntax": "[+|-]Nti",
+          "tokens": [
+            "ti",
+            "tib"
+          ],
+          "case": "insensitive",
+          "unit": {
+            "base": "byte",
+            "multiplier": "1099511627776"
+          }
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No size constraint is applied."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/filter/size.rs",
+            "locator": "SizeFilter::parse_opt and is_within"
+          }
+        ]
+      }
+    },
+    "changed-within": {
+      "kind": "timestamp",
+      "meaning": "Modification time later than the cutoff",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "DATE|DURATION",
+          "grammar": "Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No lower modification-time bound is added."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/filter/time.rs",
+            "locator": "TimeFilter::from_str and applies_to"
+          }
+        ]
+      },
+      "time_basis": "Durations count back from now. Unzoned dates use local time, with date-only inputs at midnight."
+    },
+    "changed-before": {
+      "kind": "timestamp",
+      "meaning": "Modification time earlier than the cutoff",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "DATE|DURATION",
+          "grammar": "Use a duration such as 35min or 2weeks, an RFC 3339 instant, a local YYYY-MM-DD or quoted local date and time. Resolute and upstream also accept @SECONDS since the Unix epoch. Noble uses fixed durations for months and years. From fd 10.3, write month for a calendar month."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "No upper modification-time bound is added."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/filter/time.rs",
+            "locator": "TimeFilter::from_str and applies_to"
+          }
+        ]
+      },
+      "time_basis": "Durations count back from now. Unzoned dates use local time, with date-only inputs at midnight."
+    },
+    "owner": {
+      "kind": "nonnumerical",
+      "meaning": "Unix owner and group selector",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "[USER][:GROUP]",
+          "grammar": "Use user/group names or numerical IDs. A leading ! negates the corresponding field."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Ownership does not restrict the search."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/filter/owner.rs",
+            "locator": "OwnerFilter::from_string and matches"
+          }
+        ]
+      }
+    },
+    "color": {
+      "kind": "enumeration",
+      "meaning": "Result-color policy",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "WHEN",
+          "grammar": "Case-sensitive choices are auto, always and never."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Automatic coloring on supported terminals unless NO_COLOR disables it."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+            "locator": "--color"
+          }
+        ]
+      }
+    },
+    "hyperlink": {
+      "kind": "enumeration",
+      "meaning": "File hyperlink policy",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "WHEN",
+          "grammar": "Attach =auto, =always or =never."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Hyperlinks are disabled."
+      },
+      "when_value_omitted": {
+        "state": "known",
+        "meaning": "Use auto, enabling links when color is enabled."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+            "locator": "--hyperlink"
+          }
+        ]
+      }
+    },
+    "threads": {
+      "kind": "count",
+      "meaning": "Search and execution worker count",
+      "bare": {
+        "state": "accepted",
+        "form": "count"
+      },
+      "forms": [
+        {
+          "id": "count",
+          "notation": "number",
+          "syntax": "N",
+          "grammar": "Positive number of worker threads.",
+          "bounds": {
+            "min": "1"
+          }
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use available parallelism capped at 64 workers."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+            "locator": "threads and default_num_threads"
+          }
+        ]
+      },
+      "subject": "Search and execution worker count"
+    },
+    "exec": {
+      "kind": "nonnumerical",
+      "meaning": "Per-match executable and child arguments",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "COMMAND [ARG ...]",
+          "grammar": "Supply an executable followed by literal child arguments and fd path placeholders. A separate semicolon ends the child argument list."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Print matching paths unless another output mode is selected."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/cli.rs",
+            "locator": "Exec::augment_args, exec"
+          }
+        ]
+      }
+    },
+    "exec-batch": {
+      "kind": "nonnumerical",
+      "meaning": "Batch executable and child arguments",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This operand names a choice or uses a text grammar."
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "COMMAND [ARG ...]",
+          "grammar": "Supply an executable and child arguments. One templated argument may be expanded for all paths in the batch. Pass a literal semicolon argument to end the template."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Print matching paths unless another output mode is selected."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "This option requires an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "fd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "9.0.0",
+            "10.3.0",
+            "10.5.2"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No processor-specific interpretation."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/sharkdp/fd/blob/v10.5.2/src/exec/mod.rs",
+            "locator": "CommandSet::new_batch and CommandBuilder"
+          }
+        ]
+      }
     }
-  }
+  },
+  "stop_at_options": [
+    "-x",
+    "--exec",
+    "-X",
+    "--exec-batch"
+  ]
 }

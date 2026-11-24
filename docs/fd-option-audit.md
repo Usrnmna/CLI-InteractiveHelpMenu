@@ -1,6 +1,8 @@
 # fd and fdfind option audit
 
-The [fd](../profiles/fd.json) and [fdfind](../profiles/fdfind.json) menus each contain 19 selectable spellings. They describe the same file finder. On both Ubuntu releases, the fd-find package installs the public executable as `fdfind` and the manual as `fdfind(1)`. Ubuntu's separate `fd(1)` page belongs to fdclone.
+This first-pass audit covers the original selection. The [full manual-coverage revisit](fd-manual-coverage.md) records the expanded menus, release differences and current verification.
+
+The [fd](../profiles/fd.json) and [fdfind](../profiles/fdfind.json) menus each contained 19 selectable spellings in the first pass. They describe the same file finder. On both Ubuntu releases, the fd-find package installs the public executable as `fdfind` and the manual as `fdfind(1)`. Ubuntu's separate `fd(1)` page belongs to fdclone.
 
 ## Sources
 
