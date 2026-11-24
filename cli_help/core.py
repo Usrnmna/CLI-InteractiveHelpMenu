@@ -101,6 +101,8 @@ def validate_profile(profile: dict, source: Path):
             flag = option.get("flag")
             kind = option.get("kind", "flag")
             pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?|-[.@#:]"
+            if kind == "flag" and command == ["vlc"]:
+                pattern += r"|--(?:global-)?key-jump\+(?:extrashort|short|medium|long)"
             if kind == "flag" and option.get("argument_style") == "attached_only" and isinstance(flag, str) and flag.endswith(":"):
                 pattern = r"--?[A-Za-z0-9][A-Za-z0-9_-]*:"
             end_marker = switch_syntax == "7zip" and kind == "flag" and flag == "--" and not option.get("argument")

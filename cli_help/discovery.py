@@ -23,11 +23,15 @@ import time
 from core import HelpError, validate_profile
 from command_paths import help_route
 from git_manual import git_manual_document
+from discovery_cloud import cloud_document
+from developer_help import developer_help_document
 from docker_manual import docker_manual_document
 from media_help import media_help_document, media_manual_document
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 from npm_help import explain_syntax_only_options
+from system_help import align_system_manual, complete_system_document
 from terminal_text import strip_terminal_sequences
+from utility_tables import utility_table_document
 from utility_manual import complete_utility_declarations, utility_manual_document
 from value_semantics import ValueContext, validate_profile_semantics, validate_value_semantics
 
@@ -35,7 +39,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 17
+CACHE_VERSION = 18
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*|-[.#:](?=,\s+--)|(?<=, )-@)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -887,12 +891,18 @@ def associate_document(parsed: dict, text: str, source: str, command, request=No
     """
     result = deepcopy(parsed)
     origin = manual_origin(text, source, command, request)
-    if scope not in (None, "common_options"):
+    reflog_scope = scope == "stash_reflog" and list(command) == ["git", "stash", "list"] and origin.get("manual_lookup") == "git-log"
+    if scope not in (None, "common_options") and not reflog_scope:
         raise HelpError("Unsupported manual documentation scope.", "invalid_manual_scope")
     if scope is not None:
         origin["manual_scope"] = scope
     result["provenance"] = origin
     result["diagnostics"] = []
+    if reflog_scope:
+        result["diagnostics"].append({"code": "manual_source_scope", "source": source,
+            "command": list(command), "option": "<shared>",
+            "message": "git stash list uses the git-log manual with a fixed reflog walk."})
+        return result
     if not origin.get("scope_mismatch") and scope is None:
         if origin.get("foreign_manual"):
             result["diagnostics"].append({"code": "manual_title_review", "source": source,
@@ -966,19 +976,29 @@ def associate_document(parsed: dict, text: str, source: str, command, request=No
 
 def parse_command_help(text: str, source: str, command, request=None, *, scope=None) -> dict:
     """Apply the same source-ownership boundary to runtime and passive census."""
-    parsed = None
-    if len(command) == 2 and command[0] == "git":
-        parsed = git_manual_document(clean_output(text).splitlines(), source, command)
-        if parsed is not None:
-            _retain_optional_equals_forms(parsed["options"])
-    elif command and command[0] == "docker" and text.startswith("DOCKER(1)"):
-        parsed = docker_manual_document(clean_output(text).splitlines(), source, command)
-    elif len(command) == 1 and text[:len(command[0]) + 3].lower() == command[0] + "(1)":
-        parsed = utility_manual_document(clean_output(text).splitlines(), command[0], source, declaration_summary)
+    command = list(command)
+    name = command[0] if command else ""
+    cleaned = clean_output(text)
+    parsed = developer_help_document(cleaned, source, command, parse_help_document, scope) if name else None
+    if parsed is None and name == "git" and len(command) == 2:
+        parsed = git_manual_document(cleaned.splitlines(), source, command)
+    if name == "git" and parsed is not None:
+        _retain_optional_equals_forms(parsed["options"])
+    elif name == "docker" and text.startswith("DOCKER(1)"):
+        parsed = docker_manual_document(cleaned.splitlines(), source, command)
+    elif parsed is None and len(command) == 1 and cleaned[:len(name) + 3].lower() == name + "(1)":
+        parsed = utility_manual_document(cleaned.splitlines(), name, source, declaration_summary)
+    if parsed is None and name in {"az", "gcloud", "helm", "aws", "arduino-cli", "esptool", "esptool.py"}:
+        parsed = cloud_document(cleaned, source, command, parse_help_document, declaration_summary)
+    if parsed is None and name in {"vlc", "rclone", "restic", "borg", "yt-dlp", "magick", "convert", "7z", "7zz"}:
+        parsed = utility_table_document(command, cleaned, source, declaration_summary)
     if parsed is None:
-        parsed = parse_help_document(text, source)
-    if len(command) == 1 and command[0] in {"curl", "wget", "jq", "rsync", "rg", "sort", "tail"}:
-        complete_utility_declarations(parsed, command[0], clean_output(text), source)
+        parsed = parse_help_document(cleaned, source)
+    if len(command) == 1 and name in {"curl", "wget", "jq", "rsync", "rg", "sort", "tail"}:
+        complete_utility_declarations(parsed, name, cleaned, source)
+    if name in {"systemctl", "journalctl", "ssh", "scp", "sftp", "ip", "ss", "openssl", "podman",
+                "psql", "yq", "fd", "fdfind", "fzf"}:
+        complete_system_document(parsed, cleaned.splitlines(), source, command, declaration_summary)
     return associate_document(parsed, text, source, command, request, scope=scope)
 
 
@@ -1321,11 +1341,18 @@ def merge_profiles(profiles: list[dict]) -> dict:
 def build_profile(command: str | list[str], sources: list[tuple[str, str]], *, source_requests=None, source_scopes=None) -> dict:
     """Build and merge passive source profiles, retaining detached documentation."""
     command = [command] if isinstance(command, str) else list(command)
+    documents = [(label, parse_command_help(text, label, command, (source_requests or {}).get(label),
+                                            scope=(source_scopes or {}).get(label)))
+                 for label, text in sources]
+    return merge_documents(command, documents)
+
+
+def merge_documents(command, documents):
+    """Build the menu from already scoped documents, preserving source notes and option ownership."""
     profiles = []
     unassigned_sources = []
-    for source, text in sources:
-        request = (source_requests or {}).get(source)
-        parsed = parse_command_help(text, source, command, request, scope=(source_scopes or {}).get(source))
+    for source, parsed in documents:
+        parsed = align_system_manual(parsed, command, source, profiles)
         categories = {}
         for original in parsed["options"]:
             entry = dict(original)
@@ -1361,6 +1388,9 @@ def build_profile(command: str | list[str], sources: list[tuple[str, str]], *, s
                         "Its source identity or section scope differs from the requested command; supply matching help or a curated profile.",
                         "help_source_scope")
     result = merge_profiles(profiles)
+    boundaries = dict.fromkeys(flag for _, parsed in documents for flag in parsed.get("stop_at_options", ()))
+    if boundaries:
+        result["stop_at_options"] = list(boundaries)
     explain_syntax_only_options(result)
     for record in unassigned_sources:
         document = record["documentation"]
@@ -1606,8 +1636,7 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         profile = read_cache(cache_path, identity, settings.cache_ttl)
         if profile is not None:
             return profile
-    sources = []
-    source_requests = {}
+    documents = []
     warnings = []
     if freshness_warning:
         warnings.append(freshness_warning)
@@ -1630,24 +1659,24 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
                                    environment_overrides={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"})
             else:
                 output = run_probe(argv, settings.timeout)
-            if parse_help(output, label):
-                sources.append((label, output))
-                source_requests[label] = list(argv)
+            scope = manual_scope if label == f"man {manual_name}" else None
+            parsed = parse_command_help(output, label, command_path, list(argv), scope=scope)
+            if parsed["options"] or (scope and parsed["shared"]):
+                documents.append((label, parsed))
             else:
                 warnings.append(f"No option declarations were parsed from {label}.")
         except ProbeError as error:
             probe_failed = True
             warnings.append(f"{label}: {error}")
     try:
-        scopes = {f"man {manual_name}": manual_scope} if manual_scope is not None else {}
-        profile = build_profile(command_path, sources, source_requests=source_requests, source_scopes=scopes)
+        profile = merge_documents(command_path, documents)
     except HelpError as error:
         explanation = " ".join(warnings)
         error_type = ProbeError if probe_failed else HelpError
         raise error_type(f"{error} {explanation} Add a custom profile for this command.",
                          "probe_failed" if probe_failed else error.code) from error
     preserved_warnings = profile.get("discovery", {}).get("warnings", [])
-    profile["discovery"] = {"sources": [label for label, _ in sources], "warnings": [*warnings, *preserved_warnings],
+    profile["discovery"] = {"sources": [label for label, _ in documents], "warnings": [*warnings, *preserved_warnings],
                             "executable": executable, "scope": "subcommand" if subcommands else "top-level"}
     if module is not None:
         profile["discovery"].update({"module": module, "interpreter_options": list(interpreter_options),

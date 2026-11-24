@@ -2,6 +2,7 @@
 
 import json
 import lzma
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -28,7 +29,7 @@ MANUALS.update({"docker run": "docker-run", "docker image ls": "docker-image-ls"
                 "pip install": "pip-install", "pip3 install": "pip-install", "pip download": "pip-download"})
 
 
-def fixed_inputs(case, release, supplement=None):
+def fixed_inputs(case, release, supplement=None, source_directory=FIXTURES / "essential"):
     """Return exact permitted probe argv, deterministic reply text and independent arities."""
     name = case["command"]
     if supplement:
@@ -38,12 +39,18 @@ def fixed_inputs(case, release, supplement=None):
             if argv[0] == "man":
                 argv = ["man", *MAN_ARGS, argv[-1]]
             if "file" in item:
-                path = FIXTURES / "essential" / item["file"]
+                path = source_directory / item["file"]
                 reply = lzma.decompress(path.read_bytes()).decode() if path.suffix == ".xz" else path.read_text()
+                if "key" in item:
+                    reply = json.loads(reply)[item["key"]][item.get("field", "text")]
+                elif "capture" in item:
+                    records = json.loads(reply)["captures"]
+                    record, = (r for r in records if r["command"] == item["capture"])
+                    reply = record[item.get("field", "output")]
             else:
                 reply = item["text"]
             replies[tuple(argv)] = reply
-        if name in MANUALS:
+        if source_directory == FIXTURES / "essential" and name in MANUALS:
             replies.setdefault(("man", *MAN_ARGS, MANUALS[name]), "")
         return replies, supplement["options"]
     if release:
@@ -99,8 +106,11 @@ def recording_tools(folder, executable, replies):
     return toolbin
 
 
-@unittest.skipUnless(TMUX_AVAILABLE, "Requires real Bash/tmux on Linux")
-class EssentialDiscoveryScreenTests(unittest.TestCase):
+class DiscoveryScreenChecks:
+    """Refresh and exercise a menu using only the supplied source edition."""
+
+    source_directory = FIXTURES / "essential"
+
     def exercise(self, case, release=None, supplement=None):
         """Refresh the private cache, open the actual discovered menu, and edit a pending line."""
         name = case["command"]
@@ -109,21 +119,31 @@ class EssentialDiscoveryScreenTests(unittest.TestCase):
             folder = Path(directory)
             runtime = folder / "runtime"
             shutil.copytree(ROOT / "cli_help", runtime / "cli_help", ignore=shutil.ignore_patterns("__pycache__"))
-            (runtime / "bash").symlink_to(ROOT / "bash")
+            shutil.copytree(ROOT / "bash", runtime / "bash")
             (runtime / "profiles").mkdir()
-            replies, expected = fixed_inputs(case, release, supplement)
+            replies, expected = fixed_inputs(case, release, supplement, self.source_directory)
             toolbin = recording_tools(folder, words[0], replies)
             settings = {"PATH": str(toolbin) + ":/usr/bin:/bin", "CLI_HELP_DISCOVERY": "auto",
                         "CLI_HELP_DRIVERS": str(ROOT / "config/drivers.example"),
                         "CLI_HELP_CACHE_DIR": str(folder / "cache")}
             env = {**settings, "HOME": directory, "LC_ALL": "C", "PYTHONDONTWRITEBYTECODE": "1"}
-            run = subprocess.run([sys.executable, str(runtime / "cli_help/main.py"), "--discover", *words,
-                                  "--refresh"], env=env, cwd=folder, capture_output=True, text=True, timeout=20)
+            discover = [sys.executable, str(runtime / "cli_help/main.py"), "--discover"]
+            process_options = dict(env=env, cwd=folder, capture_output=True, text=True, timeout=20)
+            if case.get("profile_only"):
+                rejected = subprocess.run([*discover, *words, "--refresh"], **process_options)
+                self.assertNotEqual(rejected.returncode, 0)
+                self.assertIn("does not support this subcommand path", rejected.stderr)
+                self.assertFalse((folder / "requests").exists())
+            documentation_path = [words[0], *case.get("documentation_path", words[1:])]
+            run = subprocess.run([*discover, *documentation_path, "--refresh"], **process_options)
             requests = folder / "requests"
-            self.assertEqual(requests.read_text().splitlines(), list(map(str, range(len(replies)))))
+            initial = list(map(str, range(len(replies))))
+            self.assertEqual(requests.read_text().splitlines(), initial)
+            identity = [str(i) for i, item in enumerate((supplement or {}).get("sources", ()))
+                        if item.get("identity")]
             shell = TmuxShell(folder, runtime=runtime)
             try:
-                shell.text("export " + " ".join(k + "=" + shlex.quote(v) for k, v in settings.items()))
+                shell.text("unset -f ssh scp sftp; export " + " ".join(k + "=" + shlex.quote(v) for k, v in settings.items()))
                 shell.keys("Enter")
                 shell.wait_for(lambda s: s.cells[s.y] == PROMPT.rstrip())
                 prefix, suffix = name + " ", " 'private operand'"
@@ -142,27 +162,41 @@ class EssentialDiscoveryScreenTests(unittest.TestCase):
                 profile = json.loads(run.stdout)
                 options = [o for c in profile["categories"] for o in c["options"]]
                 arities = {o["flag"]: o.get("argument_count", 1) if o["argument"] else 0 for o in options}
+                self.assertEqual(profile["command"], documentation_path)
                 self.assertEqual(expected, arities)
                 self.walk(shell, profile)
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
                 self.small_edit(shell, profile, prefix, suffix, release)
-                if not supplement:
-                    boundary = " -- "
-                    # At the pip root the driver rejects the ambiguous path before lookup.
-                    diagnostic = "unsupported_option" if name == "pip" else "end_of_options"
-                    if name in {"docker run", "docker compose exec", "docker compose run", "uv run", "npm run"}:
-                        boundary = " operand child "
-                        diagnostic = "child_argument_boundary"
+                warm_opens = 3
+                if not supplement or self.source_directory != FIXTURES / "essential":
+                    boundary, diagnostic = self.boundary(name)
+                    warm_opens += 1
                     shell.keys("C-a", "C-k")
                     pending = name + boundary
                     shell.text(pending)
                     shell.keys("Escape", "h")
                     shell.wait_for(lambda s: not s.alternate and diagnostic in "".join(s.cells))
                     self.assertEqual(shell.read_buffer(), (pending, len(pending)))
-                self.assertEqual(requests.read_text().splitlines(), list(map(str, range(len(replies)))))
+                self.assertEqual(requests.read_text().splitlines(), initial + identity * warm_opens)
             finally:
                 shell.close()
                 self.assertFalse(shell.executed.exists(), "The pending command or an unexpected probe ran")
+
+    def boundary(self, name):
+        """Return a literal pending suffix and its independently expected diagnostic."""
+        if name in {"pip", "rclone"}:
+            return " -- ", "unsupported_option"
+        if name == "ninja":
+            return " -t commands -s ", "child_argument_boundary"
+        if name == "cmake":
+            return " -E env --unset=PRIVATE ", "child_argument_boundary"
+        if name == "go test":
+            return " -args -child ", "child_argument_boundary"
+        if name in {"docker run", "docker compose exec", "docker compose run", "uv run", "npm run",
+                    "podman run", "podman build", "podman exec", "bun run", "dotnet run",
+                    "yarn run", "yq eval", "go run", "ssh", "scp", "sftp", "ss", "fd", "fdfind", "fzf"}:
+            return " operand child ", "child_argument_boundary"
+        return " -- ", "end_of_options"
 
     def walk(self, shell, profile):
         """Compare every selected row and all displayed Details, including long component definitions."""
@@ -192,13 +226,22 @@ class EssentialDiscoveryScreenTests(unittest.TestCase):
         browser = Browser(profile)
         rows = [o for c in profile["categories"] for o in c["options"]]
         # Prefer a value-taking entry with enough text to exercise Details scrolling.
-        candidates = [o for o in rows if len(browser.text(o).searchable) < 1600] or rows
-        row = max(candidates, key=lambda o: (bool(o["argument"]), len(browser.text(o).searchable)))
+        pool = [o for o in rows if o["argument"]] or rows
+        candidates = [o for o in pool if len(browser.text(o).searchable) < 1600] or pool
+        row = max(candidates, key=lambda o: len(browser.text(o).searchable))
         query = row["flag"]
         if profile["command"] == ["ffmpeg"] and release == "resolute":
             query = "without reencoding"
+        if self.source_directory != FIXTURES / "essential":
+            terms = re.findall(r"[A-Za-z]{5,}", row["summary"])
+            query = max(terms, key=len, default=query)[:40]
         browser.set_query(query)
-        row = browser.options()[0]
+        if self.source_directory == FIXTURES / "essential":
+            row = browser.options()[0]
+        category = next(i for i, c in enumerate(profile["categories"]) if row in c["options"])
+        moves = ["Right"] * (category - browser.category)
+        moves.extend(["Left"] * (browser.category - category))
+        moves.extend(["Down"] * browser.options(category).index(row))
         view = browser.text(row)
         details = [line for p in view.details for para in p.splitlines() for line in wrap_cells(para, 58)]
         for accept in (False, True):
@@ -206,7 +249,9 @@ class EssentialDiscoveryScreenTests(unittest.TestCase):
             shell.keys("/")
             shell.text(query)
             shell.keys("Enter")
-            menu = shell.wait_for(lambda s: s.cells[2] == "Filter: " + query)
+            shell.wait_for(lambda s: s.cells[2] == "Filter: " + query)
+            if moves:
+                shell.keys(*moves)
             if not accept:
                 if len(details) > 5:
                     shell.keys(*(["]"] * (len(details) - 5)))
@@ -221,6 +266,11 @@ class EssentialDiscoveryScreenTests(unittest.TestCase):
         joined_value = literal.endswith("=") or row.get("argument_style") == "attached_only"
         self.assertEqual(shell.read_buffer(), (prefix + literal + suffix,
                          len(prefix + literal) + int(not joined_value)))
+
+
+@unittest.skipUnless(TMUX_AVAILABLE, "Requires real Bash/tmux on Linux")
+class EssentialDiscoveryScreenTests(DiscoveryScreenChecks, unittest.TestCase):
+    """Replays for the Essential tier and its supplemental source editions."""
 
 
 def screen_case(case, release, supplement=None):

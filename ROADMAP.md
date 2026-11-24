@@ -1,6 +1,6 @@
 # Project roadmap
 
-**Next task — audit the Next tier of discovered command help, beginning with `gcc`.** The [discovery matrix](tests/fixtures/help/matrix.json) lists 65 Next paths. Follow the [Essential route inventory](docs/essential-discovery-audit.md) and its [verification procedure and results](docs/essential-discovery-verification.md) when comparing each generated menu with its fixed sources. All 76 bundled profiles have completed the first-pass, manual-option and Menu Details reviews. The [final seven-family verification](docs/remaining-bundled-verification.md) covers the last 16 menus. The [preceding six-family verification](docs/devtools-batch-verification.md) covers the previous 18.
+**Next task — run the Phase 4 report-only test-selection pilot for iproute2 and yq.** The [test selection plan](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits) defines the comparison against full runs and the historical yq failure replay. The command-help audit is complete for all **162/162 discovery paths**. The [combined verification](docs/next-extended-discovery-verification.md) records the last 116 routes and the three full offline suite results. The [command menu performance plan](docs/ffmpeg-menu-performance-plan.md) remains open independently. All 76 bundled profiles have completed the first-pass, manual-option and Menu Details reviews. The [final seven-family verification](docs/remaining-bundled-verification.md) covers the last 16 menus. The [preceding six-family verification](docs/devtools-batch-verification.md) covers the previous 18.
 The [combined iproute2, systemd and OpenSSL revisit](docs/iproute2-systemd-openssl-verification.md) is complete.
 The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
@@ -122,8 +122,8 @@ only when the audit also checks the help produced through that route.
 | Matrix tier | Paths | Description review |
 | --- | ---: | --- |
 | Essential | 46 | Complete on all three targets. The 46 reviews cover 45 selectable menus and the usage-only npm root. [Route inventory](docs/essential-discovery-audit.md) · [Test results](docs/essential-discovery-verification.md) |
-| Next | 65 | Pending. Start with `gcc`, the first Next path in matrix order. |
-| Extended | 51 | Pending |
+| Next | 65 | Complete on all three targets, 65/65 selectable menus. [Next route inventory](docs/next-discovery-audit.md) |
+| Extended | 51 | Complete on all three targets, 51/51 paths. There are 47 selectable leaf or root menus, two usage-only diagnostics and two extraction paths served by root documentation. [Extended route inventory](docs/extended-discovery-audit.md) |
 
 For each path, identify its help source and version. Compare what the menu
 displays with the applicable manual and available versioned help capture.

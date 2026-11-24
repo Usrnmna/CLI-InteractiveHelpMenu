@@ -83,8 +83,9 @@ def parse_driver(document: dict) -> tuple[str, Driver]:
         if manual is not None and (not isinstance(manual, str) or not WORD.fullmatch(manual)):
             raise ValueError("Driver man must be a literal manual name or null.")
         manual_scope = route.get("manual_scope")
-        if "manual_scope" in route and (manual_scope != "common_options" or not manual):
-            raise ValueError("manual_scope requires a manual and the supported common_options value.")
+        reflog = manual_scope == "stash_reflog" and (name, words, manual) == ("git", ["stash", "list"], "git-log")
+        if "manual_scope" in route and not reflog and (manual_scope != "common_options" or not manual):
+            raise ValueError("Unsupported manual_scope for this command and manual.")
         if not arguments and not manual:
             raise ValueError("A driver route requires a help invocation or manual name.")
         stop = route.get("stop_at_positional", False)

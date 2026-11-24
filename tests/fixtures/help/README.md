@@ -17,6 +17,8 @@ preservation expectations and explicitly synthetic contracts. The
 records their integrated use without rewriting raw captures or promoting
 unresolved external descriptions into verified metadata.
 
+The [Next route inventory](../../../docs/next-discovery-audit.md) and [Extended route inventory](../../../docs/extended-discovery-audit.md) identify each fixed request and source edition. The [discovery-tier manifests and replies](../discovery-tiers/) preserve the expected spellings and operand counts independently of the readers. The [combined verification report](../../../docs/next-extended-discovery-verification.md) describes their offline terminal replay and the supplemental system-tool editions.
+
 The individual `.txt` files are compact, hand-authored format specimens with
 paraphrased descriptions. They test argument shapes independently of installed
 programs. The original FFmpeg, GCC, npm, and pip specimens were checked against

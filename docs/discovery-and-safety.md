@@ -239,6 +239,7 @@ the existing identity/version mechanism. No additional target probe is introduce
 The optional driver `manual_scope: "common_options"` limits a borrowed manual
 to explicitly common/shared declarations. Source-specific options and nested
 interactive-command sections remain accessible as unassigned documentation.
+The bundled `git stash list` driver uses `stash_reflog` to scope the borrowed `git-log` manual to a reflog walk.
 Requested command, source lookup, manual title and available request argv remain
 separate provenance facts. Unscoped routes preserve legacy inferred behavior;
 the field does not verify every source claim or installed version. The
