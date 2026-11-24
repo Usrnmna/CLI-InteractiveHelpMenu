@@ -338,7 +338,7 @@
         },
         {
           "argument": "SECONDS",
-          "detail": "For a readable certificate, exit status is nonzero if it expires by the cutoff and zero if its expiry is later. Use 0 to check expiry now. This tests the expiry time alone.",
+          "detail": "For a readable certificate, exit status is nonzero if it expires by the cutoff and zero if its expiry is later. Use 0 to check expiry now. This tests the expiry time alone. Upstream 4.1.0 can test all input certificates with -multi.",
           "flag": "-checkend",
           "summary": "Test whether the certificate expires within N seconds",
           "value_semantics": {
@@ -417,11 +417,3444 @@
           }
         }
       ]
+    },
+    {
+      "name": "General",
+      "description": "General options for openssl x509.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-help",
+          "summary": "Show help for this command",
+          "detail": "Print the available options and exit."
+        },
+        {
+          "argument": "SOURCE",
+          "flag": "-passin",
+          "summary": "Choose a passphrase source for encrypted input",
+          "detail": "Use a source such as file:PATH, env:NAME, fd:NUMBER or stdin. A pass:TEXT literal can be visible in process listings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a passphrase source for encrypted input",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SOURCE",
+                    "grammar": "Use a source such as file:PATH, env:NAME, fd:NUMBER or stdin. A pass:TEXT literal can be visible in process listings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-passin"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-new",
+          "summary": "Create a certificate from scratch",
+          "detail": "Supply the subject with -subj and a signing key. The public key defaults to that key unless -force_pubkey supplies another one. Omit -in and -req."
+        },
+        {
+          "argument": "",
+          "flag": "-x509toreq",
+          "summary": "Convert a certificate to a PKCS#10 request",
+          "detail": "Supply the signing key with -key. To copy certificate extensions into the request use -copy_extensions.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Convert a certificate to a PKCS#10 request",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This complete spelling takes no operand."
+                },
+                "forms": [
+                  {
+                    "id": "selected",
+                    "notation": "literal",
+                    "syntax": "-x509toreq",
+                    "tokens": [
+                      "-x509toreq"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Convert a certificate to a PKCS#10 request"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This is a fixed selection without an operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-x509toreq"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-req",
+          "summary": "Read a PKCS#10 request as input",
+          "detail": "The request must have a valid self-signature. Supply a signing key or CA to issue a certificate."
+        },
+        {
+          "argument": "MODE",
+          "flag": "-copy_extensions",
+          "summary": "Choose which extensions survive request conversion",
+          "detail": "none is the default. copy and copyall copy extensions. When producing a request, subject and authority key identifiers are excluded. Use -ext to restrict the list.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose which extensions survive request conversion",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "MODE",
+                    "grammar": "none is the default. copy and copyall copy extensions. When producing a request, subject and authority key identifiers are excluded. Use -ext to restrict the list."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-copy_extensions"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME:VALUE",
+          "flag": "-vfyopt",
+          "summary": "Set a request signature verification parameter",
+          "detail": "Use with -req. Supported parameters depend on the signature algorithm.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set a request signature verification parameter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME:VALUE",
+                    "grammar": "Use with -req. Supported parameters depend on the signature algorithm."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-vfyopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY",
+          "flag": "-key",
+          "summary": "Choose the private key for signing",
+          "detail": "Alias -signkey. Unless -force_pubkey supplies a different key, the corresponding public key goes in the new certificate or request. Conflicts with -CA.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the private key for signing",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Alias -signkey. Unless -force_pubkey supplies a different key, the corresponding public key goes in the new certificate or request. Conflicts with -CA."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-key"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY",
+          "flag": "-signkey",
+          "summary": "Choose the private key for signing",
+          "detail": "Alias of -key. The key signs the new certificate or request.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the private key for signing",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Alias of -key. The key signs the new certificate or request."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-signkey"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-keyform",
+          "summary": "Choose the key input format",
+          "detail": "Omitting this option lets OpenSSL detect the encoding. Explicit PEM or DER constrains decoding. ENGINE is available only with engine support in OpenSSL 3.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the key input format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Omitting this option lets OpenSSL detect the encoding. Explicit PEM or DER constrains decoding. ENGINE is available only with engine support in OpenSSL 3."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-keyform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-nocert",
+          "summary": "Suppress encoded certificate output",
+          "detail": "Explicitly requested printed fields still appear. -noout also suppresses encoded request output."
+        }
+      ]
+    },
+    {
+      "name": "Certificate printing",
+      "description": "Certificate printing options for openssl x509.",
+      "options": [
+        {
+          "argument": "FORMAT",
+          "flag": "-dateopt",
+          "summary": "Choose the printed date format",
+          "detail": "Use rfc_822 (the default) or iso_8601. This changes display only.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the printed date format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Use rfc_822 (the default) or iso_8601. This changes display only."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-dateopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "OPTIONS",
+          "flag": "-certopt",
+          "summary": "Choose which fields appear in certificate text",
+          "detail": "Use with -text. Supply comma-separated flags such as no_header,no_pubkey or repeat the option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose which fields appear in certificate text",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OPTIONS",
+                    "grammar": "Use with -text. Supply comma-separated flags such as no_header,no_pubkey or repeat the option."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-certopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-alias",
+          "summary": "Print the certificate nickname",
+          "detail": "A nickname can be stored in trusted PEM output with -setalias."
+        },
+        {
+          "argument": "",
+          "flag": "-serial",
+          "summary": "Print the certificate serial number",
+          "detail": "Use -set_serial to assign a number when issuing a certificate."
+        },
+        {
+          "argument": "",
+          "flag": "-startdate",
+          "summary": "Print the start of the validity period",
+          "detail": "Prints notBefore. Use -dates to print both validity limits."
+        },
+        {
+          "argument": "",
+          "flag": "-enddate",
+          "summary": "Print the end of the validity period",
+          "detail": "Prints notAfter. Use -checkend for a scriptable expiry check."
+        },
+        {
+          "argument": "OPTIONS",
+          "flag": "-nameopt",
+          "summary": "Choose how distinguished names are printed",
+          "detail": "Pass a comma-separated list of display flags or a preset such as RFC2253. This changes displayed names only.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose how distinguished names are printed",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "OPTIONS",
+                    "grammar": "Pass a comma-separated list of display flags or a preset such as RFC2253. This changes displayed names only."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-nameopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-email",
+          "summary": "Print email addresses from the certificate",
+          "detail": "Includes addresses found in the subject and subject alternative names."
+        },
+        {
+          "argument": "",
+          "flag": "-hash",
+          "summary": "Print the subject name hash",
+          "detail": "Alias of -subject_hash. Hashed trust directories index certificates by this value."
+        },
+        {
+          "argument": "",
+          "flag": "-subject_hash",
+          "summary": "Print the subject name hash",
+          "detail": "Used to index certificates in a hashed directory. -hash is an alias."
+        },
+        {
+          "argument": "",
+          "flag": "-subject_hash_old",
+          "summary": "Print the legacy subject name hash",
+          "detail": "Uses the MD5-based directory hash from before OpenSSL 1.0.0."
+        },
+        {
+          "argument": "",
+          "flag": "-issuer_hash",
+          "summary": "Print the issuer name hash",
+          "detail": "Hashes the issuer's distinguished name. -issuer_hash_old uses the older algorithm."
+        },
+        {
+          "argument": "",
+          "flag": "-issuer_hash_old",
+          "summary": "Print the legacy issuer name hash",
+          "detail": "Uses the MD5-based directory hash from before OpenSSL 1.0.0."
+        },
+        {
+          "argument": "EXTENSIONS",
+          "flag": "-ext",
+          "summary": "Select certificate extensions to print or copy",
+          "detail": "Pass comma-separated extension names such as subjectAltName,keyUsage. With -copy_extensions the list limits which extensions are copied.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select certificate extensions to print or copy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EXTENSIONS",
+                    "grammar": "Pass comma-separated extension names such as subjectAltName,keyUsage. With -copy_extensions the list limits which extensions are copied."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-ext"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ocspid",
+          "summary": "Print the subject name and public-key hashes for OCSP",
+          "detail": "Use -ocsp_uri to display the responder address instead."
+        },
+        {
+          "argument": "",
+          "flag": "-ocsp_uri",
+          "summary": "Print OCSP responder addresses",
+          "detail": "Reads the authority information access extension if present."
+        },
+        {
+          "argument": "",
+          "flag": "-purpose",
+          "summary": "Print the certificate's potential uses",
+          "detail": "Tests the certificate's extensions against OpenSSL purposes. Use chain verification to establish trust."
+        },
+        {
+          "argument": "",
+          "flag": "-pubkey",
+          "summary": "Print the certificate's public key",
+          "detail": "Writes the SubjectPublicKeyInfo structure in PEM format."
+        },
+        {
+          "argument": "",
+          "flag": "-modulus",
+          "summary": "Print the public key modulus",
+          "detail": "Useful for comparing RSA moduli."
+        },
+        {
+          "argument": "",
+          "flag": "-multi",
+          "summary": "Inspect all certificates in the input",
+          "detail": "Use printing switches to choose fields. With -checkend the command fails if any input certificate expires within the specified interval. Listed by upstream 4.1.0 among the reviewed builds."
+        }
+      ]
+    },
+    {
+      "name": "Certificate checking",
+      "description": "Certificate checking options for openssl x509.",
+      "options": [
+        {
+          "argument": "HOST",
+          "flag": "-checkhost",
+          "summary": "Check the certificate against a DNS name",
+          "detail": "On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1. This checks the input certificate identity without establishing a trusted chain.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Check the certificate against a DNS name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "HOST",
+                    "grammar": "On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1. This checks the input certificate identity without establishing a trusted chain."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-checkhost"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "EMAIL",
+          "flag": "-checkemail",
+          "summary": "Check the certificate against an email address",
+          "detail": "On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Check the certificate against an email address",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "EMAIL",
+                    "grammar": "On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-checkemail"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ADDRESS",
+          "flag": "-checkip",
+          "summary": "Check the certificate against an IP address",
+          "detail": "Supply a textual IPv4 or IPv6 address. On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Check the certificate against an IP address",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ADDRESS",
+                    "grammar": "Supply a textual IPv4 or IPv6 address. On a mismatch Noble prints a diagnostic and exits 0. Resolute and upstream exit 1."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-checkip"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Certificate output",
+      "description": "Certificate output options for openssl x509.",
+      "options": [
+        {
+          "argument": "SERIAL",
+          "flag": "-set_serial",
+          "summary": "Assign the serial number of a new certificate",
+          "detail": "Use decimal digits or 0x-prefixed hexadecimal. With -CA this bypasses the CA serial file.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Assign the serial number of a new certificate",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "SERIAL",
+                    "grammar": "Use decimal digits or 0x-prefixed hexadecimal. With -CA this bypasses the CA serial file."
+                  },
+                  {
+                    "id": "hex",
+                    "notation": "prefix",
+                    "syntax": "0xHEX",
+                    "tokens": [
+                      "0x"
+                    ],
+                    "case": "insensitive",
+                    "grammar": "Hexadecimal integer with the 0x prefix."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-set_serial"
+                    }
+                  ]
+                },
+                "subject": "certificate serial numbers"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-next_serial",
+          "summary": "Increment the input certificate serial number",
+          "detail": "Uses the current certificate serial plus one as the new serial."
+        },
+        {
+          "argument": "TIME",
+          "flag": "-not_before",
+          "summary": "Set the validity start of a new certificate",
+          "detail": "Use UTC YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ, including seconds, or today for the current time. Conflicts with -preserve_dates. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Set the validity start of a new certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TIME",
+                    "grammar": "Use UTC YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ, including seconds, or today for the current time. Conflicts with -preserve_dates. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-not_before"
+                    }
+                  ]
+                },
+                "time_basis": "Absolute UTC validity time, or today for the current time."
+              }
+            ]
+          }
+        },
+        {
+          "argument": "TIME",
+          "flag": "-not_after",
+          "summary": "Set the expiry time of a new certificate",
+          "detail": "Use UTC YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ, including seconds, or today. Overrides -days and conflicts with -preserve_dates. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "timestamp",
+                "meaning": "Set the expiry time of a new certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TIME",
+                    "grammar": "Use UTC YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ, including seconds, or today. Overrides -days and conflicts with -preserve_dates. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-not_after"
+                    }
+                  ]
+                },
+                "time_basis": "Absolute UTC validity time, or today for the current time."
+              }
+            ]
+          }
+        },
+        {
+          "argument": "DAYS",
+          "flag": "-days",
+          "summary": "Set how long a new certificate remains valid",
+          "detail": "Give a positive count of days from today. The default is 30. An explicit -not_after takes precedence where supported.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "duration",
+                "meaning": "Set how long a new certificate remains valid",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "DAYS",
+                    "grammar": "Give a positive count of days from today. The default is 30. An explicit -not_after takes precedence where supported.",
+                    "unit": {
+                      "base": "second",
+                      "multiplier": "86400"
+                    },
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "New certificates expire after 30 days by default."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-days"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-preserve_dates",
+          "summary": "Retain the input certificate validity dates",
+          "detail": "When re-signing, keep notBefore and notAfter. Conflicts with -days and explicit validity dates."
+        },
+        {
+          "argument": "NAME",
+          "flag": "-set_issuer",
+          "summary": "Override the issuer name in a new certificate",
+          "detail": "Use slash-separated distinguished name attributes such as /CN=Example. Quote shell-sensitive characters. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Override the issuer name in a new certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Use slash-separated distinguished name attributes such as /CN=Example. Quote shell-sensitive characters. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-set_issuer"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "flag": "-set_subject",
+          "summary": "Set the subject of a new certificate",
+          "detail": "Use slash-separated attributes such as /CN=Example. For self-signing this also sets the issuer unless -set_issuer overrides it. Alias -subj. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the subject of a new certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Use slash-separated attributes such as /CN=Example. For self-signing this also sets the issuer unless -set_issuer overrides it. Alias -subj. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-set_subject"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "flag": "-subj",
+          "summary": "Set the subject of a new certificate",
+          "detail": "Use slash-separated distinguished name attributes such as /CN=Example. Newer versions also accept -set_subject.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the subject of a new certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Use slash-separated distinguished name attributes such as /CN=Example. Newer versions also accept -set_subject."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-subj"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY",
+          "flag": "-force_pubkey",
+          "summary": "Choose the public key to embed",
+          "detail": "Overrides the public key from the input or signing key. A private key input supplies its public component.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the public key to embed",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Overrides the public key from the input or signing key. A private key input supplies its public component."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-force_pubkey"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-clrext",
+          "summary": "Drop extensions inherited from the input",
+          "detail": "Extensions can still be added explicitly with -extfile."
+        },
+        {
+          "argument": "FILE",
+          "flag": "-extfile",
+          "summary": "Read certificate extensions from a configuration file",
+          "detail": "Choose the section with -extensions. Without it, the default section can point to a named section using extensions.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read certificate extensions from a configuration file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Choose the section with -extensions. Without it, the default section can point to a named section using extensions."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-extfile"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "SECTION",
+          "flag": "-extensions",
+          "summary": "Choose the configuration section for extensions",
+          "detail": "Use with -extfile. The section contains X.509v3 extension names and values.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the configuration section for extensions",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SECTION",
+                    "grammar": "Use with -extfile. The section contains X.509v3 extension names and values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-extensions"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME:VALUE",
+          "flag": "-sigopt",
+          "summary": "Set a signature algorithm parameter",
+          "detail": "Repeat to set several parameters. The signing algorithm determines the supported names and values.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set a signature algorithm parameter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME:VALUE",
+                    "grammar": "Repeat to set several parameters. The signing algorithm determines the supported names and values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-sigopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-badsig",
+          "summary": "Deliberately invalidate the certificate signature for testing",
+          "detail": "Corrupts the signature in the certificate written to output."
+        }
+      ]
+    },
+    {
+      "name": "Micro-CA",
+      "description": "Micro-CA options for openssl x509.",
+      "options": [
+        {
+          "argument": "CERT",
+          "flag": "-CA",
+          "summary": "Issue a certificate using a CA certificate",
+          "detail": "Uses the CA subject as issuer. Supply the matching private key with -CAkey unless it is present in the CA input. Conflicts with -key.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Issue a certificate using a CA certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "CERT",
+                    "grammar": "Uses the CA subject as issuer. Supply the matching private key with -CAkey unless it is present in the CA input. Conflicts with -key."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-CA"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-CAform",
+          "summary": "Choose the CA certificate input format",
+          "detail": "Explicit PEM or DER constrains the decoder. A PEM CA certificate fails to load with -CAform DER despite the fixed help calling the switch ineffective.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CA certificate input format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Explicit PEM or DER constrains the decoder. A PEM CA certificate fails to load with -CAform DER despite the fixed help calling the switch ineffective."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-CAform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "KEY",
+          "flag": "-CAkey",
+          "summary": "Choose the CA signing key",
+          "detail": "Must match the CA certificate from -CA. If omitted, OpenSSL looks for the key in that same input.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CA signing key",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Must match the CA certificate from -CA. If omitted, OpenSSL looks for the key in that same input."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-CAkey"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-CAkeyform",
+          "summary": "Choose the CA private-key input format",
+          "detail": "Applies to -CAkey. By default OpenSSL detects the encoding.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CA private-key input format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Applies to -CAkey. By default OpenSSL detects the encoding."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-CAkeyform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-CAserial",
+          "summary": "Choose the CA serial-number file",
+          "detail": "With -CA, an existing file contains the last serial in hexadecimal. OpenSSL increments it and stores the new value. -set_serial bypasses the file.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the CA serial-number file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "With -CA, an existing file contains the last serial in hexadecimal. OpenSSL increments it and stores the new value. -set_serial bypasses the file."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-CAserial"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-CAcreateserial",
+          "summary": "Create the CA serial file when missing",
+          "detail": "Use with -CA. Starts with a random serial and saves it to the selected serial-number file."
+        }
+      ]
+    },
+    {
+      "name": "Certificate trust output",
+      "description": "Certificate trust output options for openssl x509.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-trustout",
+          "summary": "Write trusted PEM certificate output",
+          "detail": "Preserves auxiliary trust and alias data. Ordinary certificate output normally discards these attributes."
+        },
+        {
+          "argument": "NAME",
+          "flag": "-setalias",
+          "summary": "Assign a nickname to the certificate",
+          "detail": "The nickname is auxiliary trust data carried by trusted PEM output.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Assign a nickname to the certificate",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "The nickname is auxiliary trust data carried by trusted PEM output."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-setalias"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-clrtrust",
+          "summary": "Clear the list of trusted certificate uses",
+          "detail": "Changes auxiliary trust settings in trusted PEM output."
+        },
+        {
+          "argument": "PURPOSE",
+          "flag": "-addtrust",
+          "summary": "Trust the certificate for an additional purpose",
+          "detail": "Use an object name such as serverAuth, clientAuth or emailProtection. anyExtendedKeyUsage enables all purposes when trusted.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Trust the certificate for an additional purpose",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PURPOSE",
+                    "grammar": "Use an object name such as serverAuth, clientAuth or emailProtection. anyExtendedKeyUsage enables all purposes when trusted."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-addtrust"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-clrreject",
+          "summary": "Clear the list of rejected certificate uses",
+          "detail": "Changes auxiliary trust settings in trusted PEM output."
+        },
+        {
+          "argument": "PURPOSE",
+          "flag": "-addreject",
+          "summary": "Reject the certificate for an additional purpose",
+          "detail": "Accepts the same purpose names as -addtrust. Rejecting anyExtendedKeyUsage blocks all purposes.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Reject the certificate for an additional purpose",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "PURPOSE",
+                    "grammar": "Accepts the same purpose names as -addtrust. Rejecting anyExtendedKeyUsage blocks all purposes."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-addreject"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Random state",
+      "description": "Random state options for openssl x509.",
+      "options": [
+        {
+          "argument": "FILES",
+          "flag": "-rand",
+          "summary": "Read seed data from files",
+          "detail": "Separate filenames with colons on Ubuntu. The operating system normally supplies entropy automatically.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read seed data from files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILES",
+                    "grammar": "Separate filenames with colons on Ubuntu. The operating system normally supplies entropy automatically."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-rand"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-writerand",
+          "summary": "Save random seed data on exit",
+          "detail": "OpenSSL writes seed data to this path for later use with -rand.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Save random seed data on exit",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "OpenSSL writes seed data to this path for later use with -rand."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-writerand"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ID",
+          "flag": "-engine",
+          "summary": "Select a legacy cryptographic engine",
+          "detail": "OpenSSL 3 deprecates engines in favor of providers. OpenSSL 4 removed this switch.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select a legacy cryptographic engine",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ID",
+                    "grammar": "OpenSSL 3 deprecates engines in favor of providers. OpenSSL 4 removed this switch."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/openssl-x509.1ssl.html",
+                      "locator": "-engine"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/openssl-x509.1ssl.html",
+                      "locator": "-engine"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Provider",
+      "description": "Provider options for openssl x509.",
+      "options": [
+        {
+          "argument": "DIR",
+          "flag": "-provider-path",
+          "summary": "Choose the provider module directory",
+          "detail": "Place this before the -provider option that needs the directory.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the provider module directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Place this before the -provider option that needs the directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-provider-path"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "flag": "-provider",
+          "summary": "Load a cryptographic provider",
+          "detail": "Repeat for multiple providers. When loading providers explicitly, include default if its algorithms are needed.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load a cryptographic provider",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Repeat for multiple providers. When loading providers explicitly, include default if its algorithms are needed."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-provider"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME=VALUE",
+          "flag": "-provparam",
+          "summary": "Pass a parameter to a provider",
+          "detail": "Use [PROVIDER:]NAME=VALUE. A provider prefix scopes the setting to that provider. Load nondefault providers before setting their parameters. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pass a parameter to a provider",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "Use [PROVIDER:]NAME=VALUE. A provider prefix scopes the setting to that provider. Load nondefault providers before setting their parameters. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-provparam"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "QUERY",
+          "flag": "-propquery",
+          "summary": "Filter eligible algorithm implementations",
+          "detail": "Quote a property query such as 'provider=default'. An unsatisfied query can make an otherwise available algorithm unusable.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filter eligible algorithm implementations",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "QUERY",
+                    "grammar": "Quote a property query such as 'provider=default'. An unsatisfied query can make an otherwise available algorithm unusable."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+                      "locator": "-propquery"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Digest selectors",
+      "description": "Digest selectors options for openssl x509.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-blake2b512",
+          "summary": "Select BLAKE2B512 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-blake2s256",
+          "summary": "Select BLAKE2S256 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md4",
+          "summary": "Select MD4 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. The Ubuntu clients list this legacy digest, but fetching it normally requires the legacy provider. Listed by Noble and Resolute among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "legacy-digest"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md5",
+          "summary": "Select MD5 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md5-sha1",
+          "summary": "Select combined MD5/SHA-1 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ripemd",
+          "summary": "Select RIPEMD-160 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ripemd160",
+          "summary": "Select RIPEMD-160 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-rmd160",
+          "summary": "Select RIPEMD-160 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha1",
+          "summary": "Select SHA1 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha224",
+          "summary": "Select SHA224 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha256",
+          "summary": "Select SHA256 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-224",
+          "summary": "Select SHA3-224 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-256",
+          "summary": "Select SHA3-256 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-384",
+          "summary": "Select SHA3-384 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-512",
+          "summary": "Select SHA3-512 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha384",
+          "summary": "Select SHA384 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha512",
+          "summary": "Select SHA512 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha512-224",
+          "summary": "Select SHA512-224 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha512-256",
+          "summary": "Select SHA512-256 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-shake128",
+          "summary": "Select SHAKE128 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. A provider must implement the requested operation. This is an extendable-output function.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-shake256",
+          "summary": "Select SHAKE256 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. A provider must implement the requested operation. This is an extendable-output function.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sm3",
+          "summary": "Select SM3 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ssl3-md5",
+          "summary": "Select MD5 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. This spelling selects MD5. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ssl3-sha1",
+          "summary": "Select SHA-1 for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. This spelling selects SHA-1. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-whirlpool",
+          "summary": "Select WHIRLPOOL for digest operations",
+          "detail": "Affects signing and digest-based display such as -fingerprint. The key algorithm can constrain the signing digest. The Ubuntu clients list this legacy digest, but fetching it normally requires the legacy provider. Listed by Noble and Resolute among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "legacy-digest"
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "command": [
     "openssl",
     "x509"
   ],
-  "description": "Inspect an X.509 certificate or write it in another encoding."
+  "description": "Inspect an X.509 certificate or write it in another encoding.",
+  "value_definitions": {
+    "digest-selector": {
+      "kind": "enumeration",
+      "meaning": "Select a digest for signing or fingerprint display",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This complete spelling takes no operand."
+      },
+      "forms": [
+        {
+          "id": "algorithm",
+          "notation": "expression",
+          "syntax": "-ALGORITHM",
+          "grammar": "A complete dash-prefixed digest selector. Use openssl dgst -list for the names advertised by the build. Provider availability and the requested operation determine whether it can be used."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default digest for the requested operation and key."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This is a fixed selection without an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "OpenSSL"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "3.0.13",
+            "3.5.5",
+            "4.1.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Build availability is described in Details where relevant."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option has no chip-specific operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-x509.pod.in",
+            "locator": "-digest"
+          }
+        ]
+      }
+    },
+    "legacy-digest": {
+      "kind": "enumeration",
+      "meaning": "Select a digest for signing or fingerprint display",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This complete spelling takes no operand."
+      },
+      "forms": [
+        {
+          "id": "algorithm",
+          "notation": "expression",
+          "syntax": "-ALGORITHM",
+          "grammar": "A complete dash-prefixed digest selector. Use openssl dgst -list for the names advertised by the build. Provider availability and the requested operation determine whether it can be used."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default digest for the requested operation and key."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This is a fixed selection without an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "OpenSSL"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "3.0.13",
+            "3.5.5"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Build availability is described in Details where relevant."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option has no chip-specific operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://manpages.ubuntu.com/manpages/noble/man1/openssl-x509.1ssl.html",
+            "locator": "-digest"
+          },
+          {
+            "source": "https://manpages.ubuntu.com/manpages/resolute/man1/openssl-x509.1ssl.html",
+            "locator": "-digest"
+          }
+        ]
+      }
+    }
+  }
 }

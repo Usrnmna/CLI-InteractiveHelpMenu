@@ -9,7 +9,7 @@
           "flag": "show",
           "kind": "keyword",
           "summary": "List routes in the routing table",
-          "detail": "By default, ip route shows IPv4 routes in the main table. Use ip -6 route for IPv6 or ip route get ADDRESS for a lookup."
+          "detail": "By default, ip route shows IPv4 routes in the main table. Use ip -6 route for IPv6 or ip route get ADDRESS for a lookup. Aliases list and lst use the same filters as show."
         },
         {
           "argument": "IFNAME",
@@ -81,7 +81,7 @@
         },
         {
           "argument": "TABLE",
-          "detail": "The usual table is main. Use local for local and broadcast routes or all to search every table. The table named default is separate from main.",
+          "detail": "The usual table is main. Use local for local and broadcast routes or all to search every table. The table named default is separate from main. The special cache selector requests cloned routes.",
           "flag": "table",
           "kind": "keyword",
           "summary": "Choose the routing table to list",
@@ -157,7 +157,7 @@
         },
         {
           "argument": "PROTOCOL",
-          "detail": "Use an origin such as kernel, boot or static, or its numeric protocol ID. TCP and UDP are transport protocols.",
+          "detail": "Use an origin such as kernel, boot or static, or its numeric protocol ID. TCP and UDP are transport protocols. The full spelling is protocol. Use all to clear the origin restriction.",
           "flag": "proto",
           "kind": "keyword",
           "summary": "Match the protocol that installed the route",
@@ -233,7 +233,7 @@
         },
         {
           "argument": "SCOPE",
-          "detail": "Use scope link for destinations on the attached link. Other scopes include host and global. A numeric scope ID also works.",
+          "detail": "Use scope link for destinations on the attached link. Other scopes include host and global. A numeric scope ID also works. Use all to clear the scope restriction.",
           "flag": "scope",
           "kind": "keyword",
           "summary": "Match the reach of a route",
@@ -712,6 +712,2077 @@
                   "reason": "This option requires an operand",
                   "state": "not_accepted"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "list",
+          "argument": "",
+          "summary": "List routes in the routing table",
+          "detail": "Alias for show. By default, ip route shows IPv4 routes in the main table. Use ip -6 route for IPv6 or ip route get ADDRESS for a lookup.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List routes in the routing table",
+                    "notation": "literal",
+                    "syntax": "list",
+                    "tokens": [
+                      "list"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List routes in the routing table",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "lst",
+          "argument": "",
+          "summary": "List routes in the routing table",
+          "detail": "Alias for show. By default, ip route shows IPv4 routes in the main table. Use ip -6 route for IPv6 or ip route get ADDRESS for a lookup.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List routes in the routing table",
+                    "notation": "literal",
+                    "syntax": "lst",
+                    "tokens": [
+                      "lst"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List routes in the routing table",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "help",
+          "argument": "",
+          "summary": "Show command usage",
+          "detail": "Use ip route help to print the supported syntax for this object. Place help immediately after the object.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show command usage",
+                    "notation": "literal",
+                    "syntax": "help",
+                    "tokens": [
+                      "help"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show command usage",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "protocol",
+          "argument": "PROTOCOL",
+          "summary": "Match the route installation protocol",
+          "detail": "Full spelling of proto. Use a protocol name such as kernel, a numeric protocol ID, or all to remove this restriction.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "id",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "protocol names from routing-protocol mappings",
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Routing-protocol IDs selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Routing-protocol IDs",
+                "when_absent": {
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "vrf",
+          "argument": "NAME",
+          "summary": "List routes in a VRF table",
+          "detail": "Give an existing VRF device name. The selector uses its routing table and excludes local and broadcast route types.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "List routes in a VRF table",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Give an existing VRF device name. The selector uses its routing table and excludes local and broadcast route types."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "NAME"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "cached",
+          "argument": "",
+          "summary": "Show cloned routes",
+          "detail": "Equivalent to cloned. Modern Linux kernels have no IPv4 routing cache, so an IPv4 cache listing is empty.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show cloned routes",
+                    "notation": "literal",
+                    "syntax": "cached",
+                    "tokens": [
+                      "cached"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show cloned routes",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "cloned",
+          "argument": "",
+          "summary": "Show cloned routes",
+          "detail": "Equivalent to cached. Modern Linux kernels have no IPv4 routing cache.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show cloned routes",
+                    "notation": "literal",
+                    "syntax": "cloned",
+                    "tokens": [
+                      "cloned"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show cloned routes",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "tos",
+          "argument": "TOS",
+          "summary": "Match the route type-of-service byte",
+          "detail": "Use a configured dsfield name or a hexadecimal byte. A bare 10 means hexadecimal 10 (decimal 16).",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route type-of-service byte",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "HEX",
+                    "grammar": "The numeric byte uses base 16 even without 0x, from 00 to ff."
+                  },
+                  {
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "A name configured in rt_dsfield."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "TOS"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "dsfield",
+          "argument": "TOS",
+          "summary": "Match the route type-of-service byte",
+          "detail": "Alias of tos. Use a configured dsfield name or a hexadecimal byte. A bare 10 means hexadecimal 10 (decimal 16).",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route type-of-service byte",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "HEX",
+                    "grammar": "The numeric byte uses base 16 even without 0x, from 00 to ff."
+                  },
+                  {
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "A name configured in rt_dsfield."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "TOS"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "oif",
+          "argument": "IFNAME",
+          "summary": "Match the outgoing interface",
+          "detail": "Alias of dev in a route listing. Supply an existing interface name such as lo.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Network interface name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Interface/device name from the network namespace; digits in a name do not imply an interface index or numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this device-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
+                      "locator": "ip route show, dev NAME"
+                    }
+                  ]
+                },
+                "subject": "Network interfaces"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "iif",
+          "argument": "IFNAME",
+          "summary": "Match the incoming interface",
+          "detail": "Supply an existing interface name. A route must carry the matching input-interface attribute.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Network interface name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Interface/device name from the network namespace; digits in a name do not imply an interface index or numerical unit."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add this device-name restriction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in",
+                      "locator": "ip route show, dev NAME"
+                    }
+                  ]
+                },
+                "subject": "Network interfaces"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "mark",
+          "argument": "MARK",
+          "summary": "Match the route mark",
+          "detail": "Supply an unsigned integer mark in decimal, hexadecimal (0x) or octal (leading zero). This listing matches the route attribute.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route mark",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Unsigned 32-bit value. The parser accepts decimal, hexadecimal after 0x and octal after a leading zero."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "MARK"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "metric",
+          "argument": "METRIC",
+          "summary": "Match the route metric",
+          "detail": "Match the numeric route priority exactly. For routes of equal prefix length a lower metric is preferred.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route metric",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Unsigned 32-bit value. The parser accepts decimal, hexadecimal after 0x and octal after a leading zero."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "METRIC"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "priority",
+          "argument": "METRIC",
+          "summary": "Match the route metric",
+          "detail": "Alias of metric. Match an unsigned numeric priority exactly.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route metric",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Unsigned 32-bit value. The parser accepts decimal, hexadecimal after 0x and octal after a leading zero."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "METRIC"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "preference",
+          "argument": "METRIC",
+          "summary": "Match the route metric",
+          "detail": "Alias of metric in a route listing. Supply an unsigned integer. The low, medium and high IPv6 router preferences belong to a different attribute.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the route metric",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Unsigned 32-bit value. The parser accepts decimal, hexadecimal after 0x and octal after a leading zero."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "METRIC"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "realms",
+          "argument": "REALMS",
+          "summary": "Match route realm identifiers",
+          "detail": "Use FROM/TO, FROM/ for source alone, or TO for destination alone. Each realm accepts a configured name or an ID from 0 to 255. A single raw unsigned 32-bit value is also accepted.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match route realm identifiers",
+                "bare": {
+                  "state": "accepted",
+                  "form": "raw"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REALMS",
+                    "grammar": "FROM/TO combines the source and destination realms. FROM/ matches only the source. A destination name matches that destination regardless of source."
+                  },
+                  {
+                    "id": "raw",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "A single numeric value may encode the entire 32-bit realm field. Up to 255, it names the destination realm alone."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    },
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/rtm_map.c?h=v7.3.0",
+                      "locator": "get_rt_realms_or_raw"
+                    }
+                  ]
+                },
+                "subject": "Route realms"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "from",
+          "argument": "PREFIX",
+          "summary": "Match a route’s source prefix",
+          "detail": "Use from [root|match|exact] PREFIX for source-specific routes. The default is exact. The separate src selector tests the preferred source address. The manual describes this selector for cloned routes. The parser compares the route’s source prefix and prefix length.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "address",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "Address grammar defines its representation",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Network address, not a scalar quantity",
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Network addresses",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "bits",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "bounds": {
+                            "max": "128",
+                            "min": "0"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128",
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Leading network-address bits",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "root",
+          "argument": "PREFIX",
+          "summary": "Include routes within a destination prefix",
+          "detail": "Select this prefix and more-specific destinations inside it. For example, root 192.0.2.0/24 includes a matching /25.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "address",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "Address grammar defines its representation",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Network address, not a scalar quantity",
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Network addresses",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "bits",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "bounds": {
+                            "max": "128",
+                            "min": "0"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128",
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Leading network-address bits",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "match",
+          "argument": "PREFIX",
+          "summary": "Include routes covering a destination prefix",
+          "detail": "Select this prefix and less-specific destinations that cover it. A host address can match a network and the default route.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "address",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "Address grammar defines its representation",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Network address, not a scalar quantity",
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Network addresses",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "bits",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "bounds": {
+                            "max": "128",
+                            "min": "0"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128",
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Leading network-address bits",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "exact",
+          "argument": "PREFIX",
+          "summary": "Match a destination prefix exactly",
+          "detail": "The network and prefix length must match. This is also the default when a destination prefix is given without a modifier.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "Component grammar determines meaning, including numeric-only alternatives",
+                  "state": "not_applicable"
+                },
+                "components": [
+                  {
+                    "id": "address",
+                    "required": true,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "reason": "Address grammar defines its representation",
+                        "state": "not_applicable"
+                      },
+                      "forms": [
+                        {
+                          "grammar": "Network address, not a scalar quantity",
+                          "id": "address",
+                          "notation": "expression",
+                          "syntax": "ADDRESS"
+                        }
+                      ],
+                      "kind": "identifier",
+                      "meaning": "IPv4/IPv6 network address",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Network addresses",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  },
+                  {
+                    "id": "prefix-bits",
+                    "required": false,
+                    "semantics": {
+                      "applicability": {
+                        "chip": {
+                          "reason": "No chip-specific interpretation is claimed",
+                          "state": "not_applicable"
+                        },
+                        "implementation": {
+                          "state": "known",
+                          "values": [
+                            "iproute2"
+                          ]
+                        },
+                        "platform": {
+                          "state": "known",
+                          "values": [
+                            "Linux"
+                          ]
+                        },
+                        "version": {
+                          "state": "known",
+                          "values": [
+                            "6.13.0"
+                          ]
+                        }
+                      },
+                      "bare": {
+                        "form": "bits",
+                        "state": "accepted"
+                      },
+                      "forms": [
+                        {
+                          "bounds": {
+                            "max": "128",
+                            "min": "0"
+                          },
+                          "grammar": "IPv4 permits 0-32 leading bits; IPv6 permits 0-128",
+                          "id": "bits",
+                          "notation": "number",
+                          "syntax": "N"
+                        }
+                      ],
+                      "kind": "count",
+                      "meaning": "Leading network-prefix bits",
+                      "review": {
+                        "references": [
+                          {
+                            "locator": "Address selectors, numeric scope IDs and PREFIX",
+                            "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-address.8.in"
+                          }
+                        ],
+                        "status": "verified"
+                      },
+                      "subject": "Leading network-address bits",
+                      "when_absent": {
+                        "reason": "The component has no independent option-absence default",
+                        "state": "not_applicable"
+                      },
+                      "when_value_omitted": {
+                        "reason": "The enclosing grammar determines component presence",
+                        "state": "not_applicable"
+                      }
+                    },
+                    "slot": 1
+                  }
+                ],
+                "forms": [
+                  {
+                    "grammar": "Length counts leading address bits (IPv4 0-32, IPv6 0-128). A bare IP address uses the full host length.",
+                    "id": "joined",
+                    "notation": "expression",
+                    "syntax": "ADDRESS[/PREFIXLEN]"
+                  }
+                ],
+                "kind": "composite",
+                "meaning": "Network prefix selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Route selector TABLE_ID, RTPROTO, SCOPE and PREFIX",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-route.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "slots": 1,
+                "when_absent": {
+                  "meaning": "Command defaults and configuration apply without this explicit value",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "realm",
+          "argument": "REALMID",
+          "summary": "Match a destination route realm",
+          "detail": "The manual shows realm TO for a destination realm name or ID. The parser also accepts the same FROM/TO, FROM/ and raw numeric forms as realms.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match a destination route realm",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "REALMS",
+                    "grammar": "A destination realm name, FROM/TO for both realms, or FROM/ to match the source alone."
+                  },
+                  {
+                    "id": "id",
+                    "syntax": "N",
+                    "notation": "number",
+                    "grammar": "A single integer can be a destination realm ID or the raw 32-bit combined realm field."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iproute.c?h=v7.3.0",
+                      "locator": "iproute_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "Route realm"
               }
             ]
           }

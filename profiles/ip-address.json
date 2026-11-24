@@ -9,7 +9,7 @@
           "flag": "show",
           "kind": "keyword",
           "summary": "List interface addresses",
-          "detail": "With no arguments, ip address lists addresses on all interfaces. Use show before listing filters."
+          "detail": "With no arguments, ip address lists addresses on all interfaces. Use show before listing filters. A device name can follow show directly. Aliases list and lst accept the same filters."
         },
         {
           "argument": "IFNAME",
@@ -81,7 +81,7 @@
         },
         {
           "argument": "SCOPE",
-          "detail": "Use host for this host, link for the attached link, or global for wider scope. A numeric scope ID also works.",
+          "detail": "Use host for this host, link for the attached link, or global for wider scope. A numeric scope ID also works. Use all to remove the scope restriction.",
           "flag": "scope",
           "kind": "keyword",
           "summary": "Match the scope of an address",
@@ -444,6 +444,1882 @@
           "kind": "keyword",
           "summary": "Show addresses marked permanent",
           "detail": "This selects the opposite set from dynamic. Use ip -6 address show permanent to limit the listing to IPv6."
+        },
+        {
+          "flag": "list",
+          "argument": "",
+          "summary": "List interface addresses",
+          "detail": "Alias for show. With no arguments, ip address lists addresses on all interfaces. Use show before listing filters. A device name can follow show directly.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List interface addresses",
+                    "notation": "literal",
+                    "syntax": "list",
+                    "tokens": [
+                      "list"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List interface addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "lst",
+          "argument": "",
+          "summary": "List interface addresses",
+          "detail": "Alias for show. With no arguments, ip address lists addresses on all interfaces. Use show before listing filters. A device name can follow show directly.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List interface addresses",
+                    "notation": "literal",
+                    "syntax": "lst",
+                    "tokens": [
+                      "lst"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List interface addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "help",
+          "argument": "",
+          "summary": "Show command usage",
+          "detail": "Use ip address help to print the supported syntax for this object. Place help immediately after the object.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show command usage",
+                    "notation": "literal",
+                    "syntax": "help",
+                    "tokens": [
+                      "help"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show command usage",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "down",
+          "argument": "",
+          "summary": "Show administratively down interfaces",
+          "detail": "Select interfaces whose UP flag is clear. Carrier and operational state are separate. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show administratively down interfaces",
+                    "notation": "literal",
+                    "syntax": "down",
+                    "tokens": [
+                      "down"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show administratively down interfaces",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "vrf",
+          "argument": "NAME",
+          "summary": "List interfaces enslaved to a VRF",
+          "detail": "Give the name of an existing VRF device. Members of that VRF appear in the listing.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "List interfaces enslaved to a VRF",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Give the name of an existing VRF device. Members of that VRF appear in the listing."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "NAME"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "novf",
+          "argument": "",
+          "summary": "Suppress virtual-function information",
+          "detail": "Omit SR-IOV virtual-function details from the interface output. Devices with virtual functions can still appear. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Suppress virtual-function information",
+                    "notation": "literal",
+                    "syntax": "novf",
+                    "tokens": [
+                      "novf"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Suppress virtual-function information",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "group",
+          "argument": "GROUP",
+          "summary": "List addresses in a device group",
+          "detail": "Use the device group ID or its configured name. Group membership is independent of a bridge or VRF master.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "form": "id",
+                  "state": "accepted"
+                },
+                "forms": [
+                  {
+                    "grammar": "Integer identifier, not a quantity or severity rank",
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N"
+                  },
+                  {
+                    "grammar": "group names from configured mapping files",
+                    "id": "name",
+                    "notation": "expression",
+                    "syntax": "NAME"
+                  }
+                ],
+                "kind": "identifier",
+                "meaning": "Network-device groups selector",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "Link GROUP names/numbers and interface names",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ip-link.8.in"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "subject": "Network-device groups",
+                "when_absent": {
+                  "meaning": "No explicit selector is added; normal command selection defaults apply",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "master",
+          "argument": "DEVICE",
+          "summary": "List addresses on member interfaces",
+          "detail": "Supply a master such as a bridge to select its ports. To inspect the master itself, use dev instead.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "List addresses on member interfaces",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DEVICE",
+                    "grammar": "Supply a master such as a bridge to select its ports. To inspect the master itself, use dev instead."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "DEVICE"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "nomaster",
+          "argument": "",
+          "summary": "List addresses on unattached interfaces",
+          "detail": "Show interfaces that have no master device. This listing leaves membership intact.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List addresses on unattached interfaces",
+                    "notation": "literal",
+                    "syntax": "nomaster",
+                    "tokens": [
+                      "nomaster"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List addresses on unattached interfaces",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "type",
+          "argument": "TYPE",
+          "summary": "Match the link kind of the interface",
+          "detail": "Use a link kind such as bridge or vlan. A kind ending in _slave selects member interfaces of that kind. An unknown kind can give an empty result.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the link kind of the interface",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "TYPE",
+                    "grammar": "Use a link kind such as bridge or vlan. A kind ending in _slave selects member interfaces of that kind. An unknown kind can give an empty result."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "TYPE"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "proto",
+          "argument": "ID",
+          "summary": "Match the address protocol identifier",
+          "detail": "Use an unsigned 8-bit numeric ID. Addresses lacking the protocol attribute also pass. The listing parser rejects names accepted by the address-add parser. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Match the address protocol identifier",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Address protocol ID from 0 through 255; decimal, 0x hexadecimal and leading-zero octal are accepted."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "ID"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "secondary",
+          "argument": "",
+          "summary": "Match secondary or temporary addresses",
+          "detail": "The kernel shares one flag between secondary IPv4 addresses and temporary IPv6 addresses. Use -secondary to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match secondary or temporary addresses",
+                    "notation": "literal",
+                    "syntax": "secondary",
+                    "tokens": [
+                      "secondary"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match secondary or temporary addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-secondary",
+          "argument": "",
+          "summary": "Exclude secondary or temporary addresses",
+          "detail": "Invert the secondary address selector. The kernel shares one flag between secondary IPv4 addresses and temporary IPv6 addresses."
+        },
+        {
+          "flag": "temporary",
+          "argument": "",
+          "summary": "Match temporary or secondary addresses",
+          "detail": "The same kernel flag denotes temporary IPv6 addresses and secondary IPv4 addresses. Use -temporary to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match temporary or secondary addresses",
+                    "notation": "literal",
+                    "syntax": "temporary",
+                    "tokens": [
+                      "temporary"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match temporary or secondary addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-temporary",
+          "argument": "",
+          "summary": "Exclude temporary or secondary addresses",
+          "detail": "Invert the temporary address selector. The same kernel flag denotes temporary IPv6 addresses and secondary IPv4 addresses."
+        },
+        {
+          "flag": "primary",
+          "argument": "",
+          "summary": "Match primary addresses",
+          "detail": "For IPv4 this excludes secondary addresses. For IPv6 it excludes temporary addresses. Use -primary to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match primary addresses",
+                    "notation": "literal",
+                    "syntax": "primary",
+                    "tokens": [
+                      "primary"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match primary addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-primary",
+          "argument": "",
+          "summary": "Match secondary or temporary addresses",
+          "detail": "Invert the primary address selector. For IPv4 this excludes secondary addresses. For IPv6 it excludes temporary addresses."
+        },
+        {
+          "flag": "-dynamic",
+          "argument": "",
+          "summary": "Match permanent addresses",
+          "detail": "Invert the dynamic address selector. Dynamic and permanent select opposite values of the same flag."
+        },
+        {
+          "flag": "-permanent",
+          "argument": "",
+          "summary": "Match dynamic addresses",
+          "detail": "Invert the permanent address selector. Permanent and dynamic select opposite values of the same flag."
+        },
+        {
+          "flag": "tentative",
+          "argument": "",
+          "summary": "Match tentative addresses",
+          "detail": "IPv6 duplicate address detection is still in progress. Use -tentative to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match tentative addresses",
+                    "notation": "literal",
+                    "syntax": "tentative",
+                    "tokens": [
+                      "tentative"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match tentative addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-tentative",
+          "argument": "",
+          "summary": "Exclude tentative addresses",
+          "detail": "Invert the tentative address selector. IPv6 duplicate address detection is still in progress."
+        },
+        {
+          "flag": "deprecated",
+          "argument": "",
+          "summary": "Match deprecated addresses",
+          "detail": "The preferred lifetime has expired. The address can remain valid while existing connections finish. Use -deprecated to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match deprecated addresses",
+                    "notation": "literal",
+                    "syntax": "deprecated",
+                    "tokens": [
+                      "deprecated"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match deprecated addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-deprecated",
+          "argument": "",
+          "summary": "Exclude deprecated addresses",
+          "detail": "Invert the deprecated address selector. The preferred lifetime has expired. The address can remain valid while existing connections finish."
+        },
+        {
+          "flag": "dadfailed",
+          "argument": "",
+          "summary": "Match addresses that failed duplicate detection",
+          "detail": "IPv6 duplicate address detection found a conflict. Use -dadfailed to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match addresses that failed duplicate detection",
+                    "notation": "literal",
+                    "syntax": "dadfailed",
+                    "tokens": [
+                      "dadfailed"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match addresses that failed duplicate detection",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-dadfailed",
+          "argument": "",
+          "summary": "Exclude addresses that failed duplicate detection",
+          "detail": "Invert the dadfailed address selector. IPv6 duplicate address detection found a conflict."
+        },
+        {
+          "flag": "home",
+          "argument": "",
+          "summary": "Match Mobile IPv6 home addresses",
+          "detail": "Matches the home-address flag used by Mobile IPv6. Use -home to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match Mobile IPv6 home addresses",
+                    "notation": "literal",
+                    "syntax": "home",
+                    "tokens": [
+                      "home"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match Mobile IPv6 home addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-home",
+          "argument": "",
+          "summary": "Exclude Mobile IPv6 home addresses",
+          "detail": "Invert the home address selector. Matches the home-address flag used by Mobile IPv6."
+        },
+        {
+          "flag": "nodad",
+          "argument": "",
+          "summary": "Match addresses configured to skip duplicate detection",
+          "detail": "Matches the IPv6 nodad flag. It records a configuration choice, independently of a completed test result. Use -nodad to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match addresses configured to skip duplicate detection",
+                    "notation": "literal",
+                    "syntax": "nodad",
+                    "tokens": [
+                      "nodad"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match addresses configured to skip duplicate detection",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-nodad",
+          "argument": "",
+          "summary": "Exclude addresses configured to skip duplicate detection",
+          "detail": "Invert the nodad address selector. Matches the IPv6 nodad flag. It records a configuration choice, independently of a completed test result."
+        },
+        {
+          "flag": "optimistic",
+          "argument": "",
+          "summary": "Match optimistic addresses",
+          "detail": "Matches IPv6 optimistic duplicate address detection while an address is being validated. Use -optimistic to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match optimistic addresses",
+                    "notation": "literal",
+                    "syntax": "optimistic",
+                    "tokens": [
+                      "optimistic"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match optimistic addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-optimistic",
+          "argument": "",
+          "summary": "Exclude optimistic addresses",
+          "detail": "Invert the optimistic address selector. Matches IPv6 optimistic duplicate address detection while an address is being validated."
+        },
+        {
+          "flag": "mngtmpaddr",
+          "argument": "",
+          "summary": "Match temporary-address templates",
+          "detail": "Matches the management flag on an IPv6 template address from which the kernel can generate temporary addresses. Use -mngtmpaddr to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match temporary-address templates",
+                    "notation": "literal",
+                    "syntax": "mngtmpaddr",
+                    "tokens": [
+                      "mngtmpaddr"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match temporary-address templates",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-mngtmpaddr",
+          "argument": "",
+          "summary": "Exclude temporary-address templates",
+          "detail": "Invert the mngtmpaddr address selector. Matches the management flag on an IPv6 template address from which the kernel can generate temporary addresses."
+        },
+        {
+          "flag": "noprefixroute",
+          "argument": "",
+          "summary": "Match addresses with automatic prefix routes disabled",
+          "detail": "Matches the flag that suppresses automatic installation of the address prefix route. Use -noprefixroute to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match addresses with automatic prefix routes disabled",
+                    "notation": "literal",
+                    "syntax": "noprefixroute",
+                    "tokens": [
+                      "noprefixroute"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match addresses with automatic prefix routes disabled",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-noprefixroute",
+          "argument": "",
+          "summary": "Exclude addresses with automatic prefix routes disabled",
+          "detail": "Invert the noprefixroute address selector. Matches the flag that suppresses automatic installation of the address prefix route."
+        },
+        {
+          "flag": "autojoin",
+          "argument": "",
+          "summary": "Match addresses marked for multicast autojoin",
+          "detail": "Matches the address flag for automatically joining its multicast group. Use -autojoin to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match addresses marked for multicast autojoin",
+                    "notation": "literal",
+                    "syntax": "autojoin",
+                    "tokens": [
+                      "autojoin"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match addresses marked for multicast autojoin",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-autojoin",
+          "argument": "",
+          "summary": "Exclude addresses marked for multicast autojoin",
+          "detail": "Invert the autojoin address selector. Matches the address flag for automatically joining its multicast group."
+        },
+        {
+          "flag": "stable-privacy",
+          "argument": "",
+          "summary": "Match stable privacy addresses",
+          "detail": "Matches the IPv6 stable-privacy flag. Temporary privacy addresses use a different flag. Use -stable-privacy to invert this test.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Match stable privacy addresses",
+                    "notation": "literal",
+                    "syntax": "stable-privacy",
+                    "tokens": [
+                      "stable-privacy"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Match stable privacy addresses",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "get_filter, ifa_flag_data and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-stable-privacy",
+          "argument": "",
+          "summary": "Exclude stable privacy addresses",
+          "detail": "Invert the stable-privacy address selector. Matches the IPv6 stable-privacy flag. Temporary privacy addresses use a different flag."
         }
       ]
     }

@@ -1,6 +1,8 @@
 # iproute2 listing and socket option audit
 
-The four bundled menus cover 36 entries: eight for `ip address`, seven for `ip link`, nine for `ip route` and twelve for `ss`. The three `ip` profiles cover listing commands. A keyword such as `nomaster` has a different effect after `set`. The `ss` profile covers socket selection and display. All four retain their selection order, operand labels and literal insertions.
+The first pass covered 36 entries: eight for `ip address`, seven for `ip link`, nine for `ip route` and twelve for `ss`. The three `ip` profiles cover listing commands. A keyword such as `nomaster` has a different effect after `set`. The `ss` profile covers socket selection and display. All four retain their selection order, operand labels and literal insertions.
+
+The [manual-coverage revisit](iproute2-manual-coverage.md) expands these four listings to 175 spellings and records the release differences and verification. The dispositions and suite counts below describe the original pass.
 
 ## Sources and versions
 

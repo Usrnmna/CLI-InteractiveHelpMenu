@@ -2,6 +2,8 @@
 
 The three bundled menus contain 33 options. The twelve `s_client` entries cover TLS connections and peer verification, the eleven `x509` entries inspect or encode certificates, and the ten `dgst` entries hash data and create or verify signatures. Option order, operand labels and literal insertions are preserved.
 
+The [full manual-coverage revisit](openssl-manual-coverage.md) expands these 33 first-pass entries to 370 and records the per-version option, digest and operand inventories.
+
 ## Sources and versions
 
 | Command | Upstream OpenSSL 4.1.0 | Ubuntu 24.04 LTS, 3.0.13-0ubuntu3.16 | Ubuntu 26.04 LTS, 3.5.5-1ubuntu3.7 |
@@ -69,7 +71,7 @@ The upstream comparison uses the tagged release. The profiles' structured value 
 - **Trust files and certificate files.** The general verification reference describes broader `-CAfile` format support than the tested TLS clients accepted. They both loaded the PEM trust file and rejected the same certificate in DER at trust-file loading. By contrast, `x509` read that DER file directly with no format flag. The pinned `-inform` default now matches the certificate decoder. [General trust-file reference](https://github.com/openssl/openssl/blob/openssl-3.5.5/doc/man1/openssl-verification-options.pod) · [TLS trust-file loading](https://github.com/openssl/openssl/blob/openssl-3.5.5/apps/lib/apps.c)
 - **Quiet output and signing.** Upstream 4.1.0 documents an additional implied `-verify_quiet` for `s_client -quiet`. The EOF consequence applies to both Ubuntu versions. Noble's `dgst` lacks Ed25519/Ed448 signing. Resolute supports one-shot signing with these keys if no digest is explicitly selected. The Resolute manual gives a 16 MB input limit for that mode. [4.1.0 client manual](https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-s_client.pod.in) · [Noble dgst](https://manpages.ubuntu.com/manpages/noble/man1/openssl-dgst.1ssl.html) · [Resolute dgst](https://manpages.ubuntu.com/manpages/resolute/man1/openssl-dgst.1ssl.html)
 
-Manual-only coverage includes TLS hostname and IP verification switches, chain-building parameters, ALPN, cipher suites, session reuse, certificate requests and issuance, extension display, digest providers, MAC key encodings and algorithm-specific signature settings. Upstream 4.1.0 also documents `x509 -multi -checkend` for testing expiry across multiple input certificates. The table above describes the bundled single-certificate case. No discovery path is counted as reviewed by this audit.
+At the time of this first pass, manual-only coverage included TLS hostname and IP verification switches, chain-building parameters, ALPN, cipher suites, session reuse, certificate requests and issuance, extension display, digest providers, MAC key encodings and algorithm-specific signature settings. Upstream 4.1.0 also documents `x509 -multi -checkend` for testing expiry across multiple input certificates. The table above describes the bundled single-certificate case. No discovery path is counted as reviewed by this audit.
 
 ## Executable verification
 

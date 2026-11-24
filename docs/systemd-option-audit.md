@@ -1,6 +1,6 @@
 # systemd option audit
 
-The bundled profiles contain 50 selectable spellings. Eleven options recur in three `systemctl` menus, two more belong to `systemctl show`, and fifteen belong to `journalctl`. The review retains their order, argument contracts and literal insertion. The descriptions now follow the selected command: the same spelling can select units, include empty properties, format a table or affect only a journal excerpt.
+The first-pass bundled profiles contained 50 selectable spellings. The [full manual-coverage revisit](systemd-manual-coverage.md) records the expanded inventories, release differences and verification. Eleven options recur in three `systemctl` menus, two more belong to `systemctl show`, and fifteen belong to `journalctl`. The review retains their order, argument contracts and literal insertion. The descriptions now follow the selected command: the same spelling can select units, include empty properties, format a table or affect only a journal excerpt.
 
 ## Sources
 
@@ -59,7 +59,7 @@ The journal manuals describe a positive count and an optional boot operand. The 
 
 ## Manual-only coverage
 
-The 50 entries are a curated selection. Other documented systemctl options include dependency expansion, job modes, timestamps, host and container selection, and unit-file operations. Commands such as `list-unit-files` and `list-dependencies` have their own output rules. Journal filtering also supports field matches, identifiers, cursors, kernel records, regular expressions and individual journal files. Rotation, vacuuming and sealing belong to the journal maintenance reference. Resolute and upstream also document invocation selection, introduced in 257 and absent from Noble's journal manual. These reviews count only the four bundled profiles.
+The original 50 entries were a curated selection. Other documented systemctl options include dependency expansion, job modes, timestamps, host and container selection, and unit-file operations. Commands such as `list-unit-files` and `list-dependencies` have their own output rules. Journal filtering also supports field matches, identifiers, cursors, kernel records, regular expressions and individual journal files. Rotation, vacuuming and sealing belong to the journal maintenance reference. Resolute and upstream also document invocation selection, introduced in 257 and absent from Noble's journal manual. These reviews count only the four bundled profiles.
 
 ## Executable checks
 

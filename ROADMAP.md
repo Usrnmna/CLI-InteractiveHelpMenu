@@ -1,7 +1,7 @@
 # Project roadmap
 
-**Next task — revisit iproute2 for full manual coverage.** Start with `ip address`,
-then `ip link`, `ip route` and `ss`. Use the [original iproute2 audit](docs/iproute2-option-audit.md).
+**Next task — revisit the five `uv` menus for full manual coverage.** Start with `uv add`, then `uv lock`, `uv sync`, `uv tool install` and `uv venv`. Use the [original uv audit](docs/uv-option-audit.md).
+The [combined iproute2, systemd and OpenSSL revisit](docs/iproute2-systemd-openssl-verification.md) is complete.
 The [yq eval revisit](docs/yq-eval-manual-coverage.md),
 [FFmpeg revisit](docs/ffmpeg-manual-coverage.md),
 [fzf revisit](docs/fzf-manual-coverage.md),
@@ -41,7 +41,8 @@ Record each family’s option counts, detail gaps and test evidence in its linke
 audit. For a partial family, name the next command or option there and at the
 top of this page. The Podman revisits added 295 selectable rows (152 run,
 124 build, 13 exec and six logs). GNU tar added 145, rsync added 187, GNU grep added 34, ls added 41, OpenSSH added 45, Git stash/worktree added 348, Git commit/log added 313, 7-Zip extraction added 106, fd/fdfind added 158, fzf added 192, FFmpeg added 1,743 and yq eval added 54.
-The bundled total is **4,603 rows across 76 profiles**, compared with the historical 942.
+The combined revisit added 139 iproute2, 166 systemd and 337 OpenSSL rows.
+The bundled total is **5,245 rows across 76 profiles**, compared with the historical 942.
 
 | Command family or commands | Profiles | Baseline entries | First-pass review | Manual options | Menu Details |
 | --- | ---: | ---: | --- | --- | --- |
@@ -57,9 +58,9 @@ The bundled total is **4,603 rows across 76 profiles**, compared with the histor
 | `fzf` | 1 | 17 | Complete locally. [Manual comparison and sandbox results](docs/fzf-option-audit.md) | Complete · [191 effects and 209 selectable spellings](docs/fzf-manual-inventory.md#option-effects-and-spellings) | Complete on all three targets · [menu and suite results](docs/fzf-manual-coverage.md#compatibility-results) |
 | `ffmpeg` | 1 | 16 | Complete locally. [Manual comparison and sandbox results](docs/ffmpeg-option-audit.md) | Complete · [1,759 selectable spellings and release inventories](docs/ffmpeg-manual-inventory.md#selectable-inventory) | Complete on all three targets · [menu and suite results](docs/ffmpeg-manual-coverage.md#compatibility-results) |
 | `yq eval` | 1 | 15 | Complete locally. [Manual comparison and sandbox results](docs/yq-eval-option-audit.md) | Complete · [51 effects and 18 aliases](docs/yq-eval-manual-inventory.md#effects-and-spellings) | Complete on all three targets · [menu and suite results](docs/yq-eval-manual-coverage.md#compatibility-results) |
-| iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Pending | Pending |
-| systemd — `systemctl`, `journalctl` | 4 | 50 | Complete locally. [Manual comparison and sandbox results](docs/systemd-option-audit.md) | Pending | Pending |
-| OpenSSL — `s_client`, `x509`, `dgst` | 3 | 33 | Complete locally. [Manual comparison and sandbox results](docs/openssl-option-audit.md) | Pending | Pending |
+| iproute2 — `ip address`, `ip link`, `ip route`, `ss` | 4 | 36 | Complete locally. [Manual comparison and sandbox results](docs/iproute2-option-audit.md) | Complete · [175 selectable rows](docs/iproute2-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
+| systemd — `systemctl`, `journalctl` | 4 | 50 | Complete locally. [Manual comparison and sandbox results](docs/systemd-option-audit.md) | Complete · [216 selectable rows](docs/systemd-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
+| OpenSSL — `s_client`, `x509`, `dgst` | 3 | 33 | Complete locally. [Manual comparison and sandbox results](docs/openssl-option-audit.md) | Complete · [370 selectable rows](docs/openssl-manual-coverage.md) | Complete on all three targets · [combined results](docs/iproute2-systemd-openssl-verification.md#compatibility-results) |
 | `uv` | 5 | 56 | Complete locally. [Manual comparison and sandbox results](docs/uv-option-audit.md) | Pending | Pending |
 | Ruff — `ruff check`, `ruff format` | 2 | 30 | Complete locally. [Manual comparison and sandbox results](docs/ruff-option-audit.md) | Pending | Pending |
 | `pytest` | 1 | 18 | Complete locally. [Manual comparison and sandbox results](docs/pytest-option-audit.md) | Pending | Pending |
@@ -138,6 +139,17 @@ rendering, retain the original capture and add a regression for the loss.
 See the [fixture provenance guide](tests/fixtures/help/README.md).
 
 ## How to audit a batch
+
+Group consecutive command families into one verification batch when their profile and
+manual changes can be reviewed independently. Record the included command paths
+up front. Check each family’s inventory, executable fixtures and rendered menus
+as soon as they are ready. Include shared parser, insertion and historical
+capture tests that consume the changed data. Run the strict numerical review
+against the integrated profiles. Once focused checks pass, take snapshots of the
+same combined source and run the full suite once on each of the three targets.
+Link every covered family to that matrix and list any blocked command separately.
+If a full run finds a regression, fix it, repeat its focused checks and obtain
+full verification of the corrected snapshot. Keep release-specific skips visible.
 
 1. **Establish the reference.** Inventory the command paths, selectable entries
    and aliases. Compare them with the upstream manual and the Ubuntu 24.04 and

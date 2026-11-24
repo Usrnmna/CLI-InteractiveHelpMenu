@@ -130,11 +130,20 @@ class SystemsExpansionTests(unittest.TestCase):
                     if option["flag"] in profile.get("stop_at_options", []):
                         # A child-command operand starts a separate argument list.
                         continue
-                    for value in ("'café 日本'", "'-123'", "'--child-option'", "'$(literal text)'"):
+                    for value in ("'café 日本'", "'-123'", "'$(literal text)'"):
                         completed = line + value + " "
                         self.assertEqual(context_for(completed, len(completed), profile).query, "")
-                    if option.get("attached"):
-                        completed = command + " " + option["flag"] + "value "
+                    dash_value = line + "'--child-option' "
+                    if option.get("argument_style"):
+                        # Declared forms require an explicit attachment for a nonnumeric
+                        # dash-leading value. Shell quoting preserves its leading dashes.
+                        with self.assertRaises(HelpError) as error:
+                            context_for(dash_value, len(dash_value), profile)
+                        self.assertEqual(error.exception.code, "option_value_required")
+                    else:
+                        self.assertEqual(context_for(dash_value, len(dash_value), profile).query, "")
+                    if option.get("attached") or option.get("argument_style") == "attached":
+                        completed = command + " " + option["flag"] + "'--child-option' "
                         self.assertEqual(context_for(completed, len(completed), profile).query, "")
 
     def test_fd_execution_switches_insert_literally_and_protect_child_arguments(self):

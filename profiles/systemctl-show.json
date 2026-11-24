@@ -31,13 +31,13 @@
           "argument": "",
           "flag": "--full",
           "summary": "Applies to width-limited listings and status",
-          "detail": "Property values from show are printed independently of the status display width."
+          "detail": "Property values from show are printed independently of the status display width. Short spelling: -l."
         },
         {
           "argument": "",
           "flag": "--all",
           "summary": "Include properties with empty values",
-          "detail": "Without a unit or job, show prints manager properties. Use --property=NAME to request a specific property even when it is empty."
+          "detail": "Without a unit or job, show prints manager properties. Use --property=NAME to request a specific property even when it is empty. Short spelling: -a."
         },
         {
           "argument": "TYPE",
@@ -47,63 +47,11 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "systemd unit types",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Comma-separated unit-type names such as service, socket, target, timer, device, mount, automount, swap, path, slice and scope; help requests the supported type list."
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Do not add a unit-type filter."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--type"
-                    }
-                  ]
-                }
+                "ref": "type-value"
               }
             ]
           },
-          "detail": "With no operand or a unit glob, select units by type. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =."
+          "detail": "With no operand or a unit glob, select units by type. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =. Short spelling: -t."
         },
         {
           "argument": "STATE",
@@ -179,79 +127,14 @@
         },
         {
           "argument": "LINES",
-          "detail": "The property listing has no journal entries to limit. Use --property= to select fields.",
+          "detail": "The property listing has no journal entries to limit. Use --property= to select fields. Short spelling: -n.",
           "flag": "--lines=",
           "summary": "Set the journal count for status only",
           "value_semantics": {
             "schema_version": 1,
             "variants": [
               {
-                "applicability": {
-                  "chip": {
-                    "reason": "No chip-specific interpretation is claimed",
-                    "state": "not_applicable"
-                  },
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "systemd"
-                    ]
-                  },
-                  "platform": {
-                    "state": "known",
-                    "values": [
-                      "Linux"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
-                    ]
-                  }
-                },
-                "bare": {
-                  "form": "lines",
-                  "state": "accepted"
-                },
-                "forms": [
-                  {
-                    "bounds": {
-                      "min": "0"
-                    },
-                    "grammar": "Decimal integer journal-line count",
-                    "id": "lines",
-                    "notation": "number",
-                    "special_values": [
-                      {
-                        "meaning": "Suppress the status journal output",
-                        "value": "0"
-                      }
-                    ],
-                    "syntax": "N"
-                  }
-                ],
-                "kind": "count",
-                "meaning": "Journal lines included in systemctl status output",
-                "review": {
-                  "references": [
-                    {
-                      "locator": "--lines applies to status; zero disables journal output; default 10",
-                      "source": "https://www.freedesktop.org/software/systemd/man/257/systemctl.html"
-                    }
-                  ],
-                  "status": "verified"
-                },
-                "subject": "Recent journal lines for status output",
-                "when_absent": {
-                  "form": "lines",
-                  "state": "known",
-                  "value": "10"
-                },
-                "when_value_omitted": {
-                  "reason": "This option requires an operand",
-                  "state": "not_accepted"
-                }
+                "ref": "lines-value"
               }
             ]
           }
@@ -264,225 +147,11 @@
             "schema_version": 1,
             "variants": [
               {
-                "kind": "enumeration",
-                "meaning": "Output mode for other systemctl commands",
-                "bare": {
-                  "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
-                },
-                "forms": [
-                  {
-                    "id": "choice-1",
-                    "notation": "literal",
-                    "syntax": "short",
-                    "tokens": [
-                      "short"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-2",
-                    "notation": "literal",
-                    "syntax": "short-full",
-                    "tokens": [
-                      "short-full"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-3",
-                    "notation": "literal",
-                    "syntax": "short-iso",
-                    "tokens": [
-                      "short-iso"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-4",
-                    "notation": "literal",
-                    "syntax": "short-iso-precise",
-                    "tokens": [
-                      "short-iso-precise"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-5",
-                    "notation": "literal",
-                    "syntax": "short-precise",
-                    "tokens": [
-                      "short-precise"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-6",
-                    "notation": "literal",
-                    "syntax": "short-monotonic",
-                    "tokens": [
-                      "short-monotonic"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "short-delta",
-                    "notation": "literal",
-                    "syntax": "short-delta",
-                    "tokens": [
-                      "short-delta"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-7",
-                    "notation": "literal",
-                    "syntax": "short-unix",
-                    "tokens": [
-                      "short-unix"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-8",
-                    "notation": "literal",
-                    "syntax": "verbose",
-                    "tokens": [
-                      "verbose"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-9",
-                    "notation": "literal",
-                    "syntax": "export",
-                    "tokens": [
-                      "export"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-10",
-                    "notation": "literal",
-                    "syntax": "json",
-                    "tokens": [
-                      "json"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-11",
-                    "notation": "literal",
-                    "syntax": "json-pretty",
-                    "tokens": [
-                      "json-pretty"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-12",
-                    "notation": "literal",
-                    "syntax": "json-sse",
-                    "tokens": [
-                      "json-sse"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-13",
-                    "notation": "literal",
-                    "syntax": "json-seq",
-                    "tokens": [
-                      "json-seq"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-14",
-                    "notation": "literal",
-                    "syntax": "cat",
-                    "tokens": [
-                      "cat"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  },
-                  {
-                    "id": "choice-15",
-                    "notation": "literal",
-                    "syntax": "with-unit",
-                    "tokens": [
-                      "with-unit"
-                    ],
-                    "case": "sensitive",
-                    "meaning": "Property output keeps its usual format"
-                  }
-                ],
-                "when_absent": {
-                  "state": "known",
-                  "meaning": "Print properties in their usual format."
-                },
-                "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
-                },
-                "applicability": {
-                  "implementation": {
-                    "state": "known",
-                    "values": [
-                      "systemd"
-                    ]
-                  },
-                  "version": {
-                    "state": "known",
-                    "values": [
-                      "257"
-                    ]
-                  },
-                  "platform": {
-                    "state": "not_applicable",
-                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
-                  },
-                  "chip": {
-                    "state": "not_applicable",
-                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
-                  }
-                },
-                "review": {
-                  "status": "verified",
-                  "references": [
-                    {
-                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
-                      "locator": "Output modes, including short-delta"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/systemctl/systemctl-show.c",
-                      "locator": "show_one property output and print_status_info"
-                    },
-                    {
-                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--output= and status"
-                    }
-                  ]
-                }
+                "ref": "output-value"
               }
             ]
           },
-          "detail": "Property output keeps its NAME=value format even with --output=json. Use --value to print just the values."
+          "detail": "Property output keeps its NAME=value format even with --output=json. Use --value to print just the values. Short spelling: -o."
         },
         {
           "argument": "NAME",
@@ -492,27 +161,53 @@
             "schema_version": 1,
             "variants": [
               {
+                "ref": "property-value"
+              }
+            ]
+          },
+          "detail": "Use a comma-separated list or repeat the option. An explicitly requested property can be empty. Short spelling: -p."
+        },
+        {
+          "argument": "",
+          "flag": "--value",
+          "summary": "Display property values only",
+          "detail": "Use --property=MainPID --value to print the process ID without the MainPID= prefix."
+        },
+        {
+          "argument": "",
+          "flag": "-a",
+          "summary": "Include properties with empty values",
+          "detail": "Without a unit or job, show prints manager properties. Use --property=NAME to request a specific property even when it is empty. Short spelling of --all.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
                 "kind": "nonnumerical",
-                "meaning": "systemd property names",
+                "meaning": "Include properties with empty values",
                 "bare": {
                   "state": "not_applicable",
-                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                  "reason": "Fixed switch with no scalar operand."
                 },
                 "forms": [
                   {
-                    "id": "text",
-                    "notation": "expression",
-                    "syntax": "VALUE",
-                    "grammar": "Comma-separated D-Bus property names selecting show output fields; values retain each property's documented meaning."
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--all",
+                    "tokens": [
+                      "-a",
+                      "--all"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Include properties with empty values"
                   }
                 ],
                 "when_absent": {
                   "state": "known",
-                  "meaning": "Show the command's normal property selection."
+                  "meaning": "Use the normal output selection for this command."
                 },
                 "when_value_omitted": {
-                  "state": "not_accepted",
-                  "reason": "The option requires its operand"
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
                 },
                 "applicability": {
                   "implementation": {
@@ -524,7 +219,9 @@
                   "version": {
                     "state": "known",
                     "values": [
-                      "257"
+                      "255",
+                      "259",
+                      "262"
                     ]
                   },
                   "platform": {
@@ -540,21 +237,882 @@
                   "status": "verified",
                   "references": [
                     {
-                      "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
-                      "locator": "--property"
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--all"
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "argument": "TYPE",
+          "flag": "-t",
+          "summary": "Show properties for matching unit types",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "type-value"
+              }
+            ]
           },
-          "detail": "Use a comma-separated list or repeat the option. An explicitly requested property can be empty."
+          "detail": "With no operand or a unit glob, select units by type. An explicit unit name is looked up directly. Ubuntu 24.04 and 26.04 require a value after =. Short spelling of --type=.",
+          "attached": true
         },
         {
           "argument": "",
-          "flag": "--value",
-          "summary": "Display property values only",
-          "detail": "Use --property=MainPID --value to print the process ID without the MainPID= prefix."
+          "flag": "-l",
+          "summary": "Applies to width-limited listings and status",
+          "detail": "Property values from show are printed independently of the status display width. Short spelling of --full.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Applies to width-limited listings and status",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--full",
+                    "tokens": [
+                      "-l",
+                      "--full"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Applies to width-limited listings and status"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use normal output width."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--full"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "LINES",
+          "detail": "The property listing has no journal entries to limit. Use --property= to select fields. Short spelling of --lines=.",
+          "flag": "-n",
+          "summary": "Set the journal count for status only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "lines-value"
+              }
+            ]
+          },
+          "attached": true
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-o",
+          "summary": "Applies to journal and table formatting",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "output-value"
+              }
+            ]
+          },
+          "detail": "Property output keeps its NAME=value format even with --output=json. Use --value to print just the values. Short spelling of --output=.",
+          "attached": true
+        },
+        {
+          "flag": "--host=",
+          "summary": "Query a remote system manager",
+          "detail": "Connect over SSH. Use [USER@]HOST[:PORT][/CONTAINER]. Enclose an IPv6 address in brackets. Remote transport requires system scope. Also spelled -H.",
+          "argument": "HOST",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "host-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-H",
+          "summary": "Query a remote system manager",
+          "detail": "Connect over SSH. Use [USER@]HOST[:PORT][/CONTAINER]. Enclose an IPv6 address in brackets. Remote transport requires system scope. Also spelled --host=.",
+          "argument": "HOST",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "host-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--machine=",
+          "summary": "Query a local container manager",
+          "detail": "Use a container name or USER@MACHINE. With --user, USER@.host selects a user manager on this host. Also spelled -M.",
+          "argument": "MACHINE",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "machine-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-M",
+          "summary": "Query a local container manager",
+          "detail": "Use a container name or USER@MACHINE. With --user, USER@.host selects a user manager on this host. Also spelled --machine=.",
+          "argument": "MACHINE",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "machine-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--capsule=",
+          "summary": "Connect to the manager in a capsule",
+          "detail": "Supply a capsule name. The capsule provides its own service manager. Available in Ubuntu 26.04 and upstream 262. Ubuntu 24.04 lacks this option. Also spelled -C.",
+          "argument": "NAME",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "capsule-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-C",
+          "summary": "Connect to the manager in a capsule",
+          "detail": "Supply a capsule name. The capsule provides its own service manager. Available in Ubuntu 26.04 and upstream 262. Ubuntu 24.04 lacks this option. Also spelled --capsule=.",
+          "argument": "NAME",
+          "attached": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "capsule-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--failed",
+          "summary": "Select units in the failed state",
+          "detail": "Adds failed to the state filter, like --state=failed. An explicitly named unit is looked up directly.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select units in the failed state",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--failed",
+                    "tokens": [
+                      "--failed"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Select units in the failed state"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not add the failed state to the filter."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--failed"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--with-dependencies",
+          "summary": "Include dependencies of the named units",
+          "detail": "Appends direct dependencies of the selected names. Use --reverse for dependents, --after for units ordered earlier or --before for units ordered later. This applies to named units and expanded globs.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Include dependencies of the named units",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--with-dependencies",
+                    "tokens": [
+                      "--with-dependencies"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Include dependencies of the named units"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inspect just the selected units."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--with-dependencies"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--reverse",
+          "summary": "Include units that depend on the named units",
+          "detail": "Combine with --with-dependencies to follow reverse relationships, including WantedBy and RequiredBy.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Include units that depend on the named units",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--reverse",
+                    "tokens": [
+                      "--reverse"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Include units that depend on the named units"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use forward dependencies with --with-dependencies."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--reverse"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--after",
+          "summary": "Include units ordered before the named units",
+          "detail": "Combine with --with-dependencies to follow After= relationships. An ordering relationship alone does not start either unit."
+        },
+        {
+          "flag": "--before",
+          "summary": "Include units ordered after the named units",
+          "detail": "Combine with --with-dependencies to follow Before= relationships. An ordering relationship alone does not start either unit."
+        },
+        {
+          "flag": "--quiet",
+          "summary": "Hide informational hints and warnings",
+          "detail": "Property values and errors still appear. This also suppresses warnings about mangled unit names. Also spelled -q.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-q",
+          "summary": "Hide informational hints and warnings",
+          "detail": "Property values and errors still appear. This also suppresses warnings about mangled unit names. Also spelled --quiet.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "quiet-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-warn",
+          "summary": "Suppress selected configuration warnings",
+          "detail": "Suppress the warning about a missing /proc filesystem. Errors are still reported.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Suppress selected configuration warnings",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--no-warn",
+                    "tokens": [
+                      "--no-warn"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Suppress selected configuration warnings"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Display the normal warnings."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--no-warn"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--no-ask-password",
+          "summary": "Disable interactive authorization prompts",
+          "detail": "Queries normally need no authorization challenge. This disables prompting if the manager requests one.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Disable interactive authorization prompts",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--no-ask-password",
+                    "tokens": [
+                      "--no-ask-password"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Disable interactive authorization prompts"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the normal authorization policy."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--no-ask-password"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--help",
+          "summary": "Show systemctl usage",
+          "detail": "Print the client-wide command and option list and exit before making a manager query. Also spelled -h.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "help-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-h",
+          "summary": "Show systemctl usage",
+          "detail": "Print the client-wide command and option list and exit before making a manager query. Also spelled --help.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "help-value"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--version",
+          "summary": "Show the systemd build version",
+          "detail": "Print the client version and compiled features, then exit.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Show the systemd build version",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "Fixed switch with no scalar operand."
+                },
+                "forms": [
+                  {
+                    "id": "action",
+                    "notation": "literal",
+                    "syntax": "--version",
+                    "tokens": [
+                      "--version"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Show the systemd build version"
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Run the selected operation."
+                },
+                "when_value_omitted": {
+                  "state": "not_applicable",
+                  "reason": "This switch takes no operand."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--version"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--timestamp=",
+          "summary": "Select the timestamp format",
+          "detail": "Use pretty (default), unix, us or μs, utc, or us+utc or μs+utc. This changes formatted timestamp properties.",
+          "argument": "FORMAT",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select the timestamp format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Named systemd timestamp style."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use pretty timestamps."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--timestamp"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "flag": "-p",
+          "summary": "Choose which properties to print",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "property-value"
+              }
+            ]
+          },
+          "detail": "Use a comma-separated list or repeat the option. An explicitly requested property can be empty. Short spelling of --property=.",
+          "attached": true
+        },
+        {
+          "argument": "NAME",
+          "flag": "-P",
+          "summary": "Print only the values of selected properties",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "property-value"
+              }
+            ]
+          },
+          "detail": "Supply a property name or comma-separated names. Equivalent to --value --property=NAME. Explicitly selected empty properties are included.",
+          "attached": true
+        },
+        {
+          "flag": "--introspect-cli",
+          "summary": "Show the command-line schema",
+          "detail": "Upstream 262 prints a machine-readable JSON description of commands and options and exits. The Ubuntu 24.04 and 26.04 clients do not recognize this spelling."
+        },
+        {
+          "flag": "--legend=",
+          "summary": "Set the table legend preference",
+          "detail": "The show report has no header or footer controlled by this table setting. --legend=no corresponds to the older --no-legend spelling.",
+          "argument": "BOOL",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set the table legend preference",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "value",
+                    "notation": "expression",
+                    "syntax": "BOOL",
+                    "grammar": "Boolean such as yes or no."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the client’s normal table legend preference."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "systemd"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "255",
+                      "259",
+                      "262"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+                      "locator": "--legend"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -563,5 +1121,702 @@
     "systemctl",
     "show"
   ],
-  "description": "Show properties of a unit, a numeric job ID or the manager itself."
+  "description": "Show properties of a unit, a numeric job ID or the manager itself.",
+  "value_definitions": {
+    "type-value": {
+      "kind": "enumeration",
+      "meaning": "systemd unit types",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Comma-separated unit-type names such as service, socket, target, timer, device, mount, automount, swap, path, slice and scope; help requests the supported type list."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Do not add a unit-type filter."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "257"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+            "locator": "--type"
+          }
+        ]
+      }
+    },
+    "lines-value": {
+      "applicability": {
+        "chip": {
+          "reason": "No chip-specific interpretation is claimed",
+          "state": "not_applicable"
+        },
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "257"
+          ]
+        }
+      },
+      "bare": {
+        "form": "lines",
+        "state": "accepted"
+      },
+      "forms": [
+        {
+          "bounds": {
+            "min": "0"
+          },
+          "grammar": "Decimal integer journal-line count",
+          "id": "lines",
+          "notation": "number",
+          "special_values": [
+            {
+              "meaning": "Suppress the status journal output",
+              "value": "0"
+            }
+          ],
+          "syntax": "N"
+        }
+      ],
+      "kind": "count",
+      "meaning": "Journal lines included in systemctl status output",
+      "review": {
+        "references": [
+          {
+            "locator": "--lines applies to status; zero disables journal output; default 10",
+            "source": "https://www.freedesktop.org/software/systemd/man/257/systemctl.html"
+          }
+        ],
+        "status": "verified"
+      },
+      "subject": "Recent journal lines for status output",
+      "when_absent": {
+        "form": "lines",
+        "state": "known",
+        "value": "10"
+      },
+      "when_value_omitted": {
+        "reason": "This option requires an operand",
+        "state": "not_accepted"
+      }
+    },
+    "output-value": {
+      "kind": "enumeration",
+      "meaning": "Output mode for other systemctl commands",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "choice-1",
+          "notation": "literal",
+          "syntax": "short",
+          "tokens": [
+            "short"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-2",
+          "notation": "literal",
+          "syntax": "short-full",
+          "tokens": [
+            "short-full"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-3",
+          "notation": "literal",
+          "syntax": "short-iso",
+          "tokens": [
+            "short-iso"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-4",
+          "notation": "literal",
+          "syntax": "short-iso-precise",
+          "tokens": [
+            "short-iso-precise"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-5",
+          "notation": "literal",
+          "syntax": "short-precise",
+          "tokens": [
+            "short-precise"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-6",
+          "notation": "literal",
+          "syntax": "short-monotonic",
+          "tokens": [
+            "short-monotonic"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "short-delta",
+          "notation": "literal",
+          "syntax": "short-delta",
+          "tokens": [
+            "short-delta"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-7",
+          "notation": "literal",
+          "syntax": "short-unix",
+          "tokens": [
+            "short-unix"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-8",
+          "notation": "literal",
+          "syntax": "verbose",
+          "tokens": [
+            "verbose"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-9",
+          "notation": "literal",
+          "syntax": "export",
+          "tokens": [
+            "export"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-10",
+          "notation": "literal",
+          "syntax": "json",
+          "tokens": [
+            "json"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-11",
+          "notation": "literal",
+          "syntax": "json-pretty",
+          "tokens": [
+            "json-pretty"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-12",
+          "notation": "literal",
+          "syntax": "json-sse",
+          "tokens": [
+            "json-sse"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-13",
+          "notation": "literal",
+          "syntax": "json-seq",
+          "tokens": [
+            "json-seq"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-14",
+          "notation": "literal",
+          "syntax": "cat",
+          "tokens": [
+            "cat"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        },
+        {
+          "id": "choice-15",
+          "notation": "literal",
+          "syntax": "with-unit",
+          "tokens": [
+            "with-unit"
+          ],
+          "case": "sensitive",
+          "meaning": "Property output keeps its usual format"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Print properties in their usual format."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "257"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/journalctl.xml",
+            "locator": "Output modes, including short-delta"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/systemd/systemd/v257/src/systemctl/systemctl-show.c",
+            "locator": "show_one property output and print_status_info"
+          },
+          {
+            "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+            "locator": "--output= and status"
+          }
+        ]
+      }
+    },
+    "property-value": {
+      "kind": "nonnumerical",
+      "meaning": "systemd property names",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "text",
+          "notation": "expression",
+          "syntax": "VALUE",
+          "grammar": "Comma-separated D-Bus property names selecting show output fields; values retain each property's documented meaning."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Show the command's normal property selection."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "257"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://raw.githubusercontent.com/systemd/systemd/v257/man/systemctl.xml",
+            "locator": "--property"
+          }
+        ]
+      }
+    },
+    "host-value": {
+      "kind": "nonnumerical",
+      "meaning": "Query a remote system manager",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "HOST",
+          "grammar": "SSH host or container target, optionally with a user or port."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Connect locally."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "255",
+            "259",
+            "262"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+            "locator": "--host"
+          }
+        ]
+      }
+    },
+    "machine-value": {
+      "kind": "nonnumerical",
+      "meaning": "Query a local container manager",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "MACHINE",
+          "grammar": "Local container name, optionally preceded by USER@."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the local host."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "255",
+            "259",
+            "262"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+            "locator": "--machine"
+          }
+        ]
+      }
+    },
+    "capsule-value": {
+      "kind": "nonnumerical",
+      "meaning": "Connect to the manager in a capsule",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+      },
+      "forms": [
+        {
+          "id": "value",
+          "notation": "expression",
+          "syntax": "NAME",
+          "grammar": "Name of a local capsule."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the selected host manager."
+      },
+      "when_value_omitted": {
+        "state": "not_accepted",
+        "reason": "The option requires its operand"
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "259",
+            "262"
+          ]
+        },
+        "platform": {
+          "state": "known",
+          "values": [
+            "Linux"
+          ]
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+            "locator": "--capsule"
+          }
+        ]
+      }
+    },
+    "quiet-value": {
+      "kind": "nonnumerical",
+      "meaning": "Hide informational hints and warnings",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Fixed switch with no scalar operand."
+      },
+      "forms": [
+        {
+          "id": "action",
+          "notation": "literal",
+          "syntax": "--quiet",
+          "tokens": [
+            "-q",
+            "--quiet"
+          ],
+          "case": "sensitive",
+          "meaning": "Hide informational hints and warnings"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use normal informational output."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This switch takes no operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "255",
+            "259",
+            "262"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+            "locator": "--quiet"
+          }
+        ]
+      }
+    },
+    "help-value": {
+      "kind": "nonnumerical",
+      "meaning": "Show systemctl usage",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "Fixed switch with no scalar operand."
+      },
+      "forms": [
+        {
+          "id": "action",
+          "notation": "literal",
+          "syntax": "--help",
+          "tokens": [
+            "-h",
+            "--help"
+          ],
+          "case": "sensitive",
+          "meaning": "Show systemctl usage"
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Run the requested command."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This switch takes no operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "systemd"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "255",
+            "259",
+            "262"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "No chip-specific interpretation is claimed by this parameter contract"
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/systemd/systemd/blob/v262/man/systemctl.xml",
+            "locator": "--help"
+          }
+        ]
+      }
+    }
+  }
 }

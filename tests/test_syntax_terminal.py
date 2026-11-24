@@ -142,6 +142,70 @@ class SyntaxScreenTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (edited + suffix, len(edited) + 1))
         self.assertFalse(shell.executed.exists())
 
+    def check_command_menu(self, command, suffix, narrow=None, listing=False):
+        """Inspect every row in tmux, then exercise a command-specific edit at minimum size."""
+        profile = json.loads((ROOT / "profiles" / (command.replace(" ", "-") + ".json")).read_text())
+        pending = command + " show" if listing else command
+        shell, prefix, suffix = self.pending_stubbed_command(pending, suffix, 220, 120, (command.split()[0],))
+        self.check_rendered_rows(profile, shell, prefix, suffix)
+        if narrow is None:
+            return  # An existing minimum-size regression covers this command.
+        query, flag, qualification, operand = narrow
+        shell.resize(60, 16)
+        for action in ("Escape", "Enter"):
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            shell.keys("/")
+            shell.text(query)
+            shell.keys("Enter")
+            found = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query
+                                   and "> " + flag in state.cells[4])
+            if action == "Escape":
+                self.reach_detail(shell, found, qualification)
+            shell.cancel(action)
+            if action == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+        joined = flag.endswith("=")
+        self.assertEqual(shell.read_buffer(), (prefix + flag + suffix, len(prefix + flag) + (0 if joined else 1)))
+        shell.text(operand if joined else operand + " ")
+        edited = prefix + flag + ("" if joined else " ") + operand
+        self.assertEqual(shell.read_buffer(), (edited + suffix, len(edited) + (0 if joined else 1)))
+        self.assertFalse(shell.executed.exists())
+
+    def test_iproute2_manual_menus(self):
+        """Inspect the three listing menus and the socket menu with pending filters."""
+        cases = [
+            ("ip address", " dev lo", ("protocol attribute", "proto", "Addresses lacking the protocol attribute also pass.", "42")),
+            ("ip link", " up", ("vrf device", "vrf", "Members of that VRF appear in the listing.", "blue")),
+            ("ip route", " table local", None),
+            ("ss", " --tcp", ("socket-local storage from one", "--bpf-map-id=", "permission to read the map.", "42")),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow, listing=command.startswith("ip "))
+
+    def test_systemd_manual_menus(self):
+        """Inspect the manager and journal menus without a connection to system services."""
+        cases = [
+            ("systemctl list-units", " 'demo*.service'", ("remote system manager", "--host=", "Remote transport requires system scope.", "demo.example")),
+            ("systemctl show", " demo.service", ("values of selected properties", "-P", "Explicitly selected empty properties are included.", "MainPID")),
+            ("systemctl status", " demo.service", ("select the timestamp format", "--timestamp=", "--output= controls journal-entry formatting.", "utc")),
+            ("journalctl", " --no-pager", None),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow)
+
+    def test_openssl_manual_menus(self):
+        """Inspect TLS, certificate and digest options with pending file operands."""
+        cases = [
+            ("openssl s_client", " -showcerts", None),
+            ("openssl x509", " -in 'test cert.pem'", ("comma-separated extension names", "-ext", "the list limits which extensions are copied.", "subjectAltName,keyUsage")),
+            ("openssl dgst", " 'input file'", ("extendable-output digest", "-xoflen", "Signing does not support this option.", "32")),
+        ]
+        for command, suffix, narrow in cases:
+            with self.subTest(command=command):
+                self.check_command_menu(command, suffix, narrow)
+
     def test_ffmpeg_all_rows_and_complete_details(self):
         """Read every FFmpeg selection between an existing input and a quoted output."""
         profile = json.loads((ROOT / "profiles/ffmpeg.json").read_text())

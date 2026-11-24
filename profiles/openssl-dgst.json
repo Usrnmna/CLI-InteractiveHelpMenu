@@ -365,11 +365,1563 @@
           "detail": "For file input, the hexadecimal digest is followed by a space, an asterisk and the filename."
         }
       ]
+    },
+    {
+      "name": "General",
+      "description": "General options for openssl dgst.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-help",
+          "summary": "Show help for this command",
+          "detail": "Print the available options and exit."
+        },
+        {
+          "argument": "",
+          "flag": "-list",
+          "summary": "List the available digest selectors",
+          "detail": "Use a listed name preceded by a dash. Whether a digest can actually be fetched depends on the loaded providers and property query."
+        },
+        {
+          "argument": "SOURCE",
+          "flag": "-passin",
+          "summary": "Choose a passphrase source for encrypted input",
+          "detail": "Use a source such as file:PATH, env:NAME, fd:NUMBER or stdin. A pass:TEXT literal can be visible in process listings.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose a passphrase source for encrypted input",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "SOURCE",
+                    "grammar": "Use a source such as file:PATH, env:NAME, fd:NUMBER or stdin. A pass:TEXT literal can be visible in process listings."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-passin"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "ID",
+          "flag": "-engine",
+          "summary": "Select a legacy cryptographic engine",
+          "detail": "OpenSSL 3 deprecates engines in favor of providers. OpenSSL 4 removed this switch.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Select a legacy cryptographic engine",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ID",
+                    "grammar": "OpenSSL 3 deprecates engines in favor of providers. OpenSSL 4 removed this switch."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/noble/man1/openssl-dgst.1ssl.html",
+                      "locator": "-engine"
+                    },
+                    {
+                      "source": "https://manpages.ubuntu.com/manpages/resolute/man1/openssl-dgst.1ssl.html",
+                      "locator": "-engine"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-engine_impl",
+          "summary": "Use the selected engine for digest operations",
+          "detail": "Use with -engine ID in OpenSSL 3. OpenSSL 4 removed engines."
+        }
+      ]
+    },
+    {
+      "name": "Output",
+      "description": "Output options for openssl dgst.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-c",
+          "summary": "Separate hexadecimal digest bytes with colons",
+          "detail": "Applies to hexadecimal output. Use -hex to request it explicitly."
+        },
+        {
+          "argument": "FORMAT",
+          "flag": "-keyform",
+          "summary": "Choose the key input format",
+          "detail": "Omitting this option lets OpenSSL detect the encoding. Explicit PEM or DER constrains decoding. ENGINE is available only with engine support in OpenSSL 3.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the key input format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FORMAT",
+                    "grammar": "Omitting this option lets OpenSSL detect the encoding. Explicit PEM or DER constrains decoding. ENGINE is available only with engine support in OpenSSL 3."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-keyform"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "BYTES",
+          "flag": "-xoflen",
+          "summary": "Set the output length of an extendable-output digest",
+          "detail": "Give a positive number of bytes with -shake128 or -shake256. For their full security strengths use at least 32 or 64 bytes, respectively. Signing does not support this option.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Set the output length of an extendable-output digest",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "BYTES",
+                    "grammar": "Give a positive number of bytes with -shake128 or -shake256. For their full security strengths use at least 32 or 64 bytes, respectively. Signing does not support this option.",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    },
+                    "bounds": {
+                      "min": "1"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the output length chosen by the digest implementation."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-xoflen"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-d",
+          "summary": "Show BIO debugging output",
+          "detail": "Alias of -debug. Includes low-level input and output diagnostics."
+        },
+        {
+          "argument": "",
+          "flag": "-debug",
+          "summary": "Show BIO debugging output",
+          "detail": "Alias of -d. Includes low-level input and output diagnostics."
+        }
+      ]
+    },
+    {
+      "name": "Signing",
+      "description": "Signing options for openssl dgst.",
+      "options": [
+        {
+          "argument": "KEY",
+          "flag": "-prverify",
+          "summary": "Verify a signature with a private key",
+          "detail": "Supply the binary signature with -signature and the original data as input. For verification using a public key, use -verify.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Verify a signature with a private key",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "KEY",
+                    "grammar": "Supply the binary signature with -signature and the original data as input. For verification using a public key, use -verify."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-prverify"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME:VALUE",
+          "flag": "-sigopt",
+          "summary": "Set a signature algorithm parameter",
+          "detail": "Repeat to set several parameters. The signing algorithm determines the supported names and values.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Set a signature algorithm parameter",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME:VALUE",
+                    "grammar": "Repeat to set several parameters. The signing algorithm determines the supported names and values."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-sigopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "VARIABLE",
+          "flag": "-hmac-env",
+          "summary": "Read the HMAC key from an environment variable",
+          "detail": "Pass the variable name as the operand. The key is its value. Listed by upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read the HMAC key from an environment variable",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "VARIABLE",
+                    "grammar": "Pass the variable name as the operand. The key is its value. Listed by upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-hmac-env"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-hmac-stdin",
+          "summary": "Read the HMAC key from standard input",
+          "detail": "Reads the first line up to a newline or NUL. Supply the data to authenticate in a file. Listed by upstream 4.1.0 among the reviewed builds."
+        },
+        {
+          "argument": "ALGORITHM",
+          "flag": "-mac",
+          "summary": "Compute a keyed message authentication code",
+          "detail": "Choose a MAC such as HMAC and give its key with -macopt. Available algorithms depend on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Compute a keyed message authentication code",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "ALGORITHM",
+                    "grammar": "Choose a MAC such as HMAC and give its key with -macopt. Available algorithms depend on the loaded providers."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-mac"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME:VALUE",
+          "flag": "-macopt",
+          "summary": "Configure the selected MAC",
+          "detail": "With -mac HMAC, key:TEXT supplies literal text while hexkey:HEX supplies bytes as pairs of hexadecimal digits. Other parameters depend on the MAC.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Configure the selected MAC",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME:VALUE",
+                    "grammar": "With -mac HMAC, key:TEXT supplies literal text while hexkey:HEX supplies bytes as pairs of hexadecimal digits. Other parameters depend on the MAC."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-macopt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-fips-fingerprint",
+          "summary": "Compute the legacy OpenSSL FIPS module fingerprint",
+          "detail": "Uses a built-in HMAC key for OpenSSL module fingerprinting. For an application-supplied key use -hmac or -mac."
+        }
+      ]
+    },
+    {
+      "name": "Random state",
+      "description": "Random state options for openssl dgst.",
+      "options": [
+        {
+          "argument": "FILES",
+          "flag": "-rand",
+          "summary": "Read seed data from files",
+          "detail": "Separate filenames with colons on Ubuntu. The operating system normally supplies entropy automatically.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Read seed data from files",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILES",
+                    "grammar": "Separate filenames with colons on Ubuntu. The operating system normally supplies entropy automatically."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-rand"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "FILE",
+          "flag": "-writerand",
+          "summary": "Save random seed data on exit",
+          "detail": "OpenSSL writes seed data to this path for later use with -rand.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Save random seed data on exit",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "OpenSSL writes seed data to this path for later use with -rand."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-writerand"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Provider",
+      "description": "Provider options for openssl dgst.",
+      "options": [
+        {
+          "argument": "DIR",
+          "flag": "-provider-path",
+          "summary": "Choose the provider module directory",
+          "detail": "Place this before the -provider option that needs the directory.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Choose the provider module directory",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "DIR",
+                    "grammar": "Place this before the -provider option that needs the directory."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-provider-path"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME",
+          "flag": "-provider",
+          "summary": "Load a cryptographic provider",
+          "detail": "Repeat for multiple providers. When loading providers explicitly, include default if its algorithms are needed.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Load a cryptographic provider",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Repeat for multiple providers. When loading providers explicitly, include default if its algorithms are needed."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-provider"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "NAME=VALUE",
+          "flag": "-provparam",
+          "summary": "Pass a parameter to a provider",
+          "detail": "Use [PROVIDER:]NAME=VALUE. A provider prefix scopes the setting to that provider. Load nondefault providers before setting their parameters. Listed by Resolute and upstream 4.1.0 among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Pass a parameter to a provider",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME=VALUE",
+                    "grammar": "Use [PROVIDER:]NAME=VALUE. A provider prefix scopes the setting to that provider. Load nondefault providers before setting their parameters. Listed by Resolute and upstream 4.1.0 among the reviewed builds."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-provparam"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "argument": "QUERY",
+          "flag": "-propquery",
+          "summary": "Filter eligible algorithm implementations",
+          "detail": "Quote a property query such as 'provider=default'. An unsatisfied query can make an otherwise available algorithm unusable.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Filter eligible algorithm implementations",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This option takes a textual operand."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "QUERY",
+                    "grammar": "Quote a property query such as 'provider=default'. An unsatisfied query can make an otherwise available algorithm unusable."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The command uses its configuration and other options for this setting."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "An operand is required."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "OpenSSL"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "3.0.13",
+                      "3.5.5",
+                      "4.1.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Build availability is described in Details where relevant."
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "This option has no chip-specific operand grammar."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+                      "locator": "-propquery"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Digest selectors",
+      "description": "Digest selectors options for openssl dgst.",
+      "options": [
+        {
+          "argument": "",
+          "flag": "-blake2b512",
+          "summary": "Use BLAKE2B512 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-blake2s256",
+          "summary": "Use BLAKE2S256 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md4",
+          "summary": "Use MD4 for digest output",
+          "detail": "Supply the selector before the input filenames. The Ubuntu clients list this legacy digest, but fetching it normally requires the legacy provider. Listed by Noble and Resolute among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "legacy-digest"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md5",
+          "summary": "Use MD5 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-md5-sha1",
+          "summary": "Use combined MD5/SHA-1 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ripemd",
+          "summary": "Use RIPEMD-160 for digest output",
+          "detail": "Supply the selector before the input filenames. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ripemd160",
+          "summary": "Use RIPEMD-160 for digest output",
+          "detail": "Supply the selector before the input filenames. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-rmd160",
+          "summary": "Use RIPEMD-160 for digest output",
+          "detail": "Supply the selector before the input filenames. This spelling selects RIPEMD-160. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha1",
+          "summary": "Use SHA1 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha224",
+          "summary": "Use SHA224 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-224",
+          "summary": "Use SHA3-224 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-256",
+          "summary": "Use SHA3-256 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-384",
+          "summary": "Use SHA3-384 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha3-512",
+          "summary": "Use SHA3-512 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha384",
+          "summary": "Use SHA384 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha512-224",
+          "summary": "Use SHA512-224 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sha512-256",
+          "summary": "Use SHA512-256 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-shake128",
+          "summary": "Use SHAKE128 for digest output",
+          "detail": "Supply the selector before the input filenames. Use -xoflen to specify the output length in bytes. This is an extendable-output function.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-shake256",
+          "summary": "Use SHAKE256 for digest output",
+          "detail": "Supply the selector before the input filenames. Use -xoflen to specify the output length in bytes. This is an extendable-output function.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-sm3",
+          "summary": "Use SM3 for digest output",
+          "detail": "Supply the selector before the input filenames. Availability depends on the loaded providers and property query.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ssl3-md5",
+          "summary": "Use MD5 for digest output",
+          "detail": "Supply the selector before the input filenames. This spelling selects MD5. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-ssl3-sha1",
+          "summary": "Use SHA-1 for digest output",
+          "detail": "Supply the selector before the input filenames. This spelling selects SHA-1. Algorithm availability depends on the loaded providers.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "digest-selector"
+              }
+            ]
+          }
+        },
+        {
+          "argument": "",
+          "flag": "-whirlpool",
+          "summary": "Use WHIRLPOOL for digest output",
+          "detail": "Supply the selector before the input filenames. The Ubuntu clients list this legacy digest, but fetching it normally requires the legacy provider. Listed by Noble and Resolute among the reviewed builds.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "ref": "legacy-digest"
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "command": [
     "openssl",
     "dgst"
   ],
-  "description": "Hash input data, compute an HMAC or sign and verify a message."
+  "description": "Hash input data, compute an HMAC or sign and verify a message.",
+  "value_definitions": {
+    "digest-selector": {
+      "kind": "enumeration",
+      "meaning": "Select a digest for hashing or signing",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This complete spelling takes no operand."
+      },
+      "forms": [
+        {
+          "id": "algorithm",
+          "notation": "expression",
+          "syntax": "-ALGORITHM",
+          "grammar": "A complete dash-prefixed digest selector. Use openssl dgst -list for the names advertised by the build. Provider availability and the requested operation determine whether it can be used."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default digest for the requested operation and key."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This is a fixed selection without an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "OpenSSL"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "3.0.13",
+            "3.5.5",
+            "4.1.0"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Build availability is described in Details where relevant."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option has no chip-specific operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://github.com/openssl/openssl/blob/openssl-4.1.0/doc/man1/openssl-dgst.pod.in",
+            "locator": "-digest"
+          }
+        ]
+      }
+    },
+    "legacy-digest": {
+      "kind": "enumeration",
+      "meaning": "Select a digest for hashing or signing",
+      "bare": {
+        "state": "not_applicable",
+        "reason": "This complete spelling takes no operand."
+      },
+      "forms": [
+        {
+          "id": "algorithm",
+          "notation": "expression",
+          "syntax": "-ALGORITHM",
+          "grammar": "A complete dash-prefixed digest selector. Use openssl dgst -list for the names advertised by the build. Provider availability and the requested operation determine whether it can be used."
+        }
+      ],
+      "when_absent": {
+        "state": "known",
+        "meaning": "Use the default digest for the requested operation and key."
+      },
+      "when_value_omitted": {
+        "state": "not_applicable",
+        "reason": "This is a fixed selection without an operand."
+      },
+      "applicability": {
+        "implementation": {
+          "state": "known",
+          "values": [
+            "OpenSSL"
+          ]
+        },
+        "version": {
+          "state": "known",
+          "values": [
+            "3.0.13",
+            "3.5.5"
+          ]
+        },
+        "platform": {
+          "state": "not_applicable",
+          "reason": "Build availability is described in Details where relevant."
+        },
+        "chip": {
+          "state": "not_applicable",
+          "reason": "This option has no chip-specific operand grammar."
+        }
+      },
+      "review": {
+        "status": "verified",
+        "references": [
+          {
+            "source": "https://manpages.ubuntu.com/manpages/noble/man1/openssl-dgst.1ssl.html",
+            "locator": "-digest"
+          },
+          {
+            "source": "https://manpages.ubuntu.com/manpages/resolute/man1/openssl-dgst.1ssl.html",
+            "locator": "-digest"
+          }
+        ]
+      }
+    }
+  }
 }

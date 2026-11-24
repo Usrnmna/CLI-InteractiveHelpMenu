@@ -9,7 +9,7 @@
           "flag": "show",
           "kind": "keyword",
           "summary": "List network interfaces",
-          "detail": "With no arguments, ip link lists the interfaces in the current network namespace. Use show before listing filters."
+          "detail": "With no arguments, ip link lists the interfaces in the current network namespace. Use show before listing filters. A device name can follow show directly. Aliases list and lst accept the same filters."
         },
         {
           "argument": "IFNAME",
@@ -151,7 +151,7 @@
               }
             ]
           },
-          "detail": "Use type bridge to list bridges themselves. An unknown type can return an empty listing."
+          "detail": "Use type bridge to list bridges themselves. An unknown type can return an empty listing. Use bridge_slave to select bridge ports."
         },
         {
           "argument": "DEVICE",
@@ -299,6 +299,446 @@
                 "when_value_omitted": {
                   "reason": "This option requires an operand",
                   "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "list",
+          "argument": "",
+          "summary": "List network interfaces",
+          "detail": "Alias for show. With no arguments, ip link lists the interfaces in the current network namespace. Use show before listing filters. A device name can follow show directly.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List network interfaces",
+                    "notation": "literal",
+                    "syntax": "list",
+                    "tokens": [
+                      "list"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List network interfaces",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "ipaddr_list_link and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "lst",
+          "argument": "",
+          "summary": "List network interfaces",
+          "detail": "Alias for show. With no arguments, ip link lists the interfaces in the current network namespace. Use show before listing filters. A device name can follow show directly.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "List network interfaces",
+                    "notation": "literal",
+                    "syntax": "lst",
+                    "tokens": [
+                      "lst"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "List network interfaces",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "ipaddr_list_link and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "help",
+          "argument": "TYPE",
+          "summary": "Show command usage",
+          "detail": "Use ip link help for general syntax. Add a link kind such as bridge after help to show its type-specific syntax.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Link kind for type-specific help",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "A link kind, such as bridge, with type-specific usage."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "No link help is requested by this keyword."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Print general link syntax."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/iplink.c?h=v7.3.0",
+                      "locator": "do_help"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "argument_optional": true
+        },
+        {
+          "flag": "down",
+          "argument": "",
+          "summary": "Show administratively down interfaces",
+          "detail": "Select interfaces whose UP flag is clear. Carrier and operational state are separate. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Show administratively down interfaces",
+                    "notation": "literal",
+                    "syntax": "down",
+                    "tokens": [
+                      "down"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Show administratively down interfaces",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "ipaddr_list_link and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "vrf",
+          "argument": "NAME",
+          "summary": "List interfaces enslaved to a VRF",
+          "detail": "Give the name of an existing VRF device. Members of that VRF appear in the listing.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "List interfaces enslaved to a VRF",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NAME",
+                    "grammar": "Give the name of an existing VRF device. Members of that VRF appear in the listing."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "ipaddr_list_link and ipaddr_list_flush_or_save"
+                    }
+                  ]
+                },
+                "subject": "NAME"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "novf",
+          "argument": "",
+          "summary": "Suppress virtual-function information",
+          "detail": "Omit SR-IOV virtual-function details from the interface output. Devices with virtual functions can still appear. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "kind": "keyword",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Suppress virtual-function information",
+                    "notation": "literal",
+                    "syntax": "novf",
+                    "tokens": [
+                      "novf"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Suppress virtual-function information",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/ip/ipaddress.c?h=v7.3.0",
+                      "locator": "ipaddr_list_link and ipaddr_list_flush_or_save"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
                 }
               }
             ]

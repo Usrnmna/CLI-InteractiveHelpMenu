@@ -259,11 +259,12 @@
         {
           "argument": "",
           "flag": "--no-header",
-          "summary": "Omit the header"
+          "summary": "Omit the header",
+          "detail": "Omit the heading row when consuming the socket listing."
         },
         {
           "argument": "QUERY",
-          "detail": "Give a comma-separated list such as tcp,udp. Prefix a table with ! to exclude it. In Bash, quote the list as in --query='all,!tcp'.",
+          "detail": "Give a comma-separated list such as tcp,udp. Prefix a table with ! to exclude it. In Bash, quote the list as in --query='all,!tcp'. Groups include inet, unix, packet and vsock. Choose individual tables such as unix_stream, unix_dgram, unix_seqpacket, packet_raw, packet_dgram, vsock_stream or vsock_dgram. Other selectors include mptcp, raw, netlink, sctp, tipc and xdp. DCCP is available on both Ubuntu releases, but upstream 7.3 removes it. The all group omits TIPC in the parser; add tipc explicitly when needed.",
           "flag": "--query=",
           "summary": "Select socket tables",
           "value_semantics": {
@@ -300,7 +301,7 @@
                 },
                 "forms": [
                   {
-                    "grammar": "Comma-separated socket-table names. A leading ! excludes a table.",
+                    "grammar": "Socket-table names separated by commas. A leading ! excludes a table.",
                     "id": "grammar",
                     "notation": "expression",
                     "syntax": "VALUE"
@@ -400,7 +401,1326 @@
               }
             ]
           },
-          "detail": "Use a filter expression such as sport = :443 in the file. Use --filter=- to read the filter from standard input."
+          "detail": "Use a filter expression such as sport = :443 in the file. Use --filter=- to read the filter from standard input. Put options before a positional expression. On the command line, state and exclude take state names or groups such as connected. Quote shell operators in expressions such as 'dport >= :1024'."
+        },
+        {
+          "flag": "-n",
+          "argument": "",
+          "summary": "Show port numbers instead of service names",
+          "detail": "Alias of --numeric. Also prints exact bandwidth values when rate information is displayed. Hostname lookup has a separate switch, --resolve."
+        },
+        {
+          "flag": "--resolve",
+          "argument": "",
+          "summary": "Resolve endpoint host names",
+          "detail": "Request host-name lookups for numeric addresses. Service-name formatting is separately controlled by --numeric."
+        },
+        {
+          "flag": "-r",
+          "argument": "",
+          "summary": "Resolve endpoint host names",
+          "detail": "Alias of --resolve. Request host-name lookups for numeric addresses. Service-name formatting is separately controlled by --numeric."
+        },
+        {
+          "flag": "--options",
+          "argument": "",
+          "summary": "Show socket timers",
+          "detail": "TCP timer output gives the timer type, time until expiry and retransmission count. Timer names include on, keepalive, timewait and persist."
+        },
+        {
+          "flag": "-o",
+          "argument": "",
+          "summary": "Show socket timers",
+          "detail": "Alias of --options. TCP timer output gives the timer type, time until expiry and retransmission count. Timer names include on, keepalive, timewait and persist."
+        },
+        {
+          "flag": "-e",
+          "argument": "",
+          "summary": "Show socket ownership and identifiers",
+          "detail": "Alias of --extended. Extended fields can include the owner UID, socket inode (ino) and socket cookie (sk)."
+        },
+        {
+          "flag": "--memory",
+          "argument": "",
+          "summary": "Show socket memory accounting",
+          "detail": "In skmem, r/rb are receive allocation and limit, t/tb send allocation and limit, f cached memory, w queued send memory, o option memory and bl backlog. The final d field counts dropped packets."
+        },
+        {
+          "flag": "-m",
+          "argument": "",
+          "summary": "Show socket memory accounting",
+          "detail": "Alias of --memory. In skmem, r/rb are receive allocation and limit, t/tb send allocation and limit, f cached memory, w queued send memory, o option memory and bl backlog. The final d field counts dropped packets."
+        },
+        {
+          "flag": "--info",
+          "argument": "",
+          "summary": "Show internal TCP statistics",
+          "detail": "Available fields include congestion control, RTT and its variation in milliseconds, retransmission timeout, congestion window and send or pacing rates. Use --numeric for unscaled rates in bits per second."
+        },
+        {
+          "flag": "-i",
+          "argument": "",
+          "summary": "Show internal TCP statistics",
+          "detail": "Alias of --info. Available fields include congestion control, RTT and its variation in milliseconds, retransmission timeout, congestion window and send or pacing rates. Use --numeric for unscaled rates in bits per second."
+        },
+        {
+          "flag": "-p",
+          "argument": "",
+          "summary": "Display processes using sockets",
+          "detail": "Alias of --processes. Where permissions allow, the users field shows process names, PIDs and file descriptors."
+        },
+        {
+          "flag": "--threads",
+          "argument": "",
+          "summary": "Show threads using each socket",
+          "detail": "Show threads that own each socket. On Ubuntu 26.04 add --processes (-p) to make the process/thread column visible. On Ubuntu 24.04 -T alone displays it."
+        },
+        {
+          "flag": "-T",
+          "argument": "",
+          "summary": "Show threads using each socket",
+          "detail": "Show threads that own each socket. On Ubuntu 26.04 add --processes (-p) to make the process/thread column visible. On Ubuntu 24.04 -T alone displays it."
+        },
+        {
+          "flag": "--bpf",
+          "argument": "",
+          "summary": "Show classic socket BPF filters",
+          "detail": "Reading attached classic BPF filter instructions requires administrative privileges. Socket-local storage uses the separate --bpf-maps options on supporting builds."
+        },
+        {
+          "flag": "-b",
+          "argument": "",
+          "summary": "Show classic socket BPF filters",
+          "detail": "Alias of --bpf. Reading attached classic BPF filter instructions requires administrative privileges. Socket-local storage uses the separate --bpf-maps options on supporting builds."
+        },
+        {
+          "flag": "--events",
+          "argument": "",
+          "summary": "Watch socket destruction events",
+          "detail": "Keep listening for destroyed sockets that match the filters. Interrupt the command to stop watching."
+        },
+        {
+          "flag": "-E",
+          "argument": "",
+          "summary": "Watch socket destruction events",
+          "detail": "Alias of --events. Keep listening for destroyed sockets that match the filters. Interrupt the command to stop watching."
+        },
+        {
+          "flag": "--dccp",
+          "argument": "",
+          "summary": "Select DCCP sockets",
+          "detail": "Available on Ubuntu 24.04 and 26.04, subject to kernel support. Upstream 7.3 removed its DCCP table and rejects this selection."
+        },
+        {
+          "flag": "-d",
+          "argument": "",
+          "summary": "Select DCCP sockets",
+          "detail": "Alias of --dccp. Available on Ubuntu 24.04 and 26.04, subject to kernel support. Upstream 7.3 removed its DCCP table and rejects this selection."
+        },
+        {
+          "flag": "-t",
+          "argument": "",
+          "summary": "Display TCP sockets",
+          "detail": "Alias of --tcp. Add --listening for TCP listeners or --all to include listeners alongside other TCP sockets."
+        },
+        {
+          "flag": "--sctp",
+          "argument": "",
+          "summary": "Select SCTP sockets",
+          "detail": "List Stream Control Transmission Protocol sockets. State and address-family filters can narrow the selection."
+        },
+        {
+          "flag": "-S",
+          "argument": "",
+          "summary": "Select SCTP sockets",
+          "detail": "Alias of --sctp. List Stream Control Transmission Protocol sockets. State and address-family filters can narrow the selection."
+        },
+        {
+          "flag": "-u",
+          "argument": "",
+          "summary": "Display UDP sockets",
+          "detail": "Alias of --udp. Add --all to include unconnected UDP sockets."
+        },
+        {
+          "flag": "--raw",
+          "argument": "",
+          "summary": "Select raw IP sockets",
+          "detail": "Choose the raw socket table. Link-layer packet sockets use --packet."
+        },
+        {
+          "flag": "-w",
+          "argument": "",
+          "summary": "Select raw IP sockets",
+          "detail": "Alias of --raw. Choose the raw socket table. Link-layer packet sockets use --packet."
+        },
+        {
+          "flag": "--unix",
+          "argument": "",
+          "summary": "Select Unix domain sockets",
+          "detail": "Include local stream, datagram and sequenced-packet sockets. Use --query to select just one of those tables."
+        },
+        {
+          "flag": "-x",
+          "argument": "",
+          "summary": "Select Unix domain sockets",
+          "detail": "Alias of --unix. Include local stream, datagram and sequenced-packet sockets. Use --query to select just one of those tables."
+        },
+        {
+          "flag": "--tipc",
+          "argument": "",
+          "summary": "Select TIPC sockets",
+          "detail": "Choose the Transparent Inter Process Communication socket family. Use --tipcinfo to show its internal fields."
+        },
+        {
+          "flag": "--vsock",
+          "argument": "",
+          "summary": "Select virtual socket endpoints",
+          "detail": "Select the VM socket address family. Its endpoints use context IDs and ports."
+        },
+        {
+          "flag": "-a",
+          "argument": "",
+          "summary": "Show listening and non-listening sockets",
+          "detail": "Alias of --all. Listeners are normally omitted. Add --tcp or --udp to limit the socket tables."
+        },
+        {
+          "flag": "-l",
+          "argument": "",
+          "summary": "Display listening sockets",
+          "detail": "Alias of --listening. Also includes unconnected UDP sockets when used with --udp."
+        },
+        {
+          "flag": "-4",
+          "argument": "",
+          "summary": "Display IPv4 sockets",
+          "detail": "Alias of --ipv4. Add --tcp or --udp to narrow the IPv4 listing by transport.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Display IPv4 sockets",
+                    "notation": "literal",
+                    "syntax": "-4",
+                    "tokens": [
+                      "-4"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Display IPv4 sockets",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-6",
+          "argument": "",
+          "summary": "Display IPv6 sockets",
+          "detail": "Alias of --ipv6. Add --tcp or --udp to narrow the IPv6 listing by transport.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Display IPv6 sockets",
+                    "notation": "literal",
+                    "syntax": "-6",
+                    "tokens": [
+                      "-6"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Display IPv6 sockets",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--packet",
+          "argument": "",
+          "summary": "Select link-layer packet sockets",
+          "detail": "Equivalent to --family=link. Packet sockets operate at the link layer and can be raw or datagram sockets."
+        },
+        {
+          "flag": "-0",
+          "argument": "",
+          "summary": "Select link-layer packet sockets",
+          "detail": "Alias of --packet. Equivalent to --family=link. Packet sockets operate at the link layer and can be raw or datagram sockets.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "This complete flag selects a mode and has no numerical operand",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "case": "sensitive",
+                    "id": "selected",
+                    "meaning": "Select link-layer packet sockets",
+                    "notation": "literal",
+                    "syntax": "-0",
+                    "tokens": [
+                      "-0"
+                    ]
+                  }
+                ],
+                "kind": "enumeration",
+                "meaning": "Select link-layer packet sockets",
+                "review": {
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "Default mode and other options/configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This fixed flag has no operand",
+                  "state": "not_applicable"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "--family=",
+          "argument": "FAMILY",
+          "summary": "Select a socket address family",
+          "detail": "Use inet, inet6, link, unix, netlink, vsock, tipc or xdp. The special value help prints usage. For example, inet6 selects IPv6.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select a socket address family",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "family",
+                    "notation": "literal",
+                    "syntax": "FAMILY",
+                    "tokens": [
+                      "inet",
+                      "inet6",
+                      "link",
+                      "unix",
+                      "netlink",
+                      "vsock",
+                      "tipc",
+                      "xdp",
+                      "help"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Select this address family, or request usage with help."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-f",
+          "argument": "FAMILY",
+          "summary": "Select a socket address family",
+          "detail": "Alias of --family. Use inet, inet6, link, unix, netlink, vsock, tipc or xdp. The special value help prints usage. For example, inet6 selects IPv6.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Select a socket address family",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "family",
+                    "notation": "literal",
+                    "syntax": "FAMILY",
+                    "tokens": [
+                      "inet",
+                      "inet6",
+                      "link",
+                      "unix",
+                      "netlink",
+                      "vsock",
+                      "tipc",
+                      "xdp",
+                      "help"
+                    ],
+                    "case": "sensitive",
+                    "meaning": "Select this address family, or request usage with help."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "argument_style": "attached"
+        },
+        {
+          "flag": "--socket=",
+          "argument": "QUERY",
+          "summary": "Select socket tables",
+          "detail": "Alias of --query. Give a comma-separated list such as tcp,udp. Prefix a table with ! to exclude it. In Bash, quote the list as in --query='all,!tcp'. Groups include inet, unix, packet and vsock. Choose individual tables such as unix_stream, unix_dgram, unix_seqpacket, packet_raw, packet_dgram, vsock_stream or vsock_dgram. Other selectors include mptcp, raw, netlink, sctp, tipc and xdp. DCCP is available on both Ubuntu releases, but upstream 7.3 removes it. The all group omits TIPC in the parser; add tipc explicitly when needed.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "Socket-table names separated by commas. A leading ! excludes a table.",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "Socket-table identifier-list grammar",
+                  "reference": {
+                    "locator": "--query, --ipv4, --ipv6 and --numeric",
+                    "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by Socket-table identifier-list grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--query, --ipv4, --ipv6 and --numeric",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-A",
+          "argument": "QUERY",
+          "summary": "Select socket tables",
+          "detail": "Alias of --socket. Alias of --query. Give a comma-separated list such as tcp,udp. Prefix a table with ! to exclude it. In Bash, quote the list as in --query='all,!tcp'. Groups include inet, unix, packet and vsock. Choose individual tables such as unix_stream, unix_dgram, unix_seqpacket, packet_raw, packet_dgram, vsock_stream or vsock_dgram. Other selectors include mptcp, raw, netlink, sctp, tipc and xdp. DCCP is available on both Ubuntu releases, but upstream 7.3 removes it. The all group omits TIPC in the parser; add tipc explicitly when needed.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "applicability": {
+                  "chip": {
+                    "reason": "No chip-specific interpretation is claimed",
+                    "state": "not_applicable"
+                  },
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  }
+                },
+                "bare": {
+                  "reason": "The owning grammar determines any numerical interpretation",
+                  "state": "not_applicable"
+                },
+                "forms": [
+                  {
+                    "grammar": "Socket-table names separated by commas. A leading ! excludes a table.",
+                    "id": "grammar",
+                    "notation": "expression",
+                    "syntax": "VALUE"
+                  }
+                ],
+                "grammar": {
+                  "name": "Socket-table identifier-list grammar",
+                  "reference": {
+                    "locator": "--query, --ipv4, --ipv6 and --numeric",
+                    "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8"
+                  }
+                },
+                "kind": "delegated",
+                "meaning": "Value interpreted by Socket-table identifier-list grammar",
+                "review": {
+                  "references": [
+                    {
+                      "locator": "--query, --ipv4, --ipv6 and --numeric",
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8"
+                    }
+                  ],
+                  "status": "verified"
+                },
+                "when_absent": {
+                  "meaning": "No value is supplied by this option; other defaults and configuration remain applicable",
+                  "state": "known"
+                },
+                "when_value_omitted": {
+                  "reason": "This option requires an operand",
+                  "state": "not_accepted"
+                }
+              }
+            ]
+          },
+          "argument_style": "attached"
+        },
+        {
+          "flag": "--summary",
+          "argument": "",
+          "summary": "Show aggregate socket counts",
+          "detail": "Read kernel summary counters without walking the socket lists. An explicit socket selection can also request the matching listing."
+        },
+        {
+          "flag": "-s",
+          "argument": "",
+          "summary": "Show aggregate socket counts",
+          "detail": "Alias of --summary. Read kernel summary counters without walking the socket lists. An explicit socket selection can also request the matching listing."
+        },
+        {
+          "flag": "--diag=",
+          "argument": "FILE",
+          "summary": "Write a raw TCP diagnostic dump",
+          "detail": "Write binary TCP records to FILE, or - for stdout. An existing file is truncated. State selection applies, but the dump happens before positional expressions and file filters are evaluated. A port expression does not restrict this dump.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write a raw TCP diagnostic dump",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Output filename for raw TCP diagnostics; - sends the binary records to standard output."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-D",
+          "argument": "FILE",
+          "summary": "Write a raw TCP diagnostic dump",
+          "detail": "Write binary TCP records to FILE, or - for stdout. An existing file is truncated. State selection applies, but the dump happens before positional expressions and file filters are evaluated. A port expression does not restrict this dump.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Write a raw TCP diagnostic dump",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "FILE",
+                    "grammar": "Output filename for raw TCP diagnostics; - sends the binary records to standard output."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "argument_style": "attached"
+        },
+        {
+          "flag": "-F",
+          "argument": "FILE",
+          "summary": "Read a socket filter from a file",
+          "detail": "Alias of --filter. Use a filter expression such as sport = :443 in the file. Use --filter=- to read the filter from standard input. Put options before a positional expression. On the command line, state and exclude take state names or groups such as connected. Quote shell operators in expressions such as 'dport >= :1024'.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Socket filter source file",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "text",
+                    "notation": "expression",
+                    "syntax": "VALUE",
+                    "grammar": "Filename containing socket-filter expressions; - reads standard input. Numeric subexpressions retain the socket filter's port/state/address grammar."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Do not load an additional socket-filter file."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.13.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "not_applicable",
+                    "reason": "Parameter interpretation is described here; operating-system availability is not asserted"
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://raw.githubusercontent.com/iproute2/iproute2/v6.13.0/man/man8/ss.8",
+                      "locator": "--filter"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "argument_style": "attached"
+        },
+        {
+          "flag": "--version",
+          "argument": "",
+          "summary": "Show the ss version",
+          "detail": "Print the iproute2 release associated with this ss client and exit."
+        },
+        {
+          "flag": "-V",
+          "argument": "",
+          "summary": "Show the ss version",
+          "detail": "Alias of --version. Print the iproute2 release associated with this ss client and exit."
+        },
+        {
+          "flag": "--help",
+          "argument": "",
+          "summary": "Show ss option and filter syntax",
+          "detail": "Print the option list, available socket tables, family names and filter synopsis, then exit."
+        },
+        {
+          "flag": "-h",
+          "argument": "",
+          "summary": "Show ss option and filter syntax",
+          "detail": "Alias of --help. Print the option list, available socket tables, family names and filter synopsis, then exit."
+        },
+        {
+          "flag": "--context",
+          "argument": "",
+          "summary": "Show process SELinux contexts",
+          "detail": "Requires active SELinux. Include process ownership, with thread contexts when combined with --threads. On Ubuntu 26.04 include -p to enable the ownership column."
+        },
+        {
+          "flag": "-Z",
+          "argument": "",
+          "summary": "Show process SELinux contexts",
+          "detail": "Alias of --context. Requires active SELinux. Include process ownership, with thread contexts when combined with --threads. On Ubuntu 26.04 include -p to enable the ownership column."
+        },
+        {
+          "flag": "--contexts",
+          "argument": "",
+          "summary": "Show process and socket SELinux contexts",
+          "detail": "Requires active SELinux. Adds the socket inode label to the process context. The inode label can differ from the live kernel socket context. On Ubuntu 26.04 include -p to enable the ownership column."
+        },
+        {
+          "flag": "-z",
+          "argument": "",
+          "summary": "Show process and socket SELinux contexts",
+          "detail": "Alias of --contexts. Requires active SELinux. Adds the socket inode label to the process context. The inode label can differ from the live kernel socket context. On Ubuntu 26.04 include -p to enable the ownership column."
+        },
+        {
+          "flag": "--net=",
+          "argument": "NSNAME",
+          "summary": "Inspect a named network namespace",
+          "detail": "Supply an existing network namespace name. The selection applies to sockets visible there. Access depends on permission to enter that namespace.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Inspect a named network namespace",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NSNAME",
+                    "grammar": "Supply an existing network namespace name. The selection applies to sockets visible there. Access depends on permission to enter that namespace."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                },
+                "subject": "NSNAME"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-N",
+          "argument": "NSNAME",
+          "summary": "Inspect a named network namespace",
+          "detail": "Alias of --net. Supply an existing network namespace name. The selection applies to sockets visible there. Access depends on permission to enter that namespace.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Inspect a named network namespace",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "This is a text/selector grammar, not an unsuffixed scalar measurement"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "NSNAME",
+                    "grammar": "Supply an existing network namespace name. The selection applies to sockets visible there. Access depends on permission to enter that namespace."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.1.0",
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                },
+                "subject": "NSNAME"
+              }
+            ]
+          },
+          "argument_style": "attached"
+        },
+        {
+          "flag": "--tipcinfo",
+          "argument": "",
+          "summary": "Show internal TIPC socket information",
+          "detail": "Use with --tipc to select TIPC sockets and display additional protocol-specific fields."
+        },
+        {
+          "flag": "--tos",
+          "argument": "",
+          "summary": "Show traffic class and socket priority",
+          "detail": "Display the IPv4 type-of-service byte or IPv6 traffic class. The class_id field can show the net_cls cgroup class or socket priority."
+        },
+        {
+          "flag": "--cgroup",
+          "argument": "",
+          "summary": "Show socket cgroup membership",
+          "detail": "Display the cgroup v2 path relative to the hierarchy mount point when available."
+        },
+        {
+          "flag": "--kill",
+          "argument": "",
+          "summary": "Forcibly close matching sockets",
+          "detail": "This changes live connections. It reports successfully closed IPv4 or IPv6 sockets and silently skips sockets the kernel cannot close. Use a narrow filter."
+        },
+        {
+          "flag": "-K",
+          "argument": "",
+          "summary": "Forcibly close matching sockets",
+          "detail": "Alias of --kill. This changes live connections. It reports successfully closed IPv4 or IPv6 sockets and silently skips sockets the kernel cannot close. Use a narrow filter."
+        },
+        {
+          "flag": "-H",
+          "argument": "",
+          "summary": "Omit the header",
+          "detail": "Alias of --no-header. Omit the heading row when consuming the socket listing."
+        },
+        {
+          "flag": "--xdp",
+          "argument": "",
+          "summary": "Select AF_XDP sockets",
+          "detail": "Choose sockets using the Express Data Path address family."
+        },
+        {
+          "flag": "--mptcp",
+          "argument": "",
+          "summary": "Select Multipath TCP sockets",
+          "detail": "Use the MPTCP socket table. The TCP and MPTCP tables can be selected together with --query=tcp,mptcp."
+        },
+        {
+          "flag": "-M",
+          "argument": "",
+          "summary": "Select Multipath TCP sockets",
+          "detail": "Alias of --mptcp. Use the MPTCP socket table. The TCP and MPTCP tables can be selected together with --query=tcp,mptcp."
+        },
+        {
+          "flag": "--oneline",
+          "argument": "",
+          "summary": "Keep each socket on one output line",
+          "detail": "Keep optional timer, memory and protocol details on the same line as their socket."
+        },
+        {
+          "flag": "-O",
+          "argument": "",
+          "summary": "Keep each socket on one output line",
+          "detail": "Alias of --oneline. Keep optional timer, memory and protocol details on the same line as their socket."
+        },
+        {
+          "flag": "--inet-sockopt",
+          "argument": "",
+          "summary": "Show Internet socket options",
+          "detail": "Display the reported settings for IPv4 and IPv6 sockets, such as freebind or transparent mode when present."
+        },
+        {
+          "flag": "--bound-inactive",
+          "argument": "",
+          "summary": "Show bound but inactive TCP sockets",
+          "detail": "Include the TCP state for a bound socket that is neither listening nor connecting. These sockets are normally omitted. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it."
+        },
+        {
+          "flag": "-B",
+          "argument": "",
+          "summary": "Show bound but inactive TCP sockets",
+          "detail": "Alias of --bound-inactive. Include the TCP state for a bound socket that is neither listening nor connecting. These sockets are normally omitted. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it."
+        },
+        {
+          "flag": "--no-queues",
+          "argument": "",
+          "summary": "Hide the receive and send queues",
+          "detail": "Remove both queue columns from the listing. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it."
+        },
+        {
+          "flag": "-Q",
+          "argument": "",
+          "summary": "Hide the receive and send queues",
+          "detail": "Alias of --no-queues. Remove both queue columns from the listing. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it."
+        },
+        {
+          "flag": "--bpf-maps",
+          "argument": "",
+          "summary": "Show all socket-local BPF storage",
+          "detail": "Pretty-print attached socket-local storage from all available maps. It cannot be combined with --bpf-map-id. Requires a build with BPF socket storage support. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it."
+        },
+        {
+          "flag": "--bpf-map-id=",
+          "argument": "ID",
+          "summary": "Show socket-local storage from one BPF map",
+          "detail": "Give an existing socket-storage map ID. Repeat for multiple IDs, or use --bpf-maps for all maps. Requires BPF socket storage support and permission to read the map. Ubuntu 26.04 and upstream 7.3 support this spelling. Ubuntu 24.04 lacks it.",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Show socket-local storage from one BPF map",
+                "bare": {
+                  "state": "accepted",
+                  "form": "id"
+                },
+                "forms": [
+                  {
+                    "id": "id",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "Positive map ID from 1 to 4294967294, in decimal, 0x hexadecimal or leading-zero octal. The map must exist."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "This option supplies no explicit selection or value."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "The option requires its operand"
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "iproute2"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "6.19.0",
+                      "7.3.0"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "No chip-specific interpretation is claimed by this parameter contract"
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ss.c?h=v7.3.0",
+                      "locator": "long_opts and main"
+                    }
+                  ]
+                },
+                "subject": "ID"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-v",
+          "argument": "",
+          "summary": "Show the ss version",
+          "detail": "Undocumented alias of -V and --version. Both packaged clients print their release and exit."
         }
       ]
     }
