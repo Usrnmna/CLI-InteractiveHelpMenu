@@ -135,16 +135,2821 @@
               }
             ]
           },
-          "detail": "Attach the type, as in -tzip. By default, detection uses the archive name extension. Run 7z i to list the formats this build supports."
+          "detail": "Attach the type, as in -tzip. Detection uses the filename extension and can recognize content under another extension. Use '-t*' for the top level only, '-t*:r' for supported nested archives, or '-t#' for parser mode. Run 7z i to list built-in and installed plugin handlers."
         },
         {
           "flag": "-y",
           "summary": "Answer yes to overwrite prompts",
-          "detail": "By default, existing files with matching paths are replaced without asking. Use -aos to skip existing files."
+          "detail": "Ordinary extraction asks before replacing a matching file. With -y, the default action replaces it without asking. An explicit -ao mode takes precedence. Use -aos to skip existing files."
         },
         {
           "flag": "-bd",
-          "summary": "Disable the progress indicator."
+          "summary": "Disable the progress indicator.",
+          "detail": "Normal messages and errors still appear. Use -bso or -bse to change their destinations."
+        }
+      ]
+    },
+    {
+      "name": "Archive and member selection",
+      "options": [
+        {
+          "flag": "--",
+          "summary": "Treat following switches and list-file markers as names",
+          "detail": "Use -- before an archive or member named '-draft' or '@notes'. It stops option and @listfile parsing for all later words. Quote wildcard characters for Bash; -- still allows 7-Zip wildcard matching."
+        },
+        {
+          "flag": "-ai",
+          "summary": "Include additional input archives",
+          "detail": "Attach a pattern as '-ai!*.zip' or a list file as -ai@archives.txt. Use -an when the switch supplies every archive. To search subdirectories on disk, put r in this switch, as in '-air!*.zip'.",
+          "argument": "Selector",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Archive inclusion rule",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Selector",
+                    "grammar": "Use !PATTERN or @LISTFILE after optional r, m and w modifiers. The list has one path or pattern per line."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the positional archive name."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -ai"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/ar_include.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-an",
+          "summary": "Take archive names from inclusion switches",
+          "detail": "Pair with '-ai!*.zip' or -ai@archives.txt. All remaining positional filenames and patterns then select members inside those archives."
+        },
+        {
+          "flag": "-ax",
+          "summary": "Exclude matching input archives",
+          "detail": "Attach a pattern such as '-ax!old*.zip' or a list file such as -ax@omit.txt. This filters archives on disk. Use -x for names inside them. Repeat for additional exclusions.",
+          "argument": "Selector",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Archive exclusion rule",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Selector",
+                    "grammar": "Use !PATTERN or @LISTFILE after optional r, m and w modifiers. Set r here to search disk subdirectories."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use all selected archives."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -ax"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/ar_exclude.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-i",
+          "summary": "Include matching archive members",
+          "detail": "Attach a name, a quoted wildcard such as '-ir!*.txt', or a list such as -i@names.txt. The ! introduces a name or pattern. The @ introduces a list file. Repeat for more selections. * matches names without extensions too.",
+          "argument": "Selector",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Member inclusion rule",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Selector",
+                    "grammar": "Before !PATTERN or @LISTFILE, r, r- or r0 set recursion. Use m, m- or m2 for directory marks and w or w- for wildcards."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use positional member patterns, or select all members if none are given."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -i"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/include.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-x",
+          "summary": "Exclude matching archive members",
+          "detail": "Use '-xr!*.tmp' to exclude matching basenames at any depth or -x@omit.txt for a list. Quote ! and wildcards together so Bash passes them literally. Repeat for additional exclusions.",
+          "argument": "Selector",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Member exclusion rule",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Selector",
+                    "grammar": "Before !PATTERN or @LISTFILE, r, r- or r0 set recursion, m, m- or m2 set directory marks, and w or w- enable or disable wildcards."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Exclude no members by name."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -x"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/exclude.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-xtd",
+          "summary": "Skip directory metadata entries",
+          "detail": "Files beneath a directory can still be extracted. Necessary parent directories can be created even when their archived metadata is skipped."
+        },
+        {
+          "flag": "-xtf",
+          "summary": "Skip file entries",
+          "detail": "Only directory records remain eligible. This source-supported counterpart to -xtd operates on entry type."
+        },
+        {
+          "flag": "-r",
+          "summary": "Search subdirectories for member names",
+          "detail": "Use -r for all names, -r0 for wildcard patterns only, or -r- for the default search. Selecting a directory still includes its contents. For input archive discovery, set recursion on -ai or -ax.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Recursive name search",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "Suffix 0 recurses for wildcards only. A minus sign disables recursive name search."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Search from the specified level."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Search all subdirectories for the given names."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -r"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/recurse.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-spd",
+          "summary": "Match names literally",
+          "detail": "Quote names containing * or ? so the shell preserves them. This disables 7-Zip wildcard matching. A w modifier can re-enable matching for an individual filter."
+        },
+        {
+          "flag": "-spm",
+          "summary": "Require a trailing slash to select directories",
+          "detail": "On Linux, use dir/ to select a directory. With -spm2 a literal directory name may omit the slash, but wildcard selectors still require it. The default -spm- allows either form.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Directory-mark policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "2 relaxes the mark for exact names. A minus sign also relaxes it for wildcard names."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "A selector can match a directory with or without a trailing slash."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Require the trailing slash for directory matches."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -spm"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/spm.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-ssc",
+          "summary": "Match names case-sensitively",
+          "detail": "Linux uses case-sensitive matching by default. Use -ssc- to let a pattern such as '*.TXT' match 'notes.txt'.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Filename case matching",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign enables case-insensitive comparison."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the platform name-comparison default."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Compare case-sensitively."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -ssc"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/ssc.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-scs",
+          "summary": "Choose the encoding of filename lists",
+          "detail": "A list file holds one name or pattern per line. UTF-8 is the default. Use -scsUTF-16LE or -scsUTF-16BE for UTF-16 lists. A Unicode byte-order mark must agree with the selected encoding.",
+          "argument": "Charset",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "List-file character encoding",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Charset",
+                    "grammar": "UTF-8, UTF-16LE, UTF-16BE, WIN, DOS or a supported numeric code page. Encoding support depends on the platform."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Decode lists as UTF-8."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -scs"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/charset.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Existing files and output paths",
+      "options": [
+        {
+          "flag": "-aoa",
+          "summary": "Overwrite existing files without prompting",
+          "detail": "The extracted data replaces the file at the matching destination. Without an explicit policy or -y, 7-Zip asks how to handle a collision."
+        },
+        {
+          "flag": "-aos",
+          "summary": "Skip files that already exist",
+          "detail": "The existing file keeps its name and contents. An explicit skip policy also applies with -y."
+        },
+        {
+          "flag": "-aou",
+          "summary": "Rename the incoming file on a collision",
+          "detail": "If note.txt exists, it keeps its name and contents. The extracted file becomes note_1.txt, or the next free numbered name. This policy also applies with -y."
+        },
+        {
+          "flag": "-aot",
+          "summary": "Rename the existing file on a collision",
+          "detail": "If note.txt already exists, 7-Zip moves it to note_1.txt (or the next free numbered name). Adding -y keeps this rename policy. The extracted file keeps its original name."
+        },
+        {
+          "flag": "-spe",
+          "summary": "Avoid duplicating the archive root directory",
+          "detail": "With -oproject, if every entry starts with project/, extract to project/file instead of project/project/file. Extraction with absolute paths bypasses this reduction. Use -spe- to retain the duplicate level.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Duplicate root folder policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign keeps the matching root directory level."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Keep the archived directory structure."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Suppress the duplicate root when it matches the output directory."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -spe"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-spf",
+          "summary": "Honor absolute paths stored in the archive",
+          "detail": "Ordinary extraction converts stored paths to relative paths under the destination. -spf can write to an absolute stored location outside that directory. The manual describes -spf2 as full paths without the drive letter.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Stored path policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "The optional 2 selects full paths without the drive-letter prefix."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Extract paths relative to the destination."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Allow fully qualified paths."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -spf"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/spf.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-spod",
+          "summary": "Use the output directory literally",
+          "detail": "On Linux, '-omy*dir' retains its literal asterisk. Quote it to protect it from the shell. Available since 26.01. Ubuntu 24.04 and 26.04 reject this switch."
+        },
+        {
+          "flag": "-spoc",
+          "summary": "Append the archive name to the output directory",
+          "detail": "With -oout, sample.zip extracts below out/sample/. With no -o path, a subdirectory takes its name from each archive. Available since 26.01. Ubuntu 24.04 and 26.04 reject this switch."
+        },
+        {
+          "flag": "-spor",
+          "summary": "Replace output-path asterisks with the archive name",
+          "detail": "With '-oout/*', sample.zip extracts below out/sample/. This is the default path mode. Available since 26.01. Ubuntu 24.04 and 26.04 reject this switch."
+        }
+      ]
+    },
+    {
+      "name": "Archive input and decoded data",
+      "options": [
+        {
+          "flag": "-stx",
+          "summary": "Disable an archive-format handler",
+          "detail": "For example, -stxpe excludes the PE handler while detecting an embedded archive. Repeat for each format to exclude. Use -t to force a particular format.",
+          "argument": "Type",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Excluded archive format",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Type",
+                    "grammar": "Attach a handler name such as pe, zip or 7z."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Allow detection by all available handlers."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -stx"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/stx.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-p",
+          "summary": "Supply the decryption password",
+          "detail": "Attach the password to -p to supply it on the command line. To enter it at a prompt, omit -p entirely. During extraction, bare -p supplies an empty password.",
+          "argument": "Password",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Decryption password",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Password",
+                    "grammar": "Text immediately following -p is the password, including any digits."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Prompt if the archive needs a password."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Supply an empty password."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "Parse2, PasswordEnabled and Password"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/password.htm"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Console/Main.cpp",
+                      "locator": "Extract group, PasswordIsDefined = options.PasswordEnabled"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-si",
+          "summary": "Read the input archive from standard input",
+          "detail": "Use -si -ttar < input.tar without a positional archive name. Subsequent names select members. With -sifoo.gz -tgzip an unnamed gzip member extracts as foo. Stream input needs a sequential reader such as tar, gzip, bzip2, xz or lzma.",
+          "argument": "Name",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Logical input archive name",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Name",
+                    "grammar": "An optional attached name identifies the input stream to the archive reader."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Read archives from disk."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Read an unnamed input stream."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -si"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/stdin.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-so",
+          "summary": "Write extracted bytes to standard output",
+          "detail": "Select one member to capture a single file, for example -so sample.zip notes.txt > notes.txt. With multiple files, their bytes share one stream without filename boundaries."
+        },
+        {
+          "flag": "-scrc",
+          "summary": "Report checksums of extracted data",
+          "detail": "Bare -scrc uses CRC32. Attach a method such as SHA256 or quote '-scrc*' for all available methods. The digest covers unpacked data. The archive's own integrity checks still run.",
+          "argument": "Method",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Checksum algorithm",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Method",
+                    "grammar": "Use an installed hash method name or * for all available methods."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Skip the extra checksum report."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Compute CRC32."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -scrc"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/scrc.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-m",
+          "summary": "Set a format-specific decoder property",
+          "detail": "Attach a property such as -mmt2 or -mcp=437. The archive handler determines which properties affect reading. Compression-level settings such as -mx9 apply when writing archives.",
+          "argument": "Property",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "nonnumerical",
+                "meaning": "Archive-handler property",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Property",
+                    "grammar": "Attach the property name and optional value as one token. Multiple -m properties can be given."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the reader’s default properties."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "SetMethodOptions and extract Properties"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/method.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-mmt",
+          "summary": "Choose the decoder thread count",
+          "detail": "For a codec with parallel decoding, -mmt2 requests two threads. Some streams decode serially. The property also accepts -mmt=off and -mmt=on.",
+          "argument": "Threads",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "count",
+                "meaning": "Decoder worker threads",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "Threads",
+                    "grammar": "Attach a decimal thread count or use =off or =on."
+                  },
+                  {
+                    "id": "policy",
+                    "notation": "literal",
+                    "syntax": "=off | =on",
+                    "tokens": [
+                      "=off",
+                      "=on"
+                    ],
+                    "case": "insensitive",
+                    "meaning": "Disable or enable multithreading."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Let the decoder select its thread count."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Enable the default multithreading policy."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -mmt"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/method.htm"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/Common/MethodProps.cpp",
+                      "locator": "ParseMtProp2, thread count and on/off forms"
+                    }
+                  ]
+                },
+                "subject": "decoder worker threads"
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-mcp=",
+          "summary": "Select the code page for legacy ZIP names",
+          "detail": "Use -mcp=437 for CP437 when legacy ZIP names decode incorrectly. Resolute converted the same legacy filename differently with CP437 and CP1252. On Noble and upstream Linux 26.06, both settings preserved the original filename byte. To request the default OEM code page explicitly, use -mcp or -mcp=.",
+          "argument": "CodePage",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "identifier",
+                "meaning": "Legacy ZIP filename code page",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "CodePage",
+                    "grammar": "Supply the decimal code-page ID, such as 437. Conversion of legacy ZIP names is build-dependent."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the ZIP reader’s ordinary filename decoding."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "The ZIP handler selects its default OEM code page for -mcp and -mcp=."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -mcp="
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/method.htm"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/Archive/Zip/ZipHandlerOut.cpp",
+                      "locator": "CHandler::SetProperties, cp"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/Archive/Zip/ZipHandlerOut.cpp",
+                      "locator": "CHandler::SetProperties, cp and CP_OEMCP"
+                    }
+                  ]
+                },
+                "subject": "ZIP filename code page"
+              }
+            ]
+          },
+          "argument_optional": true
+        },
+        {
+          "flag": "-mmemuse=",
+          "summary": "Set the memory target for decoder threads",
+          "detail": "For a supported decoder, -mmemuse=p60 sets a target of 60% of available RAM and -mmemuse=2g requests 2 GiB. Automatic thread selection tries to fit this budget. Decoding can continue above it. The menu inserts -mmemuse=. The XZ decoder also accepts -mmemuse2g.",
+          "argument": "Budget",
+          "argument_style": "equals",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "Decoder memory budget",
+                "bare": {
+                  "state": "accepted",
+                  "form": "bytes"
+                },
+                "forms": [
+                  {
+                    "id": "bytes",
+                    "notation": "number",
+                    "syntax": "N",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "b",
+                    "notation": "suffix",
+                    "syntax": "Nb",
+                    "tokens": [
+                      "b"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "k",
+                    "notation": "suffix",
+                    "syntax": "Nk",
+                    "tokens": [
+                      "k"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    }
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
+                  },
+                  {
+                    "id": "g",
+                    "notation": "suffix",
+                    "syntax": "Ng",
+                    "tokens": [
+                      "g"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    }
+                  },
+                  {
+                    "id": "t",
+                    "notation": "suffix",
+                    "syntax": "Nt",
+                    "tokens": [
+                      "t"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    }
+                  },
+                  {
+                    "id": "percentPrefix",
+                    "notation": "prefix",
+                    "syntax": "pN",
+                    "tokens": [
+                      "p"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "ratio",
+                      "multiplier": "0.01",
+                      "relative_to": "RAM available to the decoder"
+                    }
+                  },
+                  {
+                    "id": "percentSuffix",
+                    "notation": "suffix",
+                    "syntax": "N%",
+                    "tokens": [
+                      "%"
+                    ],
+                    "unit": {
+                      "base": "ratio",
+                      "multiplier": "0.01",
+                      "relative_to": "RAM available to the decoder"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "The common decoder policy targets about 53% of RAM when the available amount is known."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -mmemuse="
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/method.htm"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/Archive/Common/HandlerOut.cpp",
+                      "locator": "ParseSizeString and SetCommonProperty, memuse"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/Archive/Common/HandlerOut.h",
+                      "locator": "CCommonMethodProps::InitCommon, _memUsage_Decompress"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-smemx",
+          "summary": "Set the memory limit for RAR unpacking",
+          "detail": "Use -smemx4g to allow 4 GiB, the documented default. This requires a RAR handler. Resolute 7z lists RAR, its standalone 7zz lacks the handler, and Noble 23.01 lacks the switch.",
+          "argument": "Size",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "quantity",
+                "meaning": "RAR unpacking memory limit",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "Size",
+                    "grammar": "An unsigned decimal without a suffix counts bytes.",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "b",
+                    "notation": "suffix",
+                    "syntax": "Nb",
+                    "tokens": [
+                      "b"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1"
+                    }
+                  },
+                  {
+                    "id": "k",
+                    "notation": "suffix",
+                    "syntax": "Nk",
+                    "tokens": [
+                      "k"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1024"
+                    }
+                  },
+                  {
+                    "id": "m",
+                    "notation": "suffix",
+                    "syntax": "Nm",
+                    "tokens": [
+                      "m"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1048576"
+                    }
+                  },
+                  {
+                    "id": "g",
+                    "notation": "suffix",
+                    "syntax": "Ng",
+                    "tokens": [
+                      "g"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1073741824"
+                    }
+                  },
+                  {
+                    "id": "t",
+                    "notation": "suffix",
+                    "syntax": "Nt",
+                    "tokens": [
+                      "t"
+                    ],
+                    "case": "insensitive",
+                    "unit": {
+                      "base": "byte",
+                      "multiplier": "1099511627776"
+                    }
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the RAR decoder’s default allowance."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "ParseSizeString and kExtractMemLimit"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Links, ownership and stream names",
+      "options": [
+        {
+          "flag": "-snh",
+          "summary": "Recreate hard links from shared archived inode IDs",
+          "detail": "Enabled by default for extraction from disk. The archive handler must supply inode information. A TAR hard link specified by target path uses a different mechanism."
+        },
+        {
+          "flag": "-snh-",
+          "summary": "Disable shared-inode hard-link detection",
+          "detail": "Skip the pass that groups entries by archived inode ID. Explicit TAR hard-link entries can still produce hard links."
+        },
+        {
+          "flag": "-snl",
+          "summary": "Restore archived symbolic links",
+          "detail": "Symbolic-link extraction is enabled by default. The target and the link's location are subject to the active link-safety checks."
+        },
+        {
+          "flag": "-snl-",
+          "summary": "Disable creation of symbolic links",
+          "detail": "Use when symbolic links in the archive should not be recreated. Ordinary file data is still eligible for extraction."
+        },
+        {
+          "flag": "-snld",
+          "summary": "Choose the symbolic-link safety policy",
+          "detail": "Noble 23.01 uses -snld to permit potentially dangerous links and -snld- to restrict them. Resolute 26.00 and upstream 26.06 use levels: 0 is most restrictive, 20 disables the checks. Bare -snld uses 9 there, above the usual level 5.",
+          "argument": "Policy",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Symbolic-link extraction policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "-",
+                    "grammar": "A minus sign selects restrictive link handling."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Apply the normal checks for potentially dangerous links."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Allow potentially dangerous links on Noble."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/23.01/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and kSymLinks_AllowDangerous"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "level",
+                "meaning": "Symbolic-link extraction policy",
+                "bare": {
+                  "state": "accepted",
+                  "form": "level"
+                },
+                "forms": [
+                  {
+                    "id": "level",
+                    "notation": "number",
+                    "syntax": "N",
+                    "grammar": "The documented scale runs from 0 (most restrictive) to 20 (checks disabled)."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use level 5."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use level 9."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -snld"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                },
+                "ordering": "Higher settings allow progressively more link targets and operations."
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-snoi",
+          "summary": "Restore numeric owner and group IDs",
+          "detail": "For Linux TAR entries with owner metadata, 7-Zip attempts to restore the stored UID and GID. The account performing extraction needs permission to set them. Use -snoi- to disable this.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Numeric ownership restoration",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "The minus suffix leaves ownership to the filesystem."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Leave the new files under the extracting account’s ownership."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Apply archived owner and group IDs."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -snoi"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-sns",
+          "summary": "Extract archived alternate data streams",
+          "detail": "This is enabled by default. On Linux an archived stream can become a separate filename such as note:stream. Use -sns- to omit alternate streams.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Alternate stream extraction",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign skips entries identified as alternate streams."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Include alternate streams."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Include alternate streams."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -sns"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/sns.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-snc",
+          "summary": "Interpret colons in member names as alternate streams",
+          "detail": "A member named note:stream is treated as a stream of note. Combine with -snr to write note_stream, or with -sns- to skip that stream."
+        },
+        {
+          "flag": "-snr",
+          "summary": "Use underscores in alternate-stream output names",
+          "detail": "On Linux an alternate stream of note named stream can be written as note_stream instead of note:stream. Use -snc if an ordinary colon-bearing member should be treated as a stream."
+        },
+        {
+          "flag": "-snt",
+          "summary": "Replace trailing periods and spaces in names",
+          "detail": "Upstream Linux 26.06 writes trailing periods and spaces as underscores. Use -snt- to preserve them, the Linux default. Both Ubuntu versions accept the switch but preserve those characters.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Trailing filename character policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign preserves trailing spaces and periods."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Preserve these characters on Linux."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Replace each trailing space or period with an underscore on upstream Linux 26.06."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -snt"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Console and resource controls",
+      "options": [
+        {
+          "flag": "-ba",
+          "summary": "Hide the program header",
+          "detail": "The archive name, extraction result and summary can still appear. Use -bso0 to suppress all normal messages."
+        },
+        {
+          "flag": "-bb",
+          "summary": "Set file-by-file logging detail",
+          "detail": "-bb or -bb1 lists processed filenames. -bb0 disables file logging, the default. -bb2 also lists skipped files decoded inside a solid archive. Level 3 adds detail for archive updates.",
+          "argument": "Level",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "level",
+                "meaning": "File operation log level",
+                "bare": {
+                  "state": "accepted",
+                  "form": "operand"
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "number",
+                    "syntax": "Level",
+                    "grammar": "The documented levels are 0 through 3."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Omit the per-file log."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Use level 1."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -bb"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/bb.htm"
+                    }
+                  ]
+                },
+                "ordering": "Higher levels include more internal operations where applicable."
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-bso",
+          "summary": "Route normal messages",
+          "detail": "Normal messages default to stdout (-bso1). Use -bso0 to silence them or -bso2 for stderr. With -so, 7-Zip suppresses these messages by default to keep stdout available for member data.",
+          "argument": "Destination",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Normal messages stream destination",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Destination",
+                    "grammar": "Choose the stream identifier 0 (disabled), 1 (stdout) or 2 (stderr)."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use stdout for normal messages during ordinary extraction."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -bso"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/bs.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-bse",
+          "summary": "Route error messages",
+          "detail": "Errors default to stderr (-bse2). Use -bse1 to send them to stdout, or -bse0 to suppress them.",
+          "argument": "Destination",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Error messages stream destination",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Destination",
+                    "grammar": "Choose the stream identifier 0 (disabled), 1 (stdout) or 2 (stderr)."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Write errors to stderr."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -bse"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/bs.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-bsp",
+          "summary": "Route progress",
+          "detail": "Progress defaults to stdout (-bsp1) on a terminal. Redirecting stdout or using -so turns off automatic progress. Use -bsp2 to request progress on stderr or -bsp0 to disable it.",
+          "argument": "Destination",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Progress stream destination",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Destination",
+                    "grammar": "Choose the stream identifier 0 (disabled), 1 (stdout) or 2 (stderr)."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "During ordinary interactive extraction, display progress on stdout."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -bsp"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/bs.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-bt",
+          "summary": "Print execution time statistics",
+          "detail": "Adds timing and resource information to the normal output at the end of the operation."
+        },
+        {
+          "flag": "-scc",
+          "summary": "Set the console character encoding",
+          "detail": "Attach UTF-8, WIN or DOS, for example -sccUTF-8. This controls text messages and console input. Redirected member bytes from -so and names in @listfile have separate handling.",
+          "argument": "Charset",
+          "argument_style": "attached_only",
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Console text encoding",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Charset",
+                    "grammar": "Select a console encoding. WIN and DOS refer to platform code pages."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the platform’s default console encoding."
+                },
+                "when_value_omitted": {
+                  "state": "not_accepted",
+                  "reason": "Supply the suffix in the same argument."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -scc"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/scc.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-slsl",
+          "summary": "Print paths with forward slashes",
+          "detail": "Use -slsl- to print backslashes even on Linux. This affects displayed paths, including logged filenames. Extracted pathnames keep their normal separators. Supported by Resolute and upstream, absent from Noble.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Displayed path separator",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign requests backslash separators."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Use the native separator."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Display forward slashes."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -slsl"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-slmu",
+          "summary": "Print timestamps in UTC",
+          "detail": "During an overwrite prompt the modification times are normally shown in local time. -slmu requests UTC and -slmu- restores local time. Supported by Resolute and upstream, absent from Noble.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Displayed time zone",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "A minus sign requests local time."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Print local timestamps."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Print UTC timestamps."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -slmu"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-slp",
+          "summary": "Control large-page allocation",
+          "detail": "On upstream Linux 26.06, large pages are enabled by default and depend on kernel support. -slp- disables the mode. Use :psN for a page of 2^N bytes, :minN for the minimum allocation of 2^N bytes, or :nohuge for small pages. The Ubuntu releases predate this Linux allocator.",
+          "argument": "Mode",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "delegated",
+                "meaning": "Large-page allocation policy",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "Mode",
+                    "grammar": "Attach - to disable the mode, or a colon-delimited allocation policy."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Let the Linux allocator use large pages when available."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Enable the Linux large-page allocation policy."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "kSwitchForms and Parse2, -slp"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/large_pages.htm"
+                    }
+                  ]
+                },
+                "grammar": {
+                  "name": "Large-page allocator policy",
+                  "reference": {
+                    "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                    "locator": "MANUAL/cmdline/switches/large_pages.htm, Syntax"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "flag": "-stm",
+          "summary": "Set processor affinity for this process",
+          "detail": "Attach a hexadecimal mask, as in -stm3 for CPUs 0 and 1. Each set bit selects a logical CPU, with CPU 0 at the least significant bit. The operating system must allow those CPUs.",
+          "argument": "HexMask",
+          "argument_style": "attached_only",
+          "argument_optional": true,
+          "value_semantics": {
+            "schema_version": 1,
+            "variants": [
+              {
+                "kind": "enumeration",
+                "meaning": "Process CPU affinity mask",
+                "bare": {
+                  "state": "not_applicable",
+                  "reason": "The suffix selects a mode or expression."
+                },
+                "forms": [
+                  {
+                    "id": "operand",
+                    "notation": "expression",
+                    "syntax": "HexMask",
+                    "grammar": "Use hexadecimal digits without a 0x prefix. Bit positions identify logical CPUs."
+                  }
+                ],
+                "when_absent": {
+                  "state": "known",
+                  "meaning": "Inherit the process affinity mask."
+                },
+                "when_value_omitted": {
+                  "state": "known",
+                  "meaning": "Leave affinity unchanged."
+                },
+                "applicability": {
+                  "implementation": {
+                    "state": "known",
+                    "values": [
+                      "7-Zip"
+                    ]
+                  },
+                  "version": {
+                    "state": "known",
+                    "values": [
+                      "23.01",
+                      "26.00",
+                      "26.06"
+                    ]
+                  },
+                  "platform": {
+                    "state": "known",
+                    "values": [
+                      "Linux"
+                    ]
+                  },
+                  "chip": {
+                    "state": "not_applicable",
+                    "reason": "The switch has no processor-specific syntax."
+                  }
+                },
+                "review": {
+                  "status": "verified",
+                  "references": [
+                    {
+                      "source": "https://github.com/ip7z/7zip/blob/26.06/CPP/7zip/UI/Common/ArchiveCommandLine.cpp",
+                      "locator": "Parse1, kAffinity"
+                    },
+                    {
+                      "source": "https://github.com/ip7z/7zip/releases/download/26.06/7z2606-linux-x64.tar.xz",
+                      "locator": "MANUAL/cmdline/switches/index.htm"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -153,5 +2958,6 @@
     "7z",
     "x"
   ],
-  "description": "Extract files with their archived directory structure."
+  "description": "Extract files with their archived directory structure. The first filename names the archive. Later names, quoted patterns or @listfiles select members. With no selectors, extract all members.",
+  "switch_syntax": "7zip"
 }

@@ -30,7 +30,7 @@ establish complete option coverage or successful execution of the program's work
 | Next | Rust Cargo | `cargo build`, `cargo test` |
 | Next | CMake, Ninja, GCC, Clang | `cmake`, `ninja`, `gcc`, `clang` |
 | Extended | rclone, restic, BorgBackup | `rclone`, `rclone copy`, `rclone sync`, `restic backup`, `borg create` |
-| Extended | 7-Zip | `7z`, `7zz`; static `7z x`, `7zz x` extraction subsets |
+| Extended | 7-Zip | `7z`, `7zz` and the static `7z x` and `7zz x` extraction menus |
 | Extended | ImageMagick | `magick` (version 7), `convert` (version 6) |
 | Extended | yt-dlp and VLC | `yt-dlp`, `vlc` |
 | Expansion | Linux services and logs | `systemctl status`, `systemctl list-units`, `systemctl show`, `journalctl` |
@@ -226,8 +226,9 @@ and runner boundaries for `uv run`, `npm run`, and Docker execution commands.
 
 Concrete FFmpeg stream selectors such as `-c:v` are supported. GCC pass-through
 switches such as `-Wl,<options>` remain excluded. Generic parsing excludes 7-Zip
-brace declarations; curated `7z x`/`7zz x` profiles provide `-o` and `-t` with
-attached-only payloads. These static-only paths retain root `-h` documentation
+brace declarations. The static extraction profiles distinguish overlapping switches such
+as `-m` and `-mmt` and preserve attached values such as a quoted `-o` path.
+The [7-Zip extraction inventory](7zip-extraction-manual-coverage.md) gives the release limits. These paths retain root `-h` documentation
 probes and do not add automatic leaf discovery. Matrix `profile_only` and
 `documentation_path` fields distinguish that evidence. The OpenSSH profile
 enables only its selected declared bundle members. Placeholder selectors and incomplete literal prefixes

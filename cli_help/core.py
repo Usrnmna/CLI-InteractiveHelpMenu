@@ -56,6 +56,9 @@ def validate_profile(profile: dict, source: Path):
     ):
         raise HelpError(f"{source}: command must contain literal command words.")
     require_text(profile.get("description"), f"{source}: description")
+    switch_syntax = profile.get("switch_syntax")
+    if switch_syntax is not None and (switch_syntax != "7zip" or command not in (["7z", "x"], ["7zz", "x"])):
+        raise HelpError("The 7zip switch syntax applies to the two extraction command paths.")
     if not isinstance(profile.get("stop_at_positional", False), bool):
         raise HelpError("stop_at_positional must be a boolean.")
     boundaries = profile.get("stop_at_options", [])
@@ -96,7 +99,8 @@ def validate_profile(profile: dict, source: Path):
             flag = option.get("flag")
             kind = option.get("kind", "flag")
             pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?::[A-Za-z0-9][A-Za-z0-9_-]*)*=?"
-            if not isinstance(kind, str) or kind not in {"flag", "keyword"} or not isinstance(flag, str) or not re.fullmatch(pattern, flag):
+            end_marker = switch_syntax == "7zip" and kind == "flag" and flag == "--" and not option.get("argument")
+            if not isinstance(kind, str) or kind not in {"flag", "keyword"} or not isinstance(flag, str) or not (end_marker or re.fullmatch(pattern, flag)):
                 raise HelpError(f"{source}: invalid literal option flag; inspect the literal flag schema.")
             if flag in flags:
                 raise HelpError(f"{source}: duplicate option flag: {flag}")
@@ -136,8 +140,10 @@ def validate_profile(profile: dict, source: Path):
     all_options = [option for category in categories for option in category["options"]]
     if sum(bool(option.get("numeric_shorthand")) for option in all_options) > 1:
         raise HelpError("Only one option can own the -NUMBER shorthand.")
-    if any(option.get("argument_style") or option.get("bundle") for option in all_options):
+    if switch_syntax == "7zip" or any(option.get("argument_style") or option.get("bundle") for option in all_options):
         canonical_flags = [option["flag"].rstrip("=") for option in all_options]
+        if switch_syntax == "7zip":
+            canonical_flags = [flag.lower() for flag in canonical_flags]
         if len(canonical_flags) != len(set(canonical_flags)):
             raise HelpError("Explicit argument syntax requires unique option names, including equals spellings.")
 
@@ -299,6 +305,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
     if not matches:
         raise HelpError("No matching help profile. Use --list-commands to list profiles.", "profile_missing")
     profile = max(matches, key=lambda item: len(item["command"]))
+    switch_syntax = profile.get("switch_syntax")
     command_end = tokens[argument_start - 1].end
     if point <= command_end:
         raise HelpError("Move the cursor after the command or subcommand and a space.", "cursor_before_arguments")
@@ -317,12 +324,14 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         if "=" in query or not (query.startswith("-") or keyword_match):
             raise HelpError("Move the cursor to an empty argument, an option name, or a documented keyword.", "cursor_in_operand")
         # A joined payload is a real value, never an editable flag prefix.
-        if query not in options and any((option.get("attached") or len(key) == 2 and option.get("argument"))
+        exact_name = query in options or (switch_syntax == "7zip" and query.isascii()
+                                          and any(key.lower() == query.lower() for key in options))
+        if not exact_name and any((option.get("attached") or len(key) == 2 and option.get("argument"))
                and query.startswith(key) and len(query) > len(key)
                for key, option in options.items()):
             raise HelpError("Move the cursor outside the attached option value.", "cursor_in_value")
-        if query not in options:
-            parsed = option_tokens(query, options, strict=False)
+        if not exact_name:
+            parsed = option_tokens(query, options, strict=False, switch_syntax=switch_syntax)
             if parsed:
                 raise HelpError("Move to an empty argument; an existing bundle or attached payload cannot be replaced.", "cursor_in_bundle")
     values_remaining = 0
@@ -360,7 +369,7 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         key, equal, _ = word.partition("=")
         if invocation.module == "pip" and key == "--python":
             raise HelpError("pip --python changes the interpreter; this module form is unsupported.")
-        parsed = option_tokens(word, options)
+        parsed = option_tokens(word, options, switch_syntax=switch_syntax)
         option = parsed[-1][1] if parsed else {}
         attached = parsed[-1][2] if parsed else False
         if any(name in boundary_options for name, _, _ in parsed):

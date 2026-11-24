@@ -13,6 +13,7 @@ from unittest.mock import Mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cli_help"))
 from core import HelpError, find_context, insert_option, validate_profile
+from arguments import option_tokens
 from manual_import import ManualCollection
 from ui import cell_width, clip_cells, wrap_cells, escape_delay
 
@@ -146,7 +147,14 @@ class ArgumentSyntaxTests(unittest.TestCase):
         for name in ("7z", "7zz"):
             profile = json.loads((ROOT / "profiles" / (name + "-x.json")).read_text())
             options = {option["flag"]: option for category in profile["categories"] for option in category["options"]}
-            self.assertEqual(set(options), {"-o", "-t", "-y", "-bd"})
+            original = ("-o", "-t", "-y", "-bd")
+            self.assertEqual(tuple(flag for flag in options if flag in original), original)
+            prefix, suffix = name + " x ", " 'archive name.zip'"
+            target = find_context(prefix + suffix, len(prefix), [profile])
+            for flag in original:
+                with self.subTest(name=name, flag=flag):
+                    self.assertEqual(insert_option(target, options[flag]),
+                                     (prefix + flag + suffix, len(prefix + flag) + int(flag in ("-y", "-bd"))))
             for flag, argument in (("-o", "Directory"), ("-t", "Type")):
                 self.assertEqual(options[flag]["argument"], argument)
                 self.assertEqual(options[flag]["argument_style"], "attached_only")
@@ -162,7 +170,44 @@ class ArgumentSyntaxTests(unittest.TestCase):
             lookup = Mock(return_value=profile)
             context = find_context(line, len(line), [profile], discover=lookup, driver_registry=registry)
             lookup.assert_not_called()
-            self.assertEqual(insert_option(context, profile["categories"][0]["options"][2]), (line + " ", len(line) + 1))
+            self.assertEqual(insert_option(context, options["-y"]), (line + " ", len(line) + 1))
+
+    def test_seven_zip_attached_switches_and_end_marker(self):
+        """Allow complete switches and attached selectors on either side of the archive."""
+        for name in ("7z", "7zz"):
+            profile = json.loads((ROOT / "profiles" / (name + "-x.json")).read_text())
+            options = {row["flag"].rstrip("="): row for category in profile["categories"]
+                       for row in category["options"]}
+            for token, owner in (("-mmt2", "-mmt"), ("-MmT2", "-mmt"), ("-mcp=437", "-mcp"),
+                                 ("-mmemuse2g", "-m"), ("-o=dir", "-o")):
+                with self.subTest(name=name, token=token):
+                    self.assertEqual(option_tokens(token, options, switch_syntax=profile["switch_syntax"]),
+                                     [(owner, options[owner], True)])
+                    pending = f"{name} x {token}"
+                    with self.assertRaises(HelpError) as error:
+                        find_context(pending, len(pending), [profile])
+                    self.assertIn(error.exception.code, {"cursor_in_value", "cursor_in_bundle"})
+            for arguments in ("'-ai!sample.zip' -an '-ir!*.txt' '-xr!*.log' -xtd",
+                              "'a file.zip' -aot -p",
+                              "-psecret -stx7z -tzip 'a file.zip' -bso1 -bsp0",
+                              "-MmT2 -o=dir 'a file.zip'", "-mcp -mcp= 'a file.zip'"):
+                with self.subTest(name=name, arguments=arguments):
+                    line = f"{name} x {arguments} -y"
+                    self.assertEqual(find_context(line, len(line), [profile]).query, "-y")
+            uppercase = f"{name} x -AOT"
+            context = find_context(uppercase, len(uppercase), [profile])
+            self.assertEqual(insert_option(context, options["-aot"]), (f"{name} x -aot ", len(uppercase) + 1))
+            prefix, suffix = f"{name} x 'a file.zip' ", " '-member.txt'"
+            original = find_context(prefix + suffix, len(prefix), [profile])
+            self.assertEqual(insert_option(original, options["--"]), (prefix + "--" + suffix, len(prefix + "-- ")))
+            for arguments, reason in (("-o folder ", "option_value_required"),
+                                      ("-t zip ", "option_value_required"),
+                                      ("-xtdINVALID ", "unsupported_value_form"),
+                                      ("-- '-member.txt' ", "end_of_options")):
+                line = f"{name} x {arguments}"
+                with self.subTest(name=name, arguments=arguments), self.assertRaises(HelpError) as error:
+                    find_context(line, len(line), [profile])
+                self.assertEqual(error.exception.code, reason)
 
     def test_bounded_openssh_bundles_keep_the_destination_boundary(self):
         profile = json.loads((ROOT / "profiles/ssh.json").read_text())

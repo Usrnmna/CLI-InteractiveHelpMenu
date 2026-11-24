@@ -8,6 +8,8 @@ import unittest
 
 from test_terminal_screen import TerminalTestCase, TMUX_AVAILABLE, PROMPT, HISTORY, ROOT
 from test_argument_syntax import PROFILE
+from presentation import option_label, option_text
+from ui import ellipsize_cells, wrap_cells
 
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
@@ -59,38 +61,111 @@ class SyntaxScreenTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), (expected, len(expected)))
         self.assertFalse(shell.executed.exists())
 
+    def pending_extraction(self, executable, columns, rows):
+        """Open a stubbed extractor and leave the cursor before quoted archive and member operands."""
+        shell = self.start()
+        stub = shell.folder / executable
+        stub.write_text("#!/bin/sh\nprintf 'executed\\n' >> " + shlex.quote(str(shell.executed)) + "\nexit 1\n")
+        stub.chmod(0o700)
+        shell.text("export PATH=" + shlex.quote(str(shell.folder)) + ':"$PATH"')
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        shell.resize(columns, rows)
+        prefix, suffix = executable + " x ", " 'archive name.zip' '*.txt'"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        return shell, prefix, suffix
+
+    def test_extraction_all_rows_and_complete_details(self):
+        """Read each selected declaration, summary, and complete formatted Details from terminal cells."""
+        for executable in ("7z", "7zz"):
+            profile = json.loads((ROOT / "profiles" / (executable + "-x.json")).read_text())
+            shell, prefix, suffix = self.pending_extraction(executable, 220, 120)
+            self.assertEqual(shell.open_menu().cells[0], f"Interactive help | {executable} x")
+            for category_index, category in enumerate(profile["categories"]):
+                if category_index:
+                    shell.keys("Right")
+                for index, option in enumerate(category["options"]):
+                    if index:
+                        shell.keys("Down")
+                    with self.subTest(executable=executable, flag=option["flag"]):
+                        label = ellipsize_cells(option_label(option), 40)
+                        view = option_text(profile, category, option)
+                        details = tuple(line for paragraph in view.details for line in wrap_cells(paragraph, 218))
+                        progress = f"Details 1-{len(details)}/{len(details)}"
+
+                        def complete(screen):
+                            # A capture can arrive after the selection changes but before its Details finish drawing.
+                            if screen.cells[-3] != progress:
+                                return False
+                            divider = next((i for i, line in enumerate(screen.cells) if line.startswith("Category ")), None)
+                            if divider is None:
+                                return False
+                            selected = any(line[26:].startswith("> " + label + " ") and option["summary"] in line
+                                           for line in screen.cells[4:divider])
+                            return selected and screen.cells[divider + 1:divider + 1 + len(details)] == details
+
+                        shell.wait_for(complete)
+            shell.cancel()
+            self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+            self.assertFalse(shell.executed.exists())
+
     def test_extraction_overwrite_and_attached_destination_at_minimum_size(self):
         """Find the collision policy and insert a destination before an archive operand."""
         for executable in ("7z", "7zz"):
             with self.subTest(executable=executable):
-                shell = self.start()
-                shell.text(executable + "() { printf executed > " + shlex.quote(str(shell.executed)) + "; }")
-                shell.keys("Enter")
-                shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
-                prefix, suffix = executable + " x ", " sample.zip"
-                shell.text(prefix + suffix)
-                shell.keys(*(["Left"] * len(suffix)))
-                shell.resize(60, 16)
+                shell, prefix, suffix = self.pending_extraction(executable, 60, 16)
                 shell.open_menu()
                 shell.keys("/")
                 shell.text("overwrite")
                 shell.keys("Enter")
                 found = shell.wait_for(lambda state: state.cells[2] == "Filter: overwrite")
                 self.assertIn("> -y ", found.cells[4])
-                shell.keys(*(["]"] * 16))
-                shell.wait_for(lambda state: "Use -aos to skip existing files." in " ".join(" ".join(state.cells[8:-3]).split()))
+                self.reach_extraction_detail(shell, found, "Use -aos to skip existing files.")
                 shell.cancel()
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
 
                 menu = shell.open_menu()
                 self.assertIn("> -oDirectory", menu.cells[4])
-                shell.keys(*(["]"] * 32))
-                shell.wait_for(lambda state: "named after each archive." in " ".join(" ".join(state.cells[8:-3]).split()))
+                self.reach_extraction_detail(shell, menu, "named after each archive.")
                 shell.cancel("Enter")
                 self.assertEqual(shell.read_buffer(), (prefix + "-o" + suffix, len(prefix + "-o")))
                 shell.text("'out dir'")
                 self.assertEqual(shell.read_buffer(), (prefix + "-o'out dir'" + suffix, len(prefix + "-o'out dir'")))
                 self.assertFalse(shell.executed.exists())
+
+    def reach_extraction_detail(self, shell, screen, text):
+        """Read successive small-screen Details lines until a particular qualification is visible."""
+        while text not in " ".join(" ".join(screen.cells[8:-3]).split()):
+            progress = screen.cells[-3]
+            visible, total = progress.split()[1].split("/")
+            last = int(visible.split("-")[1])
+            self.assertLess(last, int(total), text)
+            shell.keys("]")
+            screen = shell.wait_for(lambda state: state.cells[-3] != progress)
+
+    def test_extraction_rename_and_selection_at_minimum_size(self):
+        """Scroll to the collision outcome, cancel, then select the mode before existing operands."""
+        for executable in ("7z", "7zz"):
+            shell, prefix, suffix = self.pending_extraction(executable, 60, 16)
+            query = "rename the existing file"
+            qualification = "The extracted file keeps its original name."
+            for action in ("Escape", "Enter"):
+                with self.subTest(executable=executable, action=action):
+                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                    shell.keys("/")
+                    shell.text(query)
+                    shell.keys("Enter")
+                    found = shell.wait_for(lambda screen: screen.cells[2] == "Filter: " + query
+                                           and "> -aot " in screen.cells[4])
+                    self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+                    self.reach_extraction_detail(shell, found, qualification)
+                    shell.cancel(action)
+                    if action == "Escape":
+                        self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+                    else:
+                        self.assertEqual(shell.read_buffer(), (prefix + "-aot" + suffix, len(prefix + "-aot ")))
+            self.assertFalse(shell.executed.exists())
 
     def test_attached_only_insertion_retains_payload_and_does_not_execute(self):
         shell = self.start()

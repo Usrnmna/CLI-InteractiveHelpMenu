@@ -68,24 +68,21 @@ cannot replace it from a cursor inside the payload, nor edit across positional,
 `--`, or child-command boundaries. Literal quotes, whitespace, Unicode, suffixes,
 and character cursor offsets outside the selected option remain preserved.
 
-## Bounded 7-Zip subset
+## 7-Zip extraction switches
 
-The bundled `7z x` and `7zz x` static profiles expose `-o`, `-t`, `-y`, and `-bd`.
-`-o` and `-t` use `attached_only`: selecting `-o` leaves the cursor immediately
-after it, ready for a directory. Existing `-o'café dir'` and `-tzip` payloads
-are protected. This subset does not validate archive types or perform extraction.
-The [output-directory reference](https://7-zip.opensource.jp/chm/cmdline/switches/output_dir.htm)
-limits `-o` to extraction, and the
-[archive-type reference](https://7-zip.opensource.jp/chm/cmdline/switches/type.htm)
-describes the attached type value. Captures use installed 7-Zip 23.01.
+The static `7z x` and `7zz x` profiles use `switch_syntax: "7zip"`. The editor
+matches the longest declared switch name without regard to ASCII case. For
+example, `-mmt2` selects the decoder thread property and leaves the number
+attached. In `-o=dir`, the equals sign is part of the directory name. Selecting
+`-o` or `-t` leaves the cursor directly after the switch, ready for its value.
+Existing payloads such as `-o'café dir'` and `-tzip` are protected. Selecting
+`--` allows a following archive or member name to begin with a dash or an
+at-sign. [7-Zip extraction inventory and release qualifications](7zip-extraction-manual-coverage.md)
 
-These are static profile paths, reported as `profile_only` by `--explain` with
-the supplied drivers. The root drivers retain their existing fixed `-h` request;
-adding only an `x` child driver would narrow other root command contexts.
-`--discover 7z x` and `--discover 7zz x` therefore remain unavailable. Their
-live evidence uses the fixed root `-h` output separately from curated edits.
-Generic discovery still excludes brace-attached declarations instead of
-truncating `-o{Directory}` into an inaccurately spaced option.
+With the supplied drivers, `--explain` reports these extraction paths as
+`profile_only`. Fixed discovery probes use `7z -h` and `7zz -h`. The browser
+gets extraction rows from the profiles, and generic discovery skips
+brace-attached declarations. [Versioned root-help captures](../tests/fixtures/7zip-extraction/root-help.json)
 
 General short bundles, GCC comma-joined passthrough, placeholder stream selectors,
 arbitrary expressions, and general shell parsing remain excluded. Declaring one

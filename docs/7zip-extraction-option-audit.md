@@ -1,6 +1,6 @@
 # 7-Zip extraction option audit
 
-The bundled menus for [7z x](../profiles/7z-x.json) and [7zz x](../profiles/7zz-x.json) each contain four switches. Both commands extract files with their archived directory structure. The first filename identifies the archive. Subsequent filenames or patterns select archive members.
+The first-pass menus for [7z x](../profiles/7z-x.json) and [7zz x](../profiles/7zz-x.json) each contained four switches. The [manual-coverage revisit](7zip-extraction-manual-coverage.md) records the expanded menus and subsequent verification. Both commands extract files with their archived directory structure. The first filename identifies the archive. Subsequent filenames or patterns select archive members.
 
 ## Sources
 

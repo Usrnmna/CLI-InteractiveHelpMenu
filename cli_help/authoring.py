@@ -15,7 +15,7 @@ from value_semantics import Diagnostic, ValueContext, format_value_semantics, va
 
 OPTION_FIELDS = ("kind", "argument", "argument_count", "argument_optional", "optional_value_kind",
                  "argument_style", "attached", "bundle", "summary", "detail")
-PROFILE_FIELDS = ("command", "description", "identity", "stop_at_positional", "stop_at_options", "imported_from")
+PROFILE_FIELDS = ("command", "description", "identity", "stop_at_positional", "stop_at_options", "switch_syntax", "imported_from")
 
 
 class NumericalAuthoringError(HelpError):

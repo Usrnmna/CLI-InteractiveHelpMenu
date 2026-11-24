@@ -15,13 +15,51 @@ def value_forms(option):
     return {"separate", "equals"} | ({"attached"} if option.get("attached") else set())
 
 
-def option_tokens(word, options, strict=True):
+def _seven_zip_tokens(word, options, strict):
+    """Resolve the longest ASCII switch name before interpreting its attached suffix."""
+    if not word.startswith("-"):
+        return []
+    # Compare only the name. Paths and passwords can contain case-sensitive
+    # text, Unicode or an equals sign as their first literal character.
+    def matches(key, option):
+        if key == "--":
+            return word == "--"
+        # A declared method property ending in '=' owns that spelling.
+        # A joined native property such as -mmemuse2g still belongs to -m.
+        literal = option.get("flag", key)
+        prefix = word[:len(literal)]
+        return (prefix.isascii() and prefix.lower() == literal.lower()
+                or word.isascii() and word.lower() == key.lower())
+
+    name = max((key for key, option in options.items() if matches(key, option)), key=len, default=None)
+    if name is None:
+        if not strict:
+            return []
+        raise HelpError("Unrecognized extraction switch.", "unsupported_option")
+    option = options[name]
+    suffix = word[len(name):]
+    if not suffix:
+        if option.get("argument") and not option.get("argument_optional"):
+            raise HelpError("Complete the switch's attached value.", "option_value_required")
+    elif option.get("argument_style") == "equals":
+        if not suffix.startswith("="):
+            raise HelpError("Use the declared equals spelling.", "unsupported_value_form")
+        if len(suffix) == 1 and not option.get("argument_optional"):
+            raise HelpError("Complete the attached argument.", "option_value_required")
+    elif not option.get("argument") or "attached" not in value_forms(option):
+        raise HelpError("This extraction switch does not take a suffix.", "unsupported_value_form")
+    return [(name, option, bool(suffix))]
+
+
+def option_tokens(word, options, strict=True, *, switch_syntax=None):
     """Return (name, metadata, payload-present) entries for one completed token.
 
     Exact names win. Bundles require every member to opt in; a value member
     terminates the bundle. Multiple possible interpretations are rejected.
     No payload text is retained in the result or included in errors.
     """
+    if switch_syntax == "7zip":
+        return _seven_zip_tokens(word, options, strict)
     key, equal, payload = word.partition("=")
     if word in options or equal and key in options:
         option = options.get(word, options.get(key))

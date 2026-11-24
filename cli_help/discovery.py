@@ -910,7 +910,7 @@ def merge_profiles(profiles: list[dict]) -> dict:
         sources.append({"source": source, "documentation": deepcopy(source_documentation),
                         "discovery": deepcopy(original.get("discovery", {})),
                         "profile_context": {field: deepcopy(original[field]) for field in
-                                            ("identity", "stop_at_positional", "stop_at_options", "positional_group") if field in original},
+                                            ("identity", "stop_at_positional", "stop_at_options", "positional_group", "switch_syntax") if field in original},
                         "categories": [{"name": category["name"], "description": category.get("description", "")}
                                        for category in original["categories"]]})
         if isinstance(source_documentation, dict):
