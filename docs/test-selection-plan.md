@@ -1,6 +1,6 @@
 # Plan for shorter local test runs
 
-Start by giving command audits a repeatable focused command and timing the next scheduled full run. Then reduce measured duplicate work and validate test selection against the full suite. Start with iproute2 and use the yq revisit to test whether selection catches dependencies in shared test modules. [Roadmap](../ROADMAP.md#reducing-test-duration) · [Offline runner](../tests/run_sandbox.py) · [Full suite](../tests/run.sh)
+Use repeatable focused commands and the timed full-suite baseline to identify expensive checks. Then reduce measured duplicate work and validate test selection against the full suite. Start with iproute2 and use the yq revisit to test whether selection catches dependencies in shared test modules. [Roadmap](../ROADMAP.md#reducing-test-duration) · [Offline runner](../tests/run_sandbox.py) · [Full suite](../tests/run.sh)
 
 ## Baseline
 
@@ -34,13 +34,147 @@ python3 -I tests/run_sandbox.py --target "$target" -- bash -ec '
 
 ## 2. Time the actual full suite
 
-| File | Proposed change |
-| --- | --- |
-| [tests/run.sh](../tests/run.sh) | Add opt-in `CLI_HELP_TEST_TIMING=1` to call a standard-library `tests/timed_unittest.py` helper with the existing discovery arguments. Preserve verbose output, fixture behavior, order and exit status. Record shell syntax, numerical gate, both collection checks and unittest separately. |
-| `tests/timed_unittest.py` | Use the `TextTestResult` pattern from the review runner with ordinary unittest discovery. Time discovery, each case, and suite overhead outside individual cases. Attach subtest failures to their parent and retain fixture-level skips and errors. Where overhead dominates, time the affected class or module fixtures directly. [Existing review runner](../tests/regression_review.py) |
-| [tests/run_sandbox.py](../tests/run_sandbox.py) | Time snapshot creation and sandbox command wall time. Emit in-sandbox extraction and fixture setup durations through explicit report output or marked log lines captured on the host. Keep files and logs under ignored `tests/reports/` or a private temporary directory. Record target, actual runtime versions, fixture identities, first failure and completion state. |
+Set `CLI_HELP_TEST_TIMING=1` when invoking the local sandbox runner or
+`bash tests/run.sh`. The runner prints the location of a new
+`events.jsonl` under ignored `tests/reports/timing/`. Redirect the command's
+output to an ignored log to retain the normal verbose transcript.
+[Suite entry point](../tests/run.sh) · [Timing runner](../tests/timed_unittest.py) · [Sandbox runner](../tests/run_sandbox.py)
 
-Use a monotonic clock. Run timing on the next required full matrix and retain per-target reports. Compare before and after on the same target, with the same fixture set and the same concurrency. Report median of three focused measurements. For full suites report each observed wall time and aggregate by module and class. The timing path passes when it produces the same test IDs, skip reasons and outcomes as normal discovery, and preserves nonzero exit status on a preflight failure and a failing subtest. [Current fixture setup examples](ffmpeg-manual-coverage.md#reproducing-the-sandbox-checks)
+Each event carries a monotonic timestamp. The sandbox records snapshot
+creation, backend launch and archive extraction. The interval from
+`extraction-end` to `suite-start` covers the fixture wrapper and the suite
+launch. Standalone suite runs start at `suite-start`. The shell records
+syntax, numerical review, both collection checks and the unittest phase.
+Unittest records discovery, ordered IDs, case durations and outcomes. A
+fixture callback outside a case has its own outcome record. The remaining
+unittest time includes class and module fixtures, reporting and runner
+overhead. The interval from the applicable start event to `first-failure`
+gives time to the first reported failure. For failed subtests, this reflects
+when that interpreter reports the failure to the result object.
+
+A full sandbox report has a `sandbox-end` exit code and a `suite-end` exit
+code. Missing end events identify interrupted runs or phases that could
+not report. A preflight failure has a `suite-end` event naming the failed
+phase and no discovery events. Reports use the sandbox's stdout stream
+to return records while leaving unittest's verbose stderr stream in place.
+When stdout goes to a terminal, timed sandbox stdout is relayed through a
+pipe and forwarded by line.
+
+### Reproduce the paired offline baseline
+
+Use the prepared `noble310` and `noble312` images and the package loaders
+used by the preceding audits. Keep the checkout, fixture bytes and image
+tags fixed between waves. Include the two new Python files until they are
+tracked, along with any required untracked project inputs.
+[Ubuntu package and loaders](ffmpeg-manual-coverage.md#reproducing-the-sandbox-checks) · [Pinned yq executables](yq-eval-manual-coverage.md#reproduction) · [Sandbox setup](development.md#isolated-local-debugging)
+
+```bash
+mkdir -p tests/reports/timing
+logs=$(mktemp -d tests/reports/timing/reproduce-XXXXXXXX)
+run_timing_target() {
+    local target=$1 mode=$2 name path
+    local -a opts=() packages
+    for path in tests/{timed_unittest,test_timed_unittest}.py \
+        tests/reports/ffmpeg-revisit/suite-env.sh \
+        tests/reports/fzf-revisit/env.sh \
+        tests/reports/yq-revisit/yq-{4.44.3,4.54.3}; do
+        opts+=(--include "$path")
+    done
+    if [[ $target == host ]]; then
+        packages=(0.67.0-1.deb 10.3.0-2ubuntu1.deb openssh-resolute-server.deb)
+    else
+        packages=(0.44.1-1ubuntu0.3.deb 9.0.0-1.deb openssh-noble-debs.tar openssh-revisit-rsync.tar)
+        opts+=(--include tests/reports/ffmpeg-revisit/noble-runtime.tar.gz)
+    fi
+    for name in "${packages[@]}"; do
+        opts+=(--include "tests/reports/fzf-revisit/$name")
+    done
+    CLI_HELP_TEST_TIMING=$mode python3 -I -c '
+import subprocess, sys, time
+with open(sys.argv[1], "wb") as log:
+    start = time.monotonic()
+    status = subprocess.run(sys.argv[2:], stdout=log, stderr=subprocess.STDOUT).returncode
+    print(f"{time.monotonic() - start:.3f} seconds, exit {status}")
+sys.exit(status)
+' "$logs/$target-$mode.log" python3 -I tests/run_sandbox.py --target "$target" "${opts[@]}" -- \
+        bash tests/reports/ffmpeg-revisit/suite-env.sh \
+        env YQ_TEST_BINDIR=tests/reports/yq-revisit bash tests/run.sh
+}
+
+result=0
+for mode in 0 1; do
+    pids=()
+    for target in host noble310 noble312; do
+        run_timing_target "$target" "$mode" > "$logs/$target-$mode.wall" &
+        pids+=("$!")
+    done
+    for pid in "${pids[@]}"; do wait "$pid" || result=1; done
+done
+printf 'Matrix exit %s. Logs in %s\n' "$result" "$logs"
+```
+
+For the controlled cases, run the following on each target. These tests
+create disposable suites that cover normal and timed output, an ordinary
+skip, fixture skips and errors, failing and skipped subtests, and a
+preflight that exits 37 before importing tests. They also check empty-suite
+exit behavior and report directory creation failure.
+[Controlled cases](../tests/test_timed_unittest.py)
+
+```bash
+python3 -I tests/run_sandbox.py --target "${target:-host}" \
+    --include tests/timed_unittest.py --include tests/test_timed_unittest.py -- \
+    python3 -m unittest discover -s tests -p test_timed_unittest.py -v
+```
+
+### Paired baseline results
+
+Timing is complete on all three offline targets. The 2026-11-23 baseline
+used two waves of three concurrent targets. Source and package fixture
+SHA-256 digests and file modes matched across waves.
+
+| Target | Ubuntu | Python | Normal wall | Timed wall | Timed minus normal | Pass / fail / skip in each mode | Exit in each mode |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `host` | 26.04.1 | 3.14.4 | 1082.630 s | 1082.960 s | +0.330 s | 1529 / 0 / 1 | 0 |
+| `noble310` | 24.04.5 | 3.10.20 | 1281.590 s | 1279.566 s | −2.024 s | 1529 / 0 / 1 | 0 |
+| `noble312` | 24.04.5 | 3.12.3 | 1119.544 s | 1118.817 s | −0.727 s | 1529 / 0 / 1 | 0 |
+
+All 1,530 timed discovery IDs matched the normal console test list in
+order. The timed console and JSONL records also matched every normal
+outcome. The sole skip was the Windows-specific probe limitation, with
+the same reason in both modes. The full runs had zero fixture-level skips
+or errors. The wall-time deltas include ordinary run-to-run variation.
+Their magnitude was below 0.2% on each target.
+
+| Timed target | Snapshot | Backend startup | Extraction | Packaged fixtures and suite launch | Preflight | Discovery | Inside cases | Unittest outside cases |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `host` | 0.101 s | 0.025 s | 0.057 s | 0.083 s | 6.47 s | 0.63 s | 1061.11 s | 13.70 s |
+| `noble310` | 0.199 s | 0.145 s | 0.177 s | 2.292 s | 10.13 s | 0.81 s | 1244.39 s | 20.60 s |
+| `noble312` | 0.198 s | 0.159 s | 0.177 s | 2.277 s | 6.75 s | 0.70 s | 1093.07 s | 14.74 s |
+
+The stage table omits the short intervals between checkpoints, including
+the sandbox's version checks and launcher cleanup. The full wall times
+include these intervals. The three longest modules correspond to the
+three longest classes on each target.
+
+| Target | Longest module/class totals | Slowest individual case |
+| --- | --- | --- |
+| `host` | `SyntaxScreenTests` 122.77 s, `PodmanRunMenuTests` 113.78 s, `ExpansionScreenTests` 95.41 s | rsync all-row summaries and Details, 51.73 s |
+| `noble310` | `SyntaxScreenTests` 175.02 s, `PodmanRunMenuTests` 115.26 s, `ExpansionScreenTests` 97.62 s | numerical integration across opted-in profiles, 82.88 s |
+| `noble312` | `SyntaxScreenTests` 143.73 s, `PodmanRunMenuTests` 111.27 s, `ExpansionScreenTests` 93.32 s | numerical integration across opted-in profiles, 58.37 s |
+
+The five controlled regressions passed on each target. Separate disposable
+probes preserved exit 143 after interrupting a test and identified the
+unfinished case. Both modes also preserved exit 1 when the timing stream
+was directed to `/dev/full`. The first matrix stopped at the numerical gate
+with exit 1 in both modes. The gate flagged the protected source digest
+for `tests/run.sh`, which was refreshed after reviewing the timing diff.
+The strict numerical gate then passed all 3,123 required contracts.
+[Reviewed source digest](numerical-inventory/review.json)
+
+The six logs, exact invocations, input manifests, comparison, and initial
+preflight failure logs are local to
+`tests/reports/timing/baseline-2026-11-23/`. The timed log for each target
+records the location of its associated raw `events.jsonl`.
 
 ## 3. Make the complete checks cheaper
 
