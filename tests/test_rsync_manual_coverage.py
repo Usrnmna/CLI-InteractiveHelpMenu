@@ -208,25 +208,7 @@ class RsyncMenuTests(TerminalTestCase):
     def test_each_summary_and_complete_details_are_visible(self):
         profile = rsync_profile()
         shell, prefix, suffix = self.pending_rsync(210, 110)
-        shell.open_menu()
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                label = option_label(option)
-                state = shell.wait_for(lambda s: "Option: " + label in s.cells)
-                start = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                self.assertTrue(any("> " + option["flag"] in line and option["summary"] in line
-                                    for line in state.cells[4:start]), label)
-                first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-                self.assertEqual((first, last), (1, total), label)
-                panel = " ".join(" ".join(state.cells[start + 1:-3]).split())
-                for sentence in re.split(r"(?<=[.!?])\s+", option["detail"]):
-                    self.assertIn(sentence, panel, label)
-                for line in option_text(profile, category, option).details:
-                    self.assertIn(" ".join(line.split()), panel, label)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -243,10 +225,10 @@ class RsyncMenuTests(TerminalTestCase):
         for category in range(len(browser.profile["categories"])):
             for index, option in enumerate(browser.options(category)):
                 if option["flag"] == flag:
-                    current = int(state.cells[7].split()[1].split("/")[0]) - 1
+                    current = int(state.cells[1].split()[1].split("/")[0]) - 1
                     moves = ["Right" if category > current else "Left"] * abs(category - current)
                     shell.keys(*moves, "Home", *(["Down"] * index))
-                    return shell.wait_for(lambda s: any("> " + flag in row for row in s.cells[4:7]))
+                    return shell.wait_for(lambda s: s.selected_row.startswith("> " + flag))
         self.fail(f"Search for {query!r} omitted {flag}")
 
     def test_small_menu_search_scroll_restore_and_literal_insertion(self):
@@ -257,13 +239,7 @@ class RsyncMenuTests(TerminalTestCase):
                 state = self.find_option(shell, query, flag)
                 if flag == "--delete":
                     expected = "Sender I/O errors stop deletions unless --ignore-errors is set."
-                    total = int(state.cells[-3].split("/")[1].split()[0])
-                    for offset in range(1, total):
-                        shell.keys("]")
-                        state = shell.wait_for(lambda s: int(s.cells[-3].split()[1].split("-")[0]) > offset)
-                        if expected in " ".join(" ".join(state.cells[8:-3]).split()):
-                            break
-                    self.assertIn(expected, " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.find_detail(expected)
                 shell.cancel()
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
                 self.assertFalse(shell.executed.exists())

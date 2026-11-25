@@ -110,15 +110,12 @@ class InventoryRegressionTests(unittest.TestCase):
         screen.lines, screen.columns = 16, 60
         draw(screen, browser, keys)
         self.assertEqual(screen.cells, frame)
-        lines = [line for paragraph in paragraphs for line in wrap_cells(paragraph, 58)]
-        for offset in range(0, len(lines), 5):
-            if offset:
-                browser.detail_offset = offset
-                draw(screen, browser, keys)
-            first = min(offset, max(0, len(lines) - 5))
-            expected = lines[first:first + 5]
-            self.assertEqual([screen.cells[row, 0, 0] for row in range(8, 8 + len(expected))], expected)
-            self.assertEqual(browser.detail_offset, first)
+        from test_numerical_presentation import read_expanded
+        rendered, _ = read_expanded(browser)
+        for paragraph in paragraphs:
+            self.assertIn("".join(paragraph.split()), "".join(rendered.split()))
+        browser.level = "Simple"
+        browser.detail_offset = 0
 
     def exercise_profile(self, profile):
         """Check every category/option at three sizes, literal edits and modal controls."""
@@ -149,18 +146,14 @@ class InventoryRegressionTests(unittest.TestCase):
                 narrow_frame = None
                 for height, width in ((16, 60), (24, 100), (32, 160)):
                     screen.lines, screen.columns = height, width
-                    draw(screen, browser, keys)
+                    rows = draw(screen, browser, keys)
                     column = min(26, width // 3)
-                    rows = max(3, (height - 9) // 2)
                     self.assertIn("OPTIONS", screen.cells[3, column, curses.A_BOLD])
-                    self.assertTrue(screen.cells[4 + min(selected, rows - 1), column, curses.A_REVERSE].startswith("> "))
+                    self.assertTrue(screen.selected_row().startswith("> " + option["flag"][:5]))
                     self.assertIs(browser.options()[browser.selected], option)
                     if height == 16 and len(checked_layouts) < 4:
-                        # At this size three option rows and five Details lines fit.
-                        paragraphs = "\n".join(view.details).splitlines()
-                        progress = screen.cells[13, 0, 0].split()[1]
-                        wrapped = int(progress.split("/")[1]) > len(paragraphs)
-                        layout = (selected >= rows, wrapped)
+                        paragraphs = view.expanded
+                        layout = (selected >= rows, any(len(p) > width - 1 for p in paragraphs))
                         if layout not in checked_layouts:
                             narrow_frame = screen.cells.copy()
                             checked_layouts.add(layout)

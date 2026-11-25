@@ -6,6 +6,8 @@ profiles, perform I/O or inspect a pending command.
 """
 
 from dataclasses import dataclass
+from functools import cached_property
+from menu_units import expanded_rules, prose_aliases, unit_index
 import re
 
 from value_semantics import ValueContext, ValueSemanticsError, format_value_semantics
@@ -20,6 +22,14 @@ class ValueText:
     list_hint: str = ""
     notice: str = ""
     searchable_lines: tuple[str, ...] = ()
+    nodes: tuple = ()
+    aliases: frozenset = frozenset()
+    group: tuple = ()
+
+    @cached_property
+    def expanded(self):
+        """Prepare operational forms only when a selected option needs them."""
+        return expanded_rules(self.nodes) if self.nodes else self.lines
 
 
 @dataclass(frozen=True)
@@ -32,6 +42,59 @@ class OptionText:
     list_hint: str = ""
     notice: str = ""
     summary: str = ""
+    aliases: frozenset = frozenset()
+    group: tuple = ()
+    original: str = ""
+    numerical: ValueText = ValueText()
+    positional: ValueText = ValueText()
+    positional_label: str = ""
+    argument_rule: str = ""
+
+    @cached_property
+    def prose_units(self):
+        """Index explicit operational units on the first unit search in this open menu."""
+        return prose_aliases(" ".join(terminal_prose(line) for line in self.original.splitlines()))
+
+    @cached_property
+    def prose(self):
+        """Retain operational examples and release qualifications for the selected option."""
+        paragraphs = []
+        for line in self.original.splitlines():
+            clean = terminal_prose(line)
+            if clean:
+                paragraphs.extend(re.split(r"(?<=[.!?])\s+(?=[A-Z])", clean))
+        return tuple(dict.fromkeys(part for part in paragraphs if part.rstrip(".") != self.summary.rstrip(".")))
+
+    @cached_property
+    def detailed(self):
+        """Show a short example or distinguishing rule, with review warnings first."""
+        warning = {"[review]": "Conflicting or incomplete guidance; verify before use.",
+                   "[varies]": "Meaning varies by target; see Expanded.",
+                   "[unverified]": "Value guidance is unverified."}.get(self.notice)
+        sentences = list(self.prose)
+        if not sentences:
+            sentences = [self.numerical.compact or self.argument_rule]
+        return tuple(dict.fromkeys(s for s in (warning, *sentences[:2]) if s))[:2]
+
+    @cached_property
+    def expanded(self):
+        """Expose complete operational guidance, scoped rules and original examples without citations."""
+        lines = []
+        if self.notice:
+            lines.extend(self.detailed[:1])
+        prose = list(self.prose)
+        if self.notice == "[review]":
+            prose = ["Reported guidance: " + part for part in prose]
+        elif prose:
+            lines.append(prose.pop(0))
+        lines.extend(self.numerical.expanded)
+        lines.extend(prose)
+        if self.argument_rule:
+            lines.append(self.argument_rule)
+        if self.positional_label:
+            lines.extend((self.positional_label, *self.positional.expanded))
+        return tuple(clean for line in lines if (clean := terminal_prose(line)))
+
 
 
 # These patterns remove documentation scaffolding, not arbitrary sentences or
@@ -51,6 +114,22 @@ _BACKGROUND = re.compile(
 _RELEASE_HEADING = re.compile(
     r"(?:^|(?<=; )|(?<=\. ))(?:[\w./-]+\s+){1,3}v?\d+(?:\.\d+){1,3}(?:[a-z]\d*)?"
     r"(?:\s+\([^)]*\))?(?: reference)?:\s*")
+
+
+_CITATION = re.compile(r"(?:\s*[(\[]?(?:see(?: also)?|source|reference|documentation|manual)\s*[:=]?\s+https?://\S+|\[([^\]]+)\]\(https?://[^)]+\))", re.I)
+
+
+def terminal_prose(text):
+    """Remove citation scaffolding while retaining documented URL operands and literal examples."""
+    line = text.strip()
+    if _METADATA_LINE.match(line) or line.startswith(("http://", "https://", "```")):
+        return ""
+    if line.startswith("Delegated grammar:"):
+        line = line.partition(";")[0]
+    line = _CITATION.sub(lambda m: m.group(1) or "", line)
+    line = re.sub(r"\s*\(https?://[^)]*\)|(?:read|see|consult) (?:the )?(?:guide|manual|docs) at https?://\S+",
+                  "", line, flags=re.I)
+    return line.strip()
 
 
 def concise_description(text):
@@ -172,7 +251,22 @@ def option_label(option):
     return label + (" [keyword]" if option.get("kind") == "keyword" else "")
 
 
-def value_text(profile, entry, *, positional=False):
+def _shared_value_key(metadata, context):
+    """Identify an exact single-reference contract before reusing its validated text."""
+    if (not isinstance(metadata, dict) or metadata.keys() != {"schema_version", "variants"}
+            or type(metadata["schema_version"]) is not int or metadata["schema_version"] != 1
+            or type(context.argument_count) is not int or type(context.value_optional) is not bool):
+        return None
+    variants = metadata["variants"]
+    if not isinstance(variants, list) or len(variants) != 1:
+        return None
+    variant = variants[0]
+    if not isinstance(variant, dict) or variant.keys() != {"ref"} or not isinstance(variant["ref"], str):
+        return None
+    return variant["ref"], context.argument_count, context.value_optional
+
+
+def value_text(profile, entry, *, positional=False, shared_values=None):
     """Format optional active metadata safely, retaining all applicability variants.
 
     A missing optional field preserves legacy presentation. An invalid supplied
@@ -189,9 +283,14 @@ def value_text(profile, entry, *, positional=False):
         argument_count=group.get("argument_count", 1) if group.get("argument") else 0,
         value_optional=group.get("argument_optional", False),
     )
+    # The caller owns this mapping for one unchanged profile during construction.
+    key = _shared_value_key(entry[field], context) if shared_values is not None and not positional else None
+    if key is not None and key in shared_values:
+        return shared_values[key]
+    nodes = []
     try:
         lines = format_value_semantics(entry[field], context=context,
-                                       definitions=profile.get("value_definitions"), presentation=True)
+                                       definitions=profile.get("value_definitions"), presentation=True, resolved=nodes)
     except (ValueSemanticsError, ValueError, TypeError, KeyError, AttributeError, RecursionError):
         return ValueText("Value guidance unavailable; review needed.", (
             "Value guidance unavailable; units have not been inferred.",
@@ -217,7 +316,11 @@ def value_text(profile, entry, *, positional=False):
         compact = "Value varies by applicability; see details."
         lines = ("Value varies by applicability; all documented alternatives follow. No target match is assumed.",) + lines
         list_hint, notice = "", "[varies]"
-    return ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines))
+    aliases, group = unit_index(nodes)
+    result = ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines), tuple(nodes), aliases, group)
+    if key is not None:
+        shared_values[key] = result
+    return result
 
 
 def _source_notes(profile, option):
@@ -264,9 +367,9 @@ def description_blocks(summary, detail):
     return concise_description(summary + "\n\n" + detail)
 
 
-def option_text(profile, category, option, *, positional=None):
+def option_text(profile, category, option, *, positional=None, shared_values=None):
     """Build concise details without changing stored evidence or legacy search."""
-    numerical = value_text(profile, option)
+    numerical = value_text(profile, option, shared_values=shared_values)
     positional = value_text(profile, profile, positional=True) if positional is None else positional
     notes, needs_review = _source_notes(profile, option)
     lines = list(numerical.lines)
@@ -282,14 +385,17 @@ def option_text(profile, category, option, *, positional=None):
         key = sentence.rstrip(".")
         if key not in value_clauses:
             lines.append(sentence)
+    argument_rule = ""
     if option.get("argument"):
         label = "Optional argument: " if option.get("argument_optional") else "Argument required: "
         if option.get("argument_style") == "attached_only":
             label = "Optional attached argument: " if option.get("argument_optional") else "Attached argument required: "
-        lines.append(label.rstrip(": ") + ".")
+        argument_rule = label.rstrip(": ") + "."
+        lines.append(argument_rule)
     # Raw text and formatter evidence remain searchable for compatibility.
     legacy = option["flag"] + " " + option["summary"] + " " + option.get("detail", "")
     searchable = [legacy, option.get("argument", ""), *notes, *numerical.searchable_lines, *lines]
+    repeated = ""
     if profile.get("positional_group"):
         group = profile["positional_group"]
         repeated = "Repeated value group (command-wide): " + group["argument"] + "."
@@ -303,4 +409,13 @@ def option_text(profile, category, option, *, positional=None):
         compact = "Source review needed; " + (compact or "see details.")
         list_hint, notice = "", "[review]"
     summary = next(iter(concise_description(option["summary"])), "")
-    return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice, summary)
+    source = option.get("detail", "")
+    summary = terminal_prose(summary)
+    if not summary:
+        summary = next((text for line in source.splitlines() if (text := terminal_prose(line))), "")
+        summary = summary or option.get("argument") or "Description unavailable"
+    aliases = numerical.aliases | positional.aliases
+    original = option["summary"] + "\n" + source
+    return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice, summary,
+                      aliases, numerical.group if not notice else (), original, numerical, positional,
+                      repeated, argument_rule)

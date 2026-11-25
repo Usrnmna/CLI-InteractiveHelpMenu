@@ -5,7 +5,7 @@
 
 ## Identity and evidence boundaries
 
-The [version file](../VERSION) contains `0.3.1-alpha`. The earlier v0.1.2-alpha release review preserved local candidates at
+The [version file](../VERSION) contains `0.4.0-alpha`. The earlier v0.1.2-alpha release review preserved local candidates at
 `dist/candidate-v0.1.2-alpha/`, `dist/candidate-v0.1.2-alpha-review/`, and
 `dist/candidate-v0.1.2-alpha-config/` as unpublished snapshots. A fresh checkout does not contain these ignored directories.
 Their inputs can predate the release even when the versions agree. The
@@ -27,13 +27,13 @@ Run the documented full suite after the last included edit:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/candidate-v0.3.1-alpha-recheck
-(cd dist/candidate-v0.3.1-alpha-recheck && sha256sum -c SHA256SUMS.checksum)
+python3 scripts/build_release.py --output dist/candidate-v0.4.0-alpha-recheck
+(cd dist/candidate-v0.4.0-alpha-recheck && sha256sum -c SHA256SUMS.checksum)
 ```
 
 The builder refuses an existing output directory. If further edits require
 another candidate, select a new ignored directory, such as
-`dist/candidate-v0.3.1-alpha-recheck-2/`; retain the earlier candidate for comparison.
+`dist/candidate-v0.4.0-alpha-recheck-2/`; retain the earlier candidate for comparison.
 The five artifacts, five individual checksum files, and aggregate checksum use
 the existing release format. No artifact is uploaded automatically.
 
@@ -41,7 +41,7 @@ The package regression harness can inspect and exercise these exact artifacts
 instead of building its own temporary candidate:
 
 ```bash
-export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.3.1-alpha-recheck"
+export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.4.0-alpha-recheck"
 export CLI_HELP_TEST_HISTORICAL_DIR="$PWD/releases/v0.1.1-alpha"
 python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v
 python3 -B -m unittest discover -s tests -p test_release_terminal.py -v
@@ -84,13 +84,13 @@ and isolated locations rather than personal shell files. For example, from the
 repository root:
 
 ```bash
-candidate="$PWD/dist/candidate-v0.3.1-alpha-recheck"
+candidate="$PWD/dist/candidate-v0.4.0-alpha-recheck"
 scratch=$(mktemp -d)
 mkdir -p "$scratch/home" "$scratch/config" "$scratch/cache" "$scratch/data" "$scratch/tmp"
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" TMPDIR="$scratch/tmp" \
   CLI_HELP_PYTHON="$(command -v python3)" PYTHONDONTWRITEBYTECODE=1 \
-  bash "$candidate/cli-interactive-help-v0.3.1-alpha-linux-x86_64.run" \
+  bash "$candidate/cli-interactive-help-v0.4.0-alpha-linux-x86_64.run" \
   install --prefix "$scratch/runtime" --no-rc
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" \

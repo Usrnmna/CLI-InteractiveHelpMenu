@@ -377,7 +377,8 @@ class NumericalCoverageTests(unittest.TestCase):
         self.assertFalse(report["passed"])
         self.assertTrue(any(d["gate"] == "structural" and d["severity"] == "error" for d in report["diagnostics"]))
 
-    def test_new_positional_components_and_shared_references_are_checked(self):
+    def write_positional_profile(self):
+        """Add a toy two-slot positional contract with distinct component meanings."""
         host = claimed_node("nonnumerical", meaning="Toy host name", forms=[expression_form("HOST")],
                             bare={"state": "not_applicable", "reason": "Host names are text"})
         index = claimed_node("index", meaning="Toy endpoint index")
@@ -389,6 +390,10 @@ class NumericalCoverageTests(unittest.TestCase):
         self.profile["positional_group"] = {"argument": "HOST INDEX", "argument_count": 2, "repeatable": True}
         self.profile["positional_value_semantics"] = contract(composite)
         self.write_profile()
+        return composite
+
+    def test_new_positional_components_and_shared_references_are_checked(self):
+        composite = self.write_positional_profile()
         self.assertIn("review_missing", self.codes(self.check()))
         self.reviews = self.reviewed()
         self.assertTrue(self.check()["passed"], self.check()["diagnostics"])
@@ -428,7 +433,7 @@ class NumericalCoverageTests(unittest.TestCase):
         browser.set_query("--bwlimit")
         screen = FakeScreen(24, 160)
         draw(screen, browser, load_keys(None))
-        self.assertIn("1024 bytes/second", screen.text())
+        self.assertIn("KiB/s", screen.text())
 
     def test_omission_mutations_fail_actual_details_and_search_propagation(self):
         original = coverage.presentation.option_text
@@ -439,6 +444,24 @@ class NumericalCoverageTests(unittest.TestCase):
                                                        "" if field == "searchable" else view.searchable)
             with self.subTest(field=field), patch.object(coverage.presentation, "option_text", side_effect=omit):
                 self.assertIn("coverage_" + ("details_missing" if field == "details" else "search_missing"), self.codes(self.check()))
+
+    def test_missing_expanded_unit_scope_and_positional_rules_fail_propagation(self):
+        self.write_positional_profile()
+        self.reviews = self.reviewed()
+        original = coverage.presentation.option_text
+        for prefix in ("Input ", "Applies to:", "Repeated value group"):
+            def without_rule(*args, **kwargs):
+                view = original(*args, **kwargs)
+                # Preserve the legacy model and original evidence for search.
+                lines = view.expanded
+                if prefix == "Repeated value group" and view.positional_label:
+                    lines = lines[:lines.index(view.positional_label)]
+                else:
+                    lines = tuple(line for line in lines if not line.startswith(prefix))
+                view.__dict__["expanded"] = lines
+                return view
+            with self.subTest(prefix=prefix), patch.object(coverage.presentation, "option_text", side_effect=without_rule):
+                self.assertIn("coverage_details_missing", self.codes(self.check()))
 
     def test_heuristic_disagreement_and_valid_counterexamples(self):
         record = next(coverage.profile_records(self.profile, "profiles/specimen.json"))

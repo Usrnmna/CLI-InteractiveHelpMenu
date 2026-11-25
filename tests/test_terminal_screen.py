@@ -33,6 +33,28 @@ class ScreenState:
     cells: tuple
     history: tuple
 
+    @property
+    def selected_row(self):
+        """Read the highlighted option in the right pane, independent of its row."""
+        left = min(26, self.columns // 3)
+        return next((row[left:] for row in self.cells if row[left:].startswith("> ")), "")
+
+    @property
+    def detail_body(self):
+        """Locate the selected pane using its visible rule, independent of the screen height."""
+        divider = next((i for i, line in enumerate(self.cells) if "──" in line), None)
+        return () if divider is None else self.cells[divider + 1:-2]
+
+    @property
+    def detail_range(self):
+        """Read the displayed scroll counter or the bounds of a fully visible pane."""
+        for line in self.cells:
+            match = re.search(r"Lines (\d+)–(\d+)/(\d+)$", line)
+            if match:
+                return tuple(map(int, match.groups()))
+        count = len(self.detail_body)
+        return (1, count, count)
+
     def history_markers(self):
         """Return numbered output independently of viewport reflow and height."""
         return tuple(line for line in self.history + self.cells if line in HISTORY)
@@ -111,22 +133,17 @@ class TmuxShell:
         lines = tuple(self.tmux("capture-pane", "-p", "-S", "-", "-t", "screen-test:0.0").splitlines())
         return ScreenState(columns, rows, x, y, alternate, lines[-rows:], lines[:-rows])
 
-    def wait_for_option(self, label, summary, details, *, exact_row=None):
-        """Read only the fixed-size pane until the selected row and all Details agree."""
+    def wait_for_option(self, height, selection, divider, panel, counter):
+        """Wait for a complete selected row, detail page and scroll position after redraw."""
+        row, text = selection
         deadline = time.monotonic() + 8
-        progress = f"Details 1-{len(details)}/{len(details)}"
         while True:
             cells = self.tmux("capture-pane", "-p", "-t", "screen-test:0.0").splitlines()
-            divider = next((i for i, line in enumerate(cells) if line.startswith("Category ")), None)
-            if (divider is not None and len(cells) >= 3 and cells[-3] == progress
-                    and cells[divider + 1:divider + 1 + len(details)] == details
-                    and any((row == exact_row if exact_row is not None else
-                             row.startswith("> " + label + " ") and summary in row[3 + len(label):])
-                            for row in (line[26:] for line in cells[4:divider]))):
+            if (len(cells) == height and cells[row].endswith(text) and
+                    (divider is None or (cells[divider].endswith(counter) and cells[divider + 1:-2] == panel))):
                 return
             if time.monotonic() >= deadline:
-                raise AssertionError(f"Incomplete frame for {label!r}: {cells!r}")
-            # The next capture often contains the rest of an in-progress redraw.
+                raise AssertionError(f"Incomplete frame for {text!r}: {cells!r}")
             time.sleep(0.005)
 
     def wait_for(self, predicate):
@@ -152,6 +169,62 @@ class TmuxShell:
             self.wait_for(lambda state: state.history_markers() == HISTORY and state.y == 23)
         self.text(line)
         return self.wait_for(lambda state: "--ar" in "".join(state.cells))
+
+    def expanded_menu(self):
+        """Open the actual selector and request its complete operational explanation."""
+        self.open_menu()
+        self.keys("D", "D")
+        return self.wait_for(lambda state: "Expanded" in state.cells[0])
+
+    def find_detail(self, phrase):
+        """Read successive overlapping pages until the phrase is visible or scrolling ends."""
+        state = self.capture()
+        if "Expanded" not in state.cells[0]:
+            self.keys(*(["D"] if "Detailed" in state.cells[0] else ["D", "D"]))
+            state = self.wait_for(lambda s: "Expanded" in s.cells[0])
+        while phrase not in " ".join(" ".join(state.detail_body).split()):
+            first, last, total = state.detail_range
+            if last >= total:
+                raise AssertionError((phrase, state.cells))
+            self.keys(*(["]"] * max(1, last - first - 1)))
+            state = self.wait_for(lambda s: s.detail_range[0] > first)
+        return state
+
+    def verify_profile(self, profile):
+        """Check every real selected row and every Expanded page against its formatted content."""
+        from test_numerical_presentation import Browser, CellScreen, draw, load_keys
+        browser = Browser(profile, level="Expanded")
+        state = self.expanded_menu()
+        screen = CellScreen(state.rows, state.columns)
+        left = min(26, state.columns // 3)
+        keys = load_keys()
+        for ci, category in enumerate(profile["categories"]):
+            if ci:
+                self.keys("Right")
+            browser.category = ci
+            for index, option in enumerate(category["options"]):
+                if index:
+                    self.keys("Down")
+                browser.selected = index
+                browser.detail_offset = 0
+                while True:
+                    draw(screen, browser, keys)
+                    expected = [(r, v.rstrip()) for (r, c, _), v in screen.cells.items()
+                                if c == left and v.startswith("> ")]
+                    divider = next((r for (r, c, _), v in screen.cells.items() if c == 0 and "─" in v), None)
+                    panel = [] if divider is None else [screen.cells[r, 0, 0].rstrip()
+                                                       for r in range(divider + 1, state.rows - 2)]
+                    counter = next((v for v in screen.cells.values() if re.fullmatch(r"Lines \d+–\d+/\d+", v)), "")
+                    selection, = expected
+                    self.wait_for_option(state.rows, selection, divider, panel, counter)
+                    if not counter:
+                        break
+                    first, last, total = map(int, re.findall(r"\d+", counter))
+                    if last == total:
+                        break
+                    step = min(last - first + 1, total - last)
+                    browser.detail_offset += step
+                    self.keys(*(["]"] * step))
 
     def open_menu(self, keys=("Escape", "h")):
         self.keys(*keys)
@@ -183,22 +256,23 @@ class TmuxShell:
 
 class FixedFrameTests(unittest.TestCase):
     def test_partial_row_retries_and_times_out(self):
-        """Require the selected label, summary, complete Details and progress in one capture."""
-        shell = Mock(spec=TmuxShell)
-        frame = "\n".join(["title", "", "", "OPTIONS", " " * 26 + "> -f  Find", "Category 1/1",
-                           "Option: -f", "Find files.", "Details 1-2/2", "footer", "keys"])
-        for partial in ("", frame.replace("Category", "other"), frame.replace("> -f", "> -x"),
-                        frame.replace("  Find", "  Hide"), frame.replace("Find files.", "Other."),
-                        frame.replace("1-2/2", "1-1/2")):
+        """Require every part of a variable-height frame before accepting the capture."""
+        shell = Mock()
+        frame = "\n".join(["Title", "Category 1/1", "Filter:", "OPTIONS *", "> -f  Find",
+                           "-f ─── Lines 1–1/2", "Find files.", "footer", "keys"])
+        expected = (9, (4, "> -f  Find"), 5, ["Find files."], "Lines 1–1/2")
+        for partial in (frame.replace("> -f", "> -x"), frame.replace("  Find", "  Hide"),
+                        frame.replace("Find files.", "Other."), frame.replace("1–1/2", "2–2/2")):
             with self.subTest(frame=partial):
                 shell.tmux.side_effect = [partial, frame]
                 with patch.object(time, "sleep") as pause:
-                    TmuxShell.wait_for_option(shell, "-f", "Find", ["Option: -f", "Find files."])
+                    TmuxShell.wait_for_option(shell, *expected)
                     pause.assert_called_once()
                 shell.tmux.side_effect = [partial]
                 with patch.object(time, "monotonic", side_effect=[0, 9]):
                     with self.assertRaisesRegex(AssertionError, "Incomplete frame"):
-                        TmuxShell.wait_for_option(shell, "-f", "Find", ["Option: -f", "Find files."])
+                        TmuxShell.wait_for_option(shell, *expected)
+
 
 
 class TerminalTestCase(unittest.TestCase):
@@ -263,8 +337,7 @@ class OptionsLayoutTests(TerminalTestCase):
                     shell.keys("Enter")
                     found = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
                     self.assertIn("> " + flag + " ", found.cells[4])
-                    shell.keys(*(["]"] * 100))
-                    shell.wait_for(lambda state: guidance in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.find_detail(guidance)
                     shell.cancel(action)
                     if action == "Escape":
                         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -279,7 +352,7 @@ class OptionsLayoutTests(TerminalTestCase):
         shell.text(prefix + suffix)
         shell.keys(*(["Left"] * len(suffix)))
         initial = shell.open_menu()
-        self.assertIn("except the . and .. entries", initial.cells[5])
+        self.assertIn("except the . and .. entries", " ".join(initial.cells))
         initial = shell.resize(60, 16)
         self.assertEqual(initial.cells[2].rstrip(), "Filter:")
         self.assertIn("> --all ", initial.cells[4])
@@ -289,11 +362,7 @@ class OptionsLayoutTests(TerminalTestCase):
         found = shell.wait_for(lambda state: state.cells[2] == "Filter: allocated")
         self.assertIn("> --size ", found.cells[4])
         self.assertNotIn("little allocated space.", " ".join(found.cells[:-3]))
-        _, last, total = map(int, re.split(r"[-/]", found.cells[-3].split()[1]))
-        self.assertLess(last, total)
-        shell.keys(*(["]"] * total))
-        shell.wait_for(lambda state: "large file length but little allocated space."
-                       in " ".join(" ".join(state.cells[:-3]).split()))
+        shell.find_detail("large file length but little allocated space.")
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
 
@@ -321,8 +390,7 @@ class OptionsLayoutTests(TerminalTestCase):
         found = shell.wait_for(lambda state: state.cells[2] == "Filter: group separator")
         self.assertIn("> --context=LINES", found.cells[4])
         shell.resize(60, 16)
-        shell.keys(*(["]"] * 32))
-        shell.wait_for(lambda state: "With -o, grep omits context lines." in state.cells)
+        shell.find_detail("With -o, grep omits context lines.")
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         shell.open_menu()
@@ -346,9 +414,8 @@ class OptionsLayoutTests(TerminalTestCase):
         wide = shell.wait_for(lambda state: "--directory=DIR" in state.cells[4])
         self.assertIn("Change directory for following file names", wide.cells[4])
         shell.resize(60, 16)
-        shell.keys(*(["]"] * 20))
-        narrow = shell.wait_for(lambda state: "original working directory." in " ".join(state.cells[:-3]))
-        self.assertIn("archive path given to -f", " ".join(narrow.cells[:-3]))
+        narrow = shell.find_detail("original working directory.")
+        self.assertIn("archive path given to -f", " ".join(narrow.detail_body))
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         shell.open_menu()
@@ -373,10 +440,9 @@ class OptionsLayoutTests(TerminalTestCase):
                 shell.open_menu()
                 wide = shell.resize(120, 40)
                 self.assertIn(summary, wide.cells[4])
-                self.assertIn(guidance, wide.cells)
+                shell.find_detail(guidance)
                 shell.resize(60, 16)
-                shell.keys(*(["]"] * 24))
-                shell.wait_for(lambda state: last_line in " ".join(state.cells[:-3]))
+                shell.find_detail(last_line)
                 shell.cancel()
                 self.assertEqual(shell.read_buffer(), (pending, len(pending)))
                 self.assertFalse(shell.executed.exists())

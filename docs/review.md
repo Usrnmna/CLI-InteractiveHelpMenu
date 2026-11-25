@@ -21,7 +21,7 @@ suggested actions are displayed when an entry opens.
 
 ![Guided review of an example convert profile: select an option and edit its flag, summary, detail, and argument placeholder.](assets/guided-review.png)
 
-The image shows actual guided forms using an illustrative temporary collection.
+The v0.4.0-alpha candidate shows the guided forms using an illustrative temporary collection.
 Changes require explicit saving; the captured partial edit was cancelled.
 [Capture details and regeneration](assets/README.md)
 

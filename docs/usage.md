@@ -91,7 +91,8 @@ source /absolute/path/to/CLI-InteractiveHelpMenu/bash/interactive-help.bash
 | Home/End | Move to the first or last item |
 | Left/Right or `h`/`l` | Change category |
 | Tab | Switch focus between categories and options |
-| `[` / `]` | Scroll the description upward/downward |
+| `D` | Cycle Simple → Detailed → Expanded → Simple |
+| `[` / `]` | Scroll the selected explanation, including a clipped category title |
 | `/` | Edit the search filter |
 | Ctrl-U | Clear the filter |
 | Enter | Insert the selected option; in the category pane, focus its options |
@@ -107,20 +108,24 @@ Each category displays its matching count.
 When a new search has no matches in the current category, the first matching
 category is selected automatically.
 
-Option rows align declarations and summaries within each category. Complete,
-qualified value hints are appended only when the summary and hint both fit;
-nonnumerical meaning is not repeated before the summary. `[review]`,
-`[unverified]`, and `[varies]` indicate source review, unverified value evidence,
-and differing applicability variants. Selected details show essential behavior,
-value formats, choices, units and constraints. Dates, release annotations, source
-references, examples, repeated prose and insertion instructions are omitted.
-Target restrictions and uncertainty warnings remain when needed for correct use.
-An ellipsis marks clipped declarations or summaries; the `Details start-end/total`
-line and `[` / `]` controls provide access to the complete explanation and literal
-declaration. See [numerical presentation and search](numerical-inventory/step5-presentation.md)
-for source conflicts, applicability, legacy behavior and verification limits.
+Simple opens with a one-line purpose for each option and gives spare rows to the
+option list. Detailed adds a short explanation of the selection. Expanded includes
+the available forms, conversions, constraints, examples and version qualifications.
+The level key shown at the top preserves selection and filtering. Use `[` and `]`
+when a line counter is visible.
 
-Both panes scroll to keep the selected item visible. Clear the filter with Ctrl-U and use PageDown in the ls Display category to see additional options. The footer shows the current position and total.
+Category names use short sidebar labels. The header shows the original category
+title. A title wider than the header can be read in full in the scrollable pane.
+Blank rows separate options when space permits. The `>` marker identifies the
+selection and `*` marks the focused pane. Terminals that report their background
+through `COLORFGBG` can show a contrasting cyan or blue option name. Set
+`NO_COLOR=1` for monochrome.
+
+A shared unit note names the options it covers. Search accepts forms such as
+`bps`, `KiB/s`, `µs`, and `MHz` wherever the corresponding meaning is documented.
+Option spelling and original descriptions also remain searchable. Source citations
+are omitted from terminal explanations. `[review]`, `[unverified]`, and `[varies]`
+flag conflicting, unverified, and target-dependent guidance respectively.
 
 Selection is shown with a `>` marker, focus with a `*` marker, and highlighting;
 color alone is not required. Labels and descriptions are clipped/wrapped in

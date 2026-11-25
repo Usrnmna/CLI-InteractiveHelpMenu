@@ -175,28 +175,7 @@ class LsMenuTests(TerminalTestCase):
         """Check visible option labels, summaries, authored prose and formatted value guidance."""
         profile = ls_profile()
         shell, prefix, suffix = self.pending(220, 150)
-        shell.open_menu()
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                label = option_label(option)
-                state = shell.wait_for(lambda screen: "Option: " + label in screen.cells)
-                start = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                with self.subTest(label=label):
-                    list_label = ellipsize_cells(label, 40)
-                    self.assertTrue(any("> " + list_label in line and option["summary"] in line
-                                        for line in state.cells[4:start]), state.cells[4:start])
-                    first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-                    self.assertEqual((first, last), (1, total))
-                    panel = " ".join(" ".join(state.cells[start + 1:-3]).split())
-                    formatted = option_text(profile, category, option).details
-                    for line in formatted:
-                        self.assertIn(" ".join(line.split()), panel)
-                    for sentence in re.split(r"(?<=[.!?])\s+", option["detail"]):
-                        self.assertIn(sentence, panel)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())

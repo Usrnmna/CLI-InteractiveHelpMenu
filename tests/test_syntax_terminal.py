@@ -35,7 +35,7 @@ class SyntaxScreenTests(TerminalTestCase):
         shell.text("typed --fl")
         before = shell.wait_for(lambda value: value.x == len(PROMPT + "typed --fl"))
         menu = shell.open_menu()
-        self.assertEqual(menu.cells[5].strip(), "")
+        self.assertEqual(menu.cells[5].replace("│", "").strip(), "")
         self.assertIn("OPTIONS *", menu.cells[3])
         self.assertIn("> --flag", menu.cells[4])
         self.assertEqual(shell.cancel(), before)
@@ -363,7 +363,7 @@ class SyntaxScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: end of file"
                                    and "> -sseof " in state.cells[4])
-            self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+            self.assertNotIn(qualification, " ".join(" ".join(found.detail_body).split()))
             self.reach_detail(shell, found, qualification)
             shell.cancel(action)
             if action == "Escape":
@@ -385,7 +385,7 @@ class SyntaxScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: output fields"
                                    and "> --accept-nth " in state.cells[4])
-            self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+            self.assertNotIn(qualification, " ".join(" ".join(found.detail_body).split()))
             self.reach_detail(shell, found, qualification)
             shell.cancel(action)
             if action == "Escape":
@@ -397,19 +397,7 @@ class SyntaxScreenTests(TerminalTestCase):
 
     def check_rendered_rows(self, profile, shell, prefix, suffix):
         """Read each selected declaration, summary, and complete formatted Details from terminal cells."""
-        title = " ".join(profile["command"])
-        self.assertEqual(shell.open_menu().cells[0], "Interactive help | " + title)
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                with self.subTest(command=title, flag=option["flag"]):
-                    label = ellipsize_cells(option_label(option), 40)
-                    view = option_text(profile, category, option)
-                    details = [line for paragraph in view.details for line in wrap_cells(paragraph, 218)]
-                    shell.wait_for_option(label, option["summary"], details)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -440,13 +428,7 @@ class SyntaxScreenTests(TerminalTestCase):
 
     def reach_detail(self, shell, screen, text):
         """Read successive small-screen Details lines until a particular qualification is visible."""
-        while text not in " ".join(" ".join(screen.cells[8:-3]).split()):
-            progress = screen.cells[-3]
-            visible, total = progress.split()[1].split("/")
-            last = int(visible.split("-")[1])
-            self.assertLess(last, int(total), text)
-            shell.keys("]")
-            screen = shell.wait_for(lambda state: state.cells[-3] != progress)
+        shell.find_detail(text)
 
     def test_extraction_rename_and_selection_at_minimum_size(self):
         """Scroll to the collision outcome, cancel, then select the mode before existing operands."""
@@ -462,7 +444,7 @@ class SyntaxScreenTests(TerminalTestCase):
                     shell.keys("Enter")
                     found = shell.wait_for(lambda screen: screen.cells[2] == "Filter: " + query
                                            and "> -aot " in screen.cells[4])
-                    self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+                    self.assertNotIn(qualification, " ".join(" ".join(found.detail_body).split()))
                     self.reach_detail(shell, found, qualification)
                     shell.cancel(action)
                     if action == "Escape":
@@ -484,7 +466,7 @@ class SyntaxScreenTests(TerminalTestCase):
                     shell.keys("Enter")
                     found = shell.wait_for(lambda state: state.cells[2] == "Filter: batch placeholder"
                                            and "> --exec-batch " in state.cells[4])
-                    self.assertNotIn(qualification, " ".join(" ".join(found.cells[8:-3]).split()))
+                    self.assertNotIn(qualification, " ".join(" ".join(found.detail_body).split()))
                     self.reach_detail(shell, found, qualification)
                     shell.cancel(action)
                     if action == "Escape":
@@ -550,7 +532,7 @@ class SyntaxScreenTests(TerminalTestCase):
         shell.text("\x1bO")
         time.sleep(0.08)
         shell.text("B")
-        menu = shell.wait_for(lambda value: value.alternate == 1 and "> --beta" in value.cells[5])
+        menu = shell.wait_for(lambda value: value.alternate == 1 and "> --beta" in value.selected_row)
         shell.keys("Enter")
         after = shell.wait_for(lambda value: value.alternate == 0 and "--beta" in "".join(value.cells))
         self.assertEqual(after.history_markers(), HISTORY)

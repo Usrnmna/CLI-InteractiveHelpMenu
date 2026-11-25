@@ -127,36 +127,7 @@ class GitMenuTests(TerminalTestCase):
         data = profile(path)
         prefix, suffix = f"git {path} ", ' "quoted suffix"'
         shell = self.pending(prefix, suffix, 240, 150)
-        self.assertEqual(shell.open_menu().cells[0], "Interactive help | git " + path)
-        for category_index, category in enumerate(data["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, row in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                label = option_label(row)
-                with self.subTest(path=path, label=label):
-                    # tmux can capture a redraw after the label but before the final
-                    # Details lines. Poll for the whole pane and diagnose any missing text.
-                    expected = [" ".join(text.split()) for text in option_text(data, category, row).details]
-                    deadline = time.monotonic() + 8
-                    while True:
-                        screen = shell.capture()
-                        if "Option: " + label in screen.cells:
-                            divider = next(i for i, line in enumerate(screen.cells) if line.startswith("Category "))
-                            panel = " ".join(" ".join(screen.cells[divider + 1:-3]).split())
-                            missing = [text for text in expected if text not in panel]
-                            if not missing:
-                                break
-                        else:
-                            missing = ["Option: " + label]
-                        self.assertLess(time.monotonic(), deadline, (label, missing))
-                        time.sleep(0.03)
-                    selected = next(line for line in screen.cells[4:divider] if line[26:].startswith("> "))
-                    self.assertIn(ellipsize_cells(label, 40), selected)
-                    self.assertIn(row["summary"], selected)
-                    first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
-                    self.assertEqual((first, last), (1, total))
+        shell.verify_profile(data)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -166,10 +137,10 @@ class GitMenuTests(TerminalTestCase):
         shell = self.pending("git stash pu", "", 60, 16)
         shell.open_menu()
         shell.keys("Right")
-        shell.wait_for(lambda state: any("> push " in line for line in state.cells[4:7]))
+        shell.wait_for(lambda state: state.selected_row.startswith("> push "))
         shell.cancel("Enter")
         self.assertEqual(shell.read_buffer(), ("git stash push ", len("git stash push ")))
-        self.assertEqual(shell.open_menu().cells[0], "Interactive help | git stash push")
+        self.assertTrue(shell.open_menu().cells[0].startswith("Interactive help | git stash push "))
         shell.cancel()
         shell.text("-- 'a path' ")
         shell.keys("Escape", "h")
@@ -194,7 +165,7 @@ class GitMenuTests(TerminalTestCase):
         prefix = "git log -2 --decorate=full --stat=30 HEAD "
         suffix = ' -- "quoted suffix"'
         shell = self.pending(prefix, suffix, 60, 16)
-        self.assertEqual(shell.open_menu().cells[0], "Interactive help | git log")
+        self.assertTrue(shell.open_menu().cells[0].startswith("Interactive help | git log "))
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         shell.keys("C-e", "Space", "Escape", "h")
@@ -230,17 +201,9 @@ class GitMenuTests(TerminalTestCase):
                 shell.text(query)
                 shell.keys("Enter")
                 screen = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
-                # The minimum-size option list fits 17 cells of the declaration.
-                self.assertIn("> " + ellipsize_cells(literal.rstrip("="), 17), screen.cells[4])
-                while True:
-                    first, last, total = map(int, re.split(r"[-/]", screen.cells[-3].split()[1]))
-                    panel = " ".join(" ".join(screen.cells[8:-3]).split())
-                    if first > 1 and qualification in panel:
-                        break
-                    self.assertLess(last, total, qualification)
-                    previous = screen.cells[-3]
-                    shell.keys("]")
-                    screen = shell.wait_for(lambda state: state.cells[-3] != previous)
+                self.assertTrue(screen.selected_row.startswith("> " + ellipsize_cells(literal.rstrip("="), 15)),
+                                screen.selected_row)
+                shell.find_detail(qualification)
                 shell.cancel(action)
                 if action == "Escape":
                     self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))

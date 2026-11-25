@@ -29,10 +29,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: local images only")
             self.assertIn("> --pull=POLICY", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "clients treat newer as missing." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("clients treat newer as missing.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -58,10 +55,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: absolute path")
             self.assertIn("> --cwd DIRECTORY", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "restart can find the directory again." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("restart can find the directory again.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -85,10 +79,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: --no-http-cache")
             self.assertIn("> --no-cache", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "from the global packages folder." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("from the global packages folder.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -112,10 +103,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: unified diff")
             self.assertIn("> -diff", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "Go 1.22 rejects this flag." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("Go 1.22 rejects this flag.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -139,10 +127,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: dedicated directory")
             self.assertIn("> --basetemp DIR", found.cells[4])
-            count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * count))
-            shell.wait_for(lambda state: "recreates the directory." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("recreates the directory.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -168,10 +153,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: unfixable violation")
             self.assertIn("> --diff", found.cells[4])
-            count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * count))
-            shell.wait_for(lambda state: "produces no diff and exits 0." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("produces no diff and exits 0.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -195,10 +177,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: skip the freshness check")
             self.assertIn("> --frozen", found.cells[4])
-            count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * count))
-            shell.wait_for(lambda state: "A missing lockfile is an error." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("A missing lockfile is an error.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -222,10 +201,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: to limit intermediate")
             self.assertIn("> -verify DEPTH", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "-verify_return_error to stop on errors." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("-verify_return_error to stop on errors.")
             shell.cancel(key)
             if key == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -251,10 +227,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: ignores the offset")
             self.assertIn("> --boot=ID", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "ignores the offset in ID+offset." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("ignores the offset in ID+offset.")
             shell.cancel(key)
             if key == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -280,10 +253,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: covering routes")
             self.assertIn("> to PREFIX", found.cells[4])
-            line_count = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * line_count))
-            shell.wait_for(lambda state: "to match PREFIX to include covering routes." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("to match PREFIX to include covering routes.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -299,13 +269,7 @@ class ExpansionScreenTests(TerminalTestCase):
         shell.keys("Enter")
         found = shell.wait_for(lambda state: state.cells[2] == "Filter: combined results")
         self.assertIn("> --inplace", found.cells[4])
-        for _ in range(12):
-            if "Later files keep their original contents." in " ".join(" ".join(found.cells[8:-3]).split()):
-                break
-            previous = found.cells[-3]
-            shell.keys("]")
-            found = shell.wait_for(lambda state: state.cells[-3] != previous)
-        self.assertIn("Later files keep their original contents.", " ".join(" ".join(found.cells[8:-3]).split()))
+        shell.find_detail("Later files keep their original contents.")
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
 
@@ -338,10 +302,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: optional audio")
             self.assertIn("> -map", found.cells[4])
-            total_lines = int(found.cells[-3].split()[1].split("/")[1])
-            shell.keys(*(["]"] * total_lines))
-            shell.wait_for(lambda state: "The input number must still exist." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("The input number must still exist.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -367,9 +328,7 @@ class ExpansionScreenTests(TerminalTestCase):
             shell.keys("Enter")
             found = shell.wait_for(lambda state: state.cells[2] == "Filter: literal dot")
             self.assertIn("> --delimiter", found.cells[4])
-            shell.keys(*(["]"] * 24))
-            shell.wait_for(lambda state: "a literal dot in 0.67.0." in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            shell.find_detail("a literal dot in 0.67.0.")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -396,9 +355,7 @@ class ExpansionScreenTests(TerminalTestCase):
                 shell.keys("Enter")
                 selected = shell.wait_for(lambda state: state.cells[2] == "Filter: fd 9.0")
                 self.assertIn("> --hidden", selected.cells[4])
-                shell.keys(*(["]"] * 16))
-                shell.wait_for(lambda state: "use --exclude .git to omit it." in
-                               " ".join(" ".join(state.cells[8:-3]).split()))
+                shell.find_detail("use --exclude .git to omit it.")
                 shell.cancel()
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
 
@@ -436,8 +393,7 @@ class ExpansionScreenTests(TerminalTestCase):
                     shell.keys("Enter")
                     selected = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
                     self.assertIn("> " + flag, selected.cells[4])
-                    shell.keys(*(["]"] * 32))
-                    shell.wait_for(lambda state: qualification in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.find_detail(qualification)
                     shell.cancel(action)
                     if action == "Escape":
                         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -467,8 +423,7 @@ class ExpansionScreenTests(TerminalTestCase):
                     shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
                     shell.keys("Down")  # Each search returns the short alias, then the long one.
                     shell.wait_for(lambda state: any("> " + flag in row for row in state.cells[4:7]))
-                    shell.keys(*(["]"] * 32))
-                    shell.wait_for(lambda state: guidance in " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.find_detail(guidance)
                     shell.cancel(action)
                     if action == "Escape":
                         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -633,7 +588,7 @@ class ExpansionScreenTests(TerminalTestCase):
         before = self.pending(shell, line)
         menu = shell.open_menu()
         self.assertIn("[keyword]", " ".join(menu.cells))
-        self.assertIn("ADDRESS FILE", " ".join(menu.cells))
+        shell.find_detail("ADDRESS FILE")
         shell.cancel()
         self.assert_restored(shell, line, before)
         shell.open_menu()

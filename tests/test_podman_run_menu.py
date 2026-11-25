@@ -40,28 +40,7 @@ class PodmanRunMenuTests(TerminalTestCase):
         """Compare each selected row, including its formatted value contract, with the screen."""
         profile = json.loads((ROOT / "profiles" / f"podman-{command}.json").read_text(encoding="utf-8"))
         shell, prefix, suffix = self.pending_command(210, 100, command, suffix)
-        shell.open_menu()
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                with self.subTest(flag=option["flag"]):
-                    if index:
-                        shell.keys("Down")
-                    label = option_label(option)
-                    state = shell.wait_for(lambda state: "Option: " + label in state.cells)
-                    start = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                    self.assertTrue(any("> " + option["flag"] in line and option["summary"] in line
-                                        for line in state.cells[4:start]), label)
-                    progress = state.cells[-3].split()[1]
-                    first, last = progress.split("-")
-                    visible, total = last.split("/")
-                    self.assertEqual((first, visible), ("1", total), label)
-                    panel = " ".join(" ".join(state.cells[start + 1:-3]).split())
-                    for sentence in re.split(r"(?<=[.!?])\s+", option.get("detail", "")):
-                        self.assertIn(sentence, panel)
-                    for line in option_text(profile, category, option).details:
-                        self.assertIn(" ".join(line.split()), panel)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -76,10 +55,8 @@ class PodmanRunMenuTests(TerminalTestCase):
             shell.keys("Enter")
             state = shell.wait_for(lambda state: state.cells[2] == "Filter: private SELinux label")
             self.assertIn("> --volume VOLUME", state.cells[4])
-            self.assertIn("-v VOLUME", state.cells[5])
-            shell.keys(*(["]"] * int(state.cells[-3].split("/")[1].split()[0])))
-            shell.wait_for(lambda state: "mapped container UID and GID" in
-                           " ".join(" ".join(state.cells[8:-3]).split()))
+            self.assertIn("-v VOLUME", " ".join(state.cells))
+            shell.find_detail("mapped container UID and GID")
             shell.cancel(action)
             if action == "Escape":
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
@@ -104,14 +81,7 @@ class PodmanRunMenuTests(TerminalTestCase):
                     shell.keys("Enter")
                     state = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
                     self.assertIn("> " + flag + " ", state.cells[4])
-                    total = int(state.cells[-3].split("/")[1].split()[0])
-                    visible = int(state.cells[-3].split()[1].split("-")[1].split("/")[0])
-                    for offset in range(1, total - visible + 1):
-                        shell.keys("]")
-                        state = shell.wait_for(lambda state: int(state.cells[-3].split()[1].split("-")[0]) > offset)
-                        if guidance in " ".join(" ".join(state.cells[8:-3]).split()):
-                            break
-                    self.assertIn(guidance, " ".join(" ".join(state.cells[8:-3]).split()))
+                    shell.find_detail(guidance)
                     shell.cancel(action)
                     if action == "Escape":
                         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))

@@ -9,7 +9,7 @@ import unittest
 from test_discovery import ROOT
 from discovery import build_profile
 from core import validate_profile
-from presentation import description_blocks
+from presentation import concise_description
 from test_terminal_screen import TMUX_AVAILABLE, TmuxShell
 
 
@@ -38,7 +38,7 @@ class CapturedDescriptionScreenTests(unittest.TestCase):
                 category = next(c for c in profile["categories"] if any(o["flag"] == flag for o in c["options"]))
                 option = next(o for o in category["options"] if o["flag"] == flag)
                 self.assertTrue(option["summary"].startswith(opening))
-                expected[command] = description_blocks(option["summary"], option.get("detail", ""))[0]
+                expected[command] = concise_description(option["summary"])[0]
                 # Isolate selection while retaining the real captured declaration,
                 # description, continuation paragraphs and source attribution.
                 selected = deepcopy(profile)
@@ -61,10 +61,13 @@ class CapturedDescriptionScreenTests(unittest.TestCase):
                             self.assertIn("OPTIONS", state.cells[3])
                             self.assertIn(opening[:10], state.cells[4])
                             if width == 160:
-                                start = 5 + max(3, (height - 9) // 2)
-                                details = "\n".join(state.cells[start:height - 3])
-                                self.assertEqual(details.count(expected[command]), 1)
-                                self.assertNotIn("Source:", details)
+                                visible = "\n".join(state.cells)
+                                self.assertNotIn("Source:", visible)
+                                if expected[command] in state.selected_row:
+                                    self.assertEqual(visible.count(expected[command]), 1)
+                                else:
+                                    # Clipped Simple prose remains reachable in the selected pane.
+                                    self.assertIn(opening, " ".join(state.detail_body))
                         shell.cancel()
                         self.assertEqual(shell.read_buffer(), (pending, len(pending)))
                         shell.open_menu()

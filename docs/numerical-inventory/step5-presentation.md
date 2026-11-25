@@ -15,86 +15,34 @@ Profiles, numerical declarations, discovery requests, parsers, source selection,
 merging, cache identity, insertion and authoring behavior are unchanged. The
 existing inspection preview uses the same browser and inherits this display.
 
-## One derived explanation
+## Display levels and unit search
 
-`cli_help/value_semantics.py` retains its default reference-format API and output.
-The additive `presentation=True` argument places ordinary bare-number meaning
-before the longer purpose statement, places applicability and evidence early,
-and includes source references, locators and qualifications. All variants and
-components remain present. No installed-version, operating-system or chip match
-is inferred. The metadata contract and validation policies are unchanged.
+The numerical contract supplies validated forms, components, variants, and
+applicability to the browser. The reference-format API retains its full evidence.
+The terminal shows citations in none of its display levels. Original documentation
+and source qualifications remain searchable.
 
-`cli_help/presentation.py` derives immutable `ValueText` and `OptionText` records:
+Simple shows each option’s purpose. A shared note names the applicable options
+and the unit of their bare inputs. Detailed shows a short example or operational
+qualification. Expanded lists syntax, conversions, bounds, special inputs,
+defaults, versions, examples and command-wide positional rules when documented.
+The `Lines` counter and detail-scroll keys expose longer explanations.
 
-- The compact lead comes from the first formatted line. Only the predictable
-  `Value` label is removed and `bare numbers:` becomes `bare:`. Evidence and
-  scope markers remain. A list hint is eligible only when this lead explains
-  bare-number interpretation; nonnumerical meaning is not repeated in the row.
-  Eligible hints are displayed in full or omitted, never partially clipped.
-- Selected details retain the literal declaration, concise purpose and value
-  rules, required/optional arity, and command-wide repeated-value formats.
-  Recognizable source labels, dates, release annotations, examples, insertion
-  instructions and unrelated category context are omitted. Wrapped paragraphs
-  are joined and repeated sentences are shown once. Unknown prose is retained
-  conservatively so unfamiliar constraints are not discarded by a length limit.
-  Duplicate special-value meanings are grouped within each applicability scope;
-  forms belonging to different variants or components remain separate.
-- Search retains the original joined flag/summary/detail text, including legacy
-  cross-field substring matches, and adds the displayed declaration, argument
-  placeholder, numerical explanations and relevant source qualifications.
+For example, rsync’s bare bandwidth uses `KiB/s`. Its accepted suffixes distinguish
+decimal from binary scaling. FFmpeg’s bit-rate conversion table shows the literal
+input forms under one `Result (bps)` heading. A search for `bps` includes documented
+bit rates in inputs or reported output. Display abbreviations are independent of
+the units a command actually accepts. See the [unit examples and scoping
+rules](../superpowers/plans/2026-11-24-menu-detail-levels.md#unit-examples-from-the-bundled-menus).
 
-The browser derives these records once for a modal, read-only profile. Query
-changes reuse them without metadata mutation or repeated formatting. Reopening
-the browser, including a preview after draft edits, derives new records. No
-persistent search index, discovery-cache change or formatted data copy is stored
-in profiles. Modifying a profile in place during an open modal is not supported.
+Search retains case-insensitive literal matches over the original flag, summary,
+detail, placeholder and evidence. Additional unit aliases use case-sensitive
+symbols to distinguish bits from bytes and decimal from binary sizes. The browser
+derives the formatted data for each open profile and reuses it during navigation.
+The active profile, cache and pending command remain intact.
 
-## Visible and accessible information
-
-Active numerical guidance starts the selected details before option descriptions.
-Category context is omitted from selected option details. List rows use aligned declaration and description columns.
-The declaration column uses the longest declaration in the category, capped at
-40 cells and half the available content width. Filtering and scrolling within
-that category do not change the column position. The summary takes precedence;
-a qualified value hint is appended only when both fit in full. The complete flag
-and placeholder remain accessible in details, and insertion continues to use
-the original option object.
-
-Short notices remain visible when value hints do not fit: `[review]` identifies
-invalid guidance or source claims requiring review, `[unverified]` identifies
-value evidence that is not verified, and `[varies]` identifies multiple
-applicability variants. A concise applicability warning and platform/chip
-restrictions remain in selected details. Detailed evidence and release
-qualifications remain in stored metadata and search, regardless of row width.
-
-Representative presentation from the already reviewed rsync 3.4.1 metadata is:
-
-```text
-(scoped) bare: 1024 bytes/second; Maximum socket transfer rate.
-```
-
-The selected explanation identifies accepted suffixes, decimal/binary scales
-and zero-value behavior. Exact release identifiers are omitted from display. This display unit does
-not imply an accepted literal `/second` suffix. Its factual evidence remains the
-[Step 3 migration sources](step3-migration.md) and
-[reviewed semantic fixture](../../tests/fixtures/value-semantics/migration-evidence.json).
-No new upstream behavior is verified by displaying those declarations.
-
-Multiple applicability variants use the `[varies]` notice in list rows.
-Details retain every variant with its target restrictions and an applicability warning. Displayed value hints for
-single scoped variants also remain explicitly scoped; the browser does not treat them
-as universal facts about the installed program. Source-derived, synthetic,
-unresolved and partial declarations retain an uncertainty warning; detailed
-evidence labels and investigation requirements remain searchable. Counts, indices, identifiers, levels, expressions,
-composites and delegated grammars use their existing formatter explanations;
-physical units are not invented for them.
-
-Declaration and summary clipping use an ellipsis measured in terminal cells. Selected details wrap
-with the existing Unicode utilities. A `Details start-end/total` line identifies
-the visible range and the configured detail-scroll keys when more content exists.
-The existing `[` and `]` controls reach the complete explanation. Not every
-qualification fits simultaneously at 60 columns by 16 rows. Below that minimum,
-the existing resize notice and cancellation behavior remain in effect.
+See the [browser controls](../usage.md#browser-controls) for level switching,
+category titles, selected-row recovery, filtering and scrolling.
 
 ## Search, source notes and uncertainty
 

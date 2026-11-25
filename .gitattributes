@@ -17,6 +17,8 @@
 *.checksum text eol=lf
 *.txt text eol=lf
 *.1 text eol=lf
+# Captured help can contain significant terminal padding and final blank lines.
+tests/fixtures/help/**/*.txt whitespace=-trailing-space
 # Terminal recordings and structured capture metadata are UTF-8 text.
 # Local raw captures remain excluded through their report/cache directories.
 *.cast text eol=lf

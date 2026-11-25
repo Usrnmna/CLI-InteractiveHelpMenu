@@ -9,6 +9,7 @@ from contextlib import ExitStack
 from copy import deepcopy
 import importlib.util
 import json
+import re
 from pathlib import Path
 import sys
 import unittest
@@ -56,6 +57,34 @@ class CellScreen(FakeScreen):
             raise AssertionError("Draw exceeded terminal cell width")
         super().addnstr(row, col, text, n, attr)
 
+    def selected_row(self):
+        """Return the declaration and summary of the selected option."""
+        return next(v for (r, c, _), v in self.cells.items() if c == min(26, self.columns // 3) and v.startswith("> "))
+
+    def detail_body(self):
+        """Return the visible text between the ruled heading and footer."""
+        divider = next((r for (r, c, _), v in self.cells.items() if c == 0 and "──" in v), None)
+        return [] if divider is None else [self.cells[r, 0, 0] for r in range(divider + 1, self.lines - 2)]
+
+
+def read_expanded(browser, width=60, height=16):
+    """Read each visible page once and join wrapped lines in output order."""
+    screen = CellScreen(height, width)
+    keys = load_keys()
+    browser.level = "Expanded"
+    browser.detail_offset = 0
+    lines = []
+    while True:
+        draw(screen, browser, keys)
+        page = screen.detail_body()
+        lines.extend(page[len(lines) - browser.detail_offset:])
+        counter = next((v for v in screen.cells.values() if re.fullmatch(r"Lines \d+–\d+/\d+", v)), "")
+        if not counter or len(lines) == int(counter.rsplit("/", 1)[1]):
+            return " ".join(lines), screen
+        if not page:
+            raise AssertionError("Scroll counter without a visible detail pane")
+        browser.detail_offset += len(page)
+
 
 class NumericalPresentationTests(unittest.TestCase):
     @classmethod
@@ -81,21 +110,7 @@ class NumericalPresentationTests(unittest.TestCase):
 
     def all_details(self, browser, width=60, height=16):
         """Visit each scroll position through the real draw path until clamped."""
-        screen = CellScreen(height, width)
-        detail_row = 4 + max(3, (height - 9) // 2)
-        collected = []
-        for _ in range(4000):
-            draw(screen, browser, load_keys(None))
-            collected.extend(value for (row, _col, _attr), value in sorted(screen.cells.items())
-                             if detail_row < row < height - 3)
-            old = browser.detail_offset
-            browser.detail_offset += 1
-            draw(screen, browser, load_keys(None))
-            if browser.detail_offset == old:
-                break
-        else:
-            self.fail("Details did not reach a finite final scroll position")
-        return " ".join(collected), screen
+        return read_expanded(browser, width, height)
 
     def test_formatter_reaches_list_details_and_search_without_duplicate_interpretation(self):
         profile = specimen()
@@ -106,7 +121,7 @@ class NumericalPresentationTests(unittest.TestCase):
             self.assertTrue(formatter.call_args.kwargs["presentation"])
             screen = CellScreen(24, 160)
             draw(screen, browser, load_keys(None))
-            self.assertIn("distinctive-unit-marker", screen.text())
+            self.assertIn("distinctive-unit-marker", self.all_details(browser)[0])
             for query in ("distinctive-unit-marker", "distinctive-suffix-marker", "MAGNITUDE"):
                 browser.set_query(query)
                 self.assertEqual(browser.options(), [first_option(profile)])
@@ -347,9 +362,9 @@ class NumericalPresentationTests(unittest.TestCase):
         profile = specimen(node, summary="A lengthy explanation " * 20)
         browser = Browser(profile)
         screen = CellScreen(16, 60)
+        browser.level = "Expanded"
         draw(screen, browser, load_keys(None))
-        detail_row = 4 + max(3, (16 - 9) // 2)
-        visible = " ".join(v for (r, _c, _a), v in sorted(screen.cells.items()) if detail_row < r < 13)
+        visible = " ".join(screen.detail_body())
         self.assertIn("bare numbers: seconds", visible)
         self.assertNotIn("Long category context", visible)
         self.assertNotIn("A lengthy explanation", visible)
@@ -359,7 +374,7 @@ class NumericalPresentationTests(unittest.TestCase):
         browser = Browser(profile)
         screen = CellScreen(24, 140)
         draw(screen, browser, load_keys(None))
-        row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+        row = screen.selected_row()
         self.assertIn("A synthetic selectable value", row)
         self.assertIn("…", row)
         details, _ = self.all_details(browser)
@@ -380,7 +395,7 @@ class NumericalPresentationTests(unittest.TestCase):
             for selected in (0, 3):
                 browser.selected = selected
                 draw(screen, browser, load_keys(None))
-                rows = [v for (r, c, _a), v in screen.cells.items() if 4 <= r < 7 and c > 0]
+                rows = [v for (r, c, _a), v in screen.cells.items() if c == min(26, width // 3) and "Summary" in v]
                 columns.extend(v.index("Summary") for v in rows)
             self.assertEqual(len(set(columns)), 1, (width, columns))
 
@@ -393,7 +408,7 @@ class NumericalPresentationTests(unittest.TestCase):
                     browser, option, view = self.view(name, flag)
                     screen = CellScreen(16, width)
                     draw(screen, browser, load_keys(None))
-                    row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+                    row = screen.selected_row()
                     self.assertIn(option["summary"].split()[0], row)
                     self.assertNotIn("(scoped)", row)
                     self.assertIn(option["summary"], "\n".join(view.details))
@@ -406,7 +421,7 @@ class NumericalPresentationTests(unittest.TestCase):
             browser, option, view = self.view("rsync", "--bwlimit=")
             screen = CellScreen(16, width)
             draw(screen, browser, load_keys(None))
-            row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+            row = screen.selected_row()
             self.assertIn("Limit bandwidth", row)
             if "bare:" in row:
                 self.assertIn(view.compact, row)
@@ -414,7 +429,7 @@ class NumericalPresentationTests(unittest.TestCase):
             else:
                 self.assertNotIn("(scoped)", row)
             if width == 240:
-                self.assertIn("1024 bytes/second", row)
+                self.assertIn("KiB/s", row)
 
     def test_review_and_uncertainty_notices_survive_narrow_rows(self):
         """Hidden value hints cannot hide review requirements or uncertainty."""
@@ -426,7 +441,7 @@ class NumericalPresentationTests(unittest.TestCase):
             screen = CellScreen(16, 60)
             browser = Browser(profile)
             draw(screen, browser, load_keys(None))
-            row = next(v for (r, c, _a), v in screen.cells.items() if r == 4 and c > 0)
+            row = screen.selected_row()
             self.assertIn(notice, row)
             self.assertNotIn("bare:", row)
 
@@ -440,7 +455,7 @@ class NumericalPresentationTests(unittest.TestCase):
         for width in (60, 100, 160, 60):
             screen = CellScreen(16, width)
             draw(screen, browser, load_keys(None))
-            rows = [v for (r, c, _a), v in screen.cells.items() if 4 <= r <= 5 and c > 0]
+            rows = [v for (r, c, _a), v in screen.cells.items() if c == min(26, width // 3) and "Summary" in v]
             columns = [sum(cell_width(c) for c in row[:row.index("Summary")]) for row in rows]
             self.assertEqual(columns[0], columns[1])
             browser.set_query("no-such-option")
@@ -452,16 +467,16 @@ class NumericalPresentationTests(unittest.TestCase):
     def test_all_details_are_reachable_at_minimum_size_with_scroll_indicator(self):
         browser, _option, view = self.view("rsync", "--bwlimit=")
         text, screen = self.all_details(browser)
-        self.assertIn("Details", screen.text())
+        self.assertIn("Expanded", screen.text())
         self.assertIn("scroll", screen.text())
         self.assertIn("No bandwidth limit", text)
         self.assertNotIn("Reference:", text)
-        self.assertNotIn("3.4.1", text)
+        self.assertIn("3.4.1", text)
         # Compare the actual wrapped lines, including complete suffix rules.
         actual = text.replace(" ", "")
-        for paragraph in view.details:
+        for paragraph in view.expanded:
             for line in paragraph.splitlines():
-                for wrapped in wrap_cells(line, 58):
+                for wrapped in wrap_cells(line, 59):
                     self.assertIn(wrapped.replace(" ", ""), actual)
 
     def test_unicode_clipping_wrapping_and_controls_preserve_cell_limits(self):
@@ -480,6 +495,7 @@ class NumericalPresentationTests(unittest.TestCase):
     def test_resize_shrink_grow_and_reopen_preserve_selection_and_reachable_text(self):
         browser, option, _view = self.view("rsync", "--bwlimit=")
         screen = CellScreen(40, 140)
+        browser.level = "Expanded"
         browser.detail_offset = 7
         for height, width in ((40, 140), (16, 60), (10, 40), (24, 100), (16, 60)):
             screen.lines, screen.columns = height, width
@@ -488,10 +504,10 @@ class NumericalPresentationTests(unittest.TestCase):
             if height < 16 or width < 60:
                 self.assertIn("Resize to at least", screen.text())
             else:
-                self.assertIn("Details", screen.text())
+                self.assertIn("Expanded", screen.text())
         browser.detail_offset = 0
         draw(screen, browser, load_keys(None))
-        self.assertIn("1024 bytes/second", screen.text())
+        self.assertIn("KiB/s", screen.text())
         reopened = Browser(browser.profile, "--bwlimit=")
         self.assertEqual(reopened.detail_offset, 0)
         self.assertEqual(reopened.text(option), browser.text(option))
@@ -517,6 +533,71 @@ class NumericalPresentationTests(unittest.TestCase):
         second = Browser(profile)
         self.assertNotEqual(first.text(first_option(profile)), second.text(first_option(profile)))
         self.assertIn("1024 bytes", second.text(first_option(profile)).compact)
+
+    def test_browser_shares_only_value_text_between_equivalent_references(self):
+        profile = specimen({"ref": "amount"})
+        profile["value_definitions"] = {"amount": synthetic_node()}
+        first = first_option(profile)
+        second = dict(first, flag="--another", summary="A second summary")
+        profile["categories"][0]["options"].append(second)
+        profile["documentation"] = {"semantic_sources": {"--value": "first source", "--another": "second source"}}
+        with patch.object(presentation, "format_value_semantics", wraps=format_value_semantics) as formatter:
+            browser = Browser(profile)
+        formatter.assert_called_once()
+        for row, source in ((first, "first source"), (second, "second source")):
+            self.assertIn("Option: " + option_label(row), browser.text(row).details)
+            self.assertEqual(browser.text(row).summary, row["summary"])
+            browser.set_query(source)
+            self.assertEqual(browser.options(), [row])
+
+    def test_shared_reference_context_and_malformed_shapes_use_the_original_formatter(self):
+        profile = specimen({"ref": "amount"})
+        profile["value_definitions"] = {"amount": synthetic_node(), "loop": {"ref": "loop"}}
+        first = first_option(profile)
+        metadata = first["value_semantics"]
+        # The second valid arity has its own reusable result. Failures and
+        # ineligible contracts go through the formatter for every occurrence.
+        cases = (
+            ({"argument_count": 2}, 2),
+            ({"argument_optional": True}, 3),
+            ({"argument_count": True}, 3),
+            ({"argument_optional": 0}, 3),
+            ({"argument": ""}, 3),
+            ({"value_semantics": contract()}, 3),
+            ({"value_semantics": contract({"ref": "amount"}, {"ref": "amount"})}, 3),
+            ({"value_semantics": dict(metadata, schema_version=True)}, 3),
+            ({"value_semantics": dict(metadata, unknown=True)}, 3),
+            ({"value_semantics": contract({"ref": "amount", "meaning": "override"})}, 3),
+            ({"value_semantics": contract({"ref": "missing"})}, 3),
+            ({"value_semantics": contract({"ref": "loop"})}, 3),
+        )
+        for changes, expected_calls in cases:
+            with self.subTest(changes=changes):
+                second = dict(first, flag="--second", **changes)
+                third = dict(second, flag="--third")
+                profile["categories"][0]["options"] = [first, second, third]
+                expected = [presentation.option_text(profile, profile["categories"][0], row)
+                            for row in (first, second, third)]
+                with patch.object(presentation, "format_value_semantics", wraps=format_value_semantics) as formatter:
+                    browser = Browser(profile)
+                self.assertEqual([browser.text(row) for row in (first, second, third)], expected)
+                self.assertEqual(formatter.call_count, expected_calls)
+
+    def test_shared_reference_scope_ends_at_each_profile_and_preview_open(self):
+        from review import preview_profile
+
+        profile = specimen({"ref": "amount"})
+        profile["value_definitions"] = {"amount": synthetic_node(meaning="Initial definition")}
+        other = deepcopy(profile)
+        other["value_definitions"]["amount"]["meaning"] = "Independent definition"
+        for current, phrase in ((profile, "Initial definition"), (other, "Independent definition"),
+                                (profile, "Edited definition")):
+            current["value_definitions"]["amount"]["meaning"] = phrase
+            screen = CellScreen(24, 120, ["/", *phrase, "\n", "\n"])
+            with BrowserLoop(screen), patch.object(ui.curses, "wrapper", lambda fn, *args: fn(screen, *args)):
+                self.assertIs(preview_profile(current), first_option(current))
+            self.assertIn("Help preview", screen.text())
+            self.assertIn(phrase, screen.text())
 
     def test_scripted_search_restore_preview_and_literal_selection_use_existing_controls(self):
         profile = specimen()
@@ -615,12 +696,12 @@ class NumericalPresentationTests(unittest.TestCase):
         profile = specimen(synthetic_node("duration"))
         keys = load_keys(None)
         keys["detail_up"], keys["detail_down"] = ["u"], ["d"]
-        screen = CellScreen(16, 60, ["d", "d", "u", "\n"])
+        screen = CellScreen(16, 60, ["D", "D", "d", "d", "u", "\n"])
         with BrowserLoop(screen):
             selected = run_browser(screen, profile, "", keys)
         self.assertIs(selected, first_option(profile))
         self.assertIn("u/d scroll", screen.text())
-        self.assertIn("Details 2-", screen.text())
+        self.assertIn("Lines 2–", screen.text())
 
         class ResizingScreen(CellScreen):
             """Replay a resize without a terminal, signal or launched process."""
@@ -631,11 +712,11 @@ class NumericalPresentationTests(unittest.TestCase):
                     self.lines, self.columns = 16, 60
                 return key
 
-        screen = ResizingScreen(24, 120, [ui.curses.KEY_RESIZE, "]", "\n"])
+        screen = ResizingScreen(24, 120, [ui.curses.KEY_RESIZE, "D", "D", "]", "\n"])
         with BrowserLoop(screen), patch.object(ui.os, "get_terminal_size", side_effect=lambda fd: type(
                 "Size", (), {"lines": screen.lines, "columns": screen.columns})()):
             self.assertIs(run_browser(screen, profile, "", load_keys(None)), first_option(profile))
-        self.assertIn("Details 2-", screen.text())
+        self.assertIn("Lines 2–", screen.text())
 
     def test_derived_views_require_no_file_network_process_or_evaluation_access(self):
         profile = specimen()

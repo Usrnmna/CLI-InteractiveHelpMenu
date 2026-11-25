@@ -1,5 +1,19 @@
 # Documentation visuals and repository configuration review
 
+## v0.4.0-alpha candidate
+
+The [capture inventory](assets/README.md) identifies every current program image, its feature and its provenance. The recorded terminal output uses the same release inputs as the packaged media.
+
+| Configuration reviewed | Candidate decision |
+| --- | --- |
+| Git attributes and EditorConfig | Keep PNG/GIF binary and preserve LF for terminal excerpts. The fixture-specific Git whitespace attribute preserves recorded line padding and trailing blank lines when applying patches. EditorConfig already preserves fixture padding on save. |
+| Git ignores | Public media, capture and benchmark tools and release guides remain trackable. The existing report, cache and build directory rules cover raw casts, samples, sandbox logs and candidate archives. |
+| CI and Dependabot | CI reads the checkout version during the build, tests three Ubuntu/Python targets and uploads scoped reports. The weekly action and media-dependency groups are independent of the program version. |
+| Issue forms, issue routing, contribution guide and PR template | The forms already distinguish revision, unpublished candidate and package evidence. Contributor guidance covers capture provenance and review before publishing. There is no release publication workflow or release template. |
+| Source-package policy | The builder selects the six public assets, guides, repository configuration and maintained tools from working-tree bytes. Raw evidence and temporary builds are excluded. The [release guide](releases.md#build-from-source) lists the root-file boundary. |
+
+## Historical review of October 2026
+
 Reviewed on 2026-10-26 against the working tree based on `8eb3f87`, including
 the existing parser and presentation work. Four terminal assets were refreshed,
 two workflow diagrams were corrected, and temporary terminal-evidence exclusions

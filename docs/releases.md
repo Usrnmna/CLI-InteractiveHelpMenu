@@ -4,9 +4,9 @@
 
 See [version numbering and planned releases](versioning.md) when choosing the next release number.
 
-## Version 0.3.1 - Alpha
+## Version 0.4.0 - Alpha
 
-The [version file](../VERSION) sets the current checkout to `0.3.1-alpha`. Building it produces the `v0.3.1-alpha` filenames below. The [changelog](../CHANGELOG.md#version-031---alpha) lists the changes. To obtain these packages from source, follow the [build procedure](#build-from-source).
+The [version file](../VERSION) sets the prepared local candidate to `0.4.0-alpha`. Building it produces the `v0.4.0-alpha` filenames below. The [changelog](../CHANGELOG.md#version-040---alpha) lists the changes. To obtain these packages from source, follow the [build procedure](#build-from-source).
 
 The [candidate validation guide](release-candidate.md) covers exact-source
 checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.
@@ -26,12 +26,16 @@ source archive with a compatible Python/Bash installation.
 
 | Artifact | Purpose |
 | --- | --- |
-| `cli-interactive-help-v0.3.1-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
-| `cli-interactive-help-v0.3.1-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
-| `cli-interactive-help-v0.3.1-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
-| `cli-help-v0.3.1-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
+| `cli-interactive-help-v0.4.0-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
+| `cli-interactive-help-v0.4.0-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
+| `cli-interactive-help-v0.4.0-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
+| `cli-help-v0.4.0-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
 | `BUILD-INFO.json` | Version, compiler/platform details, and hashes of all packaged source inputs |
 | `*.checksum` | SHA-256 checksums for each artifact, plus the aggregate `SHA256SUMS.checksum` |
+
+## Version 0.3.1 - Alpha
+
+The [0.3.1 changelog entry](../CHANGELOG.md#version-031---alpha) records the local test-selector checkpoint.
 
 ## Version 0.3.0 - Alpha
 
@@ -45,7 +49,7 @@ The earlier [published v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-I
 
 The files under `releases/v0.1.1-alpha/` are preserved historical packages, also
 associated with the [GitHub Releases page](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-Their artifact names use `v0.1.1-alpha` in place of `v0.3.1-alpha` above.
+Their artifact names use `v0.1.1-alpha` in place of `v0.4.0-alpha` above.
 Those packages predate the current command-context and argument-syntax modules,
 passive diagnostics, module-cache freshness guards, terminal-width fixes,
 collection recovery, and GitHub updater. Their source archive is complete for
@@ -54,7 +58,7 @@ checksums must remain unchanged. They are used as isolated upgrade fixtures.
 
 ## Verify and install
 
-Run these commands in the v0.3.1-alpha build output directory. For a published package, use the matching filenames and checksums from that release.
+Run these commands in the v0.4.0-alpha build output directory. For a published package, use the matching filenames and checksums from that release.
 
 ```bash
 sha256sum -c SHA256SUMS.checksum
@@ -64,15 +68,15 @@ For an individual downloaded artifact, use its matching `.checksum` file instead
 For the self-extracting installer:
 
 ```bash
-bash cli-interactive-help-v0.3.1-alpha-linux-x86_64.run --verify
-bash cli-interactive-help-v0.3.1-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
+bash cli-interactive-help-v0.4.0-alpha-linux-x86_64.run --verify
+bash cli-interactive-help-v0.4.0-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
 ```
 
 Installer arguments such as `--prefix "$HOME/apps/cli-help"` and `--no-rc` are
 forwarded literally. Existing installations can be upgraded without removal:
 
 ```bash
-bash cli-interactive-help-v0.3.1-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
+bash cli-interactive-help-v0.4.0-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
 ```
 
 The installer requires `tar`, `tail`, `mktemp`, and `sha256sum`, in addition to the
@@ -91,8 +95,8 @@ continues through the Python runtime. Custom launcher changes are preserved.
 ## Extracted runtime and native launcher
 
 ```bash
-tar -xzf cli-interactive-help-v0.3.1-alpha-linux-x86_64.tar.gz
-cd cli-interactive-help-v0.3.1-alpha
+tar -xzf cli-interactive-help-v0.4.0-alpha-linux-x86_64.tar.gz
+cd cli-interactive-help-v0.4.0-alpha
 ./cli-help --version
 ./cli-help --check
 ./cli-help install
@@ -114,8 +118,8 @@ GCC is required in addition to the runtime dependencies. From Linux x86_64:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/release-v0.3.1-alpha
-cd dist/release-v0.3.1-alpha
+python3 scripts/build_release.py --output dist/release-v0.4.0-alpha
+cd dist/release-v0.4.0-alpha
 sha256sum -c SHA256SUMS.checksum
 ```
 

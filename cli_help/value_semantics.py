@@ -903,7 +903,7 @@ def _explain_node(node, label="Value", *, presentation=False):
     return lines
 
 
-def format_value_semantics(metadata, *, context=None, definitions=None, presentation=False):
+def format_value_semantics(metadata, *, context=None, definitions=None, presentation=False, resolved=None):
     """Return plain-text lines, optionally emphasizing interpretation for browsing.
 
     Structural errors raise ValueSemanticsError with structured diagnostics.
@@ -917,6 +917,9 @@ def format_value_semantics(metadata, *, context=None, definitions=None, presenta
     diagnostics = _ordered(validator.diagnostics)
     if any(d.severity == "error" for d in diagnostics):
         raise ValueSemanticsError(diagnostics)
+    if resolved is not None:
+        # Share the validated, expanded forms with the interactive unit renderer.
+        resolved.extend(nodes)
     if not nodes:
         return ("Value meaning: not documented.",)
     lines = []

@@ -33,11 +33,12 @@ import pyte
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs/assets"
+CAPTURE_VERSION = (ROOT / "VERSION").read_text().strip()
 FONT = Path(os.environ.get("CLI_HELP_MEDIA_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"))
 COLUMNS, ROWS = 100, 24
 RSYNC_PREFIX = "rsync --archive --compress --human-readable --itemize-changes --partial "
 RSYNC_PATHS = '"/srv/project files/" "/mnt/backup/project files/"'
-LS_PREFIX = "ls --all --human-readable "
+LS_PREFIX = "ls -l --human-readable "
 MEDIA_NAMES = ("help-browser.png", "option-inserted.png", "option-insertion.gif",
                "ls-browser.png", "guided-review.png", "numerical-guidance.png")
 BACKGROUND, FOREGROUND = "#101923", "#e4edf5"
@@ -189,7 +190,7 @@ def render(screen, title, caption, first_row=0):
     image = Image.new("RGB", (width, height), BACKGROUND)
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, width, 42), fill="#1e2c3c")
-    draw.text((padding, 10), title, font=font, fill="#8cdef0")
+    draw.text((padding, 10), f"{title} | v{CAPTURE_VERSION}", font=font, fill="#8cdef0")
     for row in range(first_row, ROWS):
         for column in range(COLUMNS):
             char = screen.buffer[row][column]
@@ -267,22 +268,22 @@ def capture_rsync(folder, demonstration):
         frame("1 / 2   rsync | Build on existing options; leave the command pending", 1500)
         terminal.send("\x1bh", "Interactive help")
         terminal.send("\x15")
-        frame("Alt-H, Ctrl-U | Browse 29 options across 9 categories", 2500,
-              required=("Transfer (4)", "Category 1/9", "Option 1/4", "--archive"),
+        frame("Alt-H, Ctrl-U | Browse 216 options across 13 categories", 2500,
+              required=("Transfer (4)", "Category 1/13", "Option 1/4", "--archive"),
               absent=("Filter: --",)).save(OUTPUT / "help-browser.png")
-        terminal.send("\tlll")
-        frame("Tab, Right x3 | Focus categories and browse Output", 1800,
-              required=("CATEGORIES *", "Category 4/9", "--progress", "--stats"))
+        terminal.send("\tlllll")
+        frame("Tab, Right x5 | Focus categories and browse Output", 1800,
+              required=("CATEGORIES *", "Category 6/13", "--progress", "--stats"))
         terminal.send("ll")
         frame("Right x2 | Inspect attribute preservation options", 1800,
-              required=("Category 6/9", "--acls", "--xattrs", "--hard-links"))
+              required=("Category 8/13", "--acls", "--xattrs", "--hard-links"))
         terminal.send("\x1b[6~")
         frame("PageDown | Scroll the category pane to Recovery", 2000,
-              required=("Category 9/9", "Recovery (3)", "--partial", "--backup-dir="),
+              required=("Category 13/13", "Recovery (22)", "--partial", "--suffix="),
               absent=("Transfer (4)",))
-        terminal.send("hhhh\tj")
-        frame("Network | Bare rates use 1024 bytes/second; scoped to rsync 3.4.1", 2800,
-              required=("OPTIONS *", "Category 5/9", "Option 2/4", "1024 bytes/second", "3.4.1")
+        terminal.send("hhhhhh\tj")
+        frame("Network | Bare rates use 1024 bytes/second; check applicability in Details", 2800,
+              required=("OPTIONS *", "Category 7/13", "Option 2/38", "1024 bytes/second", "Applicability unconfirmed.")
               ).save(OUTPUT / "numerical-guidance.png")
         terminal.send("/bytes/second\n")
         frame("Search bytes/second | Find displayed numerical meaning", 2200,
@@ -291,15 +292,15 @@ def capture_rsync(folder, demonstration):
         terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=")
         terminal.send("5000 ")
         terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=5000 ")
-        frame("Enter inserts --bwlimit= | Type 5000 (KiB/s in rsync 3.4.1)", 1800,
+        frame("Enter inserts --bwlimit= | Type 5000 (KiB/s)", 1800,
               required=("--bwlimit=5000",))
         terminal.send("\x1bh", "Interactive help")
-        terminal.send("/exclude")
-        frame("Alt-H, /, exclude | Search another category without losing input", 2000,
-              required=("Search (Enter applies, Esc restores): exclude", "--exclude=", "Option 1/2"))
+        terminal.send("/--exclude=")
+        frame("Alt-H, /, --exclude= | Search another category without losing input", 2000,
+              required=("Search (Enter applies, Esc restores): --exclude=", "> --exclude=PATTERN", "Filtering (1)", "Option 1/1"))
         terminal.send("\n")
         frame("Enter applies the filter | A second Enter selects the option", 900,
-              required=("Filter: exclude", "--exclude="))
+              required=("Filter: --exclude=", "--exclude="))
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(RSYNC_PREFIX + "--bwlimit=5000 --exclude=")
         final_line = RSYNC_PREFIX + "--bwlimit=5000 --exclude='*.tmp' " + RSYNC_PATHS + " "
@@ -314,37 +315,37 @@ def capture_rsync(folder, demonstration):
         terminal.check_buffer(final_line)
         frame("Escape | Command assembled; still unexecuted", 2000,
               required=("--exclude='*.tmp'",)).save(OUTPUT / "option-inserted.png")
-        result.update(cancel_preserved=True, categories=9, options=29)
+        result.update(cancel_preserved=True, categories=13, options=216)
         return result, terminal.events
     finally:
         terminal.close()
 
 
 def capture_ls(folder, demonstration):
-    """Show all twelve Display choices through actual option-pane scrolling."""
+    """Scroll the Display choices to a valued option and inspect its full Details."""
     terminal = Terminal(folder)
     def frame(caption, duration, **checks):
         """Record a checked ls state with the shared chapter heading."""
         return demonstration.frame(terminal, "ls", caption, duration, **checks)
 
     try:
-        terminal.send(LS_PREFIX + "--", "ls --all")
+        terminal.send(LS_PREFIX + "--", "ls -l")
         frame("2 / 2   ls | Explore a longer option list", 1000)
         terminal.send("\x1bh", "Interactive help")
         terminal.send("\x15")
-        frame("Alt-H, Ctrl-U | Display contains 12 options", 1500,
-              required=("Display (12)", "Option 1/12", "--almost-all", "--color="))
+        frame("Alt-H, Ctrl-U | Display contains 20 options", 1500,
+              required=("Display (20)", "Option 1/20", "--almost-all", "--color="))
         terminal.send("\x1b[6~")
         frame("PageDown | Scroll the option pane while categories stay visible", 1600,
-              required=("Option 8/12", "--size", "Display (12)", "Traversal (3)"),
+              required=("Option 8/20", "--size", "Display (20)", "Traversal (7)"),
               absent=("> --all",))
-        terminal.send("\x1bOF")
-        frame("End | Inspect the selected option's pattern meaning", 1800,
-              required=("Option 12/12", "--hide=PATTERN", "Hidden-name wildcard pattern"),
+        terminal.send("jjjj")
+        frame("Down x4 | Inspect the selected option's pattern meaning", 1800,
+              required=("Option 12/20", "--hide=PATTERN", "Hidden-name wildcard pattern"),
               absent_options=("--almost-all",))
         terminal.send("]" * 16)
         frame("] | Scroll complete details to the literal argument declaration", 2200,
-              required=("Option 12/12", "Argument required: PATTERN")
+              required=("Option 12/20", "Option: --hide=PATTERN", "Either -a or -A overrides", "Argument required.")
               ).save(OUTPUT / "ls-browser.png")
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(LS_PREFIX + "--hide=")
@@ -353,7 +354,7 @@ def capture_ls(folder, demonstration):
         result = terminal.check_buffer(final_line)
         frame("Enter inserts --hide= | Command assembled; still unexecuted", 1800,
               required=("--hide='*.tmp'",))
-        result.update(categories=3, options=19, display_options=12)
+        result.update(categories=6, options=60, display_options=20)
         return result, terminal.events
     finally:
         terminal.close()

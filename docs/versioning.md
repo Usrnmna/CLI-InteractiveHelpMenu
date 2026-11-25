@@ -13,19 +13,18 @@ For a plan transition, record the outgoing and incoming goals, what users gain f
 
 The patch-9 carry applies even when the same plan continues. If several rules call for a minor bump in the same release, advance the minor number once.
 
-If the first performance release ships as proposed, use `0.4.0-alpha` in the version file, `v0.4.0-alpha` for the tag, and **Version 0.4.0 - Alpha** for the corresponding changelog heading.
+The prepared first performance candidate uses `0.4.0-alpha` in the version file, `v0.4.0-alpha` for the tag, and **Version 0.4.0 - Alpha** for the corresponding changelog heading.
 
 ## Proposed targets
 
 A proposed release must change the working program. Eligible changes include a Bash keybinding fix, an improvement to menu performance, and corrections to the option descriptions or literal spellings that the menu displays or inserts. README edits, audit reports, demonstration media, CI changes and test-runner improvements are maintenance. They can accompany a program change and carry no version increment on their own.
 
-The `0.3.0-alpha` checkout expanded the command help users can find and insert. The next program plan addresses how quickly those menus open and respond across bundled, custom and discovered help. Its first shipped improvement therefore starts the proposed `0.4` series. The current checkout is `0.3.1-alpha`. A subsequent ordinary fix in the same plan would take `0.3.2-alpha`. [Current checkout and release history](../CHANGELOG.md#version-031---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
+The `0.3.0-alpha` checkout expanded the command help users can find and insert. The performance plan addresses how quickly those menus open and respond. Its first implemented step reuses shared value formatting per open and starts the `0.4` series with the prepared `0.4.0-alpha` candidate. [Current checkout and release history](../CHANGELOG.md#version-040---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
 
-The table assumes each improvement meets its evidence criteria and ships separately in the order shown. If the formatting experiment is deferred and faster redraws ship first, faster redraws take `v0.4.0-alpha`. If both ship together as the first release, they share that number. [Roadmap tasks and dependencies](../ROADMAP.md#remaining-work)
+The remaining targets assume each improvement meets its evidence criteria and ships separately in the order shown. [Roadmap tasks and dependencies](../ROADMAP.md#remaining-work)
 
 | Proposed release | Change to the working program | Evidence for inclusion |
 | --- | --- | --- |
-| v0.4.0-alpha | Open large menus faster by formatting shared value guidance once per menu open. | Aim for 30% lower median time to first frame and an improved p95 for warm FFmpeg opens. Compare labels, search results and ordered Details across bundled, custom, discovered and preview menus. Check latency and memory on small menus too. [Benchmark protocol](ffmpeg-menu-performance-plan.md#before-and-after-measurement) |
 | v0.4.1-alpha | Make searches and selection changes redraw faster in large menus. | If repeated matching or text wrapping accounts for the delay, measure time from a keypress to the updated screen before and after the change. Confirm that editing a query refreshes the matches, changing selection shows the correct Details, and resizing rewraps the text. [Redraw experiments](ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 | v0.4.2-alpha | Reduce CPU use while an open menu waits for input. | If idle redraws have measurable cost, compare idle CPU over the same interval and terminal geometry. Resize the terminal while idle, confirm the menu recovers, then check navigation, insertion and cancellation. [Runtime measurements](runtime-architecture.md#optimization-candidates) |
 | v0.4.3-alpha | Open menus faster for commands whose installed identity must be checked before showing help. | If traces identify redundant discovery work, compare first display time and probe counts on the same fixtures. Verify matching and mismatched executable identities, stale entries and failed probes still produce the expected help or fallback. [Discovery investigation](runtime-architecture.md#optimization-candidates) |

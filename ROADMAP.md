@@ -1,27 +1,59 @@
 # Project roadmap
 
-**Next — evaluate shared value formatting per browser open.** Task 3 in [remaining work](#remaining-work) links the Stage 1 baseline and parity criteria.
-
 ## Remaining work
 
-The roadmap tracks both program changes and project maintenance. Only changes to the working program qualify for a [proposed alpha release](docs/versioning.md#proposed-targets).
+**Next in engineering** is to measure how long the current three-level menu takes to open, starting with FFmpeg and a small Git menu for comparison. **Next in documentation** is to correct the menu plan’s stale review status. These can proceed independently. Preparing a release can also proceed once its contents are chosen. A performance experiment becomes a release dependency only if its change is included.
 
-Two required deliverables remain. Count each numbered row once. The checklists and measurement protocols in the linked plans supply its acceptance tests. **Next** is ready to start, **Pending** has yet to start, **In progress** means work has begun, and **Complete** requires linked evidence. Use **Blocked** with the failed prerequisite and next action. **Conditional** items have a separate decision gate.
-
-| Workstream and task | Status | Dependency and evidence needed to close |
+| Phase | Current status | Completion evidence |
 | --- | --- | --- |
-| 1. Test selection, Phase 4a — explain a proposed selection | Complete | Compared scoped and full reports against discovery, exercised missing and moved inputs and reproduced the historical yq failure. [Pilot evidence](docs/test-selection-plan.md#phase-4-pilot-evidence) |
-| 2. Test selection, Phase 4b — execute a validated selection locally | Complete | Ordered IDs matched execution on each scoped snapshot. The historical replay preserved its failure, full fallback ran, and the integrated offline matrix passed on all three targets. [Selection evidence](docs/test-selection-plan.md#phase-4-pilot-evidence) |
-| 3. Menu performance, Stage 1 — evaluate shared value formatting per browser open | Next | Independent of test selection. Capture baseline text for every bundled row plus custom, discovered and preview cases. Compare the candidate for exact search, labels and ordered Details parity. Report per-command CPU, paired terminal latency, memory and regressions against the proposed FFmpeg target. Record the decision to retain, revise or discard the candidate. [Implementation checklist and measurement protocol](docs/ffmpeg-menu-performance-plan.md#implementation-stages) |
-| 4. Menu performance — resolve the remaining investigations | Pending | Use task 3 measurements for prose preparation and redraws. Measure startup profile loading and guarded discovery separately. Record cost, affected menus, correctness constraints and a proceed/defer decision for each. Any change to architecture needs a separate decision. [Runtime investigations](docs/runtime-architecture.md#optimization-candidates) · [Prose and redraw experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
+| 1. Investigate menu performance (original roadmap task 4) | Next | A measured decision for each of the four investigations below |
+| 2. Reconcile the menu record and choose release contents | Review correction ready now. Release scope pending | Correct review entry and a documented list of changes to ship |
+| 3. Verify the release candidate | Pending final source selection | Reproducible artifacts and results for the exact release inputs |
+| 4. Publish and verify distribution | Pending candidate verification, hosted checks and release authorization | Published assets match the verified files and the tag identifies the tested commit |
+
+### Phase 1 — Measure the remaining menu costs
+
+Use the implemented menu as the baseline. The earlier Stage 1 experiment already established the benefit of reusing shared value formatting. In the later three-pair menu check, median FFmpeg opening time went from 508 to 528 ms while other suites were running. Repeat under matched conditions before attributing that difference to a particular operation. [Stage 1 measurements](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Three-level menu measurements](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md#color-and-performance-checks)
+
+1. **Opening and interaction.** Time the first complete frame for FFmpeg and the Git control. Separate summary and detail preparation from search matching, declaration-width calculation and text wrapping. Measure time from a keystroke to the updated screen for filtering, selecting a row and changing detail level. Check that matches, ordering and visible guidance stay correct. [Prose and redraw experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws)
+2. **Idle redraws.** Keep the menu open at a fixed size for matched 10-second intervals. Record redraw count, CPU time and context switches. Resize while idle, then navigate, insert and cancel to check recovery. [Measurement protocol](docs/ffmpeg-menu-performance-plan.md#before-and-after-measurement)
+3. **Startup profile loading.** Measure elapsed time, CPU and peak memory as the profile collection grows. Identify the cost of reading profiles unrelated to the pending command. Document how any proposed change would preserve longest-command matching, custom overrides, invalid-file handling and full validation through `--check`. [Loading investigation](docs/runtime-architecture.md#optimization-candidates)
+4. **Guarded discovery.** Compare an ordinary cache hit, a miss and a route that checks the installed executable’s identity. Count probes and time identity checks, help collection, parsing and cache I/O separately. Check stale entries, identity mismatches and failed probes against the expected fallback. [Discovery investigation](docs/runtime-architecture.md#optimization-candidates)
+5. **Record the decisions.** For each investigation, record the affected menus, measured cost, correctness constraints and a decision to proceed or defer. Where a change is justified, identify the smallest experiment and its acceptance checks. Architecture changes require separate approval. [Timing, memory and correctness criteria](docs/ffmpeg-menu-performance-plan.md#before-and-after-measurement)
+
+### Phase 2 — Close the menu record and select release contents
+
+1. **Correct the review record.** The menu plan’s final human-review row still says implementation is on hold. Update it to record approval of the mockups and link the six real terminal captures. Simple, Detailed, Expanded, unit search and full category titles have already been implemented and verified. [Menu review record](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record) · [Rendered verification](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
+2. **Identify the changes to ship.** The prepared `v0.4.0-alpha` performance candidate predates the three-level menu. Record whether the menu ships with that performance change or as a later step. Apply the versioning rules to the chosen batch and align `VERSION`, the changelog and release notes. The proposed performance release numbers depend on what actually ships. [Version assignment](docs/versioning.md#assigning-the-next-number) · [Candidate contents](docs/releases.md#version-040---alpha)
+3. **Check the public description against that scope.** Confirm the README, controls guide and media captions describe the selected version. Existing candidate screenshots have dated provenance. Link the current terminal captures when describing the new menu. If new public recordings are selected, complete the media work under [Conditional decisions](#conditional-decisions) before packaging them.
+
+### Phase 3 — Build and test the selected candidate
+
+1. **Freeze the source inputs.** Identify the reviewed release commit. Include the runtime modules, tests and documentation intended for that release. Build from its clean checkout into a fresh output directory and keep earlier candidate files intact. [Build procedure](docs/releases.md#build-from-source)
+2. **Verify the artifacts.** Compare the source inventory and manifest hashes with the commit’s Git blobs. Verify individual and aggregate checksums, archive contents, launcher and installer payloads. Rebuild independently and compare the resulting files byte for byte. [Candidate checks](docs/release-candidate.md#final-source-and-package-checks) · [Reproducibility](docs/release-candidate.md#reproducibility-and-reporting)
+3. **Test the exact candidate.** Run the full offline suite on Ubuntu 26.04 with Python 3.14 and Ubuntu 24.04 with Python 3.10 and 3.12. Point the package tests at the candidate artifacts. Exercise install, historical upgrade, update and removal, plus the installed Bash menu, insertion, cancellation and terminal restoration. If the menu redesign is included, confirm the three levels and selected category at 80×24 and 60×16. Record per-target passes, failures, skips and artifact identity. [Sandbox procedure](docs/development.md#isolated-local-debugging) · [Package and terminal checks](docs/release-candidate.md#final-source-and-package-checks)
+
+### Phase 4 — Publish the verified prerelease
+
+1. **Confirm hosted checks** on the exact release commit, including the configured Linux jobs and documentation links. Resolve failures against that revision. [CI scope](docs/development.md#continuous-integration)
+2. **Tag and publish when authorized.** Create the matching annotated tag on the verified commit. Prepare a draft prerelease, keep latest-stable selection disabled, attach the verified artifacts and checksums, and record the commit and verification results in the release body.
+3. **Verify the download.** Compare the published files byte for byte with the tested local artifacts. Record the tag, commit and release link when the comparison passes. [Publication procedure](docs/releases.md#release-provenance-and-publication)
 
 ### Conditional decisions
 
-- **Phase 5 local result reuse.** Proceed only if validated selection leaves substantial cost. For one bounded group, prove invalidation for input, environment, target, fixture and interrupted-run changes. Report executed, reused, failed and skipped outcomes separately. Consider CI selection or sharding only after local parity and measured savings. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) · [Two-shard pilot](docs/test-selection-plan.md#two-shard-host-pilot)
-- **Further runtime changes.** Results of task 4 determine whether to try prose caching, idle redraw suppression, candidate-only profile loading or cheaper guarded discovery. A persistent index, worker or daemon would need a separate architecture decision. [Acceptance measures](docs/ffmpeg-menu-performance-plan.md#before-and-after-measurement)
-- **Source archive navigation.** Decide whether to ship the root roadmap or provide a checkout link in packaged guides. The current builder omits the root file. If package policy changes, check navigation in an extracted source archive. [Archive contents](docs/releases.md#build-from-source)
-- **Hosted documentation coverage.** Local reviewers can include the two Markdown files under `.github/` explicitly. If the same coverage is wanted on pushes, add them to the CI link check and its bounded retry, then confirm both input lists. [Current CI scope](docs/development.md#continuous-integration)
-- **New demonstration media.** Before publishing a fresh recording, update the generator’s rsync and ls scene expectations for the expanded profiles. Require the rendered cells, pending lines, cursors and nonexecution markers to pass. The existing assets retain their dated provenance. [Capture scope and reproduction](docs/assets/README.md#regeneration)
+| Trigger | Follow-up and evidence needed |
+| --- | --- |
+| Phase 1 identifies a material runtime cost | Test the specific remedy in isolation and repeat the matched measurements and behavior checks. Possible remedies include reusing cleaned prose, caching active matches or wrapped text, suppressing idle redraws and reducing redundant discovery. Selective loading, a persistent index or an additional process needs a separate architecture decision. [Performance experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
+| Validated test selection still leaves substantial cost | Pilot Phase 5 result reuse for one bounded group. Prove invalidation for changed inputs, environments, targets, fixtures and interrupted runs. Report executed, reused, failed and skipped outcomes separately. Consider CI selection or sharding after local parity and measured savings. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) · [Sharding pilot](docs/test-selection-plan.md#two-shard-host-pilot) |
+| New demonstration media will ship | Update the rsync and ls capture expectations for the current layout. Regenerate and inspect the assets, including selected cells, pending command, cursor and nonexecution markers. [Capture procedure](docs/assets/README.md#regeneration) |
+| Packaged guides need roadmap navigation | Choose between including the root roadmap in the source archive and linking to the checkout. Verify links from an extracted archive if package policy changes. [Archive contents](docs/releases.md#build-from-source) |
+| Hosted link coverage is extended to the two Markdown files under `.github/` | Add both paths to the main CI check and its bounded retry. Verify the two input lists agree. [Current CI coverage](docs/development.md#continuous-integration) |
+
+### Completed work supporting these phases
+
+- **Test selection, original tasks 1–2.** Phases 4a and 4b verified selection reports, ordered local execution, full fallback and the historical yq failure. [Pilot evidence](docs/test-selection-plan.md#phase-4-pilot-evidence)
+- **Shared value formatting, original task 3.** Warm FFmpeg first-frame medians improved by 31.0–31.5% with all-row parity. The earlier local candidate passed 1,879 tests per target with one Windows-only skip, and an isolated rebuild reproduced its packages. [Performance decision](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Candidate record](docs/release-candidate.md)
+- **Three-level menu and category labels.** The browser and preview support all three levels. Simple gives unused space back to the option list. The redesign passed 1,887 tests on each of the three Linux targets with one Windows-only skip. The 15 package tests used fresh temporary builds after the earlier candidate failed the source-inventory check. [Terminal captures and test results](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md#regression-results)
 
 ## Purpose and scope
 
@@ -77,7 +109,7 @@ The family table links each original review, reconciled inventory and rendered-m
 
 ## Runtime performance follow-up
 
-**Complete — baseline and exploratory prototype.** The [terminal baseline](docs/runtime-architecture.md#local-performance-baseline) measures eager loading, startup and idle work. The [FFmpeg experiment](docs/ffmpeg-menu-performance-plan.md#earlier-prototype-results) used a temporary wrapper on an earlier profile inventory. Tasks 3 and 4 track the proposed changes and their verification.
+**Complete — baseline and Stage 1.** The [architecture baseline](docs/runtime-architecture.md#local-performance-baseline) and [Stage 1 evaluation](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) record opening costs, correctness and the decision to retain shared value formatting. The remaining investigations are listed in [Phase 1](#phase-1--measure-the-remaining-menu-costs).
 
 ## Discovered command help
 
@@ -108,4 +140,4 @@ Use the [command-help audit procedure](docs/development.md#auditing-command-help
 
 For future profile or route changes, update the affected family or tier row and its evidence. A bundled review closes when each applicable option and alias is accounted for, distinct options are selectable, material Details are reachable, and the terminal and sandbox checks pass. A discovery review also needs the fixed source, edition and actual disposition of each route, including empty or fallback results. Record the exact path and blocker for a partial batch.
 
-For open development tasks, update the status in [remaining work](#remaining-work), link the acceptance evidence and move **Next** to the first actionable row. Keep experiment results with the plan and dated test outcomes with the verification report.
+For open development tasks, update the status in [remaining work](#remaining-work), link the completion evidence and identify the next actionable step in each open phase. Keep experiment results with the plan and dated test outcomes with the verification report.

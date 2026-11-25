@@ -2,7 +2,7 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**[Version 0.3.1 - Alpha](CHANGELOG.md#version-031---alpha)**
+**[Version 0.4.0 - Alpha](CHANGELOG.md#version-040---alpha) · Local release candidate**
 
 **Find the right option without leaving an unfinished Bash command.**
 
@@ -17,7 +17,7 @@ whose flags and argument syntax are difficult to remember.
 
 ![Actual Bash UI with aligned option descriptions: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
 
-The 36-second recording shows the October 2026 menus with discovery disabled. The current profiles contain more options. [Static browser view](docs/assets/help-browser.png) ·
+Recorded from the v0.4.0-alpha candidate with discovery off. Watch the pending rsync line survive cancellation and see how to insert a quoted hide pattern for ls. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
 [Capture method and limits](docs/assets/README.md)
@@ -79,7 +79,7 @@ existing contents. New interactive Bash sessions load it automatically.
 For a temporary session directly from the checkout, use
 `source "$PWD/bash/interactive-help.bash"` instead of installing.
 
-For a v0.3.1-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
+For a v0.4.0-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
 
 ### Insert the first option
 
@@ -102,12 +102,12 @@ See [browser controls and keybindings](docs/usage.md#browser-controls) for pagin
 
 ### Understand the value before inserting it
 
-![Actual rsync bandwidth details: bare numbers mean 1024 bytes/second, with applicability explicitly scoped to rsync 3.4.1.](docs/assets/numerical-guidance.png)
+![Selected rsync bandwidth limit. Details show 1024 bytes/second per bare unit and say applicability is unconfirmed.](docs/assets/numerical-guidance.png)
 
 [Open the full-size numerical guidance view](docs/assets/numerical-guidance.png)
 
 The bundled rsync guidance distinguishes bare bandwidth values from accepted
-suffixes and states the documented version. Search `bytes/second` to find that
+suffixes. The captured static menu reports unconfirmed applicability. Search `bytes/second` to find that
 meaning, then use `[` / `]` to inspect accepted forms and special values. Display
 units are explanations, not necessarily accepted literal suffixes. The browser
 does not convert or validate the pending value or assume that a documented
@@ -194,7 +194,7 @@ covers custom destinations and existing shell sessions after removal.
 | Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
 | Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
 | Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
-| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.3.1-alpha changes](CHANGELOG.md#version-031---alpha) |
+| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.4.0-alpha changes](CHANGELOG.md#version-040---alpha) |
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
 | Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
 

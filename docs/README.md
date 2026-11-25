@@ -12,7 +12,7 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe v0.3.1-alpha. The [changelog](../CHANGELOG.md#version-031---alpha) summarizes its changes and the [release guide](releases.md#version-031---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
+The operating guides describe v0.4.0-alpha. The [changelog](../CHANGELOG.md#version-040---alpha) summarizes its changes and the [release guide](releases.md#version-040---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
 
 The [visual and configuration audit](media-and-configuration-review.md) maps the
 documentation media and diagrams to source behavior, capture evidence, and

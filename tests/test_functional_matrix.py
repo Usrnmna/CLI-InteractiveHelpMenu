@@ -509,7 +509,7 @@ class SearchNavigationTests(unittest.TestCase):
         text = screen.text()
         for flag in ("--item-29-49", "--item-29-48", "--item-29-47"):
             self.assertIn(flag, text)
-        self.assertNotIn("--item-29-46", text)
+        self.assertNotIn("--item-29-40", text)
 
     def test_display_text_suppresses_unsupported_code_points(self):
         self.assertEqual(display_text("a\ud800b"), "a b")

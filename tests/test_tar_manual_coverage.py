@@ -100,25 +100,7 @@ class TarMenuTests(TerminalTestCase):
         """Compare visible cells with every authored sentence and formatted value rule."""
         profile = tar_profile()
         shell, prefix, suffix = self.pending_tar(210, 100)
-        shell.open_menu()
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                label = option_label(option)
-                state = shell.wait_for(lambda state: "Option: " + label in state.cells)
-                start = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                self.assertTrue(any("> " + option["flag"] in line and option["summary"] in line
-                                    for line in state.cells[4:start]), label)
-                first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-                self.assertEqual((first, last), (1, total), label)
-                panel = " ".join(" ".join(state.cells[start + 1:-3]).split())
-                for sentence in re.split(r"(?<=[.!?])\s+", option["detail"]):
-                    self.assertIn(sentence, panel, label)
-                for line in option_text(profile, category, option).details:
-                    self.assertIn(" ".join(line.split()), panel, label)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -143,8 +125,7 @@ class TarMenuTests(TerminalTestCase):
                     state = shell.wait_for(lambda state: state.cells[2] == "Filter: " + query)
                     self.assertIn("> " + flag, state.cells[4])
                     if final_text:
-                        shell.keys(*(["]"] * int(state.cells[-3].split("/")[1].split()[0])))
-                        shell.wait_for(lambda s: final_text in " ".join(" ".join(s.cells[8:-3]).split()))
+                        shell.find_detail(final_text)
                     shell.cancel(action)
                     if action == "Escape":
                         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))

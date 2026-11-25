@@ -121,25 +121,7 @@ class GrepMenuTests(TerminalTestCase):
     def test_every_selectable_row_and_complete_details(self):
         profile = grep_profile()
         shell, prefix, suffix = self.pending_grep(210, 100)
-        shell.open_menu()
-        for category_index, category in enumerate(profile["categories"]):
-            if category_index:
-                shell.keys("Right")
-            for index, option in enumerate(category["options"]):
-                if index:
-                    shell.keys("Down")
-                label = option_label(option)
-                state = shell.wait_for(lambda s: "Option: " + label in s.cells)
-                start = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                self.assertTrue(any("> " + option["flag"] in line and option["summary"] in line
-                                    for line in state.cells[4:start]), label)
-                first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-                self.assertEqual((first, last), (1, total), label)
-                panel = " ".join(" ".join(state.cells[start + 1:-3]).split())
-                for sentence in re.split(r"(?<=[.!?])\s+", option["detail"]):
-                    self.assertIn(sentence, panel, label)
-                for line in option_text(profile, category, option).details:
-                    self.assertIn(" ".join(line.split()), panel, label)
+        shell.verify_profile(profile)
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())
@@ -158,13 +140,7 @@ class GrepMenuTests(TerminalTestCase):
     def test_quiet_alias_scroll_and_cancellation_at_minimum_size(self):
         shell, prefix, suffix = self.pending_grep(60, 16)
         state = self.search(shell, "--silent", "--quiet")
-        first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-        self.assertEqual(first, 1)
-        self.assertLess(last, total)
-        shell.keys(*(["]"] * total))
-        guidance = "A selected line gives status 0 even after an earlier file error."
-        state = shell.wait_for(lambda s: guidance in " ".join(" ".join(s.cells[8:-3]).split()))
-        self.assertGreater(int(state.cells[-3].split()[1].split("-")[0]), 1)
+        shell.find_detail("A selected line gives status 0 even after an earlier file error.")
         shell.cancel()
         self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
         self.assertFalse(shell.executed.exists())

@@ -122,9 +122,8 @@ class DescriptionPresentationTests(unittest.TestCase):
         profile = self.profile("Pass custom header(s) to server", "Pass custom header(s) to server\nSource: fixture")
         screen = CellScreen(24, 100)
         draw(screen, Browser(profile), load_keys())
-        details = [v for (r, _c, _a), v in sorted(screen.cells.items()) if 12 <= r < 21]
-        self.assertEqual(details.count("Pass custom header(s) to server"), 1)
-        self.assertNotIn("Source: fixture", details)
+        self.assertEqual(screen.text().count("Pass custom header(s) to server"), 1)
+        self.assertNotIn("Source: fixture", screen.text())
 
     def test_metadata_examples_and_background_are_removed(self):
         profile = self.profile("Select output format", """Select output format.

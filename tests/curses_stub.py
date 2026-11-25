@@ -12,6 +12,7 @@ class error(Exception):
 
 
 # Distinct integer values stand in for the platform constants.
+KEY_F6 = 270
 KEY_UP = 412
 KEY_DOWN = 413
 KEY_LEFT = 414

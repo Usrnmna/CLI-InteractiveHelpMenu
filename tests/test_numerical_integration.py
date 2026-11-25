@@ -143,19 +143,8 @@ class NumericalIntegrationTests(unittest.TestCase):
 
     def reachable_details(self, browser, height=16, width=60):
         """Read actual detail cells through every scroll offset until clamped."""
-        screen = FakeScreen(height, width)
-        detail_row = 4 + max(3, (height - 9) // 2)
-        content = []
-        for offset in range(4000):
-            browser.detail_offset = offset
-            draw(screen, browser, load_keys(None))
-            content.extend(text for (row, _col, _attribute), text in sorted(screen.cells.items())
-                           if detail_row < row < height - 3)
-            if browser.detail_offset != offset:
-                break
-        else:
-            self.fail("Details never reached a finite final scroll position")
-        return " ".join(content), screen
+        from test_numerical_presentation import read_expanded
+        return read_expanded(browser, width, height)
 
     def test_captured_rate_merge_cache_authoring_preview_reload_and_literal_edit(self):
         bundled = source_profile("rsync")
@@ -179,7 +168,7 @@ class NumericalIntegrationTests(unittest.TestCase):
             content, screen = self.reachable_details(browser, height, width)
             self.assertNotIn("Reference:", content)
             self.assertIn("No bandwidth limit", content)
-            self.assertIn("Details", screen.text())
+            self.assertIn("Expanded", screen.text())
         self.assert_literal_edit(loaded, selected)
         self.assertEqual(bundled, original)
 

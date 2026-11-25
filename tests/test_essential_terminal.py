@@ -13,8 +13,7 @@ import unittest
 
 from test_essential_media import FIXTURES, RELEASES, combined_inventory, media_input, media_manual
 from test_terminal_screen import PROMPT, ROOT, TMUX_AVAILABLE, TmuxShell
-from presentation import option_text
-from ui import Browser, option_label_width, option_row, wrap_cells
+from ui import Browser, wrap_cells
 
 HELP = FIXTURES / "help"
 CASES = [r for r in json.loads((HELP / "matrix.json").read_text()) if r["tier"] == "essential"]
@@ -200,24 +199,8 @@ class DiscoveryScreenChecks:
 
     def walk(self, shell, profile):
         """Compare every selected row and all displayed Details, including long component definitions."""
-        width = 220
-        derived = [[option_text(profile, c, o) for o in c["options"]] for c in profile["categories"]]
-        def lines(view):
-            return [line for p in view.details for paragraph in p.splitlines() for line in wrap_cells(paragraph, width - 2)]
-        longest = max(len(lines(view)) for category in derived for view in category)
-        shell.resize(width, max(64, longest * 2 + 16))
-        menu = shell.open_menu()
-        self.assertEqual(menu.cells[1], profile["description"])
-        for ci, category in enumerate(profile["categories"]):
-            if ci:
-                shell.keys("Right")
-            label_width = option_label_width(category, width - 27)
-            for i, (row, view) in enumerate(zip(category["options"], derived[ci])):
-                if i:
-                    shell.keys("Down")
-                rendered = option_row(row, view, width - 27, label_width, True).rstrip()
-                # wait_for_option compares the full Details cells and selected declaration/summary.
-                shell.wait_for_option("", "", lines(view), exact_row=rendered)
+        shell.resize(220, 130)
+        shell.verify_profile(profile)
         shell.cancel()
 
     def small_edit(self, shell, profile, prefix, suffix, release):
@@ -243,7 +226,7 @@ class DiscoveryScreenChecks:
         moves.extend(["Left"] * (browser.category - category))
         moves.extend(["Down"] * browser.options(category).index(row))
         view = browser.text(row)
-        details = [line for p in view.details for para in p.splitlines() for line in wrap_cells(para, 58)]
+        details = [line for p in view.expanded for line in wrap_cells(p, 59)]
         for accept in (False, True):
             shell.open_menu()
             shell.keys("/")
@@ -252,11 +235,8 @@ class DiscoveryScreenChecks:
             shell.wait_for(lambda s: s.cells[2] == "Filter: " + query)
             if moves:
                 shell.keys(*moves)
-            if not accept:
-                if len(details) > 5:
-                    shell.keys(*(["]"] * (len(details) - 5)))
-                shell.wait_for(lambda s: s.cells[-3].split(" |")[0].endswith(f"-{len(details)}/{len(details)}")
-                               and details[-1] in s.cells[8:-3])
+            if not accept and details:
+                shell.find_detail(details[-1])
             shell.cancel("Enter" if accept else "Escape")
             if not accept:
                 self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))

@@ -1,8 +1,12 @@
 # Changelog
 
+## Version 0.4.0 - Alpha
+
+Prepared local release candidate. The browser reuses formatted value guidance for eligible options during one menu open. On Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first rendered FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. Search, redraw, idle CPU and discovery are separate investigations. [Measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Candidate packages](docs/releases.md#version-040---alpha)
+
 ## Version 0.3.1 - Alpha
 
-Packages built from this checkout use the `v0.3.1-alpha` filenames. The sandbox runner can explain and run a focused selection of iproute2 and yq tests. [Selector verification](docs/test-selection-plan.md#phase-4-pilot-evidence) · [Build procedure](docs/releases.md#build-from-source)
+Packages built from that checkout use the `v0.3.1-alpha` filenames. The sandbox runner can explain and run a focused selection of iproute2 and yq tests. [Selector verification](docs/test-selection-plan.md#phase-4-pilot-evidence) · [Build procedure](docs/releases.md#build-from-source)
 
 ## Version 0.3.0 - Alpha
 

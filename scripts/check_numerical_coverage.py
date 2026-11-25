@@ -175,9 +175,11 @@ def propagation_diagnostics(record):
         return []
     profile, context = record["profile"], record["context"]
     try:
+        nodes = []
         expected = format_value_semantics(record["metadata"], context=context,
-                                           definitions=profile.get("value_definitions"), presentation=True)
+                                           definitions=profile.get("value_definitions"), presentation=True, resolved=nodes)
         expected_details = presentation.concise_value_lines(expected)
+        operational = tuple(filter(None, map(presentation.terminal_prose, presentation.expanded_rules(nodes))))
         if record["kind"] == "positional_group":
             # Command-wide positional text is displayed/searchable with each option.
             views = [presentation.option_text(profile, c, o) for c in profile["categories"] for o in c["options"]]
@@ -191,7 +193,8 @@ def propagation_diagnostics(record):
         diagnostics.append(diagnostic("coverage_details_missing", "propagation",
                                       "Provide an accessible existing details path for positional meaning.", record))
     for view in views:
-        if any(line not in view.details for line in expected_details):
+        if (any(line not in view.details for line in expected_details)
+                or any(line not in view.expanded for line in operational)):
             diagnostics.append(diagnostic("coverage_details_missing", "propagation",
                                           "Restore the concise value rules and applicability qualifications in accessible details.", record))
         if any(line.casefold() not in view.searchable for line in expected):

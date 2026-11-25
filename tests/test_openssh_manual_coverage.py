@@ -179,25 +179,7 @@ class OpenSSHMenuTests(TerminalTestCase):
         for client in UPSTREAM:
             profile = profile_for(client)
             shell, prefix, suffix = self.pending(client, 220, 150)
-            shell.open_menu()
-            for category_index, category in enumerate(profile["categories"]):
-                if category_index:
-                    shell.keys("Right")
-                for index, option in enumerate(category["options"]):
-                    if index:
-                        shell.keys("Down")
-                    label = option_label(option)
-                    with self.subTest(client=client, label=label):
-                        state = shell.wait_for(lambda screen: "Option: " + label in screen.cells)
-                        divider = next(i for i, line in enumerate(state.cells) if line.startswith("Category "))
-                        self.assertTrue(any("> " + ellipsize_cells(label, 40) in line
-                                            and option["summary"] in line for line in state.cells[4:divider]))
-                        first, last, total = map(int, re.split(r"[-/]", state.cells[-3].split()[1]))
-                        self.assertEqual((first, last), (1, total))
-                        panel = " ".join(" ".join(state.cells[divider + 1:-3]).split())
-                        for line in option_text(profile, category, option).details:
-                            self.assertIn(" ".join(line.split()), panel)
-                        self.assertIn(" ".join(option.get("detail", "").split()), panel)
+            shell.verify_profile(profile)
             shell.cancel()
             self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
             self.assertFalse(shell.executed.exists())
@@ -217,9 +199,7 @@ class OpenSSHMenuTests(TerminalTestCase):
                     shell.keys("Enter")
                     state = shell.wait_for(lambda screen: screen.cells[2] == "Filter: " + query)
                     self.assertIn("> " + flag + " ", state.cells[4])
-                    shell.keys(*(["]"] * 100))
-                    state = shell.wait_for(lambda screen: qualification in " ".join(" ".join(screen.cells[8:-3]).split()))
-                    self.assertGreater(int(state.cells[-3].split()[1].split("-")[0]), 1)
+                    shell.find_detail(qualification)
                     shell.cancel(action)
                     token = flag if action == "Enter" else ""
                     point = len(prefix + token) + bool(token)
