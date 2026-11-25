@@ -2,7 +2,7 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**Local build · 0.4.0-alpha** · [Release history](CHANGELOG.md)
+**Local checkout · 0.4.0-alpha** · [Selected prerelease contents](CHANGELOG.md#version-040---alpha)
 
 **Find the right option without leaving an unfinished Bash command.**
 
@@ -17,7 +17,7 @@ whose flags and argument syntax are difficult to remember.
 
 ![Bash demonstration cycling through three detail levels for the rsync bandwidth limit, inserting options and returning to the pending command.](docs/assets/option-insertion.gif)
 
-Recorded from the local build with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
+Recorded from the November 25 local build with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
 [Capture method and limits](docs/assets/README.md)

@@ -13,13 +13,13 @@ For a plan transition, record the outgoing and incoming goals, what users gain f
 
 The patch-9 carry applies even when the same plan continues. If several rules call for a minor bump in the same release, advance the minor number once.
 
-The prepared first performance candidate uses `0.4.0-alpha` in the version file, `v0.4.0-alpha` for the tag, and **Version 0.4.0 - Alpha** for the corresponding changelog heading.
+The selected prerelease uses `0.4.0-alpha` in the version file, `v0.4.0-alpha` for the planned tag and **Version 0.4.0 - Alpha** for the changelog heading.
 
 ## Proposed targets
 
 A proposed release must change the working program. Eligible changes include a Bash keybinding fix, an improvement to menu performance, and corrections to the option descriptions or literal spellings that the menu displays or inserts. README edits, audit reports, demonstration media, CI changes and test-runner improvements are maintenance. They can accompany a program change and carry no version increment on their own.
 
-The `0.3.0-alpha` checkout expanded the command help users can find and insert. The performance plan addresses how quickly those menus open and respond. Its first implemented step reuses shared value formatting per open and starts the `0.4` series with the prepared `0.4.0-alpha` candidate. [Current checkout and release history](../CHANGELOG.md#version-040---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
+The `0.3` series expanded the command help users can find and insert. The first `0.4` batch improves how users open and read that help. It combines per-open reuse of shared value formatting with selectable levels of explanation. The performance-only candidate remained unpublished, so both changes share the first number in the new series, `v0.4.0-alpha`. A later separately shipped step can advance the patch. [Selected changes](../CHANGELOG.md#version-040---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
 
 The remaining targets assume each improvement meets its evidence criteria and ships separately in the order shown. [Roadmap tasks and dependencies](../ROADMAP.md#remaining-work)
 

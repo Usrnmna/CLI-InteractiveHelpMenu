@@ -2,6 +2,8 @@
 
 Captured from the Bash shortcut in a private tmux session. Each frame shows the same FFmpeg option, `-b:v BITRATE`, in the Stream codecs category. Blank lines are terminal rows. On November 25, 2026, a fresh local `0.4.0-alpha` build reproduced every displayed row in all six frames using its unpacked Bash adapter and runtime.
 
+<a id="simple-80x24"></a>
+
 ## 80 × 24 · Simple
 
 ```text
@@ -30,6 +32,8 @@ CATEGORIES              │ OPTIONS *                                        5/1
 up/down move  left/right category  tab focus  / search
 enter insert  esc cancel
 ```
+
+<a id="detailed-80x24"></a>
 
 ## 80 × 24 · Detailed
 
@@ -60,6 +64,8 @@ up/down move  left/right category  tab focus  / search
 enter insert  esc cancel
 ```
 
+<a id="expanded-80x24"></a>
+
 ## 80 × 24 · Expanded
 
 ```text
@@ -89,6 +95,8 @@ up/down move  left/right category  tab focus  / search
 enter insert  esc cancel  [/] scroll details
 ```
 
+<a id="simple-60x16"></a>
+
 ## 60 × 16 · Simple
 
 ```text
@@ -110,6 +118,8 @@ up/down move  left/right category  tab focus  / search
 enter insert  esc cancel
 ```
 
+<a id="detailed-60x16"></a>
+
 ## 60 × 16 · Detailed
 
 ```text
@@ -130,6 +140,8 @@ Enter the number and suffix without /s.
 up/down move  left/right category  tab focus  / search
 enter insert  esc cancel
 ```
+
+<a id="expanded-60x16"></a>
 
 ## 60 × 16 · Expanded
 

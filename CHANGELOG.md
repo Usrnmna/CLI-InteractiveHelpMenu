@@ -1,12 +1,11 @@
 # Changelog
 
-## Unreleased local checkout
-
-The menu opens in Simple. The default `D` key cycles through Detailed and Expanded while preserving the current option and filter. Short category labels, recoverable titles and shared unit notes leave more room for option rows. Unit abbreviations are searchable in all three levels. [Browser controls](docs/usage.md#browser-controls) · [Current terminal media](docs/assets/README.md)
-
 ## Version 0.4.0 - Alpha
 
-Prepared local release candidate. The browser reuses formatted value guidance for eligible options during one menu open. On Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first rendered FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. The [subsequent investigation](docs/menu-cost-measurements.md) measured search, redraw, idle CPU and discovery on the redesigned menu. [Measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Candidate packages](docs/releases.md#version-040---alpha)
+Selected for the next prerelease. Verification of the combined release candidate is pending. [Release notes and package provenance](docs/releases.md#version-040---alpha)
+
+- The menu opens in Simple. Pressing the default `D` key cycles through Detailed and Expanded while preserving the current option and filter. Simple gives unused detail rows back to the list. Short category labels retain access to the full title. Shared unit notes and searchable unit abbreviations help users find applicable options. [Browser controls](docs/usage.md#browser-controls) · [Six captured terminal views](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
+- The browser reuses formatted value guidance for eligible options during one menu open. In the pre-redesign Stage 1 comparison on Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. [Stage 1 measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Subsequent measurements of the redesigned menu](docs/menu-cost-measurements.md)
 
 ## Version 0.3.1 - Alpha
 

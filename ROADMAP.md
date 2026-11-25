@@ -4,12 +4,12 @@
 
 **Remaining engineering experiments** cover unchanged idle redraws and serial profile validation. The serial prose-reuse follow-up measured a 4.4–5.4% improvement in warm FFmpeg opening time and fell below the 30% target. [Prose-reuse results](docs/serial-prose-reuse-experiment.md)
 
-**Next release decision** is which program changes to ship. The menu review, documentation and local demonstration media now reflect the three-level browser. Release verification starts once the exact contents are selected. [Review record](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record) · [Capture provenance](docs/assets/README.md)
+**Next release task — Phase 3.** The selected `v0.4.0-alpha` prerelease combines the retained shared-value formatting improvement and the three-level browser. Identify the reviewed source commit and verify fresh packages from that revision. [Release notes](docs/releases.md#version-040---alpha)
 
 | Phase | Current status | Completion evidence |
 | --- | --- | --- |
 | 1. Investigate menu performance (original roadmap task 4) | Complete | [Five measured decisions and follow-up acceptance checks](docs/menu-cost-measurements.md#decisions) |
-| 2. Reconcile the menu record and choose release contents | Review and local media complete. Release scope pending | Selected changes and source revision |
+| 2. Reconcile the menu record and choose release contents | Complete | [Scope and version decision](#phase-2--close-the-menu-record-and-select-release-contents) and [terminal evidence](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record) |
 | 3. Verify the release candidate | Pending final source selection | Reproducible artifacts and results for the exact release inputs |
 | 4. Publish and verify distribution | Pending candidate verification, hosted checks and release authorization | Published assets match the verified files and the tag identifies the tested commit |
 
@@ -27,15 +27,15 @@
 
 ### Phase 2 — Close the menu record and select release contents
 
-1. **Review record complete.** The user approved the revised mockups. A fresh local build reproduced the six documented terminal frames. [Decision](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record) · [Rendered verification](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
-2. **Identify the changes to ship.** The prepared `v0.4.0-alpha` performance candidate predates the three-level menu. Record whether the menu ships with that performance change or as a later step. Apply the versioning rules to the chosen batch and align `VERSION`, the changelog and release notes. The proposed performance release numbers depend on what actually ships. [Version assignment](docs/versioning.md#assigning-the-next-number) · [Candidate contents](docs/releases.md#version-040---alpha)
-3. **Compare the selected release with the local documentation.** The public guides and six media assets depict the local three-level browser. When the release inputs are chosen, check that their runtime and profiles match the captured build. [Asset provenance](docs/assets/README.md#regeneration)
+1. **Review record complete.** The user approved the revised mockups for implementation and requested verification at both sizes. The implementation record links the six actual FFmpeg frames, including the number of options visible at each level. [Design decision and terminal captures](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
+2. **Release contents selected.** The next prerelease will ship per-open reuse of shared value formatting together with Simple, Detailed and Expanded, compact category labels, shared unit notes and unit search. This is the first shipping batch in the 0.4 series. The performance-only candidate remained unpublished, so the combined batch retains `v0.4.0-alpha`. The serial prose-reuse prototype, idle-redraw suppression and serial profile-validation experiments remain outside the release. [Version assignment](docs/versioning.md#assigning-the-next-number) · [Changelog](CHANGELOG.md#version-040---alpha)
+3. **Documentation and captures checked.** The README, controls guide and gallery describe the selected menu. All 160 runtime, configuration, profile and version fingerprints from the November 25 capture match the release-scope checkout at `bc78f9f` and the capture-build manifest. All six public media files match the recorded hashes. The existing media cover the selected behavior. The exact release commit and its packages remain Phase 3 work. [Controls](docs/usage.md#browser-controls) · [Capture provenance](docs/assets/README.md#capture-evidence) · [Release notes](docs/releases.md#version-040---alpha)
 
 ### Phase 3 — Build and test the selected candidate
 
 1. **Freeze the source inputs.** Identify the reviewed release commit. Include the runtime modules, tests and documentation intended for that release. Build from its clean checkout into a fresh output directory and keep earlier candidate files intact. [Build procedure](docs/releases.md#build-from-source)
 2. **Verify the artifacts.** Compare the source inventory and manifest hashes with the commit’s Git blobs. Verify individual and aggregate checksums, archive contents, launcher and installer payloads. Rebuild independently and compare the resulting files byte for byte. [Candidate checks](docs/release-candidate.md#final-source-and-package-checks) · [Reproducibility](docs/release-candidate.md#reproducibility-and-reporting)
-3. **Test the exact candidate.** Run the full offline suite on Ubuntu 26.04 with Python 3.14 and Ubuntu 24.04 with Python 3.10 and 3.12. Point the package tests at the candidate artifacts. Exercise install, historical upgrade, update and removal, plus the installed Bash menu, insertion, cancellation and terminal restoration. If the menu redesign is included, confirm the three levels and selected category at 80×24 and 60×16. Record per-target passes, failures, skips and artifact identity. [Sandbox procedure](docs/development.md#isolated-local-debugging) · [Package and terminal checks](docs/release-candidate.md#final-source-and-package-checks)
+3. **Test the exact candidate.** Run the full offline suite on Ubuntu 26.04 with Python 3.14 and Ubuntu 24.04 with Python 3.10 and 3.12. Point the package tests at the candidate artifacts. Exercise install, historical upgrade, update and removal, plus the installed Bash menu, insertion, cancellation and terminal restoration. Confirm the three levels and selected category at 80×24 and 60×16. Record per-target passes, failures, skips and artifact identity. [Sandbox procedure](docs/development.md#isolated-local-debugging) · [Package and terminal checks](docs/release-candidate.md#final-source-and-package-checks)
 
 ### Phase 4 — Publish the verified prerelease
 

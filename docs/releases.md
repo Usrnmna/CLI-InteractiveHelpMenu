@@ -6,7 +6,9 @@ See [version numbering and planned releases](versioning.md) when choosing the ne
 
 ## Version 0.4.0 - Alpha
 
-The earlier performance candidate and the current checkout share the [version string](../VERSION) `0.4.0-alpha`. Building either produces the filenames below. The checkout also includes the three-level browser shown in the [terminal gallery](assets/README.md). The [changelog](../CHANGELOG.md) distinguishes the two. To package the current files, follow the [build procedure](#build-from-source).
+The selected prerelease combines per-open reuse of shared value formatting with the three-level browser. Simple leaves more room for options. The default `D` key cycles through Detailed and Expanded without losing the selection or filter. Compact category labels retain access to full titles, and applicable options can be found by unit. [Changelog and timing evidence](../CHANGELOG.md#version-040---alpha) · [Six terminal captures](superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
+
+The earlier unpublished performance candidate uses the same [version string](../VERSION) and filenames below. Its packages and verification results predate the three-level menu. The November 25 screenshots and animation came from a separate local build with the redesigned menu. The combined prerelease still requires a reviewed source commit and fresh artifact verification in Phase 3. [Capture provenance](assets/README.md#capture-evidence) · [Release decision and next steps](../ROADMAP.md#remaining-work)
 
 The [candidate validation guide](release-candidate.md) covers exact-source
 checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.

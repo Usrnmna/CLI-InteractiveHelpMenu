@@ -152,10 +152,17 @@ Read top to bottom. Each row has a reviewable result. Record an observation or a
 
 ## Review record
 
-Edit the proposed choices in place or add a finding below. Use the phase ID, a concrete option and terminal size, the observed text or behavior, and the expected change. Record evidence before marking an implementation task complete.
+The design approval preceded implementation. The later terminal checks record what the implemented browser displayed.
 
 | Reviewer | Phase and example | Decision or requested edit | Evidence or follow-up |
 | --- | --- | --- | --- |
 | User decisions | P3, P4 | Reclaim unused Simple detail rows. Make `bps` searchable wherever it applies. | Incorporated in the layout, unit vocabulary, search contract, and acceptance checks. |
 | AI agent | P0–P5 · coverage and feasibility | Original findings incorporated into this revision. | [Review of the earlier draft](2026-11-24-menu-detail-levels-review.md) |
-| Human | P0 · revised mockups at 80×24 and 60×16 | Approved the mockups and authorized implementation of the three levels, spacing and searchable units. | [Six implemented screens and verification results](2026-11-24-menu-detail-levels-verification.md) |
+| User | P0 · revised mockups at 80×24 and 60×16 | “The mockups look good. Go ahead and implement the three detail levels, spacing, and searchable unit labels in the updated plan, then verify the menus at both 80×24 and 60×16.” | [Reviewed mockups](2026-11-24-menu-detail-levels-preview.md) |
+
+The [implementation record](#implementation-record) lists the delivered changes. The terminal captures below show the same FFmpeg option selected through the Bash shortcut. A subsequent unpacked local build reproduced all six frames. Final human sign-off on the rendered screens is unrecorded.
+
+| Captured terminal | Simple | Detailed | Expanded |
+| --- | --- | --- | --- |
+| 80×24 | [9 options](2026-11-24-menu-detail-levels-verification.md#simple-80x24) | [7 options](2026-11-24-menu-detail-levels-verification.md#detailed-80x24) | [3 options](2026-11-24-menu-detail-levels-verification.md#expanded-80x24) |
+| 60×16 | [5 options](2026-11-24-menu-detail-levels-verification.md#simple-60x16) | [3 options](2026-11-24-menu-detail-levels-verification.md#detailed-60x16) | [2 options](2026-11-24-menu-detail-levels-verification.md#expanded-60x16) |
