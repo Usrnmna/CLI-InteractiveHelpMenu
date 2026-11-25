@@ -88,21 +88,23 @@ flowchart TD
     P["Prepare display and search text for every option in the selected profile"] --> R["Check terminal size, draw visible rows and details"]
     R --> W["Wait up to 150 ms for input"]
     W -->|"Timeout or resize"| R
-    W -->|"Navigation or search"| U["Update selection, focus, filter, or scroll"]
+    W -->|"Navigation, search or level key"| U["Update selection, focus, filter, detail level or scroll"]
     U --> R
     W -->|"Accept or cancel"| E["Return selection or close"]
 ```
 
 The browser keeps derived display, detail and search text for the selected
-profile in memory until the helper exits. The formatter includes available
-value guidance and preserved source notes. The browser redraws the visible
+profile in memory until the helper exits. Search uses original prose and evidence
+alongside unit aliases. The display omits citations. Each new browser starts
+in Simple. Changing the level retains the filter and selected option while
+reallocating space between the list and its explanation. The browser redraws the visible
 window and recomputes filter matches and detail wrapping in the draw path.
 The timeout lets it detect resizes when Bash process substitution prevents
 delivery of the resize signal. Today the loop redraws even if a timeout finds
 the same terminal size. The browser runs on the helper's main thread. When the helper exits,
 its profile objects and formatted text are released, and the discovery cache
 can survive on disk for the next request.
-[Browser state](../cli_help/ui.py#L62) · [Drawing](../cli_help/ui.py#L218) · [Input loop](../cli_help/ui.py#L283)
+[Browser and input loop](../cli_help/ui.py) · [Option presentation](../cli_help/presentation.py) · [Unit aliases](../cli_help/menu_units.py)
 
 ## Adding support
 
@@ -144,25 +146,14 @@ unmeasured. [PTY harness](../tests/test_bash_pty.py#L21) · [Discovery fixtures]
 
 ## Optimization candidates
 
-1. **Large menus and idle work.** Measure before and after first display,
-   search and navigation. Investigate skipping redraws when a timeout leaves
-   geometry and visible state unchanged. Keep the resize check. The
-   [Stage 1 evaluation](ffmpeg-menu-performance-plan.md#stage-1-evaluation)
-   measures shared value formatting within each browser open, including
-   search and Details parity across menus and FFmpeg first-frame latency.
-2. **Collection growth and startup.** Evaluate a small command-path index and
-   loading only candidate profiles. Preserve longest-path resolution, custom
-   overrides and explicit handling of invalid and stale files. Keep full
-   collection validation available through `--check`. Measure opens, CPU and
-   peak RSS as the collection grows.
-3. **Discovery and version cost.** Time identity checks, source subprocesses,
-   parsing and cache I/O independently. Evaluate reusing parsed source output
-   within one request and narrowing guarded-profile work to identity
-   verification where the existing acceptance rules can be preserved. A worker
-   or daemon would add idle memory and lifecycle overhead. Revisit concurrency
-   only if probe latency dominates representative misses.
+The redraw loop still checks geometry on each timeout. The measured follow-ups
+are skipping an unchanged redraw and reducing serial profile-validation cost
+while preserving full validation and custom overrides. Ordinary discovery
+cache hits made zero probes in the measured fixture. The guarded yq route
+retained its required identity probe. Worker pools and serial prose reuse were
+evaluated and deferred. [Measurements and decisions](menu-cost-measurements.md#decisions) · [Prose-reuse experiment](serial-prose-reuse-experiment.md)
 
-Compare first display, key-to-redraw latency, idle CPU, peak RSS and probe
-counts on a small profile, a large profile, an ordinary cache hit and a guarded
-route. Use the existing resize, cancellation, insertion and search tests to
-verify behavior. [Rendered terminal tests](../tests/test_terminal_screen.py) · [Discovery tests](../tests/test_discovery.py)
+For future comparisons, record first display, key-to-redraw latency, idle CPU,
+peak memory and probe counts on equivalent inputs. Exercise small and large
+menus, ordinary and guarded discovery, resize, cancellation, insertion and
+search. [Terminal tests](../tests/test_terminal_screen.py) · [Discovery tests](../tests/test_discovery.py)

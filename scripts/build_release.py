@@ -20,7 +20,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIRECTORIES = ("bash", "cli_help", "config", "docs", "native", "profiles", "scripts", "tests", "tools", ".github")
-SOURCE_FILES = ("VERSION", "README.md", "CHANGELOG.md", "install.sh", "uninstall.sh", "update.sh",
+SOURCE_FILES = ("VERSION", "README.md", "ROADMAP.md", "CHANGELOG.md", "install.sh", "uninstall.sh", "update.sh",
                 "review-update.sh", "update-from-github.sh", ".gitignore", ".gitattributes", ".editorconfig", "lychee.toml")
 PRIVATE_DIRECTORIES = frozenset({".git", ".cache", ".venv", "venv", "__pycache__", "reports", "dist",
     "generated-help", "node_modules", "htmlcov", ".review-backups", ".pytest_cache", ".mypy_cache", ".ruff_cache",
@@ -38,7 +38,11 @@ PRIVATE_DIRECTORY_PATTERNS = ("cli-help-installer.*",
     "cli-help-probe-*", "cli-help-review-*", "cli-help-screen-*", "cli-help-build-*", "cli-help-media-*",
     "cli-help-description-screen-*", "cli-help-sanitized-screen-*", "cli-help-replay-*",
     "cli-help-ignore-*", "cli-help-inventory-*", "cli-help-capture-*", "cli-help-functional-review-*",
-    "cli-help-workflow-verification-*")
+    "cli-help-workflow-verification-*",
+    "cli-help-commit-log-*", "cli-help-fd-*", "cli-help-git-direct-*", "cli-help-git-show-*",
+    "cli-help-grep-*", "cli-help-ls-*", "cli-help-native-posix-*", "cli-help-native-terminal-*",
+    "cli-help-openssh-*", "cli-help-rsync-*", "discovered-menu-*", "ffmpeg-media-*",
+    "fzf-check-*", "git-stash-list-*")
 
 
 def excluded_source(relative, directory=False):

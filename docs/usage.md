@@ -21,6 +21,22 @@ in Bash:
 source "$PWD/bash/interactive-help.bash"
 ```
 
+### Run in a terminal pane
+
+For an editor or app with an integrated terminal, set its working directory to
+the checkout root. Use the following launch command for a temporary Bash
+session with bundled profiles and discovery off.
+
+```bash
+env CLI_HELP_DISCOVERY=off bash --noprofile --rcfile ./bash/interactive-help.bash -i
+```
+
+Use a UTF-8 terminal pane at least 60×16. At 80×24 more rows fit beside the
+selected option. Type `ffmpeg ` (including the trailing space), press Alt-H
+and use the arrow keys and uppercase `D` to explore. Escape returns to the
+pending line. Press Ctrl-U **at the Bash prompt** to discard that line.
+[Compare the two terminal sizes](superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
+
 ### First option insertion
 
 Type `rsync --ar` without pressing Enter, then press **Alt-H**. The text at the
@@ -56,7 +72,7 @@ docker run --
 docker --context local container run --
 ```
 
-The bundled profiles cover specific paths in Linux, development, cloud, and embedded command families. The [family inventories](../ROADMAP.md#bundled-menu-progress) list their manual coverage and release-specific limits. Ordinary static profiles do not require installed
+The bundled profiles cover specific paths in Linux, development, cloud, and embedded command families. The [family inventories](audit-history.md#bundled-menu-progress) list their manual coverage and release-specific limits. Ordinary static profiles do not require installed
 commands. Vendor/version-guarded profiles require identity verification. Custom
 profiles replace bundled definitions for matching paths. See
 [prefix/module forms and structured entry](invocation-and-structured-arguments.md)
@@ -104,7 +120,7 @@ required to select an option after applying a search. Filtering matches option
 names, original summaries and descriptions, argument placeholders, and numerical
 explanations, including units, scales, accepted forms and source qualifications.
 Source evidence remains searchable even when omitted from the concise display.
-Each category displays its matching count.
+While a filter is active, each category displays its matching count.
 When a new search has no matches in the current category, the first matching
 category is selected automatically.
 
@@ -127,8 +143,12 @@ Option spelling and original descriptions also remain searchable. Source citatio
 are omitted from terminal explanations. `[review]`, `[unverified]`, and `[varies]`
 flag conflicting, unverified, and target-dependent guidance respectively.
 
-Selection is shown with a `>` marker, focus with a `*` marker, and highlighting;
-color alone is not required. Labels and descriptions are clipped/wrapped in
+For example, with FFmpeg’s `-b:v BITRATE` selected, an 80×24 terminal shows
+nine options in Simple, seven in Detailed and three in Expanded. At 60×16 it
+shows five, three and two. Other selections can wrap differently.
+[Compare the six captured screens](superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
+
+Labels and descriptions are clipped or wrapped in
 terminal cells for ordinary wide and combining text. Ambiguous-width characters,
 emoji sequences, terminal fonts, and screen-reader behavior remain environment
 dependent. Keyboard/rendered tests establish only their recorded interactions,
@@ -235,6 +255,9 @@ Only overridden actions need to be included. For example:
 
 Action names and named keys are listed in the example file. A key may also be
 one printable character. Duplicate assignments, unknown actions, and empty
-binding lists are rejected. Escape and Ctrl-C remain emergency cancellation
+binding lists are rejected. If an older configuration assigns `D` to another
+action, the browser tries `V` and then `f6` for `cycle_detail`. If all three
+are occupied, assign a free key to `cycle_detail`. The menu header shows the
+effective key. Escape and Ctrl-C remain emergency cancellation
 keys and cannot be assigned to another action. Search-entry editing keys remain
 fixed. Configuration is read each time the browser opens.

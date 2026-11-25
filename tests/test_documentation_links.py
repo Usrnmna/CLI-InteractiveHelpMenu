@@ -6,6 +6,7 @@ from email.message import Message
 import importlib.util
 import io
 from pathlib import Path
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -109,14 +110,19 @@ class DocumentationRetryTests(unittest.TestCase):
         run.assert_not_called()
         sleep.assert_not_called()
 
-    def test_retry_checks_full_glob_and_retains_both_reports(self):
+    def test_retry_checks_same_markdown_as_initial_action_and_retains_both_reports(self):
         code, first, second, final, run, sleep = self.run_gate()
         self.assertEqual(code, 0)
         self.assertEqual(first.read_text(), FIRST_FAILURE)
         self.assertEqual(final.read_text(), second.read_text())
         self.assertEqual(run.call_count, 2)  # Version check plus exactly one retry.
         command = run.call_args.args[0]
-        self.assertIn("**/*.md", command)
+        inputs = ["**/*.md", ".github/CONTRIBUTING.md", ".github/pull_request_template.md"]
+        self.assertEqual(command[command.index("--output") + 2:], inputs)
+        workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
+        action_args = next(line.strip().removeprefix("args: ") for line in workflow.read_text().splitlines()
+                           if line.strip().startswith("args: --config lychee.toml "))
+        self.assertEqual(shlex.split(action_args), ["--config", "lychee.toml", "--no-progress", *inputs])
         self.assertIn("lychee.toml", command)  # The successful-response cache remains enabled.
         self.assertEqual([call.args[0] for call in sleep.call_args_list], [10, 60])
 

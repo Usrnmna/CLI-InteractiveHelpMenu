@@ -1,6 +1,8 @@
 # pytest option audit
 
-The bundled menu contains 18 entries, including separate short and long spellings. The audit covers core pytest on Ubuntu 24.04 and 26.04. Plugins can extend the installed command. The menu preserves the original option order, required operands and literal spellings. [Bundled profile](../profiles/pytest.json)
+First recorded 2026-11-22. Counts and observations below describe the original bundled selections. See the [expanded inventory and verification](pytest-manual-coverage.md) for the later manual comparison.
+
+The bundled menu contained 18 entries, including separate short and long spellings. The audit covered core pytest on Ubuntu 24.04 and 26.04. Plugins can extend the installed command. The menu preserves the original option order, required operands and literal spellings. [Bundled profile](../profiles/pytest.json)
 
 ## Sources and scope
 
@@ -15,36 +17,11 @@ The Ubuntu pages are invocation guides. Where they omit a flag or a boundary cas
 
 ## Entry decisions
 
-The disposition describes the previous menu text and structured guidance.
-
-| Entry | Original disposition | What the menu now explains |
-| --- | --- | --- |
-| `-k EXPRESSION` | Redundant | Replaces parser boilerplate with case-insensitive substring matching, including parent names, parameter IDs and markers. Gives a quoted boolean example. |
-| `-m MARKEXPR` | Incomplete | Uses exact, case-sensitive marker names. Gives a quoted expression and identifies which Ubuntu release supports matching a marker's keyword arguments. |
-| `-x` | Incomplete | A failure or an error can end the session. The limit equals `--maxfail=1`. |
-| `--exitfirst` | Incomplete | Same limit as `-x`, including collection and fixture errors. |
-| `--maxfail NUM` | Inaccurate | Counts failures and errors. Zero disables the limit. Corrects the structured lower bound for the signed parser. |
-| `-q` | Incomplete | Reduces terminal output. Repetition reduces it further. With collection alone it lists test node IDs. |
-| `--quiet` | Incomplete | The long spelling has the same effect. Details give the compact repeated spelling `-qq`. |
-| `-v` | Incomplete | Displays the individual test names and outcomes. Repeating it can expand assertion comparisons. |
-| `--verbose` | Incomplete | The long spelling enables the same individual results and Details explain `-vv`. |
-| `--collect-only` | Incomplete | Skips test bodies. Test modules and conftest files can still execute code at import, and collection hooks still run. |
-| `--tb STYLE` | Sufficient | Keeps the six accepted styles. Gives the default and explains how to suppress a traceback while retaining the failure. |
-| `--capture METHOD` | Incomplete | Distinguishes file descriptors, Python streams, live Python output with `tee-sys`, and disabled capture. The default `fd` also captures writes from subprocesses that inherit stdout or stderr. |
-| `--rootdir DIR` | Incomplete | Anchors test node IDs and the default cache. Working directory, import path and choice of test operands are separate. |
-| `-c FILE` | Incomplete | An explicit file replaces config discovery. Its parent supplies the root unless overridden. |
-| `-p NAME` | Sufficient | Keeps both operations and gives the syntax for loading a plugin early, blocking one with `no:NAME`, and naming more than one. |
-| `--basetemp DIR` | Incomplete | On first use pytest clears and recreates the supplied directory. The summary makes this visible before selection. |
-| `--durations N` | Inaccurate | Counts individual setup, call and teardown records. Zero selects all records before the separate seconds threshold. Corrects the structured integer range. |
-| `--junit-xml PATH` | Incomplete | Takes a report filename and writes JUnit XML alongside the terminal results. |
+The 18 core entries distinguished expression matching, test selection, output controls, configuration and temporary files. Third-party plugins can add options to an installed command.
 
 ## Material distinctions and version boundaries
 
-- **Name and marker filters.** A substring such as `FAST` can match a lowercase test name with `-k`. With `-m`, the marker name must match exactly. The 7.4.4 marker parser rejects `"slow(phase=1)"`. The 8.3.5, 9.0.2 and 9.2.0 parsers match the named keyword value. [7.4.4 selector](https://github.com/pytest-dev/pytest/blob/7.4.4/src/_pytest/mark/__init__.py) · [8.3.5 selector](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/mark/__init__.py) · [9.0.2 selector](https://github.com/pytest-dev/pytest/blob/9.0.2/src/_pytest/mark/__init__.py)
-- **Timing reports.** `--durations=0 --durations-min=0` shows all measured phases. At ordinary verbosity the default threshold is 0.005 seconds. In 7.4.4 and 8.3.5, `-vv` also bypasses an explicit threshold. In 9.0.2 and 9.2.0, `-vv` lowers the default to zero and an explicit threshold still applies. [7.4.4 reporter](https://github.com/pytest-dev/pytest/blob/7.4.4/src/_pytest/runner.py) · [8.3.5 reporter](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/runner.py) · [9.0.2 reporter](https://github.com/pytest-dev/pytest/blob/9.0.2/src/_pytest/runner.py) · [9.2.0 reporter](https://github.com/pytest-dev/pytest/blob/9.2.0/src/_pytest/runner.py)
-- **Signed counts.** The manuals document positive counts and zero. The tested implementations also accept negative integers. A negative failure limit stops at the first failure or error. A negative duration count drops that many records from the shortest end of the sorted list before threshold filtering. The basic descriptions use the documented forms. The versioned value guidance records the parser behavior. [8.3.5 session and failure limit](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/main.py) · [8.3.5 duration handling](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/runner.py)
-- **Directory operands.** Cleanup occurs when the temporary base is requested. The option validator rejects the current directory and its ancestors. For configuration, `-c` selects a file and `--rootdir` overrides the root used for reporting and cache placement. An explicit test path controls what to collect. [Temporary base implementation](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/tmpdir.py) · [Base path validation](https://github.com/pytest-dev/pytest/blob/8.3.5/src/_pytest/main.py) · [Root and configuration rules](https://github.com/pytest-dev/pytest/blob/9.2.0/doc/en/reference/customize.rst)
-- **Manual-only coverage.** The full CLI also supports running only previous failures (`--lf`) or running those tests first (`--ff`), listing fixtures (`--fixtures`), showing local variables (`--showlocals`), choosing an import mode (`--import-mode`) and setting the reporting threshold (`--durations-min`). Details cross-reference the threshold and the `-s` capture shorthand. The Ubuntu 26.04 guide also shows how to read arguments from a file with `pytest @tests_to_run.txt`, a syntax introduced in pytest 8.2. These remain outside the 18 selectable entries. [Ubuntu 26.04 invocation guide](https://manpages.ubuntu.com/manpages/resolute/man1/pytest.1.html) · [Upstream command-line flags](https://github.com/pytest-dev/pytest/blob/9.2.0/doc/en/reference/reference.rst#command-line-flags)
+`-k` matched names case-insensitively. Marker names under `-m` required exact casing. The 7.4.4 parser rejected a marker keyword-value expression accepted by 8.3.5, 9.0.2 and 9.2.0.
 
 ## Executable verification
 
@@ -61,9 +38,7 @@ The offline fixtures ran actual pytest against generated test modules, an explic
 
 ## Rendered menu and sandbox suites
 
-On each target a real Bash/tmux session displayed all 18 rows at 210×100. The checks covered each highlighted label, summary, authored explanation and complete generated Details pane. Escape restored the pending line and cursor. Selecting `-m` inserted that literal before an existing test path. At 60×16, searching for “dedicated directory” found `--basetemp DIR`. Scrolling reached the cleanup warning, cancellation restored the original edit, and selection allowed a directory value to be typed before the existing filename. A shell stub recorded no execution during either interaction. [Minimum-size regression](../tests/test_expansion_terminal.py) · [Sandbox procedure](development.md#isolated-local-debugging)
-
-Each target passed 22 focused checks covering profile contracts, literal insertion, the narrow terminal interaction, numerical presentation and inventory reconciliation. The 22 reviewed fingerprints cover the profile file, its description and category, all 18 options, and the independent migration fixture. [Duration evidence](../tests/fixtures/value-semantics/migration-evidence.json) · [Numerical regression](../tests/test_numerical_migration.py) · [Inventory review](numerical-inventory/review.json)
+The first-pass Bash/tmux checks walked the original selections, inspected the rendered Details and checked shell editing on the three Ubuntu/Python targets. [Minimum-size regression](../tests/test_expansion_terminal.py) · [Duration evidence](../tests/fixtures/value-semantics/migration-evidence.json) · [Numerical regression](../tests/test_numerical_migration.py)
 
 | Offline sandbox | Focused passed / failed / skipped | Full suite passed / failed / skipped | Full suite time |
 | --- | ---: | ---: | ---: |
@@ -71,4 +46,4 @@ Each target passed 22 focused checks covering profile contracts, literal inserti
 | Ubuntu 24.04.5 / Python 3.10.20 | 22 / 0 / 0 | 1,345 / 0 / 1 | 554.297 s |
 | Ubuntu 24.04.5 / Python 3.12.3 | 22 / 0 / 0 | 1,345 / 0 / 1 | 490.939 s |
 
-All three offline runs included the untracked audit documents and passed the shell syntax, numerical coverage, profile validation and unittest checks. Each Linux run skipped the Windows-only probe.
+Each Linux suite skipped the Windows-specific probe.

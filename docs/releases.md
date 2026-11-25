@@ -6,7 +6,7 @@ See [version numbering and planned releases](versioning.md) when choosing the ne
 
 ## Version 0.4.0 - Alpha
 
-The [version file](../VERSION) sets the prepared local candidate to `0.4.0-alpha`. Building it produces the `v0.4.0-alpha` filenames below. The [changelog](../CHANGELOG.md#version-040---alpha) lists the changes. To obtain these packages from source, follow the [build procedure](#build-from-source).
+The earlier performance candidate and the current checkout share the [version string](../VERSION) `0.4.0-alpha`. Building either produces the filenames below. The checkout also includes the three-level browser shown in the [terminal gallery](assets/README.md). The [changelog](../CHANGELOG.md) distinguishes the two. To package the current files, follow the [build procedure](#build-from-source).
 
 The [candidate validation guide](release-candidate.md) covers exact-source
 checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.
@@ -140,7 +140,7 @@ refuses special files before reading, and rechecks file and directory identity.
 Concurrent replacements or edits during a read abort the build. Input names with
 backslashes or control characters are rejected to match updater extraction rules.
 
-The [builder](../scripts/build_release.py) reads working-tree bytes from its explicit root files and source directories. It operates independently of the Git index and archive attributes. It includes `docs/`, `.github/` and the root README, changelog and repository configuration. The root `ROADMAP.md` is outside that list. Open the roadmap in a checkout when following contributor links from an extracted source archive. New maintained modules are included automatically.
+The [builder](../scripts/build_release.py) reads working-tree bytes from its explicit root files and source directories. It operates independently of the Git index and archive attributes. It includes `docs/`, `.github/` and the root README, roadmap, changelog and repository configuration. The roadmap and its linked audit summaries can be read together in an extracted archive. New maintained modules are included automatically.
 Untracked files under those directories can also become inputs; inspect the
 input list before building, check the resulting manifest, and keep private notes outside those directories. Reserved-name
 exclusion is not secret-content detection. Installed runtimes contain only the

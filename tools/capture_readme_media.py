@@ -32,8 +32,8 @@ import pyte
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNTIME = ROOT
 OUTPUT = ROOT / "docs/assets"
-CAPTURE_VERSION = (ROOT / "VERSION").read_text().strip()
 FONT = Path(os.environ.get("CLI_HELP_MEDIA_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"))
 COLUMNS, ROWS = 100, 24
 RSYNC_PREFIX = "rsync --archive --compress --human-readable --itemize-changes --partial "
@@ -45,8 +45,6 @@ BACKGROUND, FOREGROUND = "#101923", "#e4edf5"
 COLORS = {"black": "#101923", "red": "#ef798a", "green": "#7fceaa",
           "brown": "#e6c07b", "blue": "#7eaaff", "magenta": "#c792ea",
           "cyan": "#77d6e5", "white": FOREGROUND}
-sys.path.insert(0, str(ROOT / "cli_help"))
-from manual_import import ManualCollection, atomic_json
 
 
 class TerminalScreen(pyte.Screen):
@@ -108,7 +106,7 @@ class Terminal:
         rcfile = folder / "bashrc"
         rcfile.write_text(
             "PS1='demo $ '; PS2='> '; set +o history\n"
-            + "source " + shlex.quote(str(ROOT / "bash/interactive-help.bash")) + "\n"
+            + "source " + shlex.quote(str(RUNTIME / "bash/interactive-help.bash")) + "\n"
             + "rsync() { printf 'rsync\\n' >> " + shlex.quote(str(self.marker)) + "; }\n"
             + "ls() { printf 'ls\\n' >> " + shlex.quote(str(self.marker)) + "; }\n"
             + "_capture_buffer() { printf '%s\\0%s\\0' \"$READLINE_POINT\" \"$READLINE_LINE\" > "
@@ -180,18 +178,21 @@ def color(value, default):
     return COLORS.get(value, "#" + value if len(value) == 6 else default)
 
 
-def render(screen, title, caption, first_row=0):
+def render(screen, title, caption, first_row=0, stop_row=ROWS):
     """Render a terminal viewport with separate captions; optionally omit scrollback."""
     font = ImageFont.truetype(str(FONT), 18)
+    bold_path = FONT.with_stem(FONT.stem + "-Bold")
+    bold_font = ImageFont.truetype(str(bold_path), 18) if bold_path.is_file() else font
     cell_width, cell_height = round(font.getlength("M")), 24
     padding, top = 24, 62
     width = COLUMNS * cell_width + padding * 2
-    height = (ROWS - first_row) * cell_height + top + 64
+    height = (stop_row - first_row) * cell_height + top + 64
     image = Image.new("RGB", (width, height), BACKGROUND)
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, width, 42), fill="#1e2c3c")
-    draw.text((padding, 10), f"{title} | v{CAPTURE_VERSION}", font=font, fill="#8cdef0")
-    for row in range(first_row, ROWS):
+    version_label = (RUNTIME / "VERSION").read_text().strip()
+    draw.text((padding, 10), f"{title} | v{version_label}", font=font, fill="#8cdef0")
+    for row in range(first_row, stop_row):
         for column in range(COLUMNS):
             char = screen.buffer[row][column]
             foreground = color(char.fg, FOREGROUND)
@@ -200,8 +201,8 @@ def render(screen, title, caption, first_row=0):
                 foreground, background = background, foreground
             x, y = padding + column * cell_width, top + (row - first_row) * cell_height
             draw.rectangle((x, y, x + cell_width - 1, y + cell_height - 1), fill=background)
-            draw.text((x, y), char.data, font=font, fill=foreground, stroke_width=int(char.bold))
-    if not screen.cursor.hidden and screen.cursor.y >= first_row:
+            draw.text((x, y), char.data, font=bold_font if char.bold else font, fill=foreground)
+    if not screen.cursor.hidden and first_row <= screen.cursor.y < stop_row:
         x = padding + min(screen.cursor.x, COLUMNS - 1) * cell_width
         y = top + (screen.cursor.y - first_row) * cell_height
         draw.rectangle((x, y + 21, x + cell_width - 1, y + 23), fill="#77d6e5")
@@ -234,8 +235,7 @@ class Demonstration:
             rows = terminal.screen.display
             header = next(i for i, row in enumerate(rows) if "CATEGORIES" in row and "OPTIONS" in row)
             column = rows[header].index("OPTIONS")
-            footer = next(i for i in range(header + 1, len(rows)) if rows[i].startswith("Category "))
-            options = "\n".join(row[column:] for row in rows[header + 1:footer])
+            options = "\n".join(row[column:] for row in rows[header + 1:] if "│" in row[:column])
             for unexpected in absent_options:
                 if unexpected in options:
                     raise RuntimeError(f"Scene {caption!r} retains an unexpected option row: {unexpected!r}")
@@ -265,11 +265,11 @@ def capture_rsync(folder, demonstration):
 
     try:
         terminal.send(RSYNC_PREFIX + "--", "rsync --archive")
-        frame("1 / 2   rsync | Build on existing options; leave the command pending", 1500)
+        frame("1 / 2   rsync | Start with a pending command", 1500)
         terminal.send("\x1bh", "Interactive help")
         terminal.send("\x15")
-        frame("Alt-H, Ctrl-U | Browse 216 options across 13 categories", 2500,
-              required=("Transfer (4)", "Category 1/13", "Option 1/4", "--archive"),
+        frame("Alt-H, Ctrl-U | Browse the Transfer category in Simple view", 2500,
+              required=("Simple   D change view", "Category 1/13 | Transfer", "1/4", "> --archive", "Copy a tree with its metadata"),
               absent=("Filter: --",)).save(OUTPUT / "help-browser.png")
         terminal.send("\tlllll")
         frame("Tab, Right x5 | Focus categories and browse Output", 1800,
@@ -278,12 +278,17 @@ def capture_rsync(folder, demonstration):
         frame("Right x2 | Inspect attribute preservation options", 1800,
               required=("Category 8/13", "--acls", "--xattrs", "--hard-links"))
         terminal.send("\x1b[6~")
-        frame("PageDown | Scroll the category pane to Recovery", 2000,
-              required=("Category 13/13", "Recovery (22)", "--partial", "--suffix="),
-              absent=("Transfer (4)",))
+        frame("PageDown | Jump to the Recovery category", 2000,
+              required=("Category 13/13 | Recovery", "1/22", "> --partial", "--suffix="))
         terminal.send("hhhhhh\tj")
-        frame("Network | Bare rates use 1024 bytes/second; check applicability in Details", 2800,
-              required=("OPTIONS *", "Category 7/13", "Option 2/38", "1024 bytes/second", "Applicability unconfirmed.")
+        frame("Network | Simple shows the unit beside the selected bandwidth option", 2000,
+              required=("Simple   D change view", "Category 7/13 | Network", "2/38", "> --bwlimit=RATE", "bare rate in KiB/s"))
+        terminal.send("D")
+        frame("D | Detailed explains average socket rate and rounding", 2400,
+              required=("Detailed   D change view", "2/38", "> --bwlimit=RATE", "nearest KiB/s"))
+        terminal.send("D")
+        frame("D | Expanded shows the bare rate and supported suffixes", 2800,
+              required=("Expanded   D change view", "2/38", "> --bwlimit=RATE", "1024 bytes/second", "Input NK or NKiB", "Lines 1–11/46")
               ).save(OUTPUT / "numerical-guidance.png")
         terminal.send("/bytes/second\n")
         frame("Search bytes/second | Find displayed numerical meaning", 2200,
@@ -297,7 +302,7 @@ def capture_rsync(folder, demonstration):
         terminal.send("\x1bh", "Interactive help")
         terminal.send("/--exclude=")
         frame("Alt-H, /, --exclude= | Search another category without losing input", 2000,
-              required=("Search (Enter applies, Esc restores): --exclude=", "> --exclude=PATTERN", "Filtering (1)", "Option 1/1"))
+              required=("Search (Enter applies, Esc restores): --exclude=", "> --exclude=PATTERN", "Filtering (1)", "1/1"))
         terminal.send("\n")
         frame("Enter applies the filter | A second Enter selects the option", 900,
               required=("Filter: --exclude=", "--exclude="))
@@ -313,8 +318,10 @@ def capture_rsync(folder, demonstration):
               required=("Interactive help | rsync",))
         terminal.send("\x1b", "\x1b[?1049l")
         terminal.check_buffer(final_line)
-        frame("Escape | Command assembled; still unexecuted", 2000,
-              required=("--exclude='*.tmp'",)).save(OUTPUT / "option-inserted.png")
+        caption = "Escape | Return to the assembled rsync command at the prompt"
+        frame(caption, 2000, required=("--exclude='*.tmp'",))
+        render(terminal.screen, "CLI Interactive Help Menu | rsync", caption,
+               stop_row=terminal.screen.cursor.y + 1).save(OUTPUT / "option-inserted.png")
         result.update(cancel_preserved=True, categories=13, options=216)
         return result, terminal.events
     finally:
@@ -334,25 +341,26 @@ def capture_ls(folder, demonstration):
         terminal.send("\x1bh", "Interactive help")
         terminal.send("\x15")
         frame("Alt-H, Ctrl-U | Display contains 20 options", 1500,
-              required=("Display (20)", "Option 1/20", "--almost-all", "--color="))
+              required=("Category 1/6 | Display", "1/20", "--almost-all", "--color="))
         terminal.send("\x1b[6~")
         frame("PageDown | Scroll the option pane while categories stay visible", 1600,
-              required=("Option 8/20", "--size", "Display (20)", "Traversal (7)"),
+              required=("10/20", "> --quote-name", "--size", "Category 1/6 | Display", "Traversal"),
               absent=("> --all",))
-        terminal.send("jjjj")
-        frame("Down x4 | Inspect the selected option's pattern meaning", 1800,
-              required=("Option 12/20", "--hide=PATTERN", "Hidden-name wildcard pattern"),
+        terminal.send("jjD")
+        frame("Down twice, D | Read how to quote a hide pattern in Detailed view", 2000,
+              required=("Detailed   D change view", "12/20", "> --hide=PATTERN", "Quote wildcards"),
               absent_options=("--almost-all",))
-        terminal.send("]" * 16)
-        frame("] | Scroll complete details to the literal argument declaration", 2200,
-              required=("Option 12/20", "Option: --hide=PATTERN", "Either -a or -A overrides", "Argument required.")
+        terminal.send("D" + "]" * 16)
+        frame("D, ] | Scroll Expanded to the override rule for --hide", 2400,
+              required=("Expanded   D change view", "12/20", "> --hide=PATTERN", "Lines 17–27/28",
+                        "Explicitly named files still appear.", "Either -a or -A overrides", "Argument required.")
               ).save(OUTPUT / "ls-browser.png")
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(LS_PREFIX + "--hide=")
         final_line = LS_PREFIX + "--hide='*.tmp' \"/srv/project files/\" "
         terminal.send("'*.tmp' \"/srv/project files/\" ")
         result = terminal.check_buffer(final_line)
-        frame("Enter inserts --hide= | Command assembled; still unexecuted", 1800,
+        frame("Enter inserts --hide= | Add the pattern and path at the prompt", 1800,
               required=("--hide='*.tmp'",))
         result.update(categories=6, options=60, display_options=20)
         return result, terminal.events
@@ -362,6 +370,8 @@ def capture_ls(folder, demonstration):
 
 def capture_review(folder):
     """Open the actual guided form against a temporary illustrative collection."""
+    from manual_import import ManualCollection, atomic_json
+
     collection = folder / "collection"
     profile = {"command": ["example", "convert"], "description": "Example conversion options.",
                "categories": [{"name": "Output", "options": [
@@ -378,14 +388,14 @@ def capture_review(folder):
     before = {path: path.read_bytes() for path in collection.rglob("*.json")}
     terminal = Terminal(folder)
     try:
-        command = shlex.join([sys.executable, str(ROOT / "cli_help/main.py"), "--review-report", str(report)])
+        command = shlex.join([sys.executable, str(RUNTIME / "cli_help/main.py"), "--review-report", str(report)])
         terminal.send(command + "\n", "Review: number")
         for value, expected in [("1", "Entry:"), ("o", "Options: [e]"), ("e", "Select number"),
                                 ("1", "Literal flag ("), ("", "Summary ("),
                                 ("Choose the output file", "Detail ("), ("", "Argument placeholder (")]:
             terminal.send(value + "\n", expected)
         render(terminal.screen, "Guided review | example convert",
-               "Example collection | Edit fields without JSON; save explicitly",
+               "Example collection | Edit a summary and press Enter to keep the existing detail",
                first_row=6).save(OUTPUT / "guided-review.png")
         terminal.send("/cancel\n", "Entry:")
         terminal.send("b\n", "Review: number")
@@ -400,24 +410,31 @@ def capture_review(folder):
 
 def source_fingerprints():
     """Identify the generator, default profiles, and runtime used for each capture."""
-    source_paths = [ROOT / "tools/capture_readme_media.py", ROOT / "VERSION",
-                    ROOT / "tools/requirements-media.txt"]
-    source_paths.extend((ROOT / "cli_help").glob("*.py"))
-    source_paths.extend((ROOT / "bash").glob("*.bash"))
-    source_paths.extend((ROOT / "profiles").glob("*.json"))
-    return {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in sorted(source_paths)}
+    sources = {}
+    for folder, paths in (
+        (ROOT, [ROOT / "tools/capture_readme_media.py", ROOT / "tools/requirements-media.txt"]),
+        (RUNTIME, [RUNTIME / "VERSION", *(RUNTIME / "cli_help").glob("*.py"),
+                   *(RUNTIME / "bash").glob("*.bash"), *(RUNTIME / "config").rglob("*.json"),
+                   *(RUNTIME / "profiles").glob("*.json")]),
+    ):
+        for path in sorted(paths):
+            sources[path.relative_to(folder).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return sources
 
 
 def main():
     """Write public media and local capture evidence; temporary drafts are removed."""
-    global OUTPUT
+    global OUTPUT, RUNTIME
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--runtime-root", type=Path, default=ROOT,
+                        help="Application source tree or unpacked local build to run")
     parser.add_argument("--output", type=Path, default=OUTPUT,
                         help="Destination for the named public images and animation")
     parser.add_argument("--evidence", type=Path, default=ROOT / "tests/reports/readme-media",
                         help="Private destination for raw terminal output and capture assertions")
     args = parser.parse_args()
+    RUNTIME = args.runtime_root.resolve(strict=True)
+    sys.path.insert(0, str(RUNTIME / "cli_help"))
     OUTPUT = args.output.resolve()
     evidence = args.evidence.resolve()
     if OUTPUT == evidence:
@@ -451,7 +468,8 @@ def main():
         frames=len(demonstration.frames),
         duration_ms=sum(scene["duration_ms"] for scene in demonstration.scenes),
         captured_at=datetime.now(timezone.utc).isoformat(),
-        application_version=(ROOT / "VERSION").read_text().strip(),
+        runtime_root=str(RUNTIME),
+        application_version=(RUNTIME / "VERSION").read_text().strip(),
         python=platform.python_version(),
         bash=subprocess.check_output(["bash", "--version"], text=True).splitlines()[0],
         terminal={"columns": COLUMNS, "rows": ROWS, "term": "xterm-256color"},

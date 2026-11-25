@@ -88,30 +88,7 @@ Boolean arity. These valid options were retained despite abbreviated help output
 
 ## Isolation and installation provenance
 
-Systems and runtime installations reside under ignored `.cache/live-followup/`.
-Distribution packages were downloaded and extracted without installing system
-packages or starting services. Podman/psql ELF RUNPATHs were adjusted to their
-local extracted libraries. Official Go, .NET, Bun, Arduino, Google SDK, and yq
-archives were checked against upstream checksums or release asset digests.
-Python environments isolate Ansible, Azure, and both esptool major versions;
-pip installation reports preserve package download hashes. A download hash
-records integrity evidence, not a security audit of third-party software.
-
-Azure/Google extraction on the Windows mount was slow. Their verified working
-runtime is retained in an isolated native WSL `/tmp` directory, located through
-`.cache/live-followup/cloud/runtime.json`; it is temporary and may be removed by
-operating-system cleanup. Downloads remain in the repository cache for rebuilding.
-Redundant slow installers were stopped after checking their process identities;
-no background installer remained. No personal cloud/device configuration changed.
-
-Every live run used a temporary HOME. Cloud configuration disabled telemetry,
-update checks, prompts, and dynamic extension installation. Local Go/.NET/Bun/
-Arduino launchers set fixed isolation controls and forward arguments unchanged
-to verified binaries; they are test-environment launchers, not executable driver
-configuration. Go toolchain downloads, .NET first-use certificate generation,
-and tool telemetry were disabled. Only the registered help/version/manual routes
-were supplied. No login, init, container daemon, database server, or device session
-was required.
+The follow-up extracted system packages under `.cache/live-followup/`, adjusted the local Podman and psql library lookup and verified vendor archive checksums. Python environments isolated Ansible, Azure and the two esptool majors. Cloud runtimes used private storage on the native WSL filesystem. Each live run used a temporary home and fixed documentation or version requests. Cloud login, server startup, hardware access and workload execution were outside the checks.
 
 ## Complete live version inventory
 

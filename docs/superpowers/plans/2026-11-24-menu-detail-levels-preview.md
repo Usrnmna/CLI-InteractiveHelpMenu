@@ -1,5 +1,7 @@
 # Option detail levels at two terminal sizes
 
+These are the approved design mockups. [Actual screens from the local build](2026-11-24-menu-detail-levels-verification.md) show what the browser displays.
+
 Six proposed screens use the bundled FFmpeg menu, the **Stream codecs** category, an empty filter, and the fifth of ten options selected, `-b:v BITRATE`. Only the detail level and terminal size change. The neighboring codec and filter entries make the space reclaimed by Simple visible. The bit-rate note applies to the two named options.
 
 [View the six screens side by side](2026-11-24-menu-detail-levels-preview.png) · [Implementation plan](2026-11-24-menu-detail-levels.md)

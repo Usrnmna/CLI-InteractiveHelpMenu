@@ -1,8 +1,12 @@
 # Changelog
 
+## Unreleased local checkout
+
+The menu opens in Simple. The default `D` key cycles through Detailed and Expanded while preserving the current option and filter. Short category labels, recoverable titles and shared unit notes leave more room for option rows. Unit abbreviations are searchable in all three levels. [Browser controls](docs/usage.md#browser-controls) · [Current terminal media](docs/assets/README.md)
+
 ## Version 0.4.0 - Alpha
 
-Prepared local release candidate. The browser reuses formatted value guidance for eligible options during one menu open. On Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first rendered FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. Search, redraw, idle CPU and discovery are separate investigations. [Measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Candidate packages](docs/releases.md#version-040---alpha)
+Prepared local release candidate. The browser reuses formatted value guidance for eligible options during one menu open. On Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first rendered FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. The [subsequent investigation](docs/menu-cost-measurements.md) measured search, redraw, idle CPU and discovery on the redesigned menu. [Measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Candidate packages](docs/releases.md#version-040---alpha)
 
 ## Version 0.3.1 - Alpha
 

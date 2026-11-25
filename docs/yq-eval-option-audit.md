@@ -1,8 +1,6 @@
 # yq eval option audit
 
-The first-pass [bundled menu](../profiles/yq-eval.json) covered 15 spellings for Mike Farah’s yq v4. `eval` runs the expression on each document in input-file order. Use `-` as a filename for standard input. The Ubuntu archive packages named `yq` on both target releases provide Kislyuk’s Python wrapper for jq, which takes a jq filter as its first positional argument. The [eval driver](../config/drivers.example/yq.json) and the menu’s existing executable identity check distinguish the two tools.
-
-The subsequent [manual inventory](yq-eval-manual-inventory.md) and [coverage report](yq-eval-manual-coverage.md) cover the expanded menu. The counts and results below record the original audit.
+First recorded 2026-11-22. This first pass covered 15 bundled rows. See the [expanded inventory and verification](yq-eval-manual-coverage.md) for the later manual comparison.
 
 ## Sources and versions
 
@@ -15,35 +13,11 @@ The subsequent [manual inventory](yq-eval-manual-inventory.md) and [coverage rep
 
 ## Disposition of the 15 entries
 
-Each disposition describes the original entry and its value guidance. Rows follow menu order.
-
-| Entry | Disposition | Finding and change |
-| --- | --- | --- |
-| `--inplace` | Inaccurate | The plural “update input files” suggested one edit per file. The combined result stream replaces the first named file. Later inputs remain intact. Standard input cannot be the destination. |
-| `-i` | Inaccurate | The short spelling has the same first-file destination and multi-file behavior. |
-| `--null-input` | Incomplete | Run the expression once against null. This can construct a new document. Filenames and an explicit stdin marker are rejected. |
-| `-n` | Incomplete | The short spelling also ignores piped data and takes no input filenames. |
-| `--exit-status` | Incomplete | An otherwise successful evaluation fails if there are no results or every result is null or the lowercase boolean false. One qualifying result suffices across documents. |
-| `-e` | Incomplete | A final false can follow a successful match. Numeric zero, the empty string and the YAML boolean spelled `False` also qualify. |
-| `--output-format` | Incomplete | Retain the encoding summary. Automatic output normally follows the first input filename. With an explicit input format, request the desired output format or yq uses YAML. |
-| `-o` | Incomplete | Add the same conversion rule. Distinguish the 4.44.3 output encoders from its input decoders and qualify TOML output. |
-| `--input-format` | Incomplete | Retain the encoding summary. Automatic selection uses the first filename’s extension and falls back to YAML for stdin and unknown extensions. Specify a decoder for formats such as CSV on stdin. |
-| `-p` | Incomplete | Add the same stdin and output interaction. The pinned decoder list excludes the shell output format. |
-| `--indent` | Inaccurate | The previous claim that every positive integer produces that many YAML spaces was too broad. State the default and show the release differences for zero, out-of-range widths and negative values. |
-| `--prettyPrint` | Incomplete | Describe the effect of clearing styles on the expression result. A flow-style YAML list or map can become a multiline block. |
-| `--unwrapScalar` | Incomplete | Describe raw scalar output, the YAML default and the explicit `--unwrapScalar=false` form for retaining quotes and inline comments. |
-| `--no-colors` | Sufficient as written | Keep the summary. Details explain terminal versus redirected output and precedence when `--colors` is also set. |
-| `--expression` | Redundant | Replace generic menu and grammar commentary with the reason for forcing an expression. A query that also names an existing file needs disambiguation. Quote the expression as one shell argument. |
+The 15 rows covered Mike Farah’s v4 evaluator. The identity check distinguished it from Ubuntu’s jq wrapper. The first-file destination, auto-format selection and indentation behavior required release-specific explanations.
 
 ## Material differences and manual-only coverage
 
-- **In-place writes.** For `yq eval -i '.n += 1' first.yml second.yml`, the first file receives the results for both inputs, in order. A separately updated copy of the second file is never written. The fixed file destination matters even when the expression only selects values. [Sequential evaluation and write destination](https://github.com/mikefarah/yq/blob/v4.44.3/cmd/evaluate_sequence_command.go)
-- **Exit status.** The printer remembers whether any printed node qualified. A later null or false does not clear an earlier match. Both versions compare the boolean’s stored text with lowercase `false`. An identity query on the YAML spellings `False` and `FALSE` succeeds. The result test applies after successful evaluation, so parse or file errors can still fail the command. [Result printer](https://github.com/mikefarah/yq/blob/v4.54.3/pkg/yqlib/printer.go) · [Evaluator](https://github.com/mikefarah/yq/blob/v4.54.3/cmd/evaluate_sequence_command.go)
-- **Formats and formatting.** Explicit `-p json` with automatic output selects YAML in both versions. Use `-p json -o json` to request JSON explicitly. The 4.44.3 TOML encoder accepts scalar results only. The 4.54.3 registry adds formats such as INI, HCL and KYAML. The upstream pretty-print implementation retains styles on certain ambiguous strings such as `"yes"`. [4.44.3 TOML encoder](https://github.com/mikefarah/yq/blob/v4.44.3/pkg/yqlib/encoder_toml.go) · [4.54.3 format handling](https://github.com/mikefarah/yq/blob/v4.54.3/cmd/utils.go) · [4.54.3 format registry](https://github.com/mikefarah/yq/blob/v4.54.3/pkg/yqlib/format.go) · [Pretty-print expression](https://github.com/mikefarah/yq/blob/v4.54.3/pkg/yqlib/lib.go)
-- **Indentation.** In 4.44.3, the YAML encoder uses four spaces at zero and two for positive widths outside 2–9. Its JSON and XML encoders accept nonpositive widths with no indentation spaces. In 4.54.3 the CLI rejects negative widths before encoding and the YAML encoder limits accepted widths to 2–9 for rendering. Zero still produces compact JSON. The pinned value guide remains scoped to 4.44.3. [Pinned YAML emitter](https://github.com/go-yaml/yaml/blob/v3.0.1/emitterc.go) · [4.54.3 argument validation](https://github.com/mikefarah/yq/blob/v4.54.3/cmd/utils.go) · [4.54.3 YAML encoder](https://github.com/mikefarah/yq/blob/v4.54.3/pkg/yqlib/encoder_yaml.go)
-- **Outside the menu.** The manuals also cover `eval-all` for evaluating documents together, `--from-file` for an expression stored in a file, `--split-exp` for separate output files, `--no-doc` for suppressing separators and additional short spellings such as `-I`, `-P`, `-r` and `-M`. The menu retains its 15 literal spellings and argument forms. [Upstream Evaluate All manual](https://mikefarah.gitbook.io/yq/commands/evaluate-all) · [Upstream flags](https://github.com/mikefarah/yq/blob/v4.54.3/cmd/root.go)
-
-The numerical inventory review covered the 15 entries, category description, command header and profile file. The expression guide now cites the argument parser. Input and output guides describe their respective format registries and the pinned indentation guide cites the emitter’s width rule. [Inventory review](numerical-inventory/review.json)
+In-place mode wrote results for multiple inputs to the first named file. The indentation fixtures below distinguish YAML, XML and JSON behavior in 4.44.3 and 4.54.3.
 
 ## Observed yq behavior
 
@@ -69,16 +43,7 @@ For a nested YAML mapping, the following values give the observed leading spaces
 
 ## Rendered menu and sandbox verification
 
-Each target opened the menu in real Bash/tmux with the example yq driver and automatic discovery enabled. At 200×90 all 15 option labels, summaries and complete Details panes matched the profile and formatter. A wrapper passed only the fixed `--version` and `eval --help` requests to upstream 4.54.3 and recorded any unexpected invocation. The pending command was never executed.
-
-At 60×16 a regression searched for “combined results”, scrolled to the first-file rule and confirmed that cancellation restored the original command line and cursor. A second search selected the literal `--expression`. Typing the quoted expression preserved both filenames to its right. Five focused checks passed on each target, covering this interaction, the executable identity guard, numerical units and indentation, and the inventory review. [Terminal regression](../tests/test_expansion_terminal.py) · [Sandbox instructions](development.md#isolated-local-debugging)
-
-To repeat the terminal regression, substitute `host`, `noble310` or `noble312` for TARGET.
-
-```bash
-python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover \
-  -s tests -p test_expansion_terminal.py -k yq_first_file_warning_and_explicit_expression -v
-```
+The first-pass Bash/tmux checks walked the original selections, inspected the rendered Details and checked shell editing on the three Ubuntu/Python targets. [Terminal regression](../tests/test_expansion_terminal.py)
 
 | Full offline suite | Python | Passed | Failed | Skipped |
 | --- | --- | ---: | ---: | ---: |
@@ -86,4 +51,4 @@ python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover 
 | Ubuntu 24.04.5 LTS | 3.12.3 | 1,338 | 0 | 1 |
 | Ubuntu 26.04.1 LTS | 3.14.4 | 1,338 | 0 | 1 |
 
-Each full-suite snapshot included the untracked audit documents. The only skip on each target was the Windows-specific probe.
+Each Linux suite skipped the Windows-specific probe.

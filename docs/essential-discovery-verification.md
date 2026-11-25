@@ -1,6 +1,6 @@
 # Essential discovery verification
 
-The [route inventory](essential-discovery-audit.md) lists the 46 paths in matrix order. The [media](essential-media.md), [Git and Docker](essential-git-docker.md), [package manager](essential-packages.md) and [utility](essential-utilities.md) audits identify the source editions, requests, option counts and known exclusions.
+The [tier summary](essential-discovery-audit.md) groups the 46 paths by family. The [fixture matrix](../tests/fixtures/help/matrix.json) preserves route order. The [media](essential-media.md), [Git and Docker](essential-git-docker.md), [package manager](essential-packages.md) and [utility](essential-utilities.md) audits identify the source editions, requests, option counts and known exclusions.
 
 ## Terminal evidence
 

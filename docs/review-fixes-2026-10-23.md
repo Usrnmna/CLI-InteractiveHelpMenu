@@ -3,11 +3,7 @@
 [Documentation index](README.md) · [Original review](functional-review-2026-10-23.md) ·
 [Compatibility matrix](compatibility.md)
 
-The follow-up corrects the two confirmed review findings and adds the ten
-previously unadapted paths. The Bash/Python architecture, Linux scope, declarative
-driver schema, and fixed documentation-only discovery boundary are retained.
-No workload, package installation, deployment, transfer, or cloud action is
-executed by validation. Existing unrelated files are preserved.
+On October 23, 2026 the follow-up closed both findings from the functional review and added ten fixed documentation routes. The original review and this report cover different runs.
 
 ## Corrections
 
@@ -56,19 +52,7 @@ The supplied driver collection must be enabled as described in the
 | `aws s3 sync` | `aws s3 sync help` | Profile/region globals, source/destination, repeated filters, dryrun/delete |
 | `rclone sync` | `rclone sync --help` | Config/transfers globals, quoted paths, create-empty-src-dirs |
 
-The offline corpus now contains 59 paths across the same 34 executable names.
-Each new path has captured local help provenance, independently stated option
-and argument expectations, fixed-route assertions, and two literal combined
-edits. Existing corpus tests exercise every offered fixture flag, arity guards,
-and executable sentinels. The sentinel tests confirm that pending arguments
-are never forwarded to documentation requests. The original five extra live
-paths (`grep`, `find`, `tar`, `git rebase`, `docker build`) are checked separately.
-
-Rclone 1.60.1's subcommand help exposes a small set of sync-specific options;
-the root `help flags` route retains global-option discovery. Compose-level
-options between `compose` and the subcommand are outside the current resolver.
-GNU find's lowercase manual-placeholder limitation from the review remains
-outside these corrections. No complete workload-semantics guarantee is implied.
+The offline corpus then contained 59 paths across 34 executable names. Each added path had recorded local help, independent argument expectations, fixed probe arguments and two combined edits. Rclone's subcommand exposed sync-specific options while root help supplied globals. Compose-level options between `compose` and its subcommand and GNU find's lowercase manual placeholders remained outside these corrections.
 
 ## Verification
 
@@ -112,35 +96,4 @@ the output bound, and the VLC, pip install/download, pip3 install, and npm
 install/run manuals yield no recognizable declarations. Their executable-help
 sources satisfy the required sentinels. Warnings remain in both live reports.
 
-A stopped diagnostic attempt exposed an escaped-quote parsing error in the new
-binding-conflict check; that error was corrected before the final run. An earlier
-complete attempt had one stale inventory assertion expecting 49 paths. Only that
-assertion was updated to 59 in the pre-existing functional-matrix file; its other
-content and the curses stub are preserved. These earlier logs are retained as
-`suite-interrupted.log` and `suite-inventory-stale.*`, separately from final evidence.
-
-Local machine-readable evidence is under
-`tests/reports/review-fixes-2026-10-23/`. The full suite uses `suite.json`,
-`suite.log`, and `suite-environment.json`; live runs use separate `live-4s/` and
-`live-15s/` directories with per-path versions, sources, warnings, and statuses.
-`verification-summary.json` aggregates the final outcomes, and
-`coverage-matrix.json` combines all 64 live paths with their versions, routes,
-statuses, and source warnings. The Compose plugin version is recorded separately
-because the harness's Docker version request reports the client version.
-The generated reports follow the existing Git-ignore policy. Maintained tests,
-captured excerpts, and this report remain part of the source collection.
-
-Reproduce with:
-
-```bash
-python3 tests/functional_review.py --suite suite --output tests/reports/fixes-new-run
-python3 tests/functional_review.py --live --live-timeout 4 --output tests/reports/live-new-run
-```
-
-Use `--prepend-path` for existing tool directories and `--compose-plugin-dir`
-for a locally available Compose plugin. A separate run with `--live-timeout 15`
-distinguishes slow help startup from unavailable declarations. The browser's
-default two-second discovery timeout remains unchanged. Missing tools are skips,
-failed probes are failures, and npm root's empty option help remains unsupported.
-Other Bash versions, terminal emulators, Linux distributions, and tool versions
-remain unverified by this environment.
+An interrupted diagnostic exposed an escaped-quote error in the binding check. A prior complete run retained a stale 49-path inventory assertion. The final suite used the corrected assertion for 59 paths. Ignored logs under `tests/reports/review-fixes-2026-10-23/` recorded the interrupted run, stale baseline, completed suite and both live time limits. See the [original review](functional-review-2026-10-23.md#reproduction-and-local-evidence) for the recorder and isolated environment.

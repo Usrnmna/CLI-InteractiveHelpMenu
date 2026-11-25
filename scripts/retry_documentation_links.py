@@ -130,7 +130,7 @@ def finish(first_outcome, lychee="lychee"):
     print(f"Waiting {delay}s before rechecking documentation links.", flush=True)
     time.sleep(delay)
     command = [lychee, "--config", "lychee.toml", "--no-progress", "--format", "markdown",
-               "--output", str(SECOND_REPORT), "**/*.md"]
+               "--output", str(SECOND_REPORT), "**/*.md", ".github/CONTRIBUTING.md", ".github/pull_request_template.md"]
     try:
         with (REPORT_DIRECTORY / "documentation-links-attempt-2.log").open("w", encoding="utf-8") as log:
             result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=RETRY_TIMEOUT_SECONDS)

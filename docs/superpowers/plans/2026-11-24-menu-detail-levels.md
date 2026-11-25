@@ -158,4 +158,4 @@ Edit the proposed choices in place or add a finding below. Use the phase ID, a c
 | --- | --- | --- | --- |
 | User decisions | P3, P4 | Reclaim unused Simple detail rows. Make `bps` searchable wherever it applies. | Incorporated in the layout, unit vocabulary, search contract, and acceptance checks. |
 | AI agent | P0–P5 · coverage and feasibility | Original findings incorporated into this revision. | [Review of the earlier draft](2026-11-24-menu-detail-levels-review.md) |
-| Human | Revised plan | Pending. Implementation is on hold. | Review full-screen allocation, abbreviations, literal-input examples, shortcut fallback, and optional color. |
+| Human | P0 · revised mockups at 80×24 and 60×16 | Approved the mockups and authorized implementation of the three levels, spacing and searchable units. | [Six implemented screens and verification results](2026-11-24-menu-detail-levels-verification.md) |

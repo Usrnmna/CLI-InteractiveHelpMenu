@@ -12,11 +12,9 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe v0.4.0-alpha. The [changelog](../CHANGELOG.md#version-040---alpha) summarizes its changes and the [release guide](releases.md#version-040---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
+The operating guides describe the local checkout marked `0.4.0-alpha`, including its three-level menu. The earlier performance candidate carries the same version string. Use the [release guide](releases.md#version-040---alpha) to identify a particular package and the [changelog](../CHANGELOG.md) for the release history.
 
-The [visual and configuration audit](media-and-configuration-review.md) maps the
-documentation media and diagrams to source behavior, capture evidence, and
-repository policy checks.
+The [terminal gallery](assets/README.md) shows the current interface. The [audit history](audit-history.md) follows the development cycle from source review through repairs and terminal verification. The [visual and configuration review](media-and-configuration-review.md) records earlier captures and policy checks.
 
 ## Browser use
 
@@ -90,7 +88,7 @@ retains the earlier WSL and hosted results.
 
 ## Development and evidence
 
-Start with the [project roadmap](../ROADMAP.md#remaining-work) for remaining tasks, dependencies and acceptance criteria. Use the [bundled family table](../ROADMAP.md#bundled-menu-progress) for manual inventories and the [discovery tier results](../ROADMAP.md#discovered-command-help) for fixed source editions and terminal evidence.
+Start with the [project roadmap](../ROADMAP.md#remaining-work) for remaining tasks, dependencies and acceptance criteria. Use the [bundled family table](audit-history.md#bundled-menu-progress) for manual inventories and the [discovery tier results](audit-history.md#discovered-command-help) for fixed source editions and terminal evidence.
 
 | Contributor question | Guide |
 | --- | --- |

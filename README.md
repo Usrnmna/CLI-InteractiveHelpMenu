@@ -2,7 +2,7 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**[Version 0.4.0 - Alpha](CHANGELOG.md#version-040---alpha) · Local release candidate**
+**Local build · 0.4.0-alpha** · [Release history](CHANGELOG.md)
 
 **Find the right option without leaving an unfinished Bash command.**
 
@@ -15,9 +15,9 @@ whose flags and argument syntax are difficult to remember.
 [Get started](#get-started) · [Browser controls](#using-the-browser) ·
 [Compatibility](#compatibility-and-execution-boundaries) · [All guides](docs/README.md)
 
-![Actual Bash UI with aligned option descriptions: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
+![Bash demonstration cycling through three detail levels for the rsync bandwidth limit, inserting options and returning to the pending command.](docs/assets/option-insertion.gif)
 
-Recorded from the v0.4.0-alpha candidate with discovery off. Watch the pending rsync line survive cancellation and see how to insert a quoted hide pattern for ls. [Static browser view](docs/assets/help-browser.png) ·
+Recorded from the local build with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
 [Capture method and limits](docs/assets/README.md)
@@ -25,11 +25,11 @@ Recorded from the v0.4.0-alpha candidate with discovery off. Watch the pending r
 ## What it provides
 
 - **Help while typing:** categories, description search, scrollable option lists,
-  and argument placeholders in a keyboard-controlled terminal browser.
+  and argument placeholders in a keyboard-controlled terminal browser. Choose Simple, Detailed or Expanded for the selected option.
 - **Literal option insertion:** replace a partial flag, preserve surrounding
   input, and return to editing. Cancellation retains the original line and cursor.
 - **Value guidance:** see units, scale, counted subjects and accepted forms in
-  details; search their displayed meaning without converting the typed value.
+  Expanded. Search for units such as `bps`, `KiB/s` or `MHz` without changing the value you type.
 - **Several help sources:** bundled and custom profiles, installed help output,
   local manuals, and explicit drivers for supported subcommand paths.
 - **Editable help collections:** import a manual, scan installed commands, and
@@ -76,8 +76,10 @@ source "${XDG_DATA_HOME:-$HOME/.local/share}/cli-interactive-help/bash/interacti
 
 Installation copies the runtime and adds a marked block to `.bashrc`, backing up
 existing contents. New interactive Bash sessions load it automatically.
-For a temporary session directly from the checkout, use
-`source "$PWD/bash/interactive-help.bash"` instead of installing.
+For a temporary session in an existing Bash shell, source
+`"$PWD/bash/interactive-help.bash"` from the checkout. The
+[terminal-pane setup](docs/usage.md#run-in-a-terminal-pane) gives the exact
+launch command for an editor or app.
 
 For a v0.4.0-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
 
@@ -96,27 +98,21 @@ See [installation, custom paths, updates, and removal](docs/installation.md) for
 
 ## Using the browser
 
-Use the arrow keys to browse, `/` to search and `[` or `]` to scroll Details. Enter applies a search. In the options pane, Enter inserts the selected spelling. Type any required value back at the prompt. Escape while entering a search restores the previous filter. Escape outside search or Ctrl-C returns to the original line and cursor.
+Each menu opens in **Simple**, with short option summaries and spare rows available for browsing. Use the arrow keys to navigate. The sidebar shortens long category names and the header shows the selected title. Press **D** once for **Detailed** guidance and again for **Expanded** forms, examples and limits. Press **D** a third time to return to Simple. The selection and filter stay in place.
+
+Use `/` to search and `[` or `]` to scroll a longer explanation. Enter applies a search. In the options pane, Enter inserts the selected spelling. Type any required value back at the prompt. Escape while entering a search restores the previous filter. Escape outside search or Ctrl-C returns to the original line and cursor.
 
 See [browser controls and keybindings](docs/usage.md#browser-controls) for paging, pane focus, Vi mode and custom shortcuts.
 
 ### Understand the value before inserting it
 
-![Selected rsync bandwidth limit. Details show 1024 bytes/second per bare unit and say applicability is unconfirmed.](docs/assets/numerical-guidance.png)
+![Expanded rsync bandwidth limit showing 1024 bytes per second for each unit of an unsuffixed value, followed by accepted suffixes.](docs/assets/numerical-guidance.png)
 
 [Open the full-size numerical guidance view](docs/assets/numerical-guidance.png)
 
-The bundled rsync guidance distinguishes bare bandwidth values from accepted
-suffixes. The captured static menu reports unconfirmed applicability. Search `bytes/second` to find that
-meaning, then use `[` / `]` to inspect accepted forms and special values. Display
-units are explanations, not necessarily accepted literal suffixes. The browser
-does not convert or validate the pending value or assume that a documented
-version matches an installed program.
+For rsync `--bwlimit=`, a bare `5000` means 5000 KiB/s. Search for `KiB/s` or `bytes/second` to find it. In Expanded, scroll with `[` and `]` to read the accepted input spellings before typing a value at the Bash prompt. FFmpeg’s `-b:v` uses bits per second and can be found with `bps`. The browser inserts the selected flag and leaves value entry to you.
 
-[Value display and search](docs/usage.md#browser-controls) explains everyday use;
-the [numerical contract](docs/numerical-value-contract.md) specifies authoring,
-applicability and evidence requirements. Legacy custom profiles remain usable
-without numerical metadata. External help can remain incomplete or uncertain.
+[Controls and unit search](docs/usage.md#browser-controls) · [The same FFmpeg option at 80×24 and 60×16](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md) · [Numerical metadata and applicability](docs/numerical-value-contract.md)
 
 ```mermaid
 flowchart TD
@@ -130,7 +126,7 @@ flowchart TD
 
 ## Compatibility and execution boundaries
 
-The checkout includes 76 bundled command profiles. Ordinary profiles work without an installed target. Vendor/version-guarded profiles require executable identity verification in automatic discovery mode. The [bundled audit](ROADMAP.md#bundled-menu-progress) records the manual editions, aliases and limits by family.
+The checkout includes 76 bundled command profiles. Ordinary profiles work without an installed target. Vendor/version-guarded profiles require executable identity verification in automatic discovery mode. The [bundled audit](docs/audit-history.md#bundled-menu-progress) records the manual editions, aliases and limits by family.
 
 The [command compatibility matrix](docs/compatibility.md) lists maintained paths,
 version constraints, verification limits, and **explicit activation instructions
@@ -198,6 +194,5 @@ covers custom destinations and existing shell sessions after removal.
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
 | Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
 
-The [documentation index](docs/README.md) links all operating guides and dated
-validation reports. [Terminal media capture](docs/assets/README.md) describes the
+The [documentation index](docs/README.md) links the operating guides. The [audit history](docs/audit-history.md) traces the development and verification of the help content. [Terminal media capture](docs/assets/README.md) describes the
 demonstrations, annotations, and regeneration procedure.

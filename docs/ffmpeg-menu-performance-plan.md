@@ -4,6 +4,10 @@
 
 Stage 1 retained formatting a shared value definition once per menu open. The [Stage 1 evaluation](#stage-1-evaluation) covers the current 76 bundled profiles, custom overrides, discovered help and authoring previews. The earlier FFmpeg measurements below motivated the experiment.
 
+## Three-level menu investigation
+
+Phase 1 is complete. The matched warm FFmpeg opening rose from 518 to 548 ms after the redesign. Prose cleanup accounted for 244 ms of instrumented constructor CPU. The subsequent serial prose-reuse experiment reduced FFmpeg opening time by 4.4–5.4%, below the 30% target. [Experiment and decision](serial-prose-reuse-experiment.md) Idle draw suppression and a serial profile-validation fast path merit separate experiments. Defer guarded discovery changes and worker pools. Four processes improved FFmpeg latency but more than doubled peak proportional memory. The Stage 1 tables below describe the earlier shared-value optimization. [Measurement record](menu-cost-measurements.md) · [Five decisions and acceptance checks](menu-cost-measurements.md#decisions)
+
 ## FFmpeg benchmark evidence
 
 In the original implementation, `Browser.__post_init__` built an `OptionText` for
@@ -108,11 +112,7 @@ a plausible second experiment after the reference reuse.
 
 ### Deferred follow-up on prose and redraws
 
-- [ ] Measure the first candidate on its own. If prose preparation still
-  dominates startup, test reusing an already-cleaned summary or memoizing
-  exact cleanup inputs during construction. Repeat full string parity,
-  including punctuation, whitespace and queries spanning old field
-  boundaries. Include transient peak RSS in the comparison.
+- [x] Measured exact-input reuse with a 4,096-entry cache scoped to one constructor. Defer production adoption. [First-frame latency, memory, search and all three views](serial-prose-reuse-experiment.md)
 - [ ] If interactive traces identify significant redraw work, measure
   `Browser.options`, `option_label_width` and `wrap_cells` separately.
   Consider retaining category matches for the active query or the wrapped

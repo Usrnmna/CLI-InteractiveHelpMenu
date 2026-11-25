@@ -64,6 +64,7 @@ class ReleaseTests(unittest.TestCase):
             self.assertFalse(any(part in {"reports", "__pycache__", "releases", ".git", ".venv", "dist"}
                                  for name in names for part in Path(name).parts[1:]))
             self.assertIn(self.base + "/scripts/guided_merge.py", names)
+            self.assertIn(self.base + "/ROADMAP.md", names)
             self.assertIn(self.base + "/docs/releases.md", names)
             self.assertIn(self.base + "/tests/test_release.py", names)
             self.assertIn(self.base + "/tests/fixtures/help/matrix.json", names)

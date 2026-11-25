@@ -1,0 +1,62 @@
+--- a/cli_help/presentation.py
++++ b/cli_help/presentation.py
+@@ -194 +194 @@
+-def concise_value_lines(lines):
++def concise_value_lines(lines, clean=concise_description):
+@@ -207 +207 @@
+-            meaning = " ".join(concise_description(meaning))
++            meaning = " ".join(clean(meaning))
+@@ -238 +238 @@
+-        for sentence in concise_description(line):
++        for sentence in clean(line):
+@@ -269 +269 @@
+-def value_text(profile, entry, *, positional=False, shared_values=None):
++def value_text(profile, entry, *, positional=False, shared_values=None, clean=concise_description):
+@@ -320 +320 @@
+-    result = ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines), tuple(nodes), aliases, group)
++    result = ValueText(compact, concise_value_lines(lines, clean), list_hint, notice, tuple(lines), tuple(nodes), aliases, group)
+@@ -360 +360 @@
+-def description_blocks(summary, detail):
++def description_blocks(summary, detail, clean=concise_description):
+@@ -362,2 +362,2 @@
+-    summary = " ".join(concise_description(summary))
+-    detail = " ".join(concise_description(detail))
++    summary = " ".join(clean(summary))
++    detail = " ".join(clean(detail))
+@@ -366,5 +366,5 @@
+-        return concise_description(detail)
+-    return concise_description(summary + "\n\n" + detail)
+-
+-
+-def option_text(profile, category, option, *, positional=None, shared_values=None):
++        return clean(detail)
++    return clean(summary + "\n\n" + detail)
++
++
++def option_text(profile, category, option, *, positional=None, shared_values=None, clean=concise_description):
+@@ -372,2 +372,2 @@
+-    numerical = value_text(profile, option, shared_values=shared_values)
+-    positional = value_text(profile, profile, positional=True) if positional is None else positional
++    numerical = value_text(profile, option, shared_values=shared_values, clean=clean)
++    positional = value_text(profile, profile, positional=True, clean=clean) if positional is None else positional
+@@ -380 +380 @@
+-    description = description_blocks(option["summary"], option.get("detail", ""))
++    description = description_blocks(option["summary"], option.get("detail", ""), clean)
+@@ -411 +411 @@
+-    summary = next(iter(concise_description(option["summary"])), "")
++    summary = next(iter(clean(option["summary"])), "")
+--- a/cli_help/ui.py
++++ b/cli_help/ui.py
+@@ -1,0 +2,2 @@
++
++from functools import lru_cache
+@@ -12 +14 @@
+-from presentation import option_label, option_text, terminal_prose, value_text
++from presentation import concise_description, option_label, option_text, terminal_prose, value_text
+@@ -87 +89,2 @@
+-        positional = value_text(self.profile, self.profile, positional=True)
++        clean = lru_cache(maxsize=4096)(concise_description)
++        positional = value_text(self.profile, self.profile, positional=True, clean=clean)
+@@ -92 +95 @@
+-                                                     shared_values=shared_values)
++                                                     shared_values=shared_values, clean=clean)

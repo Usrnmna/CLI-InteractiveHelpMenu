@@ -1,6 +1,6 @@
 # Git commit and log option audit
 
-The [commit menu](../profiles/git-commit.json) originally contained nine entries and the [log menu](../profiles/git-log.json) contained ten. The [manual-coverage revisit](git-commit-log-manual-coverage.md) records the expanded menus. The audit covers the bundled profiles, including their structured value guides, search text, argument spelling and rendered Details.
+First recorded 2026-11-22. This first pass covered 19 bundled rows. See the [expanded inventory and verification](git-commit-log-manual-coverage.md) for the later manual comparison.
 
 ## Reference manuals
 
@@ -13,42 +13,17 @@ The [commit menu](../profiles/git-commit.json) originally contained nine entries
 
 ## Disposition of the bundled entries
 
-The disposition describes the original row. The finding records what someone composing the command needs to know. Options appear in menu order.
-
 ### git commit
 
-| Entry | Disposition | Finding |
-| --- | --- | --- |
-| `--message` | Incomplete | Keep the summary and the quoting advice. Repeating `-m` starts a separate paragraph. A message and a message file are mutually exclusive. |
-| `--file` | Incomplete | Keep the summary. A file name of `-` reads standard input. Add `--edit` to open that message in the editor. |
-| `--edit` | Incomplete | A supplied message normally bypasses the editor. This switch opens it for a message supplied with `-m`, read with `-F` or reused with `-C`. |
-| `--all` | Incomplete | Commit already staged changes plus working-tree modifications and deletions of tracked files. A new untracked path requires an explicit add. |
-| `--patch` | Incomplete | Interactive hunk selection adds to the staged snapshot. Existing staged changes also enter the commit. |
-| `--amend` | Inaccurate | The operation replaces the tip, including on a detached HEAD. Its parents and, by default, its author carry over. The previous message can be kept with `--no-edit`. A published amendment rewrites history. |
-| `--dry-run` | Incomplete | Preview the same options and paths as the intended commit. The output also identifies changes left unstaged and untracked files. |
-| `--verbose` | Incomplete | The editor shows the proposed diff. A second `-v` adds unstaged tracked changes. The displayed diffs stay out of the saved message. |
-| `--short` | Incomplete | The switch implies dry-run even when invoked alone. For ordinary tracked paths the first column describes the index and the second describes the working tree. Conflicts and untracked paths have distinct codes. [Short status format](https://git-scm.com/docs/git-status#_short_format) |
+The nine entries distinguished staged content, tracked changes included by `-a`, explicit path selection and commit message input.
 
 ### git log
 
-| Entry | Disposition | Finding |
-| --- | --- | --- |
-| `--oneline` | Inaccurate | The abbreviated object ID and subject form a compact header. A patch or graph can span additional lines for the same commit. |
-| `--graph` | Incomplete | Draw ancestry beside the commits. The default graph order is topological and edges may occupy lines between commits. |
-| `--decorate` | Incomplete | Identify the refs pointing to each commit. Explicit bare `--decorate` requests short names. Attached `=full` requests full names and `=auto` limits decorations to terminal output. |
-| `--stat` | Incomplete | Show per-file change statistics for displayed diffs. Git accepts optional attached width, name-width and entry-count parameters. The menu inserts the bare flag. |
-| `--patch` | Inaccurate | The former description promised a patch for every commit. Merge diffs are normally omitted. An explicit first-parent merge diff compares the merge result with its first parent. |
-| `--max-count=` | Inaccurate | Zero selects nothing. A negative count leaves the result uncapped. The previous structured lower bound excluded accepted input. The limit applies before output reversal. |
-| `--author=` | Incomplete | The regular expression matches the author header, including name or email. Repeated author patterns accept any match. The committer has a separate filter. |
-| `--grep=` | Incomplete | Search message text and enabled notes. Repeated expressions accept any match by default. Use `--all-match` to require each expression. |
-| `--since=` | Redundant | The editorial text duplicated the structured date grammar. Details now explain the committer timestamp, early termination and the full-range alternative `--since-as-filter`. The versioned date grammar remains in the value guide. |
-| `--all` | Incomplete | Start the walk from HEAD and refs under `refs/`, including local branches, remote-tracking branches and tags. A reflog-only commit requires another starting point. |
+The ten entries distinguished limiting history from formatting it. A `--since=` traversal could stop early. The commit date, count and optional display arguments required separate explanations.
 
 ## Coverage boundaries and version differences
 
-- **Commit.** Manual-only controls include reuse, re-edit, fixup and squash messages, author and date overrides, signoff, signatures, trailers, cleanup, empty commits, hooks, pathspec input, interactive modes, and the porcelain, branch and NUL-delimited status formats. The menu inserts `--message` and `--file` with a separate operand. The manuals also show attached long forms and the short aliases `-m` and `-F`. Resolute and upstream document patch context controls `--unified` and `--inter-hunk-context` for commit. The Noble commit manual omits them. [Noble commit](https://manpages.ubuntu.com/manpages/noble/man1/git-commit.1.html), [Resolute commit](https://manpages.ubuntu.com/manpages/resolute/man1/git-commit.1.html) and [upstream commit](https://git-scm.com/docs/git-commit/2.55.0)
-- **Log.** Revision ranges and paths after `--` are operands. Additional manual controls cover ref selection and reflogs, traversal order and parent selection, date and committer filters, regex modes, pretty formats, notes, decoration filters, merge-diff formats, rename detection, diff algorithms and line or content searches. Options mentioned in Details, including `--all-match`, `--since-as-filter` and `--diff-merges=first-parent`, can be typed directly. The current upstream log manual gives `today` a specific midnight meaning that neither Ubuntu page documents. The profile uses an explicit date or relative expression for portable guidance. [Noble log](https://manpages.ubuntu.com/manpages/noble/man1/git-log.1.html), [Resolute log](https://manpages.ubuntu.com/manpages/resolute/man1/git-log.1.html) and [upstream log](https://git-scm.com/docs/git-log/2.56.0)
-- **Structured guidance.** Git 2.48.0 accepts signed output counts, stops at zero and decrements positive counts. The date parser still distinguishes calendar fields, sufficiently large bare epoch values, zoned timestamps and relative expressions. The reviewed inventory fingerprints cover the changed profile files, command descriptions, option entries and the log count definition. [Revision parser](https://github.com/git/git/blob/v2.48.0/revision.c) and [date parser](https://github.com/git/git/blob/v2.48.0/date.c)
+The original profiles covered a small subset of the commit and log manuals. The revisit reconciled message and status options, revision limiting, history traversal, pretty formats and shared diff controls by operation.
 
 ## Behavior observed in disposable Git repositories
 
@@ -64,14 +39,7 @@ The offline sandbox used Git 2.43.0 on Ubuntu 24.04 and Git 2.53.0 on Ubuntu 26.
 
 ## Rendered menus and sandbox checks
 
-On each target, real Bash/tmux sessions at 180×72 traversed both bundled menus and checked each command header and all 19 option labels, summaries and Details. Midline selection inserted `--message`, bare `--decorate` and bare `--stat` ahead of an existing suffix. At 60×16 the regression searched for “short status format” and “committer timestamp”, scrolled to the dry-run and history-walk qualifications, and verified that cancellation restored both the original buffer and cursor. Selection inserted `--short` and `--since=` at the cursor with the suffix intact. The Git stub recorded zero executions. [Terminal regression](../tests/test_expansion_terminal.py)
-
-The three focused checks passed on each target. They covered the minimum-size terminal regression, the Git date heuristics and expiry sentinels, and numerical-inventory review. To repeat the terminal regression, substitute `host`, `noble310` or `noble312` for TARGET. The full-suite snapshots also included the untracked audit documents. [Sandbox instructions](development.md#isolated-local-debugging)
-
-```bash
-python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover \
-  -s tests -p test_expansion_terminal.py -k commit_preview_and_log_date_filter_at_minimum_size -v
-```
+The first-pass Bash/tmux checks walked the original selections, inspected the rendered Details and checked shell editing on the three Ubuntu/Python targets. [Terminal regression](../tests/test_expansion_terminal.py)
 
 | Full offline suite | Python | Passed | Failed | Skipped |
 | --- | --- | ---: | ---: | ---: |
@@ -79,4 +47,4 @@ python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover 
 | Ubuntu 24.04.5 LTS | 3.12.3 | 1,333 | 0 | 1 |
 | Ubuntu 26.04.1 LTS | 3.14.4 | 1,333 | 0 | 1 |
 
-The single skip on each target was the Windows-specific probe test.
+Each Linux suite skipped the Windows-specific probe.

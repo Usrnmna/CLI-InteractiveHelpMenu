@@ -24,7 +24,12 @@ locale, and `stty`. Linux sessions under WSL can provide the development
 environment. Follow applicable repository instructions and keep changes focused
 on the described problem.
 
-Choose open work and its acceptance criteria from the [roadmap](../ROADMAP.md#remaining-work). For command-help changes, use the [batch audit procedure](../docs/development.md#auditing-command-help). The [sandbox guide](../docs/development.md#isolated-local-debugging) covers testing current working-tree edits and new fixtures.
+Choose open work and its acceptance criteria from the [roadmap](../ROADMAP.md#remaining-work).
+For command-help changes, follow the [batch audit procedure](../docs/development.md#auditing-command-help).
+The [sandbox guide](../docs/development.md#isolated-local-debugging) covers testing
+working-tree edits, including new fixtures. Local iproute2 and yq audits can use
+the impacted suite. Record the target, selected tests, required fixtures and any
+fallback to full discovery. Hosted CI runs the complete suite on each target.
 
 Run relevant checks from the repository root. For runtime changes, the full
 validation entry point is:
@@ -104,6 +109,7 @@ suites as evidence for a different boundary.
 | Changed area | Evidence to include |
 | --- | --- |
 | Terminal interaction | Visible cells, cursor, alternate screen, scrollback, and relevant resize/reopen behavior; mixed-width text and delayed key sequences for display/input changes |
+| Menu performance | Command route, data source, display level (Simple, Detailed or Expanded), baseline and candidate on the same host, and parity of visible text, search results and insertion. See the [measurement procedure](../docs/ffmpeg-menu-performance-plan.md#before-and-after-measurement). |
 | Compatibility and argument syntax | Captured implementation/version, fixed documentation requests, exact option names, attached values, declared bundles, argument/child boundaries, driver activation/precedence, and unchanged legacy defaults |
 | Diagnostics and caching | Privacy, absence of target processes and writes in passive modes, provenance, redaction, and relevant cache invalidation |
 | Collection or update recovery | Stale evidence, concurrent edits, uncertain locks, unsafe paths, interruptions, and preservation of original bytes |

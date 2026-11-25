@@ -1,6 +1,8 @@
 # Bun run option audit
 
-The [bundled menu](../profiles/bun-run.json) contains eight flags for `bun run`. Place Bun flags before the script or executable name. Later arguments belong to the target, so `bun run --silent task` and `bun run task --silent` have different effects. The menu retains this positional boundary and all eight literal spellings.
+First recorded 2026-11-22. Counts and observations below describe the original bundled selections. See the [expanded inventory and verification](bun-run-manual-coverage.md) for the later manual comparison.
+
+The [bundled menu](../profiles/bun-run.json) contained eight flags for `bun run`. Place Bun flags before the script or executable name. Later arguments belong to the target, so `bun run --silent task` and `bun run task --silent` have different effects. The menu retains this positional boundary and all eight literal spellings.
 
 ## Sources and versions
 
@@ -10,18 +12,7 @@ Ubuntu’s Noble and Resolute amd64 package contents indexes returned no path en
 
 ## Disposition of the eight entries
 
-| Menu spelling | Previous wording | Material finding |
-| --- | --- | --- |
-| `--watch` | Incomplete | An edit to the entry file or an imported source restarts the program with fresh global state. The old summary left the watched files and restart behavior implicit. |
-| `--hot` | Redundant | “Enable hot reloading” repeated the flag name. The menu now explains that Bun reruns modules in the existing process and preserves values on `globalThis`. |
-| `--bun` | Incomplete | The summary remains sufficient. Details explain why a package executable with a `#!/usr/bin/env node` shebang can run under Bun. The switch affects the runtime selected through PATH. |
-| `--silent` | Incomplete | Bun hides the echoed package script command. The script’s own standard output and error remain visible. |
-| `--if-present` | Inaccurate | An absent package script alone does not guarantee success. Bun can resolve the name to a file or executable and propagate its failure. The success case is an unresolved entry point. |
-| `--cwd DIRECTORY` | Incomplete | Changes the base for resolving the entry point. Relative paths work at startup. With `--watch`, an absolute path also works on restart. |
-| `--env-file FILE` | Incomplete | Explicit files replace automatic dotenv file selection. Relative paths use the working directory after `--cwd`. Repeated flags load additional files, with later files taking precedence for shared keys. |
-| `--preload MODULE` | Redundant | “Preload a module” omitted the timing. The module runs before the entry point. The option accepts repeated specifiers in order and has the alias `-r`. Configuration can also supply preloads. |
-
-The value contracts still describe a directory, an environment file and a module specifier. Each takes one required value per occurrence. Example invocations in the documentation also use attached values such as `--env-file=.env.ci`. Selecting the menu row inserts the literal flag and leaves the cursor ready for its value. Upstream also documents `--filter` for choosing workspace packages, `--no-clear-screen` for retaining output across reloads, `--inspect` for debugging and `--no-install` for disabling automatic package installation. These options and the short aliases remain outside the curated selection. [CLI options](https://bun.sh/docs/runtime) · [Preload configuration](https://bun.sh/docs/runtime/bunfig)
+Bun flags end at the target name. `--silent` hides the echoed script command while preserving its output. With `--if-present`, a missing script name can still resolve to a file or executable and propagate its failure. The two tested binaries required special care with relative working directories on watch restart.
 
 ## Executable checks
 
@@ -37,9 +28,7 @@ Each offline target ran both upstream Linux x64 binaries on disposable files. Th
 
 ## Rendered menu and sandbox suites
 
-All three targets opened the menu in real Bash/tmux sessions. At 210×100 each of the eight highlighted labels, summaries, authored explanations and complete generated Details panes matched the profile. Selecting `--env-file` inserted it before an existing script path. At 60×16 the search for “absolute path” found `--cwd DIRECTORY` and scrolling exposed the watch restart guidance. Escape restored the original line and cursor. Selecting the row inserted `--cwd` ahead of the script. The shell stub recorded no execution during browsing. [Minimum-size terminal regression](../tests/test_expansion_terminal.py) · [Sandbox procedure](development.md#isolated-local-debugging)
-
-The focused selection also exercised the runner’s argument boundary, literal insertion and inventory reconciliation. The 11 refreshed fingerprints cover the eight flags, category, command description and profile file. [Numerical review](numerical-inventory/review.json)
+The first-pass Bash/tmux checks walked the original selections, inspected the rendered Details and checked shell editing on the three Ubuntu/Python targets. [Minimum-size terminal regression](../tests/test_expansion_terminal.py)
 
 | Ubuntu | Python | Focused passed / failed / skipped | Full suite passed / failed / skipped | Full suite time |
 | --- | --- | --- | --- | ---: |
@@ -47,4 +36,4 @@ The focused selection also exercised the runner’s argument boundary, literal i
 | 24.04.5 | 3.12.3 | 20 / 0 / 0 | 1,348 / 0 / 1 | 500.620 s |
 | 26.04.1 | 3.14.4 | 20 / 0 / 0 | 1,348 / 0 / 1 | 500.362 s |
 
-Each offline snapshot included the untracked audit documents. Shell syntax, numerical coverage, bundled profile validation and unittest discovery passed. The single skip on each target was the Windows-only probe.
+Each Linux suite skipped the Windows-specific probe.

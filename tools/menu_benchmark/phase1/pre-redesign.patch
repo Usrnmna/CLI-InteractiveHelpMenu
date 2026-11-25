@@ -1,0 +1,76 @@
+--- a/cli_help/ui.py
++++ b/cli_help/ui.py
+@@ -74,9 +74,11 @@
+         # A modal browser holds one read-only profile. Reopening, including a
+         # preview after editing, derives fresh text; nothing is persisted.
+         positional = value_text(self.profile, self.profile, positional=True)
++        shared_values = {}
+         for category in self.profile["categories"]:
+             for option in category["options"]:
+-                self._text[id(option)] = option_text(self.profile, category, option, positional=positional)
++                self._text[id(option)] = option_text(self.profile, category, option, positional=positional,
++                                                     shared_values=shared_values)
+         for index in range(len(self.profile["categories"])):
+             if self.options(index):
+                 self.category = index
+--- a/cli_help/presentation.py
++++ b/cli_help/presentation.py
+@@ -172,7 +172,22 @@
+     return label + (" [keyword]" if option.get("kind") == "keyword" else "")
+ 
+ 
+-def value_text(profile, entry, *, positional=False):
++def _shared_value_key(metadata, context):
++    """Identify an exact single-reference contract before reusing its validated text."""
++    if (not isinstance(metadata, dict) or metadata.keys() != {"schema_version", "variants"}
++            or type(metadata["schema_version"]) is not int or metadata["schema_version"] != 1
++            or type(context.argument_count) is not int or type(context.value_optional) is not bool):
++        return None
++    variants = metadata["variants"]
++    if not isinstance(variants, list) or len(variants) != 1:
++        return None
++    variant = variants[0]
++    if not isinstance(variant, dict) or variant.keys() != {"ref"} or not isinstance(variant["ref"], str):
++        return None
++    return variant["ref"], context.argument_count, context.value_optional
++
++
++def value_text(profile, entry, *, positional=False, shared_values=None):
+     """Format optional active metadata safely, retaining all applicability variants.
+ 
+     A missing optional field preserves legacy presentation. An invalid supplied
+@@ -189,6 +204,10 @@
+         argument_count=group.get("argument_count", 1) if group.get("argument") else 0,
+         value_optional=group.get("argument_optional", False),
+     )
++    # The caller owns this mapping for one unchanged profile during construction.
++    key = _shared_value_key(entry[field], context) if shared_values is not None and not positional else None
++    if key is not None and key in shared_values:
++        return shared_values[key]
+     try:
+         lines = format_value_semantics(entry[field], context=context,
+                                        definitions=profile.get("value_definitions"), presentation=True)
+@@ -217,7 +236,10 @@
+         compact = "Value varies by applicability; see details."
+         lines = ("Value varies by applicability; all documented alternatives follow. No target match is assumed.",) + lines
+         list_hint, notice = "", "[varies]"
+-    return ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines))
++    result = ValueText(compact, concise_value_lines(lines), list_hint, notice, tuple(lines))
++    if key is not None:
++        shared_values[key] = result
++    return result
+ 
+ 
+ def _source_notes(profile, option):
+@@ -264,9 +286,9 @@
+     return concise_description(summary + "\n\n" + detail)
+ 
+ 
+-def option_text(profile, category, option, *, positional=None):
++def option_text(profile, category, option, *, positional=None, shared_values=None):
+     """Build concise details without changing stored evidence or legacy search."""
+-    numerical = value_text(profile, option)
++    numerical = value_text(profile, option, shared_values=shared_values)
+     positional = value_text(profile, profile, positional=True) if positional is None else positional
+     notes, needs_review = _source_notes(profile, option)
+     lines = list(numerical.lines)

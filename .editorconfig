@@ -19,6 +19,15 @@ trim_trailing_whitespace = false
 [tests/fixtures/help/**]
 trim_trailing_whitespace = false
 
+# Preserve printed padding, tab-delimited fields and the checksum of captured text.
+[tests/fixtures/**/*.{txt,tsv}]
+trim_trailing_whitespace = false
+insert_final_newline = unset
+
+# A blank context line in a benchmark patch contains one significant space.
+[tools/menu_benchmark/**/*.patch]
+trim_trailing_whitespace = false
+
 # Preserve disposable copies, generated evidence, and downloaded tool bytes.
 # Maintained review annotations remain subject to the normal JSON settings.
 [{.cache,dist,generated-help,tests/reports}/**]
@@ -27,7 +36,7 @@ end_of_line = unset
 insert_final_newline = unset
 trim_trailing_whitespace = unset
 
-[*.{gif,png,jpg,jpeg,webp,ico,gz,run}]
+[*.{gif,png,jpg,jpeg,webp,ico,gz,xz,run}]
 charset = unset
 end_of_line = unset
 insert_final_newline = unset

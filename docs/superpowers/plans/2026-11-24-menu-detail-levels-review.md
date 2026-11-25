@@ -1,6 +1,6 @@
 # AI review of the three-level menu plan
 
-**Disposition — Findings incorporated.** This review records the earlier draft. The [updated plan](2026-11-24-menu-detail-levels.md) incorporates the findings and the user's decisions on reclaiming space in Simple and searching for `bps`. Human review of that revision is pending.
+**Disposition — Findings incorporated.** This review records the earlier draft. The [updated plan](2026-11-24-menu-detail-levels.md) incorporates the findings and the user's decisions on reclaiming space in Simple and searching for `bps`. The mockups were subsequently approved and implemented. [Rendered results at both sizes](2026-11-24-menu-detail-levels-verification.md)
 
 ## First finding — repeated units within one option
 

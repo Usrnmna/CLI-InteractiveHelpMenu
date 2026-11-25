@@ -1,6 +1,6 @@
 # fzf option audit
 
-The first pass reviewed 17 selectable spellings for matching, selection, field handling, display, key bindings, preview and record separators. The full-manual revisit records the subsequent expansion of the bundled menu and its release-specific verification. [Current coverage](fzf-manual-coverage.md) · [Bundled fzf menu](../profiles/fzf.json)
+First recorded 2026-11-22. This first pass covered 17 bundled rows. See the [expanded inventory and verification](fzf-manual-coverage.md) for the later manual comparison.
 
 ## Sources
 
@@ -13,36 +13,11 @@ The first pass reviewed 17 selectable spellings for matching, selection, field h
 
 ## Disposition of the 17 entries
 
-The disposition applies to the original wording, including its structured value guide. Rows follow menu order.
-
-| Entry | Disposition | Finding and change |
-| --- | --- | --- |
-| `--multi` | Redundant | Put the selection action in the summary. Tab and Shift-Tab mark items. A positive maximum caps the marked items, omission enables multiple selection without a user cap and zero disables it. |
-| `-m` | Redundant | Give the short spelling the same effect and limits. It accepts an attached count such as `-m2`. |
-| `--exact` | Incomplete | A plain term must occur as a contiguous substring. A longer item can still match. In extended search, `^cat$` anchors both ends and a leading single quote switches an individual term back to fuzzy matching. |
-| `--query` | Sufficient as written | Keep the summary. The supplied text starts in the editable prompt. Quote multiword text to pass one argument. |
-| `-q` | Sufficient as written | Retain the initial-query summary and the same distinction from filter mode. |
-| `--filter` | Incomplete | Print matching items and exit directly. A match returns status 0 and no matches returns 1. |
-| `-f` | Incomplete | Give the short spelling the same output, exit-status and quoting guidance. |
-| `--height` | Incomplete | Keep rows, percentages and adaptive sizing. Explain the Ubuntu version boundary for inverse heights and the restriction on percentage-based vertical margins and padding with adaptive height. |
-| `--layout` | Incomplete | Distinguish the prompt from the best match. The default places them at the bottom. Both reverse layouts start the list at the top, and `reverse-list` keeps the prompt at the bottom. |
-| `--bind` | Redundant | Replace repeated grammar and version text with a working comma-separated binding example. A colon assigns an action and a plus sign chains actions. |
-| `--preview` | Incomplete | Highlighting an item can already run the preview command. The command is one shell argument. fzf substitutes the shell-quoted current item for `{}` and shows the command output. |
-| `--prompt` | Sufficient as written | Keep the summary and show a quoted prompt with a trailing space. The prompt labels the editable query. |
-| `--header` | Incomplete | The fixed header can contain multiple lines. Their order stays top-to-bottom across layouts. |
-| `--delimiter` | Inaccurate | The old value guide attributed AWK-style matching to the supplied delimiter. AWK-style whitespace splitting is the default. An explicit delimiter follows fzf's version-specific parser. Use `--delimiter '[.]'` for a literal dot on both Ubuntu releases. |
-| `--nth` | Redundant | Replace the repeated index grammar with a short example and its consequence. Field selection restricts matching. After `--with-nth`, count the displayed fields. Acceptance ordinarily emits the original item. Detailed signed indices and inclusive, open-ended ranges remain in the value guide. |
-| `--read0` | Sufficient as written | Keep the input-specific summary. Use it for incoming NUL-delimited items containing newlines. Output has its own switch. |
-| `--print0` | Sufficient as written | Keep the output-specific summary. Each printed item receives a NUL terminator. Input has its own switch. |
+The 17 selections covered matching, fields, selections, preview and display. The height summary needed both terminal rows and percentages. Narrow-screen checks exercised the delimiter qualification.
 
 ## Compatibility and manual-only coverage
 
-- **Custom delimiters.** Noble compiles a single dot as a regular expression. The pinned 0.60.3 parser, Resolute and upstream 0.75.0 treat a single character literally. All four parsers recognize the multi-character expression `[.]` as a literal dot. The pinned parser treats an invalid regex as literal text. [Noble-era parser, line 502](https://raw.githubusercontent.com/junegunn/fzf/0.44.1/src/options.go), [pinned parser, line 836](https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go), [Resolute-era parser, line 874](https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/src/options.go) and [upstream parser, line 921](https://raw.githubusercontent.com/junegunn/fzf/v0.75.0/src/options.go)
-- **Height.** Positive rows, percentages and adaptive caps such as `~40%` are available on both Ubuntu releases. Noble rejects negative height. Resolute accepts inverse height such as `-2`. Both reject the combined form `~-2`, which upstream 0.75.0 documents. The 0.60.3 numerical guide retains its original version scope, six layout forms and percentage bounds. [Noble height parser, line 1381](https://raw.githubusercontent.com/junegunn/fzf/0.44.1/src/options.go), [pinned height parser, line 1900](https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go) and [upstream manual](https://raw.githubusercontent.com/junegunn/fzf/v0.75.0/man/man1/fzf.1)
-- **Selection count and insertion.** The menu inserts the literal option. `--multi=2`, `--multi 2`, `-m2` and `-m 2` are accepted program forms. A separate optional count must begin with a digit in the pinned parser. An attached signed integer can also reach the parser, and the selection actions require a positive limit. The guide now records the behavior of attached negative values. The editor retains its existing recognition of nonnegative optional operands. [Argument parser, line 2270](https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/options.go), [selection actions, line 5216](https://raw.githubusercontent.com/junegunn/fzf/v0.60.3/src/terminal.go) and [argument regression](../tests/test_system_dependency_followup.py)
-- **Other controls.** The original 17-row menu omitted aliases such as `-e`, `-d` and `-n`. Other options outside that first pass covered smart case and sorting, display transformations with `--with-nth`, prompt placement, headers taken from input, preview-window positioning, color, history, automatic selection and exit. Resolute and upstream 0.75.0 also document `--accept-nth` for changing output fields. The full binding action list, search operators and placeholder syntax remain in the manuals. [Noble manual](https://manpages.ubuntu.com/manpages/noble/man1/fzf.1.html), [Resolute manual](https://manpages.ubuntu.com/manpages/resolute/man1/fzf.1.html) and [upstream manual](https://raw.githubusercontent.com/junegunn/fzf/v0.75.0/man/man1/fzf.1)
-
-The 20 changed review fingerprints cover the 17 rows, the command header, the profile file and the shared selection-limit definition. The preview and binding guides now cite their owning manual sections. The option order, insertion spellings and optional-argument metadata were preserved. [Numerical inventory review](numerical-inventory/review.json)
+A one-character dot acted as a regular expression on Noble and a literal on the later editions. The multi-character expression `[.]` matched a literal dot across the tested editions.
 
 ## Observed fzf behavior
 
@@ -65,14 +40,9 @@ printf '%s\n' a.ok a.no | fzf --delimiter '[.]' --nth 2 --filter ok
 
 ## Rendered menu and sandbox checks
 
-On each target a real Bash/tmux session with discovery disabled visited all 17 rows at 200×78. Each visible label, summary, command header and complete Details pane agreed with the profile and formatter. At 60×16 the regression searched for “literal dot”, scrolled to the version-specific interpretation, and checked that cancellation restored the original pending line and cursor. Selecting `--delimiter` and entering `'[.]'` preserved the existing `--nth 2` suffix. The fzf stub recorded zero executions. [Terminal regression](../tests/test_expansion_terminal.py)
+The first-pass Bash/tmux checks walked the original selections, inspected the rendered Details and checked shell editing on the three Ubuntu/Python targets. [Terminal regression](../tests/test_expansion_terminal.py)
 
 The first full-suite run caught a missing unit in the `--height` summary. The revised summary names terminal rows and percentages directly. Five focused tests then passed on each target, covering the minimum-size terminal interaction, optional selection counts, numerical semantics, visible units and the inventory review. To repeat the terminal check, substitute `host`, `noble310` or `noble312` for TARGET. [Sandbox instructions](development.md#isolated-local-debugging)
-
-```bash
-python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover \
-  -s tests -p test_expansion_terminal.py -k fzf_literal_dot_delimiter_at_minimum_size -v
-```
 
 | Full offline suite | Python | Passed | Failed | Skipped |
 | --- | --- | ---: | ---: | ---: |
@@ -80,4 +50,4 @@ python3 -I tests/run_sandbox.py --target TARGET -- python3 -m unittest discover 
 | Ubuntu 24.04.5 LTS | 3.12.3 | 1,336 | 0 | 1 |
 | Ubuntu 26.04.1 LTS | 3.14.4 | 1,336 | 0 | 1 |
 
-Each full-suite snapshot included the untracked audit documents. The single skip on every target was the Windows-specific probe.
+Each Linux suite skipped the Windows-specific probe.

@@ -15,10 +15,16 @@
 *.toml text eol=lf
 *.c text eol=lf diff=cpp
 *.checksum text eol=lf
+*.sha256 text eol=lf
+*.tsv text eol=lf
 *.txt text eol=lf
 *.1 text eol=lf
 # Captured help can contain significant terminal padding and final blank lines.
-tests/fixtures/help/**/*.txt whitespace=-trailing-space
+tests/fixtures/**/*.txt whitespace=-trailing-space
+# Empty trailing TSV fields delimit columns in maintained inventories.
+tests/fixtures/**/*.tsv whitespace=-trailing-space
+# Unified diffs include a single space on blank context lines.
+tools/menu_benchmark/**/*.patch text eol=lf whitespace=-trailing-space
 # Terminal recordings and structured capture metadata are UTF-8 text.
 # Local raw captures remain excluded through their report/cache directories.
 *.cast text eol=lf
@@ -35,6 +41,7 @@ docs/numerical-inventory/review.json text eol=lf -linguist-generated
 *.webp binary
 *.ico binary
 *.gz binary
+*.xz binary
 *.run binary
 # Standalone launchers have no extension; match all artifact locations.
 cli-help binary

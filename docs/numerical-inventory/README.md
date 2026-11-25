@@ -1,262 +1,58 @@
 # Numerical description implementation inventory
 
-[Documentation index](../README.md) · [Inventory generator](../../scripts/inventory_numerical_descriptions.py)
-
-This directory owns the reproducible implementation inventory, planning reviews
-and acceptance criteria for numerical option descriptions. Step 1 established
-the inventory; the [Step 3 bundled migration](step3-migration.md) records current
-description corrections and opt-in metadata. Inventory classifications remain
-planning annotations rather than a production numerical validation policy.
-
-The supplied `audit_report.rtf` and `recommended_steps.rtf` establish the task
-context. Their findings are evidence and recommendations, not authorization for
-later implementation steps. The reference revision is
-`cda11feb600520d16a3302e96b51ea9895e3a7d2`; current counts are recalculated rather
-than asserted as permanent constants.
-
-## Artifacts and regeneration
-
-| Artifact | Ownership |
-| --- | --- |
-| `scripts/inventory_numerical_descriptions.py` | Maintained repository-only enumeration and annotation reconciliation |
-| [review.json](review.json) | Maintained review groups, exact member identities/fingerprints, work items, and acceptance criteria |
-| `tests/reports/numerical-inventory/inventory.json` | Regenerable local facts and joined reviews; ignored under the existing report policy |
-| [Focused tests](../../tests/test_numerical_inventory.py) | Discovery growth, source relationships, passive operation, output limits, and review integrity |
-| [Bundled migration account](step3-migration.md) | Corrected content, scoped source evidence, unresolved investigations and passive verification |
-| [Maintained debt resolution](debt-resolution.md) | Subsequent completion of the exact maintained contracts, source corrections, strict success and remaining external/native limits |
-| [Diagnostic investigation](diagnostic-investigation.md) | Exact heuristic dispositions, complete external membership tracing, bounded source comparisons and remaining parser/provenance limits |
-| [Operand and association repairs](parser-association-repairs.md) | Compound operands, nested context, declared manual scope, exact census changes and passive verification |
-| [Native terminal and POSIX verification](native-posix-verification.md) | Actual Ubuntu PTY/Readline, rendered cells, ext4 and separately qualified 9p locking/save/recovery evidence |
-
-Run from the repository root with Python 3.10 or newer:
-
-```bash
-python -B scripts/inventory_numerical_descriptions.py --check --summary
-python -B scripts/inventory_numerical_descriptions.py --check --output tests/reports/numerical-inventory/inventory.json --summary
-python -B -m unittest discover -s tests -p test_numerical_inventory.py -v
-```
-
-On Windows, `python -X utf8 -B` also ensures UTF-8 console output. No dependency
-installation, installed target, manual renderer, Git request, or network request
-is required. The generator imports the trusted checkout's existing pure help
-parsers and structural profile validator. It does not call discovery, probe,
-installation, or execution helpers. Routing declarations in the inspected
-snapshot are read as AST literals; arbitrary source expressions are not evaluated.
-
-Without `--output`, all results go to stdout. `--summary` limits stdout to counts
-and reconciliation totals. `--root` selects a repository snapshot; `--reviews`
-selects an annotation file. Output paths are explicit and relative to the current
-directory unless absolute. Existing inspected inputs, review annotations, links,
-source directories, and unrelated existing files are protected from replacement.
-An existing inventory artifact can be regenerated. No output is created by
-`--check` alone.
-
-The generated inventory is intentionally compact machine-readable JSON rather
-than a second copy of the human report. Large provenance contexts are shared by
-digest. Long option details retain a labeled 600-character excerpt and the full
-detail's digest; the source locator remains the owner of complete text.
+The inventory reconciles bundled options, discovery fixtures and route declarations with their source-specific reviews. For everyday use of numerical help, see [browser controls](../usage.md#browser-controls). For the wider project, see the [command-help audit history](../audit-history.md).
 
 ## Current enumeration and counting rules
 
-The current census produces the following overlapping counts. Regeneration,
-rather than these recorded totals, establishes coverage after future changes:
+| Local checkout, November 25, 2026 | Count | What is counted |
+| --- | ---: | --- |
+| Bundled profiles and categories | 76 / 302 | Authored containers |
+| Option and keyword records | 6,487 | Includes 96 keyword records. Aliases occupy separate rows. |
+| Records taking a value | 3,875 | Includes 197 optional-value records |
+| Shared value definitions / positional groups | 327 / 3 | A definition may supply multiple options. Each repeated positional group has two components. |
+| Applicable numerical or operand contracts | 4,426 | Required option, keyword, positional and definition records under the maintained coverage policy |
+| Explicit named paths | 327 | Union of built-ins, driver paths, bundled profiles and primary matrix cases |
+| Primary matrix | 162 cases / 948 expectations | Selected assertions about command help |
+| Embedded sources / parsed observations | 170 / 7,015 | Includes captured help and synthetic specimens |
+| Canonical option and keyword identities | 8,430 | Reconciles authored, parsed, arity-only and expected identities by command and flag |
+| Inventory identities / input files | 9,871 / 370 | Includes source, path and component identities as well as options |
 
-| Count | Meaning |
-| --- | --- |
-| 76 profiles, 96 categories | Bundled authored containers |
-| 942 option records, 463 value-bearing records | Authored records, including aliases as separate flags |
-| 28 keyword records, 6 optional-value records | Subsets of the authored option total |
-| 26 numeric fixed spellings | Parsed literal flags such as `-1`; four incorrect root associations were retired, and digits alone do not establish numerical meaning |
-| 3 repeated positional groups, 6 components | Positional documentation outside ordinary options |
-| 50 example driver files, 155 declared routes | Explicit JSON routes, including intermediate groups |
-| 144 built-in paths | Git/Docker roots and explicit paths |
-| 327 explicit named paths | Union of built-ins, explicit driver routes, bundled profiles, and primary matrix cases |
-| 165 explicit paths outside the primary matrix | A coverage relationship, not 165 established defects |
-| 50 default-driver-root observations, 18 implicit-only roots | Default root behavior distinguished from explicit root declarations |
-| 12 interpreter/module invocation paths | Both interpreter spellings with bounded pip/pytest paths; excluded from the 327-path total |
-| 162 primary cases, 948 flag expectations | Primary compatibility matrix; expectations are not complete option grammars |
-| 263 matrix records | Primary and supplementary lists, intentionally overlapping |
-| 170 embedded help sources, 7,548 parsed help observations | All recognized fixture/capture content, beyond sentinels; scoped/nested source-only material remains preserved separately |
-| 5,231 canonical option/keyword identities | Authored, parsed, arity-only, and expected identities reconciled by command and flag |
-| 358 source files, 6,149 total inventory identities | Includes sources, routes, descriptions, categories, definitions and components; twelve incorrect identities retire and one passive cache-inspection owner is added by the association repairs |
-| 22 shared value definitions | Explicit semantic nodes and their separately reviewed consumers |
-
-The audit's principal profile and explicit-path counts match. Broader observation
-counts are new enumeration results, not evidence of additional verified command
-support. These totals must not be added together. Fixture excerpts, synthetic
-specimens, source requests, and declared routes establish different boundaries.
-
-The review retains 12 `shared_documentation_preserved` identities, 23
-`source_text_preserved` identities and 4,215 `investigate` dispositions, with
-additional exact bounded-review and context-investigation groups described in
-the [diagnostic investigation](diagnostic-investigation.md).
-There are 4,237 unresolved classifications, principally external observations and
-arity-only declarations. Subsequent maintained debt resolution completes 351
-option/keyword contracts and nine definitions; the original 128 verified
-option records and six positional components remain separately reviewed.
-All 479 maintained option/keyword contracts, three positional groups and 22
-definitions now pass strict validation. Every identity has a disposition, but
-this is not a completed semantic audit of external manuals or installed versions.
-Step 7 added 25 `existing_declaration_enumerated` records and protected the
-relevant numerical, authoring and validation owners. The Step 1 counts of 341
-sources and 6,119 identities remain historical evidence rather than requirements.
-
-## Relationships and review identity
-
-The `entries` array preserves each logical identity and all observed sources:
-
-- `option|rsync|--bwlimit` identifies an option independently of its category or
-  current array position. A trailing equals sign is retained in observations but
-  removed from this logical key. Case remains significant.
-- Short and long aliases remain separate identities. Explicit declaration aliases
-  appear in observations; matching summaries alone do not establish aliasing.
-- Matrix expectations and routing arity declarations set `display_content: false`.
-  They do not invent displayed descriptions or authoritative units.
-- Version-specific flag/arity assertions and keyword sentinels remain explicit
-  expectations. A textual keyword sentinel is not promoted into an insertable
-  menu keyword.
-- Routes carry distinct origin roles, an explicit-child relationship, and a
-  maintained-content indicator. Having children does not prove a group has no
-  options, and having parsed content does not prove complete coverage.
-- `<selected-python> -m ...` is a capture ownership placeholder, not an executable
-  name or a newly supported route. Captures do not establish which interpreter
-  spelling selected the module.
-- `source.path` is repository-relative. `pointer` locates JSON data; `text_line`
-  refers to the decoded help string. Ordinary text observations use `line`.
-
-Provenance resides in `contexts`, referenced by observations. Recorded versions,
-requests, chip/identity guards and source URLs remain evidence; the generator
-does not perform those requests. The [source preservation reference](step4-preservation.md)
-defines bounded shared-footer association; ambiguous associations and unsupported
-formats remain explicit limitations. Raw roff is indexed as unrendered;
-manual rendering is not performed. Source-only or unassigned content must not be
-reported as a verified complete option inventory.
-
-Generic executable discovery is open-ended. The tool neither scans `PATH` nor
-enumerates installed programs. Unusual or newly introduced routing declaration
-syntax requires a reader update rather than evaluation of source expressions.
-
-Review groups share descriptive rationale, while exact IDs and source-sensitive
-fingerprints enumerate their members. The generated entry retains its current
-placeholder, summary, source, category, and applicability context alongside its
-review-group reference. This avoids thousands of duplicated paragraphs.
-
-New entries receive `review_missing`; changed facts receive `review_stale`.
-Duplicate membership, conflicting decisions, orphaned members, invalid groups,
-missing fixtures, and unassigned parsed text are reported separately.
-`--check` fails for reconciliation problems. It does not fail merely because an
-explicit review disposition requires investigation, and it is not Step 2's
-future numerical-quality gate.
-
-Regeneration never rewrites `review.json`. Review the exact changed source before
-updating its annotation, fingerprint, or group. Do not bulk-refresh fingerprints
-to suppress errors. A new source observation can require renewed review even
-when the command and flag name are unchanged. Unrelated source offsets are not
-part of option identity. Source-file identities deliberately track the complete
-normalized text so newly added source content also requires census acknowledgment.
+These populations overlap. A declared route establishes how help is requested. A fixture establishes what its captured or synthetic text contains. Neither establishes every option available in an installed edition. The 942 original authored records are the baseline for the manual revisits. [Bundled expansion by family](../audit-history.md#bundled-menu-progress)
 
 ## Prioritized implementation work
 
-The machine-readable `system_work_items` and review groups identify owners,
-sources, evidence status, applicability, proposed actions, priority, later plan
-steps, verification requirements, and acceptance criteria.
+| Development phase | Finding and outcome | Detailed evidence |
+| --- | --- | --- |
+| 1. Inventory and contract (Steps 1–2) | The original audit flagged rates, suffixes, time expressions and counts. The inventory assigned stable identities. Optional metadata describes bare numbers, literal forms, applicability and evidence. | [Review assignments and original acceptance criteria](review.json) · [Value contract](../numerical-value-contract.md) |
+| 2. Migrate and preserve (Steps 3–4) | The first migration supplied metadata on 175 options across 56 profiles. Source parsing, merging and caching retained shared documentation, competing versions and unassigned text. | [Per-family corrections](step3-migration.md) · [Preservation and merge rules](step4-preservation.md) |
+| 3. Display, edit and enforce (Steps 5–7) | Search and selected details exposed documented units. Authoring retained inactive evidence when edits invalidated a declaration. Prospective and strict checks distinguished new omissions from the 360 incomplete records then known. | [Presentation](step5-presentation.md) · [Authoring](step6-authoring.md) · [Coverage policy](step7-enforcement.md) |
+| 4. Integrate and hand off (Steps 8–9) | End-to-end tests exposed a scalar declaration applied to the wrong operand count. Repository review corrected a release-source exclusion. Windows passive checks and native terminal acceptance were recorded separately. | [Integration and acceptance matrix](step8-verification.md) · [Configuration review](step9-handoff.md) |
+| 5. Resolve debt and investigate diagnostics | Evidence review closed the 360 incomplete records in the original 504-contract population. Subsequent investigations corrected operand and section associations while retaining unresolved external facts. | [Debt resolution](debt-resolution.md) · [Diagnostic dispositions](diagnostic-investigation.md) · [Parser repairs](parser-association-repairs.md) |
+| 6. Verify terminals and expand the menus | Real Bash/Readline, ext4 and separately qualified 9p checks followed. The family revisits expanded the bundled profiles. The redesigned browser exposes units in all three levels and keeps citations out of terminal explanations. | [Native/POSIX evidence](native-posix-verification.md) · [Historical Linux matrix](full-linux-verification.md) · [Three-level terminal captures](../superpowers/plans/2026-11-24-menu-detail-levels-verification.md) |
 
-| Priority | Finding | Recommended later work | Plan steps |
-| --- | --- | --- | --- |
-| P1 | F1 rates | Verify base rate, bit/byte meaning, suffixes and special cases for rsync, FFmpeg and related entries | 2, 3 |
-| P1 | F2 scale | Preserve command-specific flash tokens and verify scale/version/chip interpretation; do not universalize suffixes | 2, 3 |
-| P1 | F3 time | Separate seconds, unit-bearing durations, calendar/relative expressions and sentinel behavior | 2, 3 |
-| P2 | F4 numerical meaning | Explain counts, levels, widths, mixed percentages, identifiers and composite/delegated forms | 2, 3 |
-| P1 | F5 source handling | Preserve shared GNU definitions, report conflicting sources and review relevant cache behavior | 4, 6, 8 |
-| P2 | F6 display | Expose essential meaning early and retain it through search, wrapping and scrolling | 5, 8 |
-| P1 | F7 future enforcement | Establish the shared contract, maintain it through authoring, and discover new maintained entries automatically | 2, 6, 7, 8 |
+## Artifacts and regeneration
 
-P1/P2/P3 are planning priorities, not a runtime severity policy. The original
-79-entry set is a seed rather than an exclusion list. Additional examined records
-include GNU byte/size suffixes, sort memory and key syntax, Git fetch counts,
-XZ thread counts, module timeouts, IP keywords, delegated configuration, and
-VLC's unresolved synthetic numeric scales. Serial settings and legacy/chip
-observations and unreviewed versions retain explicit investigation requirements. Neither a missing detail
-field nor a numeric-looking name alone establishes a unit defect.
+Run these commands from the repository root. The first checks the current census and exact review assignments. The second checks maintained contracts, including display and search propagation. The third writes an optional local inventory.
+
+```bash
+python3 -B scripts/inventory_numerical_descriptions.py --check --summary
+python3 -B scripts/check_numerical_coverage.py --mode strict --summary
+python3 -B scripts/inventory_numerical_descriptions.py --check \
+  --output tests/reports/numerical-inventory/inventory.json --summary
+```
+
+The [generator](../../scripts/inventory_numerical_descriptions.py) uses the checkout’s parsers and validator without running target programs or rendering manuals. It reads routing literals as data. Generated JSON stores shared provenance by digest and includes the source locator and digest for long excerpts. The curated assignments in [review.json](review.json) remain the maintained input. [Generator tests](../../tests/test_numerical_inventory.py)
+
+## Relationships and review identity
+
+An identity such as `option|rsync|--bwlimit` follows the command and case-sensitive flag across category moves. A trailing equals sign is preserved in the source observation. Short and long spellings have separate identities. Each observation records its role, file and JSON pointer or source line. Versioned claims, guards and references stay attached to their evidence. Unassigned text and unrendered roff keep their source-only status.
+
+Review groups share a rationale. Each member has an exact identity and a source-sensitive fingerprint. New or changed facts require review. Missing, stale, duplicate, conflicting or orphaned assignments fail reconciliation. Inspect the changed source before updating the affected member. A reviewed external observation may still carry an explicit investigation.
 
 ## Acceptance and protected behavior
 
-The full criteria are maintained in `review.json`; the following separation
-prevents Step 1 checks from being represented as completed runtime fixes.
-
-| Criteria | Verification status and scope |
-| --- | --- |
-| S1-01 input census | Independently compare file, profile, matrix and driver counts and compare enumerated routes with the existing passive registry loader |
-| S1-02 stable review | Exercise unrelated insertion and automatic profile/fixture growth; existing identities remain associated and new identities require review |
-| S1-03 reconciliation | Reject missing, stale, duplicate, conflicting and orphaned review assignments |
-| S1-04 passive determinism | Block process/network entry points, inspect hostile snapshot declarations without execution, compare input hashes and repeat output |
-| S1-05 explicit output | Default to stdout and reject input, annotation and unrelated-file replacement |
-| AC-01 to AC-03 protected runtime | Protected declarations remain unchanged; the native follow-up checks actual Ubuntu PTY navigation, buffers, cursors, cancellation and pending-command non-execution |
-| AC-04 to AC-06 numerical evidence | Step 3 records scoped source verification and explicit investigations; complete installed-version and external-help verification remains open |
-| AC-07 source preservation | Step 4 verifies bounded shared-text association, source conflicts, metadata retention and cache invalidation; arbitrary external formats and factual completeness remain unverified |
-| AC-08 presentation | Step 5 supplies fake-window checks; the native follow-up adds real curses/tmux cells, Readline, numerical search/details, minimum sizes, Unicode, scrolling and resize/reopen within its stated environment |
-| AC-09 authoring | Step 6 supplies lifecycle checks; the native follow-up adds real read-only preview and POSIX locking/save/recovery on ext4, with separate 9p evidence and an unestablished 9p permission-denial case |
-| AC-10 future checks | Step 7 checks prospective completeness, exact debt validity and display/search propagation; the subsequent debt-resolution follow-up satisfies strict maintained readiness without changing those checks |
-
-Earlier passive verification runs on Windows with Python 3.13. Those tests use disposable
-snapshots in the existing ignored `.cache/` area and do not invoke target
-executables, manual renderers, shell workloads, or network operations. The full
-Linux/WSL suite and terminal/live-help checks are outside this Step 1 proof.
-There is no claim of hosted CI, physical-device behavior, or installed-version
-validation.
-
-The [native follow-up](native-posix-verification.md) supplies the later scoped
-Ubuntu results. It does not establish a full target-enabled Linux suite,
-human visual acceptance, installed-target behavior or hosted CI.
+The original S1 criteria covered census, identity stability, reconciliation, passive determinism and output safety. AC-01 through AC-10 covered insertion and cancellation, numerical meaning, source retention, presentation, authoring and future additions. The [criterion-by-criterion matrix](step8-verification.md#acceptance-matrix) identifies which checks passed at that stage and which needed native or factual follow-up.
 
 ## Handoff boundary
 
-Step 1 established the inventory and acceptance-criteria implementation. The
-inventory generator does not change production descriptions, routes, parsing,
-caching, rendering, insertion or GitHub settings. Repository policy and CI
-reconciliation are documented separately in the
-[development guide](../development.md#repository-configuration).
-The guide is linked from the documentation index.
-
-The [Step 2 numerical value contract](../numerical-value-contract.md) now provides
-opt-in metadata validation and explanation formatting. It does not promote these
-planning annotations into verified semantics or activate a completeness gate.
-Step 2 left enumeration unchanged; Step 7 extends its census as described below.
-Step 3 updates only the exact review
-members and fingerprints justified by the inspected authored-content changes.
-
-The [Step 3 migration account](step3-migration.md) distinguishes verified
-corrections, adequate summaries, source-derived records and remaining external
-work. The [Step 4 preservation account](step4-preservation.md) records the parser,
-merge and cache guarantees and narrowly justified annotation updates.
-The [Step 5 presentation account](step5-presentation.md) records consistent value
-guidance, search coverage, applicability and passive layout verification.
-Reconciliation is not production numerical-quality enforcement. Native terminal
-acceptance and global enforcement remain separate work.
-
-The [Step 6 authoring account](step6-authoring.md) records subsequent numerical
-preservation, scoped structural validation and explicit review. Native platform
-acceptance and the future global completeness gate remain separate.
-
-The [Step 7 coverage policy and contributor workflow](step7-enforcement.md)
-defines prospective checks, exact legacy debt, structured diagnostics and
-separate strict-readiness reporting. Inventory reconciliation remains distinct
-and never verifies upstream numerical facts.
-
-The [Step 8 integrated verification account](step8-verification.md) joins the
-existing acceptance criteria to passive test evidence, documents the bounded
-scalar-arity merge repair and distinguishes native/platform gaps from portable
-success. Per-criterion records reside beside the existing criteria in review.json;
-generated outcomes remain under the ignored report directory.
-
-The [Step 9 configuration review and local handoff](step9-handoff.md) records
-effective ignore/attribute/editor/workflow/source-selection policies, one bounded
-private-output exclusion and fresh local verification. At that review,
-prospective enforcement passed; strict completeness and native acceptance
-remained unfulfilled. The handoff preserves the distinction between its
-configuration evidence and historical Steps 1–8 results.
-
-The [maintained debt-resolution follow-up](debt-resolution.md) records the later
-zero-debt strict result, source-bound corrections and unchanged enforcement.
-Historical step accounts retain their original counts and blocked/deferred
-outcomes. External-help completeness and native acceptance remain separate.
+When a profile, fixture or protected source changes, rerun reconciliation and the coverage gate. For an option change, compare the source edition and literal operand syntax, then inspect its searchable terms and reachable guidance in the menu. The [audit procedure](../development.md#auditing-command-help) describes terminal and compatibility checks. Historical counts in the linked reports refer to the checkout named in each report.

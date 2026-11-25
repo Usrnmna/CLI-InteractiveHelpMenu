@@ -39,7 +39,7 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/collection.py](../cli_help/collection.py) | Passive collection consistency, bounded evidence, and explicit guarded review-backup restoration |
 | [cli_help/discovery.py](../cli_help/discovery.py) | Bounded help/man probes, parsing, merging, and cache |
 | [cli_help/diagnostics.py](../cli_help/diagnostics.py), [cli_help/errors.py](../cli_help/errors.py) | Passive configuration/context reports, bounded cache inspection, and safe reason-coded errors |
-| [cli_help/ui.py](../cli_help/ui.py) | Curses drawing, navigation, search, browser bindings |
+| [cli_help/ui.py](../cli_help/ui.py), [cli_help/menu_units.py](../cli_help/menu_units.py) | Three-level curses browser, category labels and full titles, unit-aware search, navigation and key bindings |
 | [cli_help/value_semantics.py](../cli_help/value_semantics.py), [cli_help/presentation.py](../cli_help/presentation.py) | Shared numerical contract validation, pure explanation formatting and accessible list/details/search text |
 | [cli_help/authoring.py](../cli_help/authoring.py) | Numerical metadata preservation and review of potentially stale declarations across authoring workflows |
 | [cli_help/main.py](../cli_help/main.py) | Terminal attachment and Bash response protocol |
@@ -142,7 +142,7 @@ customized Readline configuration, command version, or help format.
 
 1. Group independent families and record the exact command paths. For each, inventory options, aliases, operand forms and versions in the upstream and both Ubuntu manuals. If a distribution lacks a manual, identify the gap and use version-matched official documentation. Distinguish executable observations from source findings. [Example manual inventory](tar-manual-coverage.md#manual-inventory)
 2. Reconcile each spelling and its command boundary. Keep one short statement of effect on the row. Put defaults, units, order, side effects, interactions and release restrictions in Details where they change what to type or expect. Preserve searchable terms and literal insertion. Record unsupported forms and blockers against the exact path. [Podman volume example](podman-run-manual-coverage.md#material-changes)
-3. Run focused family, shared parser, edit and historical capture checks. Use a stub in real Bash/tmux to inspect every changed row and its complete Details. At 60×16, search for a manual term, scroll to a qualification, cancel with buffer and cursor intact, then verify exact midline insertion and absence of command execution. For discovery, record source/version, fixed probe arguments and any usage-only or fallback result.
+3. Run focused family, shared parser, edit and historical capture checks. Use a stub in real Bash/tmux to inspect each changed summary in Simple. Cycle through Detailed to Expanded for the full explanation. At 60×16, search for a manual term, scroll to a qualification, cancel with buffer and cursor intact, then verify exact midline insertion and absence of command execution. For discovery, record source/version, fixed probe arguments and any usage-only or fallback result.
 4. Reconcile the numerical inventory and inspect changed facts before refreshing fingerprints. Run the strict gate on the integrated profiles. Once focused checks pass, run one full offline suite per target from the same combined inputs. Include all required untracked fixtures. Fix failures, repeat affected focused checks and verify the corrected snapshot. Record versions, passes, failures and skips. Keep hosted runs and local evidence distinct. [Sandbox setup](#isolated-local-debugging) · [Combined verification example](next-extended-discovery-verification.md)
 5. Link family results and unresolved gaps from the [roadmap](../ROADMAP.md#recording-progress-and-finishing-the-audit). Record counts for original rows, additions, aliases and dispositions in the family audit.
 
@@ -264,8 +264,8 @@ The repository supplies one root [.gitignore](../.gitignore) and one root [.gita
 | Where the rule applies | Practical effect |
 | --- | --- |
 | Working-tree visibility | Reports under `tests/reports/` (including timing, numerical inventories and raw recordings), local tool homes, credentials, caches, `dist/`, `generated-help/`, locks, backups and unversioned launchers are ignored. Tracked files stay tracked. Example environment templates, versioned historical artifacts, maintained fixtures, public media and curated review decisions remain eligible for tracking. Use an ignored location for private output. |
-| Checkout and diff | Text uses LF, including shell scripts, Python, JSON, Markdown, manual text and terminal capture metadata. Python and C use Git’s built-in function diff patterns. Images, gzip files, installers and native launchers are binary. The curated numerical review JSON has `linguist-generated` unset so its changes remain visible in review. |
-| Editing | [.editorconfig](../.editorconfig) preserves Markdown hard breaks and whitespace in `tests/fixtures/help/`. It disables text transformations for binary assets and the listed generated directories. Git attributes describe checkout handling, while a file’s current bytes depend on its working copy. |
+| Checkout and diff | Text uses LF, including shell scripts, Python, JSON, Markdown, manual text and terminal capture metadata. Python and C use Git’s built-in function diff patterns. Images, gzip and xz fixtures, installers and native launchers are binary. Attribute rules preserve significant trailing whitespace in fixture text, TSV and benchmark patches. The curated numerical review JSON has `linguist-generated` unset so its changes remain visible in review. |
+| Editing | [.editorconfig](../.editorconfig) preserves Markdown hard breaks, captured fixture padding, trailing TSV fields and unified-diff context lines. It disables text transformations for binary assets and the listed generated directories. Git attributes describe checkout handling, while a file’s current bytes depend on its working copy. |
 | Sandbox snapshot | Tracked working-tree bytes and explicit regular files enter the snapshot. A new fixture can be eligible for tracking and still require `--include`. [Isolated debugging](#isolated-local-debugging) |
 | Source release | The release builder has its own selection rules and hashes the captured bytes. The repository sets no `export-ignore` or `export-subst` attributes. Review the [source and archive boundaries](releases.md#build-from-source) when changing documentation or fixtures. |
 
@@ -376,17 +376,22 @@ alongside other external links. CI retries the full check once when every failur
 is an HTTP 429 from the GNU manuals host or an HTTP 503 from a GitHub source file
 page. Broken anchors, other errors, and a failed retry fail the job. Both attempt
 reports are retained when a retry runs. Results appear in the Actions job summary.
-The CI glob skips hidden directories, including the Markdown contribution guide and pull request template in `.github/`. Supply those two files explicitly for a complete contributor documentation review.
+Both attempts include the contribution guide and pull request template explicitly because the Markdown glob skips hidden directories.
 
-With Lychee 0.24.2 installed, the same check can run locally:
+On a clean checkout, use Lychee 0.24.2 with the CI inputs.
 
 ```bash
-lychee --config lychee.toml --no-progress '**/*.md'
-# Also check the two maintained Markdown files in the hidden directory.
-lychee --config lychee.toml --no-progress .github/CONTRIBUTING.md .github/pull_request_template.md
+lychee --config lychee.toml --no-progress '**/*.md' .github/CONTRIBUTING.md .github/pull_request_template.md
 ```
 
-Add `--offline` to check local links and anchors without contacting external sites.
+For an offline check of a working tree containing generated benchmark snapshots,
+pass Git’s list of maintained and newly added Markdown files directly. This
+also covers the two hidden guides and avoids walking local snapshot symlinks.
+
+```bash
+git ls-files --cached --others --exclude-standard -z -- '*.md' |
+  xargs -0 -r lychee --config lychee.toml --offline --no-progress
+```
 The workflow uses read-only repository permissions and pins actions to commit
 IDs. The README badge reports this entire workflow; it is not a claim that a
 GitHub-hosted run has already completed for the working tree. Forks should update

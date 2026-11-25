@@ -11,7 +11,9 @@ For terminal changes, cover visible cells, cursor, and relevant resize/scrollbac
 behavior. For compatibility changes, identify the implementation/version, driver
 activation, and insertion boundaries. Configuration changes need ignore/attribute
 checks and workflow lint when applicable. See the contribution and development
-guides for focused checks; unrelated checks need not be listed. -->
+guides for focused checks. For an impacted sandbox run, give the target,
+selection or full fallback, and fixture availability. For a menu timing change,
+identify the route, measured interaction, baseline and parity checks. -->
 
 <!-- For numerical-inventory changes, report the reconciliation command/result,
 independent coverage counts, changed review identities, and remaining unresolved

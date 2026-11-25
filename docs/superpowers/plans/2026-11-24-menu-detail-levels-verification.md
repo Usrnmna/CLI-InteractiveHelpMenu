@@ -1,6 +1,6 @@
 # Rendered terminal verification
 
-Captured from the Bash shortcut in a private tmux session. Each frame shows the same FFmpeg option, `-b:v BITRATE`, in the Stream codecs category. Blank lines are terminal rows.
+Captured from the Bash shortcut in a private tmux session. Each frame shows the same FFmpeg option, `-b:v BITRATE`, in the Stream codecs category. Blank lines are terminal rows. On November 25, 2026, a fresh local `0.4.0-alpha` build reproduced every displayed row in all six frames using its unpacked Bash adapter and runtime.
 
 ## 80 × 24 · Simple
 

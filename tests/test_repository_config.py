@@ -115,17 +115,33 @@ class RepositoryIgnoreTests(unittest.TestCase):
             "scripts/inventory_numerical_descriptions.py", "tests/test_numerical_inventory.py",
             "docs/numerical-inventory/README.md", "docs/numerical-inventory/review.json", "docs/cli-help-inventory.md",
             "tools/capture_readme_media.py", "tools/requirements-media.txt",
+            "tests/test-impact.json", "tests/sandbox/Containerfile", "tests/fixtures/ffmpeg/av-codec-source.tsv",
+            "tools/menu_benchmark/phase1/pre-redesign.patch", "tools/menu_benchmark/prose/candidate.patch",
             "docs/assets/help-browser.png", "docs/assets/ls-browser.png", "docs/assets/numerical-guidance.png",
             "docs/assets/option-inserted.png", "docs/assets/guided-review.png",
             "docs/cli-help-description-screen.md", "docs/cli-help-sanitized-screen.md", "docs/cli-help-replay.md",
         ], False)
+
+    def test_checkout_local_command_test_sessions_stay_out_of_git_and_packages(self):
+        """Protect named command workspaces when TMPDIR points inside a source directory."""
+        prefixes = ("cli-help-commit-log", "cli-help-fd", "cli-help-git-direct", "cli-help-git-show",
+                    "cli-help-grep", "cli-help-ls", "cli-help-native-posix", "cli-help-native-terminal",
+                    "cli-help-openssh", "cli-help-rsync", "discovered-menu", "ffmpeg-media",
+                    "fzf-check", "git-stash-list")
+        paths = [f"tests/{prefix}-session/private.txt" for prefix in prefixes]
+        self.assert_policy(paths, True)
+        policy = release_source_policy()
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertTrue(policy.excluded_source(Path(path)))
 
     def test_native_artifacts_are_binary_and_maintained_text_keeps_lf(self):
         """Use Git's actual attribute resolution for extensionless artifacts and sources."""
         binaries = ["cli-help", "scratch/runtime/cli-help", "cli-help-v0.1.2-alpha-linux-x86_64",
                     "dist/candidate/cli-help-v0.1.2-alpha-linux-x86_64",
                     "releases/v0.1.1-alpha/cli-help-v0.1.1-alpha-linux-x86_64",
-                    "docs/assets/option-insertion.gif", "docs/assets/help-browser.png", "candidate.run", "candidate.tar.gz"]
+                    "docs/assets/option-insertion.gif", "docs/assets/help-browser.png", "candidate.run", "candidate.tar.gz",
+                    "tests/fixtures/essential/noble-git-commit-man.xz"]
         for name in binaries:
             with self.subTest(path=name):
                 output = subprocess.check_output(["git", "-C", str(self.folder), "check-attr", "-z",
@@ -134,7 +150,8 @@ class RepositoryIgnoreTests(unittest.TestCase):
                 attributes = {output[index + 1]: output[index + 2] for index in range(0, len(output) - 1, 3)}
                 self.assertEqual(attributes, {"binary": "set", "text": "unset", "diff": "unset", "merge": "unset"})
         for name in ("cli_help/main.py", "docs/usage.md", "tests/fixtures/help/workflow-sed.txt", "profiles/rsync.json",
-                     "recording.cast", "capture.jsonl"):
+                     "recording.cast", "capture.jsonl", "tests/fixtures/ffmpeg/av-codec-source.tsv",
+                     "tests/fixtures/ffmpeg/help/noble-runtime.sha256", "tools/menu_benchmark/prose/candidate.patch"):
             with self.subTest(path=name):
                 output = subprocess.check_output(["git", "-C", str(self.folder), "check-attr", "-z", "text", "eol", "--", name],
                                                  env=self.environment, timeout=10).decode().split("\0")

@@ -21,8 +21,8 @@ suggested actions are displayed when an entry opens.
 
 ![Guided review of an example convert profile: select an option and edit its flag, summary, detail, and argument placeholder.](assets/guided-review.png)
 
-The v0.4.0-alpha candidate shows the guided forms using an illustrative temporary collection.
-Changes require explicit saving; the captured partial edit was cancelled.
+The local build shows the summary field of an option in a temporary collection.
+The recording cancelled the edit and verified the collection files were unchanged.
 [Capture details and regeneration](assets/README.md)
 
 ## Entry actions
@@ -112,8 +112,10 @@ remains available for correction through Edit JSON and cannot be saved.
 
 ## Preview behavior
 
-Preview supports the same scrolling, searching, category navigation, and
-`CLI_HELP_CONFIG` keybindings as the Bash browser. Its title reads **Help preview**.
+Preview opens in Simple with the title **Help preview**. Press `D` for Detailed
+and again for Expanded to inspect the draft’s examples and value rules. Category
+titles, unit search, scrolling and configured keys work as in the
+[interactive browser](usage.md#browser-controls).
 Enter inspects the selected flag and returns to review. Preview does not emit a
 Readline edit response, run discovery, or execute a target command. Manual import
 reads text or invokes only the bounded manual renderer. Edited executable help
