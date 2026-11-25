@@ -78,7 +78,14 @@ python3 -I tests/run_sandbox.py -- python3 -m unittest discover -s tests \
   -p test_bash_pty.py -k rebinding_between_keymaps -v
 ```
 
-To run a particular test, pass its command after `--`. For timing data, use `CLI_HELP_TEST_TIMING=1`. The [test selection plan](test-selection-plan.md#phase-status-and-gates) distinguishes these available options from the proposed impacted-test selector.
+For local iproute2 or yq edits, compare the snapshot with a Git commit or tree. Use the same target, base and includes for both commands. The first prints the JSON plan after the sandbox version banner. The second prints the plan, runs the usual preflight, and executes its tests in discovery order.
+
+```bash
+python3 -I tests/run_sandbox.py --target host --suite impacted --base HEAD --explain
+python3 -I tests/run_sandbox.py --target host --suite impacted --base HEAD
+```
+
+The report includes changed paths, the snapshot digest, required fixtures, reasons per test and any fallback to full discovery. An unmapped or shared change requires a full run on each target listed. Each invocation runs one target. Include both pinned yq binaries for yq, and the Noble client archive for iproute2 on Noble. Markdown changes also require Lychee inside the sandbox. See the [fixture paths, fallback rules and pilot evidence](test-selection-plan.md#4-add-explicit-selection-for-local-audits). Use `CLI_HELP_TEST_TIMING=1` to retain event records or pass a custom command after `--` for individual checks.
 
 The runner uses the Git index to enumerate paths and reads each path from the working tree. A staged file with later unstaged edits contributes its current bytes. Missing tracked files are omitted. Use one `--include PATH` **before** `--` per required untracked file, including new modules, tests, Markdown inventories read by tests and ignored package fixtures or setup scripts. Paths must be checkout-relative regular files with real parent directories. Review the inputs before including private or generated files. [Snapshot implementation](../tests/run_sandbox.py)
 

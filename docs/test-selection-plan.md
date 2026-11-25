@@ -9,7 +9,7 @@ Use repeatable focused commands and the timed full-suite baseline to identify ex
 | 1 · Focused edit loop | Available now | Run the named family and shared checks during editing. Full offline verification remains the batch gate. |
 | 2 · Timing | Complete | Paired timed and ordinary runs match in discovery order, outcomes, fixture results and exit status on all three targets. |
 | 3 · Reduce duplicate work | Complete | Measure candidates independently, compare sharded and unsharded coverage, then verify retained changes against Phase 2 on the complete offline matrix. |
-| 4 · Selection | Next · report-only pilot | Start with an explain-only iproute2 and yq pilot. Require agreement with full-run evidence, including the historical yq failure, before enabling selected execution. |
+| 4 · Local selection | Complete | Report-only selection and opt-in execution passed both pilot checkpoints and the combined offline matrix. [Results](#phase-4-pilot-evidence) |
 | 5 · Result reuse | Conditional on validated selection and remaining cost | Demonstrate complete invalidation and equivalent outcomes for one bounded group before offering opt-in reuse. |
 
 ## Baseline
@@ -288,7 +288,7 @@ For a local replay, use the retained `balance.py` on the timed `full-host.log`, 
 
 ## 4. Add explicit selection for local audits
 
-The next runnable task is the report-only selector and its full-run comparisons for iproute2 and yq. Add an opt-in `--suite impacted --base REF --explain` to `tests/run_sandbox.py` as a report-only pilot. Use `tests/test-impact.json` for explicit group inputs, test IDs, command paths and fixture requirements. Reuse the existing command inventory as the source for generated route cases. Its method names contain a sorted index that can shift when another route is added, so resolve cases by command at discovery time. A missing test ID or unexpectedly empty group triggers full-suite fallback. An explicit `--suite impacted --base REF` can run the printed selection after pilot validation. Keep the existing default and `--` custom command path. [Generated route cases](../tests/test_regression_inventory.py) · [Sandbox runner](../tests/run_sandbox.py)
+The local sandbox runner accepts `--suite impacted --base REF --explain` to inspect a plan and `--suite impacted --base REF` to run it. Both modes discover tests inside the extracted target snapshot. The explicit impact map groups shared checks, command-specific checks, required files and inventory routes. The inventory binds the command identity to its generated unittest method so a changed sort index cannot redirect selection. IDs keep full discovery order. [Commands](development.md#isolated-local-debugging) · [Impact map](../tests/test-impact.json) · [Plan resolution](../tests/impacted_suite.py) · [Route inventory](../tests/test_regression_inventory.py)
 
 | Input changed | Required selection |
 | --- | --- |
@@ -299,9 +299,50 @@ The next runnable task is the report-only selector and its full-run comparisons 
 | Review database, shared fixture manifests or archive inputs | Always run the owning repository-wide gate. Map additional consumers explicitly. For a named group that reads shared data, include those inputs even when its command-specific profile is the only file edited. |
 | Parser, profile schema, common presentation, shell binding, sandbox setup, or an unmapped source or test | Run full verification for all affected targets. For a change with unknown reach, use the complete matrix. |
 
-Compute candidates against the supplied base using the files that enter the snapshot. Include staged and unstaged content, both paths of renames, deletions and new files supplied by `--include`. Report unresolved untracked project inputs and require them in the snapshot before claiming verification. Use the same manifest and bytes for selection and execution. Always show each selected ID, the input that triggered it, expected fixture availability and any full-suite fallback. [Snapshot implementation](../tests/run_sandbox.py) · [Cross-family fixture test](../tests/test_system_dependency_followup.py) · [Package tests](../tests/test_release_snapshot.py)
+The comparison hashes the archived bytes and compares Git blob IDs and executable bits against the resolved base tree. A move contributes a deleted path and an added path. A staged edit followed by a working-tree edit contributes the bytes that entered the archive. The report identifies that archive by a digest of its ordered filenames, modes and contents. Untracked, nonignored files outside the archive appear as unresolved. Supply required files with one `--include` per file. Ignored reports stay outside the archive unless explicitly included.
 
-Compare the report against normal full runs with changes confined to a family profile, help capture, audit table, shared harness, added file, deleted file and unavailable fixture. Replay the historical yq failure in a disposable snapshot. The selector must include the failing test. Confirm that an iproute2-only profile edit excludes the FFmpeg all-row walk from the focused loop, while a shared display change includes it. Require the expected test IDs to appear and fail the pilot if a full run finds a failure outside the planned set.
+Shared and unmapped inputs, deletions, empty selections, discovery errors, and missing or ambiguous mappings request the full suite. Missing fixtures and unresolved inputs make explain exit nonzero. Execution still attempts the default full preflight and discovery on that target, and returns nonzero for incomplete required evidence. A failing preflight stops before unittest. A missing explicitly requested include prevents creation of the snapshot. Full discovery retains unittest's normal skip reasons and class-fixture outcomes. The sandbox runs a single target per invocation.
+
+| Workload | Additional offline fixture or check |
+| --- | --- |
+| iproute2 | The host uses its installed `ip` and `ss`. On Noble, include `tests/reports/iproute2-revisit/noble-client.tgz` containing the matching clients and libraries. The selector also runs the packaged read-only probe in the private network namespace. [Probe coverage](iproute2-manual-coverage.md) |
+| yq | Include both `tests/reports/yq-revisit/yq-4.44.3` and `tests/reports/yq-revisit/yq-4.54.3`. The selector sets `YQ_TEST_BINDIR` in the sandbox. The packaged tests verify the release digests. [Pinned fixtures](yq-eval-manual-coverage.md#reproduction) |
+| Markdown | Provide Lychee on the sandbox PATH or include an executable at `tests/reports/lychee`. Lychee initializes its TLS client even offline. The host uses system public roots. For an image without them, include a PEM public CA bundle at `tests/reports/lychee-ca.pem`. The extra gate checks the maintained Markdown tree and both hidden GitHub guides in offline mode, including inbound links and local heading fragments. Full unittest discovery includes Markdown consumers and source-archive verification. |
+| Final audit matrix | Use the ordinary full-suite command with the prepared [package fixture environment](#reproduce-the-paired-offline-baseline) on each target. |
+
+### Phase 4 pilot evidence
+
+Disposable Git trees supplied independent base versions for a profile, capture, new input, deletion, rename, audit table, presentation module, setup script and numerical review database. Selection used the actual extracted files in each comparison. A working-tree whitespace edit to the iproute2 profile also exercised the retained numerical preflight, which rejected its changed source fingerprint. The passing profile comparison used the reviewed bytes as the current version.
+
+* The iproute2 profile, mapped capture and explicitly included new capture selected 82 IDs. These included four route inventory cases, the family terminal walk, four discovery terminal routes, shared insertion, syntax and numerical checks. The FFmpeg all-row walk was absent. Omitting the new capture reported its unresolved path.
+* A shared presentation edit selected the FFmpeg walk. The shared review database, Podman audit table, unknown setup input, deletion and rename also requested full discovery. The audit plan included its cross-family consumer, archive verification and the offline link gate. Missing pinned yq binaries named both paths and required full verification.
+* The historical replay restored the common capture assertion in a private copy and used the pre-expansion yq profile as its base. The report selected 86 IDs, including `SystemDependencyFollowupTests.test_installed_leaf_help_provenance_and_curated_flags`. That test failed because the 4.54.1 capture omitted `--tojson`, matching the single failed subtest in the original 1,525-test host run. The working profile and capture were preserved. [Historical comparison](yq-eval-manual-coverage.md#compatibility-results)
+* Before enabling execution, scoped IDs were compared in order with the retained 1,871-test host transcript. Each full-fallback report for a complete source snapshot matched that transcript in full. Controlled regressions exercise a shifted route index, overlapping groups, class setup, skip reasons and nonzero exits. [Selector regressions](../tests/test_impacted_suite.py)
+
+On 2026-11-24 the fresh ordinary host comparison on the iproute2 snapshot passed. The fresh ordinary run on the historical yq snapshot reproduced exactly one failing test, the same shared assertion selected in the report. Setup-time skips in these minimal sandboxes remained visible. The shared presentation comparison used the same snapshot digest as the 82-ID iproute2 run. Full fallback actually ran and passed the FFmpeg all-row walk. It requested all 1,876 then-discovered IDs. Unittest started 1,864 and skipped two optional package classes at setup (12 methods across fd and fzf). The remaining started IDs exactly matched discovery order, and the run returned 0 with all 11 skip reasons accounted for. These minimal-sandbox skips are separate from the fully fixtured final matrix below.
+
+| Executed selection | Target | Reported / started IDs | Pass / fail / skip | End-to-end time |
+| --- | --- | ---: | ---: | ---: |
+| iproute2 | `host` | 82 / 82 | 82 / 0 / 0 | 107.6 s |
+| iproute2 | `noble310` | 82 / 82 | 82 / 0 / 0 | 177.7 s |
+| iproute2 | `noble312` | 82 / 82 | 82 / 0 / 0 | 131.7 s |
+| yq | `host` | 86 / 86 | 86 / 0 / 0 | 91.2 s |
+| yq historical replay | `host` | 86 / 86 | 85 / 1 / 0 | 91.2 s |
+| iproute2 and yq | `host` | 103 / 103 | 103 / 0 / 0 | 121.7 s |
+
+Explain and execute reported the same snapshot digest and ordered IDs for each pair. In each scoped run the ordered IDs matched the actual timing stream's test starts and finishes, without duplicates. The combined host run used the final matrix's 989 source files and seven host fixture/loader files. Its 65 shared IDs ran once. Compared with the fully fixtured host suite at 2526.5 s, the combined edit loop saved 2404.8 s (95.2%) in this sample. Wall times include sandbox startup and workload-specific fixture setup. The runs shared the machine with other verification work.
+
+The six selector regressions cover the archive/index distinction, incomplete plans, shifted route IDs, shared IDs, public CA availability and actual execution. A fixture-controlled run preserved a unittest skip reason, class setup once per run, a failure exit of 1 and a preflight exit of 37. A separate inbound-link control ran the full fixture suite and returned 2 for a broken heading, 0 after repair, and 1 for an unresolved file despite passing unittest. Lychee initially failed to initialize in the isolated filesystem. Using public roots inside each sandbox restored offline link checking on all three targets. An initial matrix wave was interrupted before completion and replaced with the corrected inputs.
+
+| Final full suite | Ubuntu | Python | Pass / fail / skip | Wall time | Exit |
+| --- | --- | --- | ---: | ---: | ---: |
+| `host` | 26.04.1 | 3.14.4 | 1,876 / 0 / 1 | 2526.5 s | 0 |
+| `noble310` | 24.04.5 | 3.10.20 | 1,876 / 0 / 1 | 2799.2 s | 0 |
+| `noble312` | 24.04.5 | 3.12.3 | 1,876 / 0 / 1 | 2530.0 s | 0 |
+
+The complete matrix used the same source paths, contents and modes on all three targets, plus the matching package fixtures. All final discovery IDs matched the ordered start and end events. The Windows-only probe accounted for the sole skip per target. The protected source pin for `tests/run.sh` changed only after reviewing its optional unittest argv branch. The default numerical and collection gates ran in both modes. Logs, input manifests, ordered-ID comparisons and wall times are retained locally under `tests/reports/timing/phase4-20261124/`.
+
+A change to the shared numerical review database still requests the full suite, including when it accompanies a pilot profile edit. The pilot establishes measured local coverage for the declared families. Additional commands, persistent reuse, and CI selection require separate evidence.
 
 ## 5. Reuse green results only after selection works
 

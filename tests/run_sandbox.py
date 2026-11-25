@@ -1,6 +1,7 @@
 """Run tests against disposable working-tree copies on the host or Ubuntu 24.04."""
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -81,6 +82,40 @@ def snapshot(stream, extra_files):
                 raise ValueError(f"Expected a regular source file: {name}")
             archive.add(path, arcname=str(name), recursive=False)
     stream.seek(0)
+
+
+def snapshot_delta(archive, base, includes):
+    """Compare archived bytes and executable bits with a Git tree, independent of index state."""
+    def git(*args):
+        return subprocess.check_output(["git", *args], cwd=ROOT)
+
+    tree = git("rev-parse", "--verify", "--end-of-options", base + "^{tree}").decode().strip()
+    remaining = {}
+    for entry in git("ls-tree", "-rz", tree).split(b"\0"):
+        if entry:
+            header, name = entry.split(b"\t", 1)
+            mode, _, oid = header.decode().split()
+            remaining[os.fsdecode(name)] = (mode, oid)
+    algorithm = git("rev-parse", "--show-object-format").decode().strip()
+    identity = hashlib.sha256()
+    changes = {}
+    with tarfile.open(fileobj=archive, mode="r:") as contents:
+        for member in contents:
+            digest = hashlib.new(algorithm, f"blob {member.size}\0".encode())
+            with contents.extractfile(member) as data:
+                for chunk in iter(lambda: data.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            blob = digest.hexdigest()
+            identity.update(os.fsencode(member.name) + b"\0" + f"{member.mode:o} {blob}\n".encode())
+            previous = remaining.pop(member.name, None)
+            mode = "100755" if member.mode & stat.S_IXUSR else "100644"
+            if previous != (mode, blob):
+                changes[member.name] = "modified" if previous else "added"
+    changes.update((name, "deleted") for name in remaining)
+    others = git("ls-files", "--others", "--exclude-standard", "-z")
+    unresolved = sorted({os.fsdecode(n) for n in others.split(b"\0") if n} - set(map(str, includes)))
+    archive.seek(0)
+    return dict(base_tree=tree, snapshot=identity.hexdigest(), changes=changes, unresolved=unresolved)
 
 
 def image_name(target):
@@ -168,7 +203,7 @@ class SandboxTiming:
                 raise
 
 
-def run_offline(target, includes, command):
+def run_offline(target, includes, command, base=None, explain=False):
     """Snapshot the checkout, start the selected backend and preserve its status."""
     timing = SandboxTiming(target) if os.environ.get("CLI_HELP_TEST_TIMING") == "1" else None
     try:
@@ -177,6 +212,10 @@ def run_offline(target, includes, command):
                 timing.event("snapshot-start", target=target, command=command,
                              includes=sorted(map(str, includes)))
             snapshot(archive, set(includes))
+            if base is not None:
+                delta = snapshot_delta(archive, base, includes)
+                command = ["python3", "-I", "tests/impacted_suite.py", json.dumps(delta),
+                           target, "explain" if explain else "execute"]
             if timing and timing.report is not None:
                 timing.event("launch")
                 code = timing.run([*sandbox_command(target, timing.stream), *command], archive)
@@ -195,19 +234,27 @@ def main():
     parser.add_argument("--prepare", action="store_true", help="build the selected Ubuntu image with network access")
     parser.add_argument("--include", type=Path, action="append", default=[], metavar="FILE",
                         help="include an untracked file relative to the repository root (repeatable)")
+    parser.add_argument("--suite", choices=["full", "impacted"])
+    parser.add_argument("--base", metavar="REF", help="compare the snapshot with this Git tree")
+    parser.add_argument("--explain", action="store_true", help="report impacted tests without running them")
     parser.add_argument("command", nargs=argparse.REMAINDER, help="command after -- (default: bash tests/run.sh)")
     args = parser.parse_args()
     if os.getuid() == 0:
         parser.error("Run the sandbox runner as an ordinary user.")
+    if args.suite == "impacted":
+        if not args.base or args.command or args.prepare:
+            parser.error("--suite impacted requires --base REF and no custom command or --prepare")
+    elif args.base is not None or args.explain:
+        parser.error("--base and --explain require --suite impacted")
     if args.prepare:
-        if args.target == "host" or args.command or args.include:
+        if args.target == "host" or args.command or args.include or args.suite:
             parser.error("--prepare takes only an Ubuntu image target.")
         with tempfile.TemporaryDirectory() as context:
             return subprocess.run([*PODMAN, "build", "--layers", "--target", args.target,
                                    "-t", image_name(args.target), "-f", str(ROOT / "tests/sandbox/Containerfile"),
                                    context]).returncode
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
-    return run_offline(args.target, args.include, command or ["bash", "tests/run.sh"])
+    return run_offline(args.target, args.include, command or ["bash", "tests/run.sh"], args.base, args.explain)
 
 
 if __name__ == "__main__":

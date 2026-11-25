@@ -47,6 +47,13 @@ timing_phase driver-collection
 CLI_HELP_DRIVERS="$PWD/config/drivers.example" python3 cli_help/main.py --check
 
 discovery=(discover -s tests -p 'test_*.py' -v)
+# The sandbox selector supplies complete IDs in discovery order after the same preflight.
+if [[ ${1:-} == --selected ]]; then
+    shift
+    if (( $# == 0 )); then echo 'Empty impacted selection' >&2; exit 1; fi
+    export PYTHONPATH="$PWD/tests${PYTHONPATH:+:$PYTHONPATH}"
+    discovery=(-v "$@")
+fi
 if [[ $timing == 1 ]]; then
     timing_phase unittest
     python3 tests/timed_unittest.py "${discovery[@]}"

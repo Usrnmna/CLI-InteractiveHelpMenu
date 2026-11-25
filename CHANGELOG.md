@@ -1,8 +1,12 @@
 # Changelog
 
+## Version 0.3.1 - Alpha
+
+Packages built from this checkout use the `v0.3.1-alpha` filenames. The sandbox runner can explain and run a focused selection of iproute2 and yq tests. [Selector verification](docs/test-selection-plan.md#phase-4-pilot-evidence) · [Build procedure](docs/releases.md#build-from-source)
+
 ## Version 0.3.0 - Alpha
 
-For `v0.3.0-alpha` packages from this checkout, follow the [build and verification procedure](docs/releases.md#build-from-source).
+The source for this version is [commit `6920a29`](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/commit/6920a29ca105036f385cf39f7eb844bb2fd11211).
 
 - Bundled menus now cover the reviewed command manuals, with concise summaries, searchable qualifications and literal insertion forms. [Family inventories and verification](ROADMAP.md#bundled-menu-progress)
 - Discovery readers preserve command-specific options and their applicable descriptions across all three maintained tiers. [Discovery evidence](ROADMAP.md#discovered-command-help)

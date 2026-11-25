@@ -231,6 +231,7 @@ def path_test(command, item):
     """Bind one test to its command path without executing fixture programs."""
     def test(self):
         self.verify_path(command, item)
+    test.command_path = command
     test.__doc__ = "Offline route and available-document coverage: " + command
     return test
 

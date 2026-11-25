@@ -1,16 +1,18 @@
 # Project roadmap
 
-**Next — build the report-only impacted-test pilot for iproute2 and yq.** Start with the [Phase 4 input and fallback table](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits). The sandbox runner currently accepts a full suite or an explicit command after `--`. The proposed selector flags are not available yet.
+**Next — evaluate shared value formatting per browser open.** Task 3 in [remaining work](#remaining-work) links the Stage 1 baseline and parity criteria.
 
 ## Remaining work
 
-Four required deliverables remain. Count each numbered row once. The checklists and measurement protocols in the linked plans supply its acceptance tests. **Next** is ready to start, **Pending** has yet to start, **In progress** means work has begun, and **Complete** requires linked evidence. Use **Blocked** with the failed prerequisite and next action. **Conditional** items have a separate decision gate.
+The roadmap tracks both program changes and project maintenance. Only changes to the working program qualify for a [proposed alpha release](docs/versioning.md#proposed-targets).
+
+Two required deliverables remain. Count each numbered row once. The checklists and measurement protocols in the linked plans supply its acceptance tests. **Next** is ready to start, **Pending** has yet to start, **In progress** means work has begun, and **Complete** requires linked evidence. Use **Blocked** with the failed prerequisite and next action. **Conditional** items have a separate decision gate.
 
 | Workstream and task | Status | Dependency and evidence needed to close |
 | --- | --- | --- |
-| 1. Test selection, Phase 4a — explain a proposed selection | Next | Print the selected test IDs, reasons, fixtures and full-suite fallbacks for iproute2 and yq. Compare reports with full runs for scoped, shared, new, deleted and missing inputs. Replay the historical yq regression and show its shared test is selected. Record any missed failure and repeat after correction. [Pilot cases](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits) |
-| 2. Test selection, Phase 4b — execute a validated selection locally | Pending | After task 1 passes, demonstrate that opt-in execution runs the reported IDs on the same snapshot and falls back to the full suite for unknown reach or missing inputs. Verify the default full command and explicit command still work, and compare outcomes and elapsed time. [Selection contract](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits) |
-| 3. Menu performance, Stage 1 — evaluate shared value formatting per browser open | Pending | Independent of test selection. Capture baseline text for every bundled row plus custom, discovered and preview cases. Compare the candidate for exact search, labels and ordered Details parity. Report per-command CPU, paired terminal latency, memory and regressions against the proposed FFmpeg target. Record the decision to retain, revise or discard the candidate. [Implementation checklist and measurement protocol](docs/ffmpeg-menu-performance-plan.md#implementation-stages) |
+| 1. Test selection, Phase 4a — explain a proposed selection | Complete | Compared scoped and full reports against discovery, exercised missing and moved inputs and reproduced the historical yq failure. [Pilot evidence](docs/test-selection-plan.md#phase-4-pilot-evidence) |
+| 2. Test selection, Phase 4b — execute a validated selection locally | Complete | Ordered IDs matched execution on each scoped snapshot. The historical replay preserved its failure, full fallback ran, and the integrated offline matrix passed on all three targets. [Selection evidence](docs/test-selection-plan.md#phase-4-pilot-evidence) |
+| 3. Menu performance, Stage 1 — evaluate shared value formatting per browser open | Next | Independent of test selection. Capture baseline text for every bundled row plus custom, discovered and preview cases. Compare the candidate for exact search, labels and ordered Details parity. Report per-command CPU, paired terminal latency, memory and regressions against the proposed FFmpeg target. Record the decision to retain, revise or discard the candidate. [Implementation checklist and measurement protocol](docs/ffmpeg-menu-performance-plan.md#implementation-stages) |
 | 4. Menu performance — resolve the remaining investigations | Pending | Use task 3 measurements for prose preparation and redraws. Measure startup profile loading and guarded discovery separately. Record cost, affected menus, correctness constraints and a proceed/defer decision for each. Any change to architecture needs a separate decision. [Runtime investigations](docs/runtime-architecture.md#optimization-candidates) · [Prose and redraw experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 
 ### Conditional decisions
@@ -71,7 +73,7 @@ The family table links each original review, reconciled inventory and rendered-m
 
 ## Reducing test duration
 
-**Complete — Phases 1–3.** The focused edit loop, paired timing baseline and measured duplicate-work reductions have [three-target evidence](docs/test-selection-plan.md#full-offline-verification). The two-shard timing is a host pilot. The default audit gate remains one full offline run per target on the combined batch. See [remaining work](#remaining-work) for Phases 4 and 5.
+**Complete — Phases 1–4.** The focused edit loop, paired timing baseline and measured duplicate-work reductions have [three-target evidence](docs/test-selection-plan.md#full-offline-verification). The two-shard timing is a host pilot. The default audit gate remains one full offline run per target on the combined batch. The [local selector pilot](docs/test-selection-plan.md#phase-4-pilot-evidence) verified both Phase 4 checkpoints. Phase 5 remains a [conditional decision](#conditional-decisions).
 
 ## Runtime performance follow-up
 

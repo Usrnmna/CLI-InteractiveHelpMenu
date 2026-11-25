@@ -12,7 +12,7 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe v0.3.0-alpha. The [changelog](../CHANGELOG.md#version-030---alpha) summarizes its changes and the [release guide](releases.md#version-030---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
+The operating guides describe v0.3.1-alpha. The [changelog](../CHANGELOG.md#version-031---alpha) summarizes its changes and the [release guide](releases.md#version-031---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
 
 The [visual and configuration audit](media-and-configuration-review.md) maps the
 documentation media and diagrams to source behavior, capture evidence, and
@@ -25,6 +25,7 @@ repository policy checks.
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
 | Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Download, verify, install, or build versioned packages | [Release artifacts and build procedure](releases.md) |
+| Find the next version number and proposed changes for each release | [Version numbering and planned releases](versioning.md) |
 | Historical release notes and installation examples for the published v0.1.2-alpha packages | [v0.1.2-alpha release notes](release-notes-v0.1.2-alpha.md) |
 | Verify current source provenance, package lifecycles, and installed terminal behavior | [Local release candidate validation](release-candidate.md) |
 | Check GitHub releases, verify downloads, and upgrade with guided conflict review | [Updating from GitHub releases](github-updates.md) |
