@@ -24,6 +24,8 @@ locale, and `stty`. Linux sessions under WSL can provide the development
 environment. Follow applicable repository instructions and keep changes focused
 on the described problem.
 
+Choose open work and its acceptance criteria from the [roadmap](../ROADMAP.md#remaining-work). For command-help changes, use the [batch audit procedure](../docs/development.md#auditing-command-help). The [sandbox guide](../docs/development.md#isolated-local-debugging) covers testing current working-tree edits and new fixtures.
+
 Run relevant checks from the repository root. For runtime changes, the full
 validation entry point is:
 

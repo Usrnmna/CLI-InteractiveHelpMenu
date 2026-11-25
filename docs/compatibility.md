@@ -11,55 +11,15 @@ establish complete option coverage or successful execution of the program's work
 
 ## Programs and command paths
 
-| Tier | Program or package | Tested command paths |
-| --- | --- | --- |
-| Essential | Git | `git commit`, `git log`, `git diff`, `git status`, `git show`, `git fetch`, `git switch` |
-| Essential | curl, Wget, rsync | `curl`, `wget`, `rsync` |
-| Essential | Docker and Compose plugin | `docker run`, `docker image ls`, `docker compose up`, `logs`, `exec`, `ps`, `config`, `build`, `pull`, `down`, `run` |
-| Essential | GNU file and text utilities | `cp`, `mv`, `rm`, `sort`, `head`, `tail`, `du`, `df`, `sed` |
-| Essential | Compression utilities | GNU `gzip`, XZ Utils `xz` |
-| Essential | pip | `pip`, `pip install`, `pip download`, `pip3 install` |
-| Essential | uv | `uv pip install`, `uv run` |
-| Essential | npm and pnpm | `npm`, `npm install`, `npm run`, `pnpm install` |
-| Essential | jq and ripgrep | `jq`, `rg` |
-| Essential | FFmpeg | `ffmpeg`, `ffprobe` |
-| Next | GitHub CLI | `gh pr list/view/create`, `gh repo clone`, `gh issue list/view`, `gh run list/view`, `gh workflow list/view` |
-| Next | Kubernetes and Helm | `kubectl get`, `describe`, `logs`, `config view`, `apply`, `delete`, `exec`, `port-forward`; `helm install`, `helm upgrade` |
-| Next | AWS CLI | `aws s3 cp`, `aws s3 sync`, `aws ec2 describe-instances` |
-| Next | Terraform and OpenTofu | `terraform plan`, `terraform apply`, `tofu plan`, `tofu apply` |
-| Next | Rust Cargo | `cargo build`, `cargo test` |
-| Next | CMake, Ninja, GCC, Clang | `cmake`, `ninja`, `gcc`, `clang` |
-| Extended | rclone, restic, BorgBackup | `rclone`, `rclone copy`, `rclone sync`, `restic backup`, `borg create` |
-| Extended | 7-Zip | `7z`, `7zz` and the static `7z x` and `7zz x` extraction menus |
-| Extended | ImageMagick | `magick` (version 7), `convert` (version 6) |
-| Extended | yt-dlp and VLC | `yt-dlp`, `vlc` |
-| Expansion | Linux services and logs | `systemctl status`, `systemctl list-units`, `systemctl show`, `journalctl` |
-| Expansion | OpenSSH | `ssh`, `scp`, `sftp` |
-| Expansion | Python quality | `pytest`, `ruff check`, `ruff format` |
-| Expansion | Additional uv | `uv sync`, `uv add`, `uv lock`, `uv venv`, `uv tool install` |
-| Expansion | Go | `go build`, `go test`, `go run`, `go mod tidy` |
-| Expansion | .NET | `dotnet build`, `dotnet test`, `dotnet run`, `dotnet publish`, `dotnet restore` |
-| Expansion | Linux networking | `ip address`, `ip link`, `ip route`, `ss` |
-| Expansion | OpenSSL | `openssl s_client`, `openssl x509`, `openssl dgst` |
-| Expansion | JavaScript | `yarn install`, `yarn add`, `yarn run`, `bun run` |
-| Expansion | Podman | `podman run`, `podman build`, `podman exec`, `podman logs` |
-| Expansion | PostgreSQL shell | `psql` invocation options; SQL and backslash commands excluded |
-| Expansion | Terminal and data utilities | Mike Farah `yq eval`, `fd`, `fdfind`, `fzf` |
-| Expansion | Automation | `ansible-playbook` |
-| Expansion | Cloud | `az account show`, `az vm list`, `az storage blob list`, `gcloud config list`, `gcloud compute instances list`, `gcloud storage ls` |
-| Expansion | Git stash | `git stash`, `git stash push`, `git stash pop`, `git stash apply`, `git stash list`, `git stash show` |
-| Expansion | Git worktree | `git worktree`, `git worktree add`, `git worktree list`, `git worktree remove`, `git worktree prune` |
-| Expansion | Embedded development | `pio run`, `pio device monitor`, equivalent `platformio` routes, `esptool write-flash`, `esptool.py write-flash`, legacy `esptool.py write_flash`, `arduino-cli compile` |
+Each tier inventory lists every command in matrix order, the source edition, and the outcome for that path.
 
-Expansion rows group the new families; each entry retains its filtering tier in
-the machine-readable matrix. Priority affects implementation order, not inclusion.
-The two Python interpreter/module forms are additional invocation coverage of
-these command paths and are not counted as separate executable routes.
+| Tier | Paths | What the captured documentation supplied |
+| --- | ---: | --- |
+| [Essential](essential-discovery-audit.md) | 46 | 45 selectable menus. The npm root supplied usage and command names. |
+| [Next](next-discovery-audit.md) | 65 | 65 selectable menus, including cloud, compiler and development commands. |
+| [Extended](extended-discovery-audit.md) | 51 | 47 selectable menus. The audited ip link and ip route sources yielded usage-only diagnostics. The 7z x and 7zz x extraction paths use static profiles with root documentation available separately. |
 
-The maintained expectations, executable/package names, version requests, and
-tiers are in [matrix.json](../tests/fixtures/help/matrix.json). Root help and
-subcommand help are separate cases. Successful `pip` root discovery, for example,
-does not establish `pip install` compatibility.
+The [machine-readable matrix](../tests/fixtures/help/matrix.json) owns the test tiers, executable/package names, version requests and historical expectations. Root and subcommand requests are separate cases. Python interpreter/module invocations add coverage of existing commands. See the [module forms and their boundaries](invocation-and-structured-arguments.md#python-module-documentation).
 
 ## Enable the drivers
 
@@ -263,8 +223,7 @@ For local reproduction, see [isolated local debugging](development.md#isolated-l
 
 ### Third-party command validation
 
-The [rsync option audit](rsync-option-audit.md) maps the bundled menu to the
-upstream manual and both Ubuntu LTS man pages.
+For bundled help, the [family inventories](../ROADMAP.md#bundled-menu-progress) map the selectable rows to their manuals. For discovery, see the [Essential](essential-discovery-audit.md), [Next](next-discovery-audit.md) and [Extended](extended-discovery-audit.md) route dispositions. Their tests use fixed documentation and inert targets in real terminals. The [combined offline matrix](next-extended-discovery-verification.md#full-suite-matrix) records 1,870 passes and one Windows-only skip per target on that later snapshot. Hosted results above apply to the linked commit.
 
 The [complete expansion validation](compatibility-expansion-validation.md) records
 the earlier 129-route inventory, deterministic evidence, live versions, skips, and

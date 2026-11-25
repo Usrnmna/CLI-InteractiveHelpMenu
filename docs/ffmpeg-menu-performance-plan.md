@@ -2,10 +2,10 @@
 
 [Runtime architecture and first baseline](runtime-architecture.md#local-performance-baseline) · [FFmpeg manual coverage](ffmpeg-manual-coverage.md)
 
-Stage 1 applies to every command and subcommand menu that uses the shared
+Stage 1 is proposed. The current browser prepares each row separately. The proposed reuse applies to every command and subcommand menu that uses the shared
 browser, including bundled profiles, custom profiles, discovered help and
 authoring previews. During one browser construction, rows with the same
-eligible value definition and argument requirements can reuse its formatted
+eligible value definition and argument requirements would reuse its formatted
 text. Eligibility depends on the profile data. The acceptance criteria cover
 exact search and Details parity across menus and the cost of the eligibility
 check for menus with few or zero reusable definitions.

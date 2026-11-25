@@ -338,16 +338,21 @@ class ReleaseUpdateTests(unittest.TestCase):
         subprocess.run(["bash", str(ROOT / "install.sh"), "--prefix", str(self.prefix), "--rc-file", str(self.rc)],
                        env=self.environment, capture_output=True, check=True)
         self.current = (self.prefix / "VERSION").read_text().strip()
+        # Upgrade scenarios must offer a newer release than the checkout they install.
+        major, minor, patch_number, *_ = updater.version_key(self.current)
+        self.incoming_version = f"{major}.{minor}.{patch_number + 1}"
+        self.incoming_tag = "v" + self.incoming_version
+        self.archive_root = "cli-interactive-help-" + self.incoming_tag
         self.files = {}
         for pattern in installation.PAYLOAD:
             for path in ROOT.glob(pattern):
                 self.files[path.relative_to(ROOT).as_posix()] = path.read_bytes()
-        self.files["VERSION"] = b"0.1.2\n"
+        self.files["VERSION"] = (self.incoming_version + "\n").encode()
         self.files["cli_help/release_fixture.py"] = b"# incoming first\n# stable\n# incoming last\n"
 
     def client(self):
-        data = build_release.archive(self.files, "cli-interactive-help-v0.1.2")
-        value, blobs = package_release(data)
+        data = build_release.archive(self.files, self.archive_root)
+        value, blobs = package_release(data, tag=self.incoming_tag)
         return FakeClient([value], blobs)
 
     def run_update(self, client=None, **options):
@@ -371,7 +376,7 @@ class ReleaseUpdateTests(unittest.TestCase):
         before = installation.tree_state(self.prefix)
         rc = self.rc.read_bytes()
         self.assertEqual(self.run_update()[0], 0)
-        self.assertEqual((self.prefix / "VERSION").read_bytes(), b"0.1.2\n")
+        self.assertEqual((self.prefix / "VERSION").read_bytes(), self.files["VERSION"])
         self.assertEqual(installation.tree_state(self.reports()[0].parent / "previous"), before)
         self.assertEqual(self.rc.read_bytes(), rc)
         self.assertEqual(local.read_text(), "settings")
@@ -384,7 +389,7 @@ class ReleaseUpdateTests(unittest.TestCase):
         before = installation.tree_state(self.prefix)
         status, output = self.run_update(client, check=True)
         self.assertEqual(status, 0)
-        self.assertIn("available: v0.1.2", output)
+        self.assertIn("available: " + self.incoming_tag, output)
         self.assertEqual(len(client.calls), 1)
         self.assertFalse(self.stages())
         self.assertEqual(installation.tree_state(self.prefix), before)
@@ -420,7 +425,7 @@ class ReleaseUpdateTests(unittest.TestCase):
         client.blobs[package["browser_download_url"]] = b"x" * package["size"]
         with self.assertRaises(ValueError):
             self.run_update(client)
-        value, blobs = package_release(b"bad archive")
+        value, blobs = package_release(b"bad archive", tag=self.incoming_tag)
         with self.assertRaises(OSError):
             self.run_update(FakeClient([value], blobs))
         self.assertEqual(installation.tree_state(self.prefix), before)
@@ -435,7 +440,7 @@ class ReleaseUpdateTests(unittest.TestCase):
         self.assertEqual(status, 2)
         self.assertEqual(local.read_bytes(), data)
         self.assertIn("Resume guided conflict review", output)
-        self.assertTrue((self.stages()[0] / "cli-interactive-help-v0.1.2/scripts/update_review.py").is_file())
+        self.assertTrue((self.stages()[0] / self.archive_root / "scripts/update_review.py").is_file())
         self.assertEqual(update_review.ReviewSession(self.reports()[0]).status("profiles/rsync.json"), "pending")
 
     def test_nonterminal_conflicts_do_not_open_reviewer(self):
@@ -593,7 +598,7 @@ class ReleaseUpdateTests(unittest.TestCase):
             b'with result_file.open("x", encoding="utf-8") as stream:', b'raise OSError("completion write failed")\n        with result_file.open("x", encoding="utf-8") as stream:')
         with self.assertRaisesRegex(ValueError, "Incoming updater failed"):
             self.run_update()
-        self.assertEqual((self.prefix / "VERSION").read_bytes(), b"0.1.2\n")
+        self.assertEqual((self.prefix / "VERSION").read_bytes(), self.files["VERSION"])
         self.assertEqual((self.reports()[0].parent / "previous/VERSION").read_text().strip(), self.current)
         self.assertTrue(self.stages())
 

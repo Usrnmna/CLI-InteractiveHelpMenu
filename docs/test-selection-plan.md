@@ -28,7 +28,7 @@ A spot check on Ubuntu 26.04.1 with Python 3.14.4 timed the FFmpeg Bash/tmux wal
 
 Run a focused check on `host` during an edit. When the batch is ready for rendered verification, run the same family checks on `host`, `noble310` and `noble312` before the required full runs. Run the strict numerical gate after a reviewed change to profile facts or fingerprints. During development, continue to include each required untracked test, fixture and audit file with a separate `--include`. [Sandbox instructions](development.md#isolated-local-debugging) · [Batch verification](../ROADMAP.md#how-to-audit-a-batch)
 
-This command exercises the existing iproute2 editor regressions and its four route-inventory tests. Set `target` to a prepared sandbox. As the revisit adds tests, append its inventory, real-client fixtures and four menu checks to the family selection.
+This command exercises the existing iproute2 editor regressions and its four route-inventory tests. Set `target` to a prepared sandbox. For the complete family checks, include the inventory, executable fixtures and four rendered menus listed in the [completed iproute2 verification](iproute2-systemd-openssl-verification.md).
 
 ```bash
 target=host
@@ -74,8 +74,7 @@ pipe and forwarded by line.
 
 Use the prepared `noble310` and `noble312` images and the package loaders
 used by the preceding audits. Keep the checkout, fixture bytes and image
-tags fixed between waves. Include the two new Python files until they are
-tracked, along with any required untracked project inputs.
+tags fixed between waves. The timing runner and its tests are now tracked. Include the local package inputs and environment loaders needed to reproduce this historical comparison.
 [Ubuntu package and loaders](ffmpeg-manual-coverage.md#reproducing-the-sandbox-checks) · [Pinned yq executables](yq-eval-manual-coverage.md#reproduction) · [Sandbox setup](development.md#isolated-local-debugging)
 
 ```bash
@@ -84,8 +83,7 @@ logs=$(mktemp -d tests/reports/timing/reproduce-XXXXXXXX)
 run_timing_target() {
     local target=$1 mode=$2 name path
     local -a opts=() packages
-    for path in tests/{timed_unittest,test_timed_unittest}.py \
-        tests/reports/ffmpeg-revisit/suite-env.sh \
+    for path in tests/reports/ffmpeg-revisit/suite-env.sh \
         tests/reports/fzf-revisit/env.sh \
         tests/reports/yq-revisit/yq-{4.44.3,4.54.3}; do
         opts+=(--include "$path")
@@ -294,7 +292,7 @@ The next runnable task is the report-only selector and its full-run comparisons 
 
 | Input changed | Required selection |
 | --- | --- |
-| `profiles/ip-address.json`, `ip-link.json`, `ip-route.json` or `ss.json` | Shared collection and numerical preflight, four route cases, the iproute2 family inventory and menu checks, plus the applicable shared insertion and syntax checks. Add those family-specific tests as the revisit introduces them. |
+| `profiles/ip-address.json`, `ip-link.json`, `ip-route.json` or `ss.json` | Shared collection and numerical preflight, four route cases, the iproute2 family inventory and menu checks, plus the applicable shared insertion and syntax checks. Resolve the family-specific checks from the completed iproute2 audit. |
 | `config/drivers.example/ip.json`, `ss.json` or a mapped iproute2 help capture | Include the same family, route resolution, fixed discovery arguments, and keyword and positional boundaries. Include the packaged fixture checks when changes affect evidenced client behavior. |
 | A yq profile, capture or route | Include `test_yq_manual_inventory`, the yq menu and editing cases, and `SystemDependencyFollowupTests.test_installed_leaf_help_provenance_and_curated_flags`. Include pinned-client tests when syntax or executable behavior changes. |
 | Markdown | Check links, heading fragments and inbound links to renamed targets. If a file supplies test data, run the consuming test. For example, the system dependency test reads option tables from the Podman audit. If a release package includes the Markdown, its archive verification belongs in the affected set as well. |

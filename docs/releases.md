@@ -2,16 +2,10 @@
 
 [Project overview](../README.md) · [Installation](installation.md) · [Documentation index](README.md)
 
-## Version 0.1.2 - Alpha
+## Version 0.3.0 - Alpha
 
-The [VERSION](../VERSION) value `0.1.2-alpha` identifies the alpha prerelease tag
-`v0.1.2-alpha`. Published assets are listed on
-[GitHub Releases](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-The [versioned changelog](../CHANGELOG.md#version-012---alpha) and
-[release notes](release-notes-v0.1.2-alpha.md) describe the included work.
-Final distributable files are built from the exact release commit into a new
-ignored directory, such as `dist/release-v0.1.2-alpha/`. Local candidates and
-historical packages remain separate; building alone does not publish a release.
+The [version file](../VERSION) sets the current checkout to `0.3.0-alpha`. Building it produces the `v0.3.0-alpha` filenames below. The [changelog](../CHANGELOG.md#version-030---alpha) lists the changes. To obtain these packages from source, follow the [build procedure](#build-from-source).
+
 The [candidate validation guide](release-candidate.md) covers exact-source
 checks, isolated lifecycle tests, rendered evidence, and remaining evidence limits.
 
@@ -23,27 +17,29 @@ different contents at an equal version as an upgrade.
 
 The prerelease targets Linux and Bash;
 Python 3.10+ with `curses`, Bash 4.4+, and a UTF-8 terminal remain required.
-The native launcher is compiled for Linux x86_64 on Ubuntu 24.04 and requires
-glibc 2.34 or newer. Systems with an older glibc or a different C library can use
-the source archive through its Bash/Python entry points. The launcher forwards
+The native launcher targets Linux x86_64. Its libc requirement depends on the build environment. The launcher forwards
 literal arguments to the adjacent Python or Bash runtime; it does not embed
 Python and is not a Windows executable. Other Linux architectures can use the
 source archive with a compatible Python/Bash installation.
 
 | Artifact | Purpose |
 | --- | --- |
-| `cli-interactive-help-v0.1.2-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
-| `cli-interactive-help-v0.1.2-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
-| `cli-interactive-help-v0.1.2-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
-| `cli-help-v0.1.2-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
+| `cli-interactive-help-v0.3.0-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
+| `cli-interactive-help-v0.3.0-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
+| `cli-interactive-help-v0.3.0-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
+| `cli-help-v0.3.0-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
 | `BUILD-INFO.json` | Version, compiler/platform details, and hashes of all packaged source inputs |
 | `*.checksum` | SHA-256 checksums for each artifact, plus the aggregate `SHA256SUMS.checksum` |
+
+## Version 0.1.2 - Alpha
+
+The earlier [published v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) includes source and Linux x86_64 packages. Its launcher was built on Ubuntu 24.04 and requires glibc 2.34 or newer. Use the filenames and installation examples in the [v0.1.2-alpha release notes](release-notes-v0.1.2-alpha.md).
 
 ## Version 0.1.1 - Alpha
 
 The files under `releases/v0.1.1-alpha/` are preserved historical packages, also
 associated with the [GitHub Releases page](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-Their artifact names use `v0.1.1-alpha` in place of `v0.1.2-alpha` above.
+Their artifact names use `v0.1.1-alpha` in place of `v0.3.0-alpha` above.
 Those packages predate the current command-context and argument-syntax modules,
 passive diagnostics, module-cache freshness guards, terminal-width fixes,
 collection recovery, and GitHub updater. Their source archive is complete for
@@ -52,8 +48,7 @@ checksums must remain unchanged. They are used as isolated upgrade fixtures.
 
 ## Verify and install
 
-Download the eleven named release files into one directory, or use a verified
-local build. Verify before installation:
+Run these commands in the v0.3.0-alpha build output directory. For a published package, use the matching filenames and checksums from that release.
 
 ```bash
 sha256sum -c SHA256SUMS.checksum
@@ -63,15 +58,15 @@ For an individual downloaded artifact, use its matching `.checksum` file instead
 For the self-extracting installer:
 
 ```bash
-bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run --verify
-bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
+bash cli-interactive-help-v0.3.0-alpha-linux-x86_64.run --verify
+bash cli-interactive-help-v0.3.0-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
 ```
 
 Installer arguments such as `--prefix "$HOME/apps/cli-help"` and `--no-rc` are
 forwarded literally. Existing installations can be upgraded without removal:
 
 ```bash
-bash cli-interactive-help-v0.1.2-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
+bash cli-interactive-help-v0.3.0-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
 ```
 
 The installer requires `tar`, `tail`, `mktemp`, and `sha256sum`, in addition to the
@@ -90,8 +85,8 @@ continues through the Python runtime. Custom launcher changes are preserved.
 ## Extracted runtime and native launcher
 
 ```bash
-tar -xzf cli-interactive-help-v0.1.2-alpha-linux-x86_64.tar.gz
-cd cli-interactive-help-v0.1.2-alpha
+tar -xzf cli-interactive-help-v0.3.0-alpha-linux-x86_64.tar.gz
+cd cli-interactive-help-v0.3.0-alpha
 ./cli-help --version
 ./cli-help --check
 ./cli-help install
@@ -113,8 +108,8 @@ GCC is required in addition to the runtime dependencies. From Linux x86_64:
 
 ```bash
 bash tests/run.sh
-python3 scripts/build_release.py --output dist/release-v0.1.2-alpha
-cd dist/release-v0.1.2-alpha
+python3 scripts/build_release.py --output dist/release-v0.3.0-alpha
+cd dist/release-v0.3.0-alpha
 sha256sum -c SHA256SUMS.checksum
 ```
 
@@ -135,10 +130,9 @@ refuses special files before reading, and rechecks file and directory identity.
 Concurrent replacements or edits during a read abort the build. Input names with
 backslashes or control characters are rejected to match updater extraction rules.
 
-Selection uses the explicit root files and source directories in the builder,
-without requiring Git. New maintained modules are included automatically.
+The [builder](../scripts/build_release.py) reads working-tree bytes from its explicit root files and source directories. It operates independently of the Git index and archive attributes. It includes `docs/`, `.github/` and the root README, changelog and repository configuration. The root `ROADMAP.md` is outside that list. Open the roadmap in a checkout when following contributor links from an extracted source archive. New maintained modules are included automatically.
 Untracked files under those directories can also become inputs; inspect the
-manifest before building and keep private notes outside them. Reserved-name
+input list before building, check the resulting manifest, and keep private notes outside those directories. Reserved-name
 exclusion is not secret-content detection. Installed runtimes contain only the
 installation payload, excluding documentation, tests, CI, and optional media tools.
 

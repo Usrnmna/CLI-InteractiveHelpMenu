@@ -41,7 +41,7 @@ remain unchanged. If no newer eligible release is published, the check reports
 no update. A release check does not obtain unreleased checkout changes, even
 when their `VERSION` matches the installed alpha.
 
-The `v0.1.2-alpha` version line is a prerelease. Use `--prerelease --check` to
+The current source version, `v0.3.0-alpha`, is a prerelease. Use `--prerelease --check` to
 inspect eligible published alpha packages; availability is determined by the
 [GitHub Releases listing](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
 An older same-version local candidate requires a

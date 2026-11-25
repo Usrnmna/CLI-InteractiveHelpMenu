@@ -24,8 +24,8 @@ runtime details are recorded in local capture evidence.
 
 ## Demonstration sequence
 
-Capture uses a 100-column, 24-row terminal, bundled profiles, and disabled
-discovery. The rsync profile contains 29 options in nine categories; ls has
+The October capture used a 100-column, 24-row terminal, bundled profiles, and disabled
+discovery. Its rsync profile contained 29 options in nine categories; ls had
 19 options in three categories, with twelve options in Display. Seven list rows
 fit in this viewport, making both category and option scrolling visible.
 
@@ -63,8 +63,9 @@ discovery, manual rendering, or external editor is used.
 
 ## Regeneration
 
-Run from the repository root under Linux or WSL with Python 3.10+, Bash 4.4+,
-and the DejaVu Sans Mono font installed:
+The [capture script](../../tools/capture_readme_media.py) still asserts `Category 1/9` for rsync and `Display (12)` for ls. The current profiles have 13 rsync categories and 20 options in ls Display. Regenerate the historical scenes from matching capture inputs. To illustrate the expanded menus, revise the script’s navigation, captions and assertions first.
+
+From the matching repository root, use Linux or WSL with Python 3.10+, Bash 4.4+ and the DejaVu Sans Mono font:
 
 ```bash
 python3 -m venv .venv

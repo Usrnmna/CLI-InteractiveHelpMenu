@@ -12,13 +12,7 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe the current working tree. The
-[versioned changelog](../CHANGELOG.md#version-012---alpha) and
-[release notes](release-notes-v0.1.2-alpha.md) record the prerelease scope. The
-[v0.1.2-alpha packages](releases.md#version-012---alpha) are a release snapshot;
-[v0.1.1-alpha artifacts](releases.md#version-011---alpha) are historical packages.
-Neither an equal version string nor a dated review establishes current checkout
-contents. Dated reviews retain the results and limitations of their own runs.
+The operating guides describe v0.3.0-alpha. The [changelog](../CHANGELOG.md#version-030---alpha) summarizes its changes and the [release guide](releases.md#version-030---alpha) identifies its build artifacts. Earlier release notes and dated reviews describe the versions tested at the time.
 
 The [visual and configuration audit](media-and-configuration-review.md) maps the
 documentation media and diagrams to source behavior, capture evidence, and
@@ -31,7 +25,7 @@ repository policy checks.
 | Per-user installation, startup registration, updates, and removal | [Installation, updates, and removal](installation.md) |
 | Compare update conflicts, choose file versions, and save with backups | [Interactive update review](update-review.md) |
 | Download, verify, install, or build versioned packages | [Release artifacts and build procedure](releases.md) |
-| Changes, requirements, package selection, and limits for v0.1.2-alpha | [v0.1.2-alpha release notes](release-notes-v0.1.2-alpha.md) |
+| Historical release notes and installation examples for the published v0.1.2-alpha packages | [v0.1.2-alpha release notes](release-notes-v0.1.2-alpha.md) |
 | Verify current source provenance, package lifecycles, and installed terminal behavior | [Local release candidate validation](release-candidate.md) |
 | Check GitHub releases, verify downloads, and upgrade with guided conflict review | [Updating from GitHub releases](github-updates.md) |
 | Requirements, loading, navigation, search, and custom shortcuts | [Setup, browser controls, and keybindings](usage.md) |
@@ -76,7 +70,7 @@ defines both formats.
 ## Numerical guidance and verification
 
 The [option-description regression review](regression-review.md) records the
-current command-path and function coverage, terminal checks, parser repairs,
+October 2026 command-path and function coverage, terminal checks, parser repairs,
 skips, and remaining gaps after the four display fixes.
 
 | Question | Maintained explanation |
@@ -95,8 +89,16 @@ retains the earlier WSL and hosted results.
 
 ## Development and evidence
 
-The [project roadmap](../ROADMAP.md) tracks the command-help audit, its next
-batch, completion criteria and links to verified results.
+Start with the [project roadmap](../ROADMAP.md#remaining-work) for remaining tasks, dependencies and acceptance criteria. Use the [bundled family table](../ROADMAP.md#bundled-menu-progress) for manual inventories and the [discovery tier results](../ROADMAP.md#discovered-command-help) for fixed source editions and terminal evidence.
+
+| Contributor question | Guide |
+| --- | --- |
+| What happens between Alt-H and the return to Bash? | [Runtime data flow](runtime-architecture.md) |
+| What enters a sandbox, source archive or Git diff? | [Repository configuration](development.md#repository-configuration) and [source package contents](releases.md#build-from-source) |
+| How should a family audit be verified? | [Batch procedure](development.md#auditing-command-help) and [fixture provenance](../tests/fixtures/help/README.md) |
+| Which improvements have been measured or proposed? | [Local test timing and selection](test-selection-plan.md) and [command menu performance](ffmpeg-menu-performance-plan.md) |
+
+The family audits, verification accounts and release notes describe particular sources or runs. Versioned third-party documentation in fixtures is evidence for the parser and menu tests. Generated reports belong under `tests/reports/`; curated numerical review decisions in [the inventory](numerical-inventory/README.md) are maintained inputs.
 
 Implementation accounts retain their original outcomes. Later corrections and
 verification supersede only the findings explicitly identified in those accounts.

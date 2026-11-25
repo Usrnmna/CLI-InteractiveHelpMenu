@@ -37,7 +37,7 @@ can execute the resulting line. Bash checks the terminal size before and after
 the helper and requests a Readline redraw if it changed. The optional native
 `cli-help` command uses `execvp` to replace its own process with Python for
 runtime modes. The Alt-H binding invokes Python directly.
-[Bash adapter](../bash/interactive-help.bash#L13) · [Python entry point](../cli_help/main.py#L43) · [Native launcher](../native/cli_help.c#L14)
+[Bash adapter](../bash/interactive-help.bash#L13) · [Python entry point](../cli_help/main.py#L65) · [Native launcher](../native/cli_help.c#L14)
 
 ## 2. Which reference files are read
 
@@ -79,7 +79,7 @@ executable usually changes the cache key. The key tracks the `man` executable
 and `MANPATH`, so a manual page edited in place may need expiry or an explicit
 `--discover ... --refresh`. Discovery subprocesses receive fixed documentation
 arguments without the pending line's operands or option values.
-[Profile loader](../cli_help/core.py#L153) · [Context resolver](../cli_help/core.py#L220) · [Driver loader](../cli_help/drivers.py#L114) · [Discovery and cache](../cli_help/discovery.py#L1261)
+[Profile loader](../cli_help/core.py#L157) · [Context resolver](../cli_help/core.py#L224) · [Driver loader](../cli_help/drivers.py#L115) · [Discovery and cache](../cli_help/discovery.py#L1574)
 
 ## 3. Work while the menu is open
 

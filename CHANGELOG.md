@@ -1,8 +1,12 @@
 # Changelog
 
-## Unreleased
+## Version 0.3.0 - Alpha
 
-No additional changes are recorded after `v0.1.2-alpha`.
+For `v0.3.0-alpha` packages from this checkout, follow the [build and verification procedure](docs/releases.md#build-from-source).
+
+- Bundled menus now cover the reviewed command manuals, with concise summaries, searchable qualifications and literal insertion forms. [Family inventories and verification](ROADMAP.md#bundled-menu-progress)
+- Discovery readers preserve command-specific options and their applicable descriptions across all three maintained tiers. [Discovery evidence](ROADMAP.md#discovered-command-help)
+- The Bash adapter handles the Vi insertion binding on Ubuntu 26.04. The offline sandbox supports focused commands and optional timing across the three Ubuntu/Python targets. [Compatibility results](docs/compatibility.md#ubuntu-and-python-test-results) · [Sandbox procedure](docs/development.md#isolated-local-debugging)
 
 ## Version 0.1.2 - Alpha
 

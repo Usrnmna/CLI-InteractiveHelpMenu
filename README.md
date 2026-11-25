@@ -2,6 +2,8 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
+**[Version 0.3.0 - Alpha](CHANGELOG.md#version-030---alpha)**
+
 **Find the right option without leaving an unfinished Bash command.**
 
 Press **Alt-H** to browse categorized help, search descriptions, and insert an
@@ -15,8 +17,7 @@ whose flags and argument syntax are difficult to remember.
 
 ![Actual Bash UI with aligned option descriptions: navigate categories, inspect scoped bandwidth units, search bytes/second, insert options, and cancel without executing the pending rsync or ls command.](docs/assets/option-insertion.gif)
 
-The 36-second demonstration uses real terminal output with static profiles and
-discovery disabled. [Static browser view](docs/assets/help-browser.png) ·
+The 36-second recording shows the October 2026 menus with discovery disabled. The current profiles contain more options. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
 [Capture method and limits](docs/assets/README.md)
@@ -78,13 +79,7 @@ existing contents. New interactive Bash sessions load it automatically.
 For a temporary session directly from the checkout, use
 `source "$PWD/bash/interactive-help.bash"` instead of installing.
 
-For versioned downloads, the published
-[v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha)
-offers source archives and a Linux x86_64 installer. Follow the
-[package selection and checksum instructions](docs/releases.md#verify-and-install)
-before installation. The native launcher requires an adjacent Bash/Python runtime
-and glibc 2.34+; source installation remains available for other Linux environments.
-Checkout changes can extend beyond a release snapshot.
+For a v0.3.0-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
 
 ### Insert the first option
 
@@ -101,20 +96,9 @@ See [installation, custom paths, updates, and removal](docs/installation.md) for
 
 ## Using the browser
 
-| Default keys | Action |
-| --- | --- |
-| Up/Down, PageUp/PageDown, Home/End | Navigate the focused list |
-| Left/Right | Change category |
-| Tab | Switch between category and option panes |
-| `/`, then Enter | Apply a search; press Enter again to insert a selected option |
-| Ctrl-U | Clear the filter |
-| `[` / `]` | Scroll the selected option's complete details |
-| Escape or Ctrl-C | Cancel and retain the original line and cursor |
+Use the arrow keys to browse, `/` to search and `[` or `]` to scroll Details. Enter applies a search. In the options pane, Enter inserts the selected spelling. Type any required value back at the prompt. Escape while entering a search restores the previous filter. Escape outside search or Ctrl-C returns to the original line and cursor.
 
-Options requiring values display an argument placeholder. After insertion, type
-the value at the prompt; attached forms leave the cursor next to the flag.
-The [complete controls and configuration guide](docs/usage.md#browser-controls)
-covers description scrolling, alternate keys, Vi keymaps, and terminal resizing.
+See [browser controls and keybindings](docs/usage.md#browser-controls) for paging, pane focus, Vi mode and custom shortcuts.
 
 ### Understand the value before inserting it
 
@@ -146,13 +130,7 @@ flowchart TD
 
 ## Compatibility and execution boundaries
 
-Curated profiles cover subsets of Linux utilities, development tools, containers,
-cloud CLIs, and embedded tooling. Ordinary static profiles work without installed
-targets; vendor/version-guarded profiles require identity verification.
-Generated help is inferred and can omit options or misidentify value requirements.
-Compound placeholders and nested manual sections retain their documented context;
-borrowed manuals require explicit applicable sections rather than becoming a
-blanket source of options. See [source ownership and parser limits](docs/discovery-and-safety.md#profile-selection).
+The checkout includes 76 bundled command profiles. Ordinary profiles work without an installed target. Vendor/version-guarded profiles require executable identity verification in automatic discovery mode. The [bundled audit](ROADMAP.md#bundled-menu-progress) records the manual editions, aliases and limits by family.
 
 The [command compatibility matrix](docs/compatibility.md) lists maintained paths,
 version constraints, verification limits, and **explicit activation instructions
@@ -174,7 +152,7 @@ next help request:
 export CLI_HELP_DISCOVERY=man
 ```
 
-Manual-only discovery needs an installed executable and a usable local manual.
+For commands that need discovery, manual-only lookup needs an installed executable and a usable local manual.
 `CLI_HELP_DISCOVERY=off` restricts browsing to static profiles. Bulk manual scanning,
 manual import, and review preview do not invoke target programs. The
 [discovery and safety guide](docs/discovery-and-safety.md) explains all modes,
@@ -216,9 +194,9 @@ covers custom destinations and existing shell sessions after removal.
 | Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
 | Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
 | Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
-| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.1.2-alpha notes](docs/release-notes-v0.1.2-alpha.md) |
+| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.3.0-alpha changes](CHANGELOG.md#version-030---alpha) |
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
-| Find the next command audit and track remaining development work | [Project roadmap](ROADMAP.md) |
+| Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
 
 The [documentation index](docs/README.md) links all operating guides and dated
 validation reports. [Terminal media capture](docs/assets/README.md) describes the

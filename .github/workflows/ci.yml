@@ -16,7 +16,8 @@ jobs:
   linux-tests:
     name: Linux tests (Python ${{ matrix.python }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    # The three-target discovery audit takes over 40 minutes before package verification.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -236,7 +237,7 @@ jobs:
   documentation:
     name: Documentation links
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 45
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -250,8 +251,15 @@ jobs:
           key: lychee-${{ runner.os }}-v0.24.2-${{ hashFiles('lychee.toml') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             lychee-${{ runner.os }}-v0.24.2-${{ hashFiles('lychee.toml') }}-
+      - name: Initialize documentation evidence
+        run: |
+          mkdir -p tests/reports
+          printf 'No final Lychee report. Check the initial link-check and retry steps in run %s, attempt %s.\n' \
+            "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" > tests/reports/documentation-links.md
       - name: Check local and external documentation links
         id: documentation-links
+        # Reserve time for the bounded retry, cache save and artifact upload.
+        timeout-minutes: 35
         # The final gate retains strict failure handling after one permitted retry.
         continue-on-error: true
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0

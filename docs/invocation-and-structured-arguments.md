@@ -77,7 +77,7 @@ system manual into the selected interpreter's result. Manual-only mode uses a
 fixed module manual without running Python and labels its installed-version
 context as unverified. Discovery-off mode requires an explicit reviewed profile
 whose command is, for example, `["python3", "-m", "pip", "install"]`; an ordinary
-`["pip", "install"]` profile cannot substitute. Cache version 10 includes the
+`["pip", "install"]` profile cannot substitute. The module cache key includes the
 interpreter invocation path, file identity, module, interpreter switches, route,
 mode, virtual-environment configuration identity, a hash of the probe HOME
 context, and executable variant evidence. Auto
@@ -168,5 +168,4 @@ their token. Parent-driver options and other profiles retain their existing gram
   operator-maintained documentation, not automatic version verification.
 
 Ordinary curated profiles remain usable without installed targets in all discovery
-modes. Curated documentation specifies a maintained option subset; successful
-browser insertion does not establish a valid complete workload or physical result.
+modes. The [family audits](../ROADMAP.md#bundled-menu-progress) identify the documented syntax and editions covered by each profile. Insertion checks establish the resulting line and cursor. Successful execution of a complete workload needs separate evidence.

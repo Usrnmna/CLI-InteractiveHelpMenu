@@ -9,7 +9,10 @@ Commands in this guide are run from the repository root unless stated otherwise.
 ```mermaid
 flowchart TD
     C[Validated command context] --> P{Matching static profile?}
-    P -->|Yes| B[Browse help]
+    P -->|Ordinary static profile| B[Browse help]
+    P -->|Guarded profile| G{Identity verified and discovery successful?}
+    G -->|Yes| B
+    G -->|No| E
     P -->|No| M{Discovery mode}
     M -->|off| E[Diagnostic; pending command retained]
     M -->|Valid fresh matching cache in man or auto| B
@@ -24,9 +27,7 @@ flowchart TD
     V -->|No usable options| E
 ```
 
-The diagram summarizes source selection. Cache reuse can satisfy a discovery
-request without a new subprocess. Static-profile matching, fixed driver routes,
-and cache behavior are described in the sections below.
+Ordinary profiles open directly. Guarded profiles display their curated rows after successful discovery and identity verification. A cached ordinary discovery result can avoid new probes. See [which reference files are read](runtime-architecture.md#2-which-reference-files-are-read) for the sequence.
 
 ## Automatic help discovery
 
@@ -53,8 +54,7 @@ Ansible playbook help/version probes use fixed `C.UTF-8` locale values because
 current Ansible refuses a non-UTF-8 locale. Other probes retain the `C` locale.
 Ordinary child processes in the probe's process group are terminated on timeout,
 overflow, cancellation, and completion. One failed source does not prevent use
-of the other source. The initial uncached lookup may take up to approximately
-four seconds before the browser opens.
+of the other source. Two sequential generic probes can each consume the configured timeout. A guarded route can also need an identity request, and parsing, profile loading and drawing add time before the first frame. [Runtime measurements](runtime-architecture.md#local-performance-baseline)
 
 **Automatic discovery may execute the target program's help invocation.**
 Arbitrary executables may ignore help requests, read configuration, or have startup
@@ -297,12 +297,7 @@ configuration without running discovery.
 
 Cache writes are atomic. Expired, malformed, oversized, or schema-invalid cache
 entries are ignored. Unavailable cache storage does not prevent discovery.
-The cache generation invalidates obsolete interpreted documentation after parser
-changes, including compound operands, nested sections and manual-scope association.
-Generation 15 also invalidates entries parsed with incomplete terminal-sequence
-sanitization. Generation 16 additionally invalidates incomplete comma-containing
-operands and shared equals aliases. Regeneration occurs only through the existing permitted discovery
-path. Imported and curated profile files are not rewritten; captured sources can
+The [discovery implementation](../cli_help/discovery.py) includes a format generation in the cache identity (currently 18). After a generation change, earlier parsed entries cannot satisfy a lookup. Fresh results come from the documentation requests permitted by the selected mode. Imported and curated profile files are not rewritten; captured sources can
 be re-imported to a separate file and reviewed using the
 [manual import workflow](manual-import.md).
 Requested command, actual manual and any explicit scope remain distinct cache

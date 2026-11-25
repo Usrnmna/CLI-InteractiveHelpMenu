@@ -56,8 +56,7 @@ docker run --
 docker --context local container run --
 ```
 
-The repository contains curated subsets for common Linux, development, cloud,
-and embedded command families. Ordinary static profiles do not require installed
+The bundled profiles cover specific paths in Linux, development, cloud, and embedded command families. The [family inventories](../ROADMAP.md#bundled-menu-progress) list their manual coverage and release-specific limits. Ordinary static profiles do not require installed
 commands. Vendor/version-guarded profiles require identity verification. Custom
 profiles replace bundled definitions for matching paths. See
 [prefix/module forms and structured entry](invocation-and-structured-arguments.md)
@@ -121,9 +120,7 @@ line and `[` / `]` controls provide access to the complete explanation and liter
 declaration. See [numerical presentation and search](numerical-inventory/step5-presentation.md)
 for source conflicts, applicability, legacy behavior and verification limits.
 
-Both list panes scroll to keep the selected item visible. The `rsync` profile
-contains nine categories, and the `ls` Display category contains twelve options,
-so scrolling can be exercised in an ordinary 24-row terminal.
+Both panes scroll to keep the selected item visible. Clear the filter with Ctrl-U and use PageDown in the ls Display category to see additional options. The footer shows the current position and total.
 
 Selection is shown with a `>` marker, focus with a `*` marker, and highlighting;
 color alone is not required. Labels and descriptions are clipped/wrapped in

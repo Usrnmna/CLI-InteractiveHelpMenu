@@ -6,7 +6,7 @@ Commands in this guide are run from the repository root unless stated otherwise.
 
 ## Editable help profiles
 
-Each file in `profiles/` describes one command or command/subcommand path. A
+Each file in [the bundled collection](../profiles/) describes one command or command/subcommand path. The [family audits](../ROADMAP.md#bundled-menu-progress) record which manual editions and aliases informed each menu. A
 minimal additional profile has this structure:
 
 ```json
@@ -116,24 +116,7 @@ option documentation. JSON drivers add programs, nested subcommands, global-opti
 arity, fixed help requests, manual names, and positional boundaries without Python
 source changes. Static profiles still take precedence for the exact command path.
 
-To enable the included third-party driver collection from the checkout:
-
-```bash
-export CLI_HELP_DRIVERS="$PWD/config/drivers.example"
-python3 cli_help/main.py --check
-python3 cli_help/main.py --list-drivers
-python3 cli_help/main.py --discover pip install
-python3 cli_help/main.py --discover npm install
-```
-
-After loading the Bash adapter, pending lines such as `pip install --` and
-`npm --prefix project install --` can use Alt-H. A separate included `pip3`
-driver provides the same pip routes for that executable name. The
-[compatibility matrix](compatibility.md) lists all included programs and tested paths.
-To maintain an independent collection, copy the
-[example driver files](../config/drivers.example) into a local directory and set
-`CLI_HELP_DRIVERS` to that directory. Drivers are reloaded
-on each helper invocation.
+To load the supplied drivers from a checkout or an installed runtime, follow [driver activation](compatibility.md#enable-the-drivers). Drivers are reloaded on each helper invocation. For example, the supplied `pip` and `pip3` routes request install help for their respective executables. To add routes alongside the supplied collection, use [manual composition](#activation-and-manual-composition).
 
 A minimal driver for another program is:
 

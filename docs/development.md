@@ -51,7 +51,7 @@ their execution checks, and the optional regeneration dependencies.
 
 Run validation from Linux x86_64 or WSL with Bash, Python 3.10 or newer, GCC,
 Git, and tmux installed. GCC, Git, and tmux are test dependencies; installed runtime
-packages require neither:
+packages do not require those test tools:
 
 ```bash
 bash tests/run.sh
@@ -78,12 +78,16 @@ python3 -I tests/run_sandbox.py -- python3 -m unittest discover -s tests \
   -p test_bash_pty.py -k rebinding_between_keymaps -v
 ```
 
-The [test selection plan](test-selection-plan.md) records future work to shorten the edit-and-test cycle and validate reuse of earlier results against the full matrix.
+To run a particular test, pass its command after `--`. For timing data, use `CLI_HELP_TEST_TIMING=1`. The [test selection plan](test-selection-plan.md#phase-status-and-gates) distinguishes these available options from the proposed impacted-test selector.
 
-Use `--include tests/new_fixture.json` before `--` to add a new, untracked
-file to that run. Paths are relative to the repository root. The runner
-accepts regular files and rejects symlinks. Shell redirection on the host can
-retain a log. For example, `python3 -I tests/run_sandbox.py > run.log 2>&1`.
+The runner uses the Git index to enumerate paths and reads each path from the working tree. A staged file with later unstaged edits contributes its current bytes. Missing tracked files are omitted. Use one `--include PATH` **before** `--` per required untracked file, including new modules, tests, Markdown inventories read by tests and ignored package fixtures or setup scripts. Paths must be checkout-relative regular files with real parent directories. Review the inputs before including private or generated files. [Snapshot implementation](../tests/run_sandbox.py)
+
+Redirect output on the host to keep a log under the ignored report tree:
+
+```bash
+mkdir -p tests/reports
+python3 -I tests/run_sandbox.py > tests/reports/sandbox.log 2>&1
+```
 
 The two [Ubuntu 24.04 image targets](../tests/sandbox/Containerfile) use
 rootless Podman. Preparation downloads Ubuntu packages and, for Python 3.10,
@@ -99,9 +103,7 @@ python3 -I tests/run_sandbox.py --target noble312
 ```
 
 Both container runs disable network access and image pulls, drop capabilities
-and use a read-only image with executable private scratch storage. The runner
-prints the actual Ubuntu, Bash and Python versions and checks the requested
-Ubuntu/Python combination before starting tests. The same focused command
+and use a read-only image with executable private scratch storage. All targets print their actual OS, Bash and Python versions. The Noble targets also check the requested Ubuntu/Python combination before running tests. The host target uses the host versions. The same focused command
 syntax works with either target.
 
 The [native terminal and POSIX verification guide](numerical-inventory/native-posix-verification.md)
@@ -115,20 +117,7 @@ The [complete expansion validation report](compatibility-expansion-validation.md
 records its dated matrix, full-suite results, live versions, missing dependencies,
 and the distinction between deterministic edits and live documentation evidence.
 
-GitHub Actions runs the deterministic suite and retains
-the suite log, fixed-input passive diagnostic reports, and documentation-link
-reports for 14 days, including failed runs.
-The fixed-input reports include passive collection inspection, invalid collection
-metadata, and bundle-value rejection. A private fixture target records unexpected
-execution, and smoke checks retain collection bytes unchanged. Raw collection
-contents and backups are not uploaded.
-The Bash pipeline preserves the suite's exit status when recording its log.
-Only explicitly named report files are uploaded; isolated tool homes, installer
-scratch directories, and downloaded binaries are excluded. Installer scratch
-directories are also excluded from Git and documentation-link scanning, while
-maintained fixtures and public documentation assets remain eligible for tracking.
-Dependabot groups minor and patch updates for CI actions and
-documentation-media dependencies; major updates remain separate.
+[Continuous integration](#continuous-integration) lists the hosted commands, retained reports and link-check policy.
 
 The terminal tests launch isolated Bash sessions, feed real key sequences, and
 inspect Readline buffers. A harmless shell function records whether the pending
@@ -141,6 +130,14 @@ subcommand and global-option recognition, nested paths, and pending-argument
 isolation. Docker fixtures record every call and flag any action dispatch.
 These checks do not establish compatibility with every terminal emulator,
 customized Readline configuration, command version, or help format.
+
+### Auditing command help
+
+1. Group independent families and record the exact command paths. For each, inventory options, aliases, operand forms and versions in the upstream and both Ubuntu manuals. If a distribution lacks a manual, identify the gap and use version-matched official documentation. Distinguish executable observations from source findings. [Example manual inventory](tar-manual-coverage.md#manual-inventory)
+2. Reconcile each spelling and its command boundary. Keep one short statement of effect on the row. Put defaults, units, order, side effects, interactions and release restrictions in Details where they change what to type or expect. Preserve searchable terms and literal insertion. Record unsupported forms and blockers against the exact path. [Podman volume example](podman-run-manual-coverage.md#material-changes)
+3. Run focused family, shared parser, edit and historical capture checks. Use a stub in real Bash/tmux to inspect every changed row and its complete Details. At 60×16, search for a manual term, scroll to a qualification, cancel with buffer and cursor intact, then verify exact midline insertion and absence of command execution. For discovery, record source/version, fixed probe arguments and any usage-only or fallback result.
+4. Reconcile the numerical inventory and inspect changed facts before refreshing fingerprints. Run the strict gate on the integrated profiles. Once focused checks pass, run one full offline suite per target from the same combined inputs. Include all required untracked fixtures. Fix failures, repeat affected focused checks and verify the corrected snapshot. Record versions, passes, failures and skips. Keep hosted runs and local evidence distinct. [Sandbox setup](#isolated-local-debugging) · [Combined verification example](next-extended-discovery-verification.md)
+5. Link family results and unresolved gaps from the [roadmap](../ROADMAP.md#recording-progress-and-finishing-the-audit). Record counts for original rows, additions, aliases and dispositions in the family audit.
 
 ## Context, diagnostics, and module freshness regressions
 
@@ -255,65 +252,29 @@ subject to their own validation.
 
 ## Repository configuration
 
-[.gitattributes](../.gitattributes) declares LF text format for Linux tools,
-including when Git runs on Windows. Effective attributes do not establish the
-current bytes of an existing checkout. README media and compressed manuals
-are binary and are not subject to line-ending conversion.
-Python and C files select Git's built-in language diff patterns for function
-context. Terminal recordings (`.cast`) and structured capture metadata (`.jsonl`)
-use LF text attributes; raw local captures still belong in ignored directories.
-[.editorconfig](../.editorconfig) applies matching editor defaults while preserving
-significant whitespace in Markdown and help-parser fixtures.
-Curated numerical review annotations are explicitly unmarked as generated so
-GitHub's generated-file classification does not hide their review by default.
-The [GitHub attribute reference](https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github)
-describes this diff-display setting.
-Editor text transformations are unset for root cache, report, build and generated
-collection directories to preserve downloaded bytes and reproducible evidence.
+The repository supplies one root [.gitignore](../.gitignore) and one root [.gitattributes](../.gitattributes). There are no maintained nested overrides, submodules, hook scripts, or custom merge/diff driver configurations. Personal excludes, hooks and checkout-local Git settings can differ between contributors.
 
-[.gitignore](../.gitignore) excludes local Python environments, caches, test
-reports, review backups, collection locks, and local environment files. The
-rules also exclude credential homes, shell histories, application sessions,
-installation receipts, and default runtime copies in root or nested isolated
-homes. Known capture, build, installer, and review session names are excluded at
-any depth. Matching link-scan exclusions protect private runtime and recovery
-directories while keeping maintained fixtures and public documentation visible.
-Local release candidates and reproducibility outputs remain under ignored `dist/`
-or `.cache/`; curated historical release assets remain eligible for tracking. The
-documented `generated-help/` output directory is also excluded. Generated
-collections in other locations require an appropriate ignore rule or an output
-path outside the checkout. Source, bundled profiles, example drivers, fixtures,
-workflow configuration, and published README media remain eligible for tracking.
-Ignore rules do not remove files already tracked by Git.
-[Ignore-policy regressions](../tests/test_repository_config.py) use an isolated
-Git repository to check private artifacts and maintained-file exceptions without
-changing the checkout index or consulting personal Git configuration.
-They also check actual Git attributes: extensionless native artifacts remain
-binary in every artifact location, and maintained source/help text retains LF.
-Editor defaults exclude those extensionless binaries from text transformations.
-Unversioned `cli-help` launchers are ignored at every directory depth; versioned
-release launchers remain eligible for tracking.
-Disposable `cli-help-inventory-*` directories share the ignore, link-scan and
-release-source exclusions used for other temporary sessions. Maintained
-`docs/numerical-inventory/review.json`, its guide, generator and tests remain
-eligible for tracking; generated facts belong under `tests/reports/`.
-Environment-file templates ending in `.example`, `.sample`, or `.template`
-remain eligible for tracking, including names such as `.env.development.example`.
-Ignored caches and reports can contain local machine paths and downloaded tools;
-known generated directories are excluded from documentation link scans. Release
-selection has its own explicit roots and reserved-name rules; Git ignore rules
-do not control packaging. Inspect the manifest for custom output/home locations
-as described in [release candidate validation](release-candidate.md).
-The source selector excludes the exact `.local/share/cli-interactive-help`
-directory prefix at any depth, including installed profiles inside isolated
-tool homes. Similarly named maintained reference directories remain eligible.
-The [final numerical-work configuration review and local handoff](numerical-inventory/step9-handoff.md)
-records the source-policy correction, unchanged configuration owners, byte-level
-observations and remaining migration/native acceptance limits. Its passive
-source-list checks do not establish package construction or installation.
+| Where the rule applies | Practical effect |
+| --- | --- |
+| Working-tree visibility | Reports under `tests/reports/` (including timing, numerical inventories and raw recordings), local tool homes, credentials, caches, `dist/`, `generated-help/`, locks, backups and unversioned launchers are ignored. Tracked files stay tracked. Example environment templates, versioned historical artifacts, maintained fixtures, public media and curated review decisions remain eligible for tracking. Use an ignored location for private output. |
+| Checkout and diff | Text uses LF, including shell scripts, Python, JSON, Markdown, manual text and terminal capture metadata. Python and C use Git’s built-in function diff patterns. Images, gzip files, installers and native launchers are binary. The curated numerical review JSON has `linguist-generated` unset so its changes remain visible in review. |
+| Editing | [.editorconfig](../.editorconfig) preserves Markdown hard breaks and whitespace in `tests/fixtures/help/`. It disables text transformations for binary assets and the listed generated directories. Git attributes describe checkout handling, while a file’s current bytes depend on its working copy. |
+| Sandbox snapshot | Tracked working-tree bytes and explicit regular files enter the snapshot. A new fixture can be eligible for tracking and still require `--include`. [Isolated debugging](#isolated-local-debugging) |
+| Source release | The release builder has its own selection rules and hashes the captured bytes. The repository sets no `export-ignore` or `export-subst` attributes. Review the [source and archive boundaries](releases.md#build-from-source) when changing documentation or fixtures. |
+
+To inspect representative paths without modifying the index:
+
+```bash
+git check-ignore -v --no-index tests/reports/timing/sample/events.jsonl
+git check-attr text eol diff -- cli_help/main.py docs/assets/help-browser.png
+git check-attr linguist-generated -- docs/numerical-inventory/review.json
+python3 -B -m unittest discover -s tests -p test_repository_config.py -v
+```
+
+The [policy tests](../tests/test_repository_config.py) exercise nested paths and exceptions in a disposable repository. The [numerical handoff](numerical-inventory/step9-handoff.md) records the original source-policy and byte checks.
 
 [Dependabot configuration](../.github/dependabot.yml) checks GitHub Actions and
-the optional [media requirements](../tools/requirements-media.txt) weekly.
+the optional [media requirements](../tools/requirements-media.txt) weekly. Minor and patch updates are grouped. Major updates remain separate.
 It does not add application runtime dependencies or publish updates. The
 configuration follows GitHub's
 [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference).
@@ -340,6 +301,7 @@ pushes, pull requests, and manual dispatch. Each Linux test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
 Python 3.10 and 3.12 on Ubuntu 24.04 and Python 3.14 on Ubuntu 26.04.
+Each Linux job has 90 minutes for setup, the full suite and package verification.
 The tests use the Python standard library, tmux for rendered
 terminal state, Git for ignore-policy checks, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
@@ -393,24 +355,28 @@ against those exact artifacts. Only seven named synthetic diagnostic reports,
 the numerical-inventory summary and coverage report, policy/suite/package logs, aggregate checksum
 results, and source manifest are uploaded. Package binaries, raw captures,
 arbitrary local reports, tool homes,
-and recovery backups are excluded. The workflow does not publish or tag releases.
+and recovery backups are excluded. The workflow retains named evidence for 14 days, including on failed runs. It does not publish or tag releases.
 
 A separate job uses [Lychee](https://github.com/lycheeverse/lychee-action) to check
 Markdown links throughout the repository, including local files, images, heading
 anchors, and external HTTP(S) URLs. [lychee.toml](../lychee.toml) excludes generated
-reports and dependency directories. Workflow and badge endpoints are checked
+reports and dependency directories. The initial check has 35 minutes within a
+45-minute job. A diagnostic file identifies the run and attempt if the checker
+is interrupted before a report is available. The final gate replaces that file
+with the Lychee report once available.
+Workflow and badge endpoints are checked
 alongside other external links. CI retries the full check once when every failure
 is an HTTP 429 from the GNU manuals host or an HTTP 503 from a GitHub source file
 page. Broken anchors, other errors, and a failed retry fail the job. Both attempt
 reports are retained when a retry runs. Results appear in the Actions job summary.
-Cache, build, and generated-collection
-directories are excluded alongside local reports; maintained Markdown and public
-media references remain checked.
+The CI glob skips hidden directories, including the Markdown contribution guide and pull request template in `.github/`. Supply those two files explicitly for a complete contributor documentation review.
 
 With Lychee 0.24.2 installed, the same check can run locally:
 
 ```bash
 lychee --config lychee.toml --no-progress '**/*.md'
+# Also check the two maintained Markdown files in the hidden directory.
+lychee --config lychee.toml --no-progress .github/CONTRIBUTING.md .github/pull_request_template.md
 ```
 
 Add `--offline` to check local links and anchors without contacting external sites.
@@ -595,7 +561,7 @@ evidence, and hosted CI are separate verification layers.
 Keep private captures, recovery backups, caches, and reports under ignored
 locations. Maintained syntax captures remain source fixtures; public assets stay
 trackable. Ignore regressions cover owned `.cli-help-write-*.tmp` staging files.
-CI uploads only the named fixed-input diagnostic JSON files and suite log.
+The workflow lists the diagnostic, numerical, suite and package reports retained as artifacts.
 Git attributes, editor whitespace rules, and Dependabot remain suitable without
 new dependencies. Validate changed workflow YAML/action expressions and execute
 the passive smoke locally where tooling exists; local validation is not hosted CI.
