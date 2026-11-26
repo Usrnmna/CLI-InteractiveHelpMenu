@@ -374,9 +374,15 @@ with the Lychee report once available.
 Workflow and badge endpoints are checked
 alongside other external links. CI retries the full check once when every failure
 is a timeout at `manpages.ubuntu.com` or `www.gnu.org`, an HTTP 429 from
-`www.gnu.org`, or an HTTP 503 from a GitHub source file page. Broken anchors,
-other errors, and a failed retry fail the job. Both attempt
-reports are retained when a retry runs. Results appear in the Actions job summary.
+`www.gnu.org`, or an HTTP 503 from a GitHub source file page.
+If a plain GitHub file URL returns 503 on both attempts, the final gate checks
+the public Contents API at the exact revision in the URL. An HTTP 200 response
+with the matching file path, page URL and blob SHA produces a warning in the job
+and a verification record in the final report. This fallback covers simple
+file paths and single-segment revision names. URLs with query strings or
+fragments require a successful page check. Any remaining broken or unverified
+link, incomplete retry report or unavailable API keeps the job failed.
+Both Lychee attempt reports are retained. The Actions summary includes the final report.
 Both attempts include the contribution guide and pull request template explicitly because the Markdown glob skips hidden directories.
 
 On a clean checkout, use Lychee 0.24.2 with the CI inputs.

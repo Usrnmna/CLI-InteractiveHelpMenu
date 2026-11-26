@@ -5,12 +5,13 @@ from email.utils import format_datetime
 from email.message import Message
 import importlib.util
 import io
+import json
 from pathlib import Path
 import shlex
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError
 
 
@@ -31,6 +32,27 @@ def failure_report(*entries):
 
 
 FIRST_FAILURE = failure_report(("429", GNU_URL))
+
+
+def github_report(*entries):
+    """Produce a reconciled two-link report with the supplied failures."""
+    return (f"| Total | 2 |\n| Successful | {2 - len(entries)} |\n| Timeouts | 0 |\n"
+            "| Unknown | 0 |\n| Unsupported | 0 |\n| Excluded | 0 |\n" + failure_report(*entries))
+
+
+GITHUB_503 = github_report(("503", GITHUB_SOURCE))
+API_URL = "https://api.github.com/repos/openssh/openssh-portable/contents/ssh.c?ref=V_10_2_P1"
+FILE_METADATA = {"type": "file", "path": "ssh.c", "html_url": GITHUB_SOURCE, "sha": "1" * 40}
+
+
+def api_response(metadata, status=200, endpoint=API_URL):
+    """Mock an HTTP context manager, including the effective URL and JSON body."""
+    response = MagicMock()
+    response.__enter__.return_value = response
+    response.status = status
+    response.geturl.return_value = endpoint
+    response.read.return_value = json.dumps(metadata).encode()
+    return response
 
 
 class DocumentationRetryTests(unittest.TestCase):
@@ -109,7 +131,7 @@ class DocumentationRetryTests(unittest.TestCase):
                 patch.object(retry.time, "sleep") as sleep, \
                 patch.object(retry, "probe_retry_after", return_value=delay), \
                 patch.object(retry.subprocess, "run", side_effect=process) as run, \
-                patch.dict(retry.os.environ, {"GITHUB_STEP_SUMMARY": ""}):
+                patch.dict(retry.os.environ, {"GITHUB_STEP_SUMMARY": str(directory / "summary.md")}):
             try:
                 code = retry.finish(first_outcome)
             except ValueError:
@@ -190,6 +212,62 @@ class DocumentationRetryTests(unittest.TestCase):
                 self.assertEqual(code, result)
                 self.assertEqual(run.call_count, 2)
                 sleep.assert_called_once_with(60)
+
+    def test_verified_repeated_503_is_one_warning_with_original_reports_retained(self):
+        report = github_report(("503", GITHUB_SOURCE), ("503", GITHUB_SOURCE))
+        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)) as get, \
+                patch("sys.stdout", new_callable=io.StringIO) as log:
+            code, first, second, final, *_ = self.run_gate(first_report=report, second_code=2,
+                                                           second_report=report)
+        self.assertEqual(code, 0)
+        get.assert_called_once()
+        self.assertEqual(get.call_args.args[0].full_url, API_URL)
+        self.assertEqual(log.getvalue().count("::warning::"), 1)
+        self.assertEqual(first.read_text(), report)
+        self.assertEqual(second.read_text(), report)
+        for evidence in (final, final.with_name("summary.md")):
+            self.assertIn(f"Warning: HTTP 503 for {GITHUB_SOURCE}", evidence.read_text())
+            self.assertIn(FILE_METADATA["sha"], evidence.read_text())
+
+    def test_api_failure_or_mismatched_file_keeps_gate_failed(self):
+        failures = [api_response({**FILE_METADATA, field: value}) for field, value in (
+            ("type", "dir"), ("path", "other.c"), ("html_url", GITHUB_SOURCE.replace("V_10_2_P1", "main")),
+            ("sha", ""), ("submodule_git_url", "git://example.org/submodule"))]
+        failures += [api_response([]), api_response(FILE_METADATA, status=203),
+                     api_response(FILE_METADATA, endpoint=API_URL.replace("ssh.c", "other.c"))]
+        malformed = api_response({})
+        malformed.read.return_value = b"invalid JSON"
+        failures += [malformed, TimeoutError(), HTTPError(API_URL, 404, "missing ref or path", {}, None),
+                     HTTPError(API_URL, 403, "rate limited", {}, None)]
+        for failure in failures:
+            with self.subTest(failure=failure), patch.object(retry, "urlopen", side_effect=[failure]):
+                code, evidence = retry.resolve_github_failures(GITHUB_503, GITHUB_503)
+                self.assertEqual(code, 2)
+                self.assertIn("Unverified HTTP 503", evidence)
+
+    def test_verified_file_cannot_mask_a_broken_link(self):
+        mixed = github_report(("503", GITHUB_SOURCE), ("404", GNU_URL))
+        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)):
+            code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_code=2, second_report=mixed)
+        self.assertEqual(code, 2)
+        self.assertIn("[404]", final.read_text())
+        self.assertIn("Warning: HTTP 503", final.read_text())
+
+    def test_only_repeated_plain_file_urls_from_complete_reports_use_api(self):
+        with patch.object(retry, "urlopen") as get:
+            for suffix in ("#L10", "?plain=1", "%2Fextra", "/../other"):
+                report = github_report(("503", GITHUB_SOURCE + suffix))
+                self.assertEqual(retry.resolve_github_failures(report, report), (2, ""))
+            for report in (GITHUB_503.replace("Unknown | 0", "Unknown | 1"),
+                           GITHUB_503.replace("Errors | 1", "Errors | 2"),
+                           GITHUB_503.replace("Total | 2", "Total | 1"),
+                           GITHUB_503.replace("Successful | 1", "Successful | 0"),
+                           GITHUB_503.replace("| Timeouts | 0 |", ""),
+                           GITHUB_503.replace(GITHUB_SOURCE, GITHUB_SOURCE + ".new")):
+                self.assertEqual(retry.resolve_github_failures(GITHUB_503, report), (2, ""))
+            code, *_ = self.run_gate(first_report=GITHUB_503, second_code=1, second_report=GITHUB_503)
+            self.assertEqual(code, 1)
+            get.assert_not_called()
 
     def test_unpinned_version_is_rejected_before_retry(self):
         code, first, second, final, run, sleep = self.run_gate(version="lychee 0.25.0\n")

@@ -3,6 +3,8 @@
 import argparse
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from http.client import HTTPException
+import json
 import math
 import os
 from pathlib import Path
@@ -20,6 +22,7 @@ MAXIMUM_DELAY_SECONDS = 120
 RETRY_AFTER_MARGIN_SECONDS = 5
 HEADER_TIMEOUT_SECONDS = 20
 RETRY_TIMEOUT_SECONDS = 180
+API_BUDGET_SECONDS = 120
 # Keep GNU diagnostics consistent with the GNU-only header in lychee.toml.
 GNU_USER_AGENT = "CLI-InteractiveHelpMenu-link-check (+https://github.com/Usrnmna/CLI-InteractiveHelpMenu)"
 REPORT_DIRECTORY = Path("tests/reports")
@@ -44,14 +47,22 @@ def retry_after_seconds(value, now):
         return None
 
 
-def retryable_failures(report):
-    """Return GNU URLs to probe, or None if any reported failure cannot be retried."""
-    entries = re.findall(r"^\* \[([^\]]+)\] <([^>]+)>", report, re.MULTILINE)
+def reported_failures(report):
+    """Read Lychee failure entries only when they account for its error and timeout counts."""
+    entries = re.findall(r"^\* \[([^\]\n]+)\] <([^>\n]+)>", report, re.MULTILINE)
     errors = re.search(r"\|[^|\n]*Errors\s*\|\s*(\d+)\s*\|", report)
     timeouts = re.search(r"\|[^|\n]*Timeouts\s*\|\s*(\d+)\s*\|", report)
     timeout_count = sum(status == "TIMEOUT" for status, _ in entries)
     if (not entries or not errors or len(entries) - timeout_count != int(errors.group(1))
             or timeout_count != (int(timeouts.group(1)) if timeouts else 0)):
+        return None
+    return entries
+
+
+def retryable_failures(report):
+    """Return GNU URLs to probe, or None if any reported failure cannot be retried."""
+    entries = reported_failures(report)
+    if entries is None:
         return None
     gnu_urls = []
     for status, url in entries:
@@ -101,11 +112,72 @@ def retry_delay(delays):
     return delay
 
 
+def verify_github_file(match, timeout):
+    """Check a canonical blob URL anonymously at its explicit ref. Return its blob SHA or raise."""
+    repo, ref, path = match.groups()
+    api_url = f"https://api.github.com/repos/{repo}/contents/{path}?ref={ref}"
+    request = Request(api_url, headers={"Accept": "application/vnd.github.object+json",
+                                       "User-Agent": "CLI-InteractiveHelpMenu-link-check"})
+    with urlopen(request, timeout=timeout) as response:
+        if response.status != 200 or response.geturl() != api_url:
+            raise ValueError("unexpected API status or redirect")
+        metadata = json.load(response)
+    if (not isinstance(metadata, dict) or metadata.get("type") != "file"
+            or metadata.get("path") != path or metadata.get("html_url") != match.group()
+            or metadata.get("submodule_git_url") or not isinstance(metadata.get("sha"), str)
+            or not re.fullmatch(r"[0-9a-f]{40}", metadata["sha"])):
+        raise ValueError("API metadata did not identify the exact linked file")
+    return metadata["sha"]
+
+
+def resolve_github_failures(first_report, retry_report):
+    """Resolve repeated blob-page 503s in a complete retry report. Return exit code and evidence."""
+    entries = reported_failures(retry_report)
+    counts = dict(re.findall(r"^\|[^|\n]*?\b(Total|Successful|Timeouts|Errors|Unknown|Unsupported|Excluded)"
+                             r"\s*\|\s*(\d+)\s*\|$", retry_report, re.MULTILINE))
+    first_total = re.search(r"^\|[^|\n]*\bTotal\s*\|\s*(\d+)\s*\|$", first_report, re.MULTILINE)
+    required = {"Total", "Successful", "Timeouts", "Errors", "Unknown", "Unsupported", "Excluded"}
+    if not entries or counts.keys() != required or not first_total or counts["Total"] != first_total[1]:
+        return 2, ""
+    accounted = int(counts["Successful"]) + int(counts["Excluded"]) + len(entries)
+    if int(counts["Unknown"]) or int(counts["Unsupported"]) or int(counts["Total"]) != accounted:
+        return 2, ""
+
+    initial = set(reported_failures(first_report) or [])
+    unresolved = False
+    evidence = []
+    deadline = time.monotonic() + API_BUDGET_SECONDS
+    for status, url in dict.fromkeys(entries):
+        # Restrict interpolation to plain path segments. Queries, anchors and encoded
+        # separators need independent verification of their browser semantics.
+        match = re.fullmatch(r"https://github\.com/([\w.-]+/[\w.-]+)/blob/([\w.-]+)/"
+                             r"([\w.-]+(?:/[\w.-]+)*)", url, re.ASCII)
+        if (status != "503" or (status, url) not in initial or not match
+                or {".", ".."}.intersection(url.split("/"))):
+            unresolved = True
+            continue
+        try:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("API time budget exhausted")
+            sha = verify_github_file(match, min(HEADER_TIMEOUT_SECONDS, remaining))
+        except (OSError, ValueError, HTTPException) as error:
+            evidence.append(f"- Unverified HTTP 503: <{url}> ({error})")
+            unresolved = True
+        else:
+            message = f"HTTP 503 for {url}. GitHub Contents API verified blob {sha}."
+            print(f"::warning::{message}", flush=True)
+            evidence.append(f"- Warning: {message}")
+    if not evidence:
+        return 2, ""
+    return (2 if unresolved else 0), "\n## GitHub exact-file verification\n\n" + "\n".join(evidence) + "\n"
+
+
 def finish(first_outcome, lychee="lychee"):
     """Return the final check status after at most one eligible retry.
 
-    Reports are never used as success evidence without the corresponding process
-    success. Missing reports, version mismatches and timeouts fail this gate.
+    A link-failure exit may pass with separate API evidence for every remaining
+    failure. Missing reports, version mismatches and process timeouts fail the gate.
     """
     REPORT_DIRECTORY.mkdir(parents=True, exist_ok=True)
     # A report from an earlier local invocation cannot prove this retry succeeded.
@@ -116,7 +188,8 @@ def finish(first_outcome, lychee="lychee"):
     shutil.copyfile(FIRST_REPORT, FINAL_REPORT)
     if first_outcome == "success":
         return 0
-    urls = retryable_failures(FIRST_REPORT.read_text(encoding="utf-8"))
+    first_report = FIRST_REPORT.read_text(encoding="utf-8")
+    urls = retryable_failures(first_report)
     if urls is None:
         print("Initial report contains an ineligible or unidentified failure.", flush=True)
         return 1
@@ -143,21 +216,26 @@ def finish(first_outcome, lychee="lychee"):
         SECOND_REPORT.write_text("# Retry failed\n\nLychee exceeded the 180-second retry runtime limit.\n", encoding="utf-8")
         shutil.copyfile(SECOND_REPORT, FINAL_REPORT)
         return 1
+    appendix = ""
     if not SECOND_REPORT.is_file():
         SECOND_REPORT.write_text("# Retry failed\n\nLychee did not produce a report; inspect the attempt log.\n", encoding="utf-8")
         result_code = 1
     else:
         result_code = result.returncode
-        total = re.search(r"\|[^|]*Total\s*\|\s*(\d+)\s*\|", SECOND_REPORT.read_text(encoding="utf-8"))
+        retry_report = SECOND_REPORT.read_text(encoding="utf-8")
+        total = re.search(r"\|[^|]*Total\s*\|\s*(\d+)\s*\|", retry_report)
         if not total or int(total.group(1)) == 0:
             print("Retry produced no verifiable link count; failing the check.", flush=True)
             result_code = 1
-    shutil.copyfile(SECOND_REPORT, FINAL_REPORT)
+        elif result_code == 2:
+            result_code, appendix = resolve_github_failures(first_report, retry_report)
+    final_report = SECOND_REPORT.read_text(encoding="utf-8") + appendix
+    FINAL_REPORT.write_text(final_report, encoding="utf-8")
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as output:
-            output.write("\n## Documentation links: final retry\n\n" + SECOND_REPORT.read_text(encoding="utf-8"))
-    print(SECOND_REPORT.read_text(encoding="utf-8"), flush=True)
+            output.write("\n## Documentation links: final retry\n\n" + final_report)
+    print(final_report, flush=True)
     return result_code
 
 
