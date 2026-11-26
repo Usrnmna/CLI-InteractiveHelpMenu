@@ -1,8 +1,15 @@
 # Changelog
 
+## Version 0.4.1 - Alpha
+
+Local candidate in preparation. This patch combines two measured improvements to opening and using the menu.
+
+- An idle menu continues checking terminal size while skipping redraws of an unchanged frame. In 10-second idle intervals on the Ubuntu 26.04.1 benchmark host, repeated redraws fell from 66 to zero in both the FFmpeg and small Git menus. [Idle measurements and resize checks](docs/menu-cost-measurements.md#idle-redraw-experiment)
+- The loader validates an ordinary printable text field in one call. It still validates every bundled and custom profile, applies custom overrides in order and reports malformed fields. On the same host, median CPU time for loading 76 bundled profiles fell from 118.36 to 74.04 ms. [Validation and first-frame measurements](docs/menu-cost-measurements.md#serial-profile-validation-experiment)
+
 ## Version 0.4.0 - Alpha
 
-Selected for the next prerelease. Verification of the combined release candidate is pending. [Release notes and package provenance](docs/releases.md#version-040---alpha)
+The combined candidate was verified locally and remains unpublished. [Release notes and package provenance](docs/releases.md#version-040---alpha)
 
 - The menu opens in Simple. Pressing the default `D` key cycles through Detailed and Expanded while preserving the current option and filter. Simple gives unused detail rows back to the list. Short category labels retain access to the full title. Shared unit notes and searchable unit abbreviations help users find applicable options. [Browser controls](docs/usage.md#browser-controls) · [Six captured terminal views](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
 - The browser reuses formatted value guidance for eligible options during one menu open. In the pre-redesign Stage 1 comparison on Ubuntu 26.04.1 with Python 3.14.4, the median time from Alt-H to the first FFmpeg frame fell by 233–237 ms (31.0–31.5%) across three warm inputs. The 95th percentile improved for all three. [Stage 1 measurements and parity checks](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) · [Subsequent measurements of the redesigned menu](docs/menu-cost-measurements.md)

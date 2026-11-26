@@ -3,9 +3,17 @@
 [Release formats and build procedure](releases.md) · [Development and tests](development.md) ·
 [Installation and recovery](installation.md) · [Documentation index](README.md)
 
+## v0.4.1-alpha local candidate
+
+The November 25, 2026 preparation selects both retained improvements. The runtime inputs match the [measured implementation](menu-cost-measurements.md#combined-offline-verification). SHA-256 for `cli_help/ui.py` is `9852b14abd235b29adfa54f03ab61a545f9e3955a1a6fa640c26ccdee19cc4a5` and for `cli_help/core.py` is `a78b5b7c6e4fe3d2b97ac2105d211685be74339102ed91f962fccb6ba6f3ef93`.
+
+On Ubuntu 26.04.1 with Python 3.14.4, all 44 focused host sandbox tests passed in 39.565 seconds. Coverage included idle timeouts, terminal resize and recovery, menu interaction, profile validation, override precedence and prerelease selection. The checkout version and changelog heading agreed, and the offline Markdown link check passed. The builder selected the same 1,003 paths as the frozen v0.4.0-alpha manifest. The preparation logs and file hashes are under `tests/reports/v0.4.1-alpha-preparation/`.
+
+**Awaiting the maintainer's source commit.** After the source freeze, build in two fresh directories, compare all 11 files, then use the first build for the three offline suites and installed-terminal checks. The earlier experiment matrix exercised temporary packages. Record the frozen SHA, package hashes and exact-artifact results here after verification. Publication is skipped. [Roadmap](../ROADMAP.md#remaining-work)
+
 ## Identity and evidence boundaries
 
-The [selected v0.4.0-alpha prerelease](releases.md#version-040---alpha) includes both shared value formatting and the three-level menu. The existing performance-only packages under `dist/candidate-v0.4.0-alpha-recheck/` and its `-2` rebuild predate the redesign. Use a fresh output directory when verifying the combined batch.
+The [frozen v0.4.0-alpha candidate](releases.md#version-040---alpha) includes both shared value formatting and the three-level menu. The existing performance-only packages under `dist/candidate-v0.4.0-alpha-recheck/` and its `-2` rebuild predate the redesign. The [combined candidate record](#combined-candidate-verification) identifies its separate source and assets.
 
 The earlier v0.1.2-alpha release review preserved local candidates at
 `dist/candidate-v0.1.2-alpha/`, `dist/candidate-v0.1.2-alpha-review/`, and
@@ -23,19 +31,80 @@ compatibility. Record the compiler, architecture, libc, Python, Bash, tmux, loca
 and terminal alongside each validation. Preserve dated evidence from earlier runs
 without treating it as evidence for the current candidate.
 
-## Final source and package checks
+## Combined candidate verification
 
-Run the documented full suite after the last included edit:
+The **verified upload set** is `dist/candidate-v0.4.0-alpha-combined/`. The independent rebuild is `dist/candidate-v0.4.0-alpha-combined-2/`. This record and the roadmap update were written after the builds in the working tree. Reproduce the assets from the frozen SHA.
+
+On November 25, 2026, the release inputs were frozen at `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. The working tree was clean at that commit. It records the [Phase 2 decision](../ROADMAP.md#phase-2--close-the-menu-record-and-select-release-contents) and keeps `VERSION` at `0.4.0-alpha`. The browser creates one shared-value formatting cache per open and cycles through Simple, Detailed and Expanded. The presentation and UI modules match the [pre-experiment hashes](serial-prose-reuse-experiment.md#reproduction). The idle loop still redraws after a timeout, and the loader still checks profile text character by character. The prose-reuse patch is a benchmark input under `tools/`.
+
+**Build and provenance.** Two independent local clones checked out the full SHA with detached HEAD and clean status. The build host ran Ubuntu 26.04.1 LTS on x86_64, kernel 7.0.0-43-generic, glibc 2.43, GCC 15.2.0 (Ubuntu 15.2.0-16ubuntu1), Python 3.14.4, Bash 5.3.9 and tmux 3.6 with locale `C.UTF-8`. The highest glibc symbol version required by this launcher is `GLIBC_2.34` (`readelf --version-info`).
+
+From the project root, the two builds used the following inputs and output paths. Both directories are retained locally.
 
 ```bash
-bash tests/run.sh
-python3 scripts/build_release.py --output dist/candidate-v0.4.0-alpha-combined
-(cd dist/candidate-v0.4.0-alpha-combined && sha256sum -c SHA256SUMS.checksum)
+root=$PWD
+sha=cc30ade99d1ddf2f593b409f66bd05dc0029f44c
+for copy in first second; do
+    checkout="$root/.cache/phase3-cc30ade/$copy"
+    git clone --no-local --no-checkout "$root" "$checkout"
+    git -C "$checkout" checkout --detach "$sha"
+    test "$(git -C "$checkout" rev-parse HEAD)" = "$sha" || exit 1
+    test -z "$(git -C "$checkout" status --porcelain)" || exit 1
+    output="$root/dist/candidate-v0.4.0-alpha-combined"
+    if [ "$copy" = second ]; then output="$output-2"; fi
+    (cd "$checkout" && CC=/usr/bin/gcc /usr/bin/python3 -B scripts/build_release.py --output "$output") || exit 1
+done
 ```
 
-The builder refuses an existing output directory. If further edits require
-another candidate, select a new ignored directory, such as
-`dist/candidate-v0.4.0-alpha-combined-2/`; retain the earlier candidate for comparison.
+The first build contains 1,003 source files. Comparison against `git ls-tree -rz` and `git cat-file --batch` matched every manifest path and SHA-256 to the frozen tree. The only tracked paths outside that inventory were the Codex environment file and the 11 historical release files. The [package verifier](../tests/test_release_snapshot.py) checked all 1,003 source archive members and all 1,004 Linux archive members, including bytes, modes, owner/group and timestamps. The standalone and bundled launchers matched. The installer wrapper and embedded Linux archive matched the builder output before either installer was exercised. Both installers then passed `--verify`.
+
+**Artifact digests.** Each individual checksum and both aggregate lists passed `sha256sum -c`. All 11 filenames and file contents matched across builds with `cmp`. The table gives SHA-256 for each asset and for its individual checksum file.
+
+| Asset | SHA-256 | SHA-256 of matching `.checksum` file |
+| --- | --- | --- |
+| `cli-interactive-help-v0.4.0-alpha-linux-x86_64.run` | `5f5b1232735dfda2adbae365aea84dcddb2979f7e41364d9e9f2f531a0f72710` | `b480dea7acdbdb1f8b0102bcee51c5e8b31379bd9af8a370df0855e9e7856743` |
+| `cli-interactive-help-v0.4.0-alpha-linux-x86_64.tar.gz` | `1e61793f1bad662e4ad5be0c01c4b873a8642c2f64161f3dc721af152cc0042b` | `1da2e3c5f6ec447b077ae9b697ae07eaeb6ec52cf0e52cdf0fcc9ecdf950807c` |
+| `cli-help-v0.4.0-alpha-linux-x86_64` | `69865cb32ade928d323106848812c8ced4d7602ac7fa39141d1d8f20016f1817` | `95dee93c9cef8174a962942956a30cefafea367af7a883f49a30aa479faa982c` |
+| `cli-interactive-help-v0.4.0-alpha-source.tar.gz` | `d5b0018eb24c6148893e3f02b77fe26e899bfeda53be6c07fa155f26319b68c8` | `40aecb2177d0d185106255090d1d54500b9483eab4945c269f38992bf52ce4a7` |
+| `BUILD-INFO.json` | `b21ed7bf5954dedb5fbddbb4a1af9b84810888d6149c7f92bffe23ae20799703` | `f7fef6094326fef685c5387f5d1cb3eef766ad6845ee0c77c765f5406ac9eae9` |
+| `SHA256SUMS.checksum` | `485206837655375afdc420a69780231e335907086180632b494adc131a47c4dc` | — |
+
+**Offline test inputs.** Each target received the first build's 11 files through the sandbox runner's `--include` option. The tracked historical fixture came from the detached checkout. Inside the sandbox, the wrapper verified both aggregate identities and all listed hashes and passed the following environment to the full suite.
+
+```bash
+export CLI_HELP_TEST_RELEASE_DIR=/tmp/src/dist/candidate-v0.4.0-alpha-combined
+export CLI_HELP_TEST_HISTORICAL_DIR=/tmp/src/releases/v0.1.1-alpha
+bash tests/run.sh
+```
+
+The package and terminal test classes resolve the supplied release path, verify its contents and use its installer. The upgrade test reads the historical installer from the supplied fixture path and checks its digest. The historical installer SHA-256 was `e56049a17804041787915c8b063b180d7fc39a4be7fecb4a8e8b7183c6d8f1ae` and its aggregate checksum file had SHA-256 `e5b64360c518fce838f120db42a95602eca818e4f7d768490dcc01e6269e8fe0`. [Package checks](../tests/test_release_snapshot.py) · [Installed adapter checks](../tests/test_release_terminal.py)
+
+The local evidence directory is `tests/reports/phase3-cc30ade/`. From the project root, `python3 -B tests/reports/phase3-cc30ade/check-artifacts.py` repeats the Git, archive, checksum and rebuild comparisons. In the evidence directory, `run-full.sh TARGET` records the exact per-target sandbox command and pinned fixture selection for ffmpeg, fd, fzf, OpenSSH, rsync and yq. `phase3-suite.sh` verifies the inputs in the sandbox. `run-terminal.sh TARGET` runs the additional installed-menu checks. The targets are `host` (Bubblewrap), `noble310` and `noble312` (rootless Podman). Both Noble commands ran through the local user service manager so Podman could create its UID mapping. All three sandboxes used private writable scratch space with networking disabled. [Sandbox procedure](development.md#isolated-local-debugging)
+
+**Full offline results.** Each unsharded run completed all four preflight checks and full unittest discovery. Each transcript matched all 1,889 discovered test IDs at the frozen SHA. All three commands exited 0.
+
+| Ubuntu | Python | Bash / tmux / glibc | Passed | Failed or errored | Skipped | Unittest seconds |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| 26.04.1 | 3.14.4 | 5.3.9 / 3.6 / 2.43 | 1,888 | 0 | 1 | 2,513.497 |
+| 24.04.5 | 3.10.20 | 5.2.21 / 3.4 / 2.39 | 1,888 | 0 | 1 | 2,818.753 |
+| 24.04.5 | 3.12.3 | 5.2.21 / 3.4 / 2.39 | 1,888 | 0 | 1 | 2,520.852 |
+
+On each target, only `test_probe_reports_the_windows_limitation` skipped because POSIX hosts complete the probe normally. All 15 exact-candidate package and installed-screen tests passed, including isolated install, upgrade from the preserved 0.1.1-alpha installer, backup verification, repeated update, source-only transition and removal. The final logs are `{host,noble310,noble312}-full.log` and `{host,noble310,noble312}-terminal.log` in the evidence directory. Earlier runs without the full executable fixture set were stopped and excluded from these counts. Run `python3 -B tests/reports/phase3-cc30ade/check-results.py` from the project root to reconcile the logs with discovery.
+
+**Installed terminal.** On each Linux target, the first build's installer populated a temporary prefix with `--no-rc`. A private tmux server sourced its installed Bash adapter under `TERM=tmux-256color` and `C.UTF-8`. For the selected FFmpeg `-b:v BITRATE` option, every cell matched the [six reference frames](superpowers/plans/2026-11-24-menu-detail-levels-verification.md#simple-80x24). With the `bps` filter applied, the second result (`-b:a`, Stream codecs, 2/2) stayed selected through a complete view cycle at both sizes. All three levels exposed the full 89-character custom category title through scrolling when necessary.
+
+At both 80×24 and 60×16, cancellation restored the original screen, cursor, Readline buffer, termios settings and numbered history. Insertion added `-b:v` before a quoted suffix and restored the cursor to the insertion point. Typing a further character edited that position. The execution sentinel stayed absent and removal cleared the isolated prefix on each target.
+
+## Final source and package checks
+
+From a clean copy of the maintainer-confirmed revision, build the first set and check its digests:
+
+```bash
+python3 scripts/build_release.py --output dist/candidate-v0.4.1-alpha
+(cd dist/candidate-v0.4.1-alpha && sha256sum -c SHA256SUMS.checksum)
+```
+
+Build again from a second clean copy of the same revision with the same toolchain in a fresh directory, such as `dist/candidate-v0.4.1-alpha-2/`. Verify the manifest against the Git blobs and compare all 11 files byte for byte. Supply the first set and the historical installer to each offline sandbox before running its full suite. The [v0.4.0-alpha record](#combined-candidate-verification) gives the fixture and launch procedure.
 The five artifacts, five individual checksum files, and aggregate checksum use
 the existing release format. No artifact is uploaded automatically.
 
@@ -43,7 +112,7 @@ The package regression harness can inspect and exercise these exact artifacts
 instead of building its own temporary candidate:
 
 ```bash
-export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.4.0-alpha-combined"
+export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.4.1-alpha"
 export CLI_HELP_TEST_HISTORICAL_DIR="$PWD/releases/v0.1.1-alpha"
 python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v
 python3 -B -m unittest discover -s tests -p test_release_terminal.py -v
@@ -86,13 +155,13 @@ and isolated locations rather than personal shell files. For example, from the
 repository root:
 
 ```bash
-candidate="$PWD/dist/candidate-v0.4.0-alpha-combined"
+candidate="$PWD/dist/candidate-v0.4.1-alpha"
 scratch=$(mktemp -d)
 mkdir -p "$scratch/home" "$scratch/config" "$scratch/cache" "$scratch/data" "$scratch/tmp"
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" TMPDIR="$scratch/tmp" \
   CLI_HELP_PYTHON="$(command -v python3)" PYTHONDONTWRITEBYTECODE=1 \
-  bash "$candidate/cli-interactive-help-v0.4.0-alpha-linux-x86_64.run" \
+  bash "$candidate/cli-interactive-help-v0.4.1-alpha-linux-x86_64.run" \
   install --prefix "$scratch/runtime" --no-rc
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" \

@@ -12,7 +12,7 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe the local checkout marked `0.4.0-alpha`, including its three-level menu. The earlier performance candidate carries the same version string. Use the [release guide](releases.md#version-040---alpha) to identify a particular package and the [changelog](../CHANGELOG.md) for the release history.
+The operating guides describe the local `0.4.1-alpha` checkout. The [release guide](releases.md#version-041---alpha) identifies the candidate being prepared and the [changelog](../CHANGELOG.md) records earlier versions.
 
 The [terminal gallery](assets/README.md) shows the current interface. The [audit history](audit-history.md) follows the development cycle from source review through repairs and terminal verification. The [visual and configuration review](media-and-configuration-review.md) records earlier captures and policy checks.
 

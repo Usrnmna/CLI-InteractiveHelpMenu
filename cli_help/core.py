@@ -41,6 +41,10 @@ def require_text(value, label: str, allow_empty=False):
     """Require display text without terminal control characters."""
     if not isinstance(value, str) or (not value and not allow_empty):
         raise HelpError(f"{label} must be a nonempty string.")
+    # JSON supplies plain strings. Preserve the original character check for
+    # string subclasses and for fields that may contain allowed tabs/newlines.
+    if type(value) is str and value.isprintable():
+        return
     if any(not char.isprintable() and char not in "\n\t" for char in value):
         raise HelpError(f"{label} contains a control character.")
 

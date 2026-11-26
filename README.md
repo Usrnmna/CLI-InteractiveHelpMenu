@@ -2,7 +2,7 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**Local checkout · 0.4.0-alpha** · [Selected prerelease contents](CHANGELOG.md#version-040---alpha)
+**Local checkout · 0.4.1-alpha** · [Selected prerelease contents](CHANGELOG.md#version-041---alpha)
 
 **Find the right option without leaving an unfinished Bash command.**
 
@@ -81,7 +81,7 @@ For a temporary session in an existing Bash shell, source
 [terminal-pane setup](docs/usage.md#run-in-a-terminal-pane) gives the exact
 launch command for an editor or app.
 
-For a v0.4.0-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
+For a v0.4.1-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
 
 ### Insert the first option
 
@@ -190,7 +190,7 @@ covers custom destinations and existing shell sessions after removal.
 | Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
 | Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
 | Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
-| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.4.0-alpha changes](CHANGELOG.md#version-040---alpha) |
+| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.4.1-alpha changes](CHANGELOG.md#version-041---alpha) |
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
 | Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
 

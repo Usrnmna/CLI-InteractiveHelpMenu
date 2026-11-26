@@ -250,7 +250,84 @@ The resource pass uses helper and waited-child user plus system CPU through dism
 | Investigation | Affected menus and measured cost | Decision and smallest next experiment | Acceptance checks |
 | --- | --- | --- | --- |
 | Opening and interaction | FFmpeg added 30–32 ms per matched pair at the median. Eager prose handling dominates. View changes typically take 1–3 ms, while the first `bps` query costs 49 ms at 80 columns. [Opening evidence](#opening-and-interaction) | **Experiment completed. Defer production adoption.** The tested cache reduced FFmpeg opening by 4.4–5.4%. The first unit search showed little change. [Follow-up evidence](serial-prose-reuse-experiment.md) | Compare every view field, ordered matches, original evidence and rendered guidance, including custom, discovered and preview menus. Re-run 40 paired opens for all three FFmpeg cases and the small controls. Target 30% lower FFmpeg median and improved p95. Apply the existing control, interaction and memory limits. |
-| Idle redraws | Both menus perform 66 full draws per 10 seconds with no input. [Idle evidence](#idle-redraws) | **Proceed** with a temporary loop that checks geometry at each timeout and skips a draw when state and geometry match. | Zero redundant draws during each stable 10-second window, lower CPU, and resize detected within the existing poll interval plus one draw. Verify insertion, cancellation, scrollback, all levels and terminal restoration at both sizes. |
-| Startup profile loading | All menus load 76 files. The unrelated 75 cost about 118 ms on the Git control. [Collection evidence](#startup-profile-loading) | **Proceed** with a serial printable-text validation fast path in a temporary loader. Keep full enumeration. | Match all current acceptances, errors and diagnostics, including mixed controls, Unicode, duplicates and invalid unrelated files. Retain longest match, override freshness and full `--check`. Require lower loader CPU and improved small-menu first-frame median and p95 without a threshold regression. Selective loading or a persistent index requires separate approval. |
+| Idle redraws | Both baseline menus performed 66 full draws per 10 seconds with no input. [Idle evidence](#idle-redraws) | **Retain unchanged-timeout suppression.** All twelve idle windows had zero redundant draws. [Follow-up measurements](#idle-redraw-experiment) | Zero redundant draws during each stable 10-second window, lower CPU, and resize detected within the existing poll interval plus one draw. Verify insertion, cancellation, scrollback, all levels and terminal restoration at both sizes. |
+| Startup profile loading | All menus load 76 files. The unrelated 75 cost about 118 ms on the Git control. [Collection evidence](#startup-profile-loading) | **Retain the serial printable-text check.** Full enumeration and diagnostics matched. [Follow-up measurements](#serial-profile-validation-experiment) | Match all current acceptances, errors and diagnostics, including mixed controls, Unicode, duplicates and invalid unrelated files. Retain longest match, override freshness and full `--check`. Require lower loader CPU and improved small-menu first-frame median and p95 without a threshold regression. Selective loading or a persistent index requires separate approval. |
 | Guarded discovery | Ordinary fixture hit 0.4 ms, guarded hit 11.3 ms and guarded miss 23.5 ms. [Discovery evidence](#guarded-discovery) | **Defer** a discovery change. The remaining guarded-hit probe establishes present executable identity. | Preserve fixed arguments, fresh identity checks, cache validation and route-specific failure behavior. Revisit if representative installed-tool traces show a material spend beyond required probes. |
 | Multi-core processing | On FFmpeg four processes brought first frame from 498 to 323 ms, peak PSS from 42 to 90 MiB and total CPU from 560 to 671 ms. Threads slowed opening. [Worker evidence](#worker-pools-and-cpu-limits) | **Defer pools and retain serial execution** across production menus. In an experimental selector use one worker on a single CPU or below the measured workload cutoff. | Reconsider after serial improvements only if a bounded process prototype still meets first-frame, control and memory criteria, handles unavailable semaphores, preserves all content and ordering, and cleans up on cancellation and failure. Adding production processes requires architecture approval. |
+
+## Idle redraw experiment
+
+The November 25, 2026 baseline was the working tree at `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. Only ROADMAP.md and the release and release-candidate guides had uncommitted edits at the start. The host was Ubuntu 26.04.1, CPython 3.14.4, Bash 5.3.9 and xterm-256color. Benchmarks used warm files, fresh helpers, isolated Bash and discovery off. The timing blocks ran sequentially, separately from the test suites.
+
+Previously, a 150 ms input timeout returned to the top of the loop and redrew the complete frame. The experiment keeps the last drawn geometry and page capacity across timeouts. Each poll still reads the controlling terminal size. A key (including KEY_RESIZE) invalidates the frame, and a changed geometry triggers a redraw even without a key.
+
+| Starting size | Menu | Idle draws before → after | Helper CPU before → after (ms) | Time to resized frame after change (ms) |
+| --- | --- | --- | --- | --- |
+| 80×24 | FFmpeg | 66 → 0 | 40–50 → 0 | 2.0–2.1 |
+| 60×16 | FFmpeg | 66 → 0 | 30 → 0 | 3.3–3.4 |
+| 80×24 | git worktree remove | 66 → 0 | 20–30 → 0 | 1.9–2.0 |
+| 60×16 | git worktree remove | 66 → 0 | 20–30 → 0–10 | 2.3–2.5 |
+
+Each cell covers three 10-second windows after warm-up for each revision. CPU is the sum of helper user and system ticks at 10 ms resolution. A zero reading means no tick accrued in that interval. All windows retained 66 voluntary context switches. In four additional candidate opens, the first key after ten idle seconds changed Simple to Detailed in 1.6–2.5 ms. Resize without a signal can take the remainder of the existing polling interval plus the draw.
+
+To reproduce the idle rows, use the [phase 1 PTY controller](../tools/menu_benchmark/phase1/terminal_matrix.py) with `--idle --modes serial --repeats 3 --width 80 ffmpeg small`, then repeat at width 60. Run once per checkout with its Bash adapter, helper and identical profiles. Use the baseline renderer as the cell oracle. The local experiment directory `tests/reports/idle-validation-cc30ade/` contains the source hashes, snapshot-specific runner, raw JSON Lines and post-idle key replay. Inert executables in the private PATH detected target execution. The controller compared complete frames at both sizes, cycled all three views, moved selection, searched, resized back and alternated exact literal insertion and cancellation. Readline buffers and cursor offsets matched, terminal mode flags were restored and the execution marker stayed absent.
+
+**Decision: retain idle redraw suppression.** All twelve stable candidate windows had zero redundant draws and lower measured CPU. All 13 focused host checks passed, including an unsignalled resize between timeouts, a shrink below minimum and recovery, scrollback preservation, all three detail levels and alternate-screen restoration. The frozen v0.4.0-alpha candidate predates this change.
+
+## Serial profile validation experiment
+
+Both comparison trees contain the retained idle loop. Only `cli_help/core.py` differed between their runtime inputs. Each load still reads every file and validates every field, in the same order. Most display fields contain only printable characters. A single `str.isprintable()` call now recognizes plain built-in strings of that kind. String subclasses retain the original character-by-character check. For a string containing a nonprintable character the original scan still distinguishes permitted tabs and newlines from rejected controls. Type, empty-string and field-specific diagnostics use the original checks.
+
+| Warm workload | Loading wall time, median / p95 (ms), before → after | Loader CPU, median / p95 (ms), before → after |
+| --- | --- | --- |
+| All 76 bundled files | 118.52 / 120.99 → 74.12 / 76.69 | 118.36 / 120.91 → 74.04 / 76.33 |
+| Bundled + two custom files | 119.30 / 122.81 → 74.98 / 81.03 | 119.25 / 122.71 → 74.97 / 80.94 |
+
+Forty alternating pairs per workload followed one discarded warm-up pair. Each sample used a fresh system Python process with warm filesystem reads. The custom collection replaced both the Git worktree parent and its remove leaf. Seventy-eight files produced 76 effective commands. The 118.52 ms bundled baseline reproduced the earlier 118.1 ms observation.
+
+| Instrumented loader stage | Bundled median CPU (ms), before → after | With overrides, before → after |
+| --- | --- | --- |
+| Read file and decode UTF-8 | 8.41 → 8.54 | 8.54 → 8.44 |
+| Parse JSON | 47.52 → 47.50 | 47.76 → 47.37 |
+| Validate profiles, inclusive | 100.83 → 55.71 | 100.80 → 55.35 |
+| Validate text, within profile validation | 65.12 → 21.18 | 64.99 → 21.06 |
+
+These are 12 separate pairs with CPU timing wrappers. Instrumentation increases times, especially across the 20,144 text checks per bundled load. The last row is already included in the preceding row. The comparison uses the same files on both sides. The historical single-file measurement represents a different workload.
+
+| Menu | Terminal | First frame median (ms), before → after | First frame p95 (ms), before → after |
+| --- | --- | --- | --- |
+| Bundled Git worktree remove | 80×24 | 223.8 → 179.8 | 231.6 → 185.1 |
+| Bundled Git worktree remove | 60×16 | 223.8 → 181.1 | 228.6 → 187.6 |
+| Git with parent and leaf overrides | 80×24 | 223.2 → 179.1 | 228.3 → 184.1 |
+| Git with parent and leaf overrides | 60×16 | 222.8 → 179.2 | 225.5 → 183.8 |
+| FFmpeg | 80×24 | 550.3 → 503.7 | 572.6 → 522.5 |
+| FFmpeg | 60×16 | 550.7 → 508.5 | 572.5 → 529.2 |
+
+Each of the six rows covers 40 alternating pairs after warm-up. The controller timed the first fully matched terminal frame, then checked navigation, search, detail levels, resize and dismissal. The largest increase in interaction p95 was 0.36 ms on the FFmpeg unit search. The largest increase in median checkpoint RSS or high-water memory was 0.012 MiB. Both were below the review limits of the greater of 5 ms or 10% for latency, and 2 MiB or 5% for memory. The raw logs and percentile calculations are in the local experiment directory.
+
+To repeat the validation comparison, place two copies of the same source tree in `$MENU_BENCH_DIR/before` and `$MENU_BENCH_DIR/after`. Use the retained idle loop in both. Restore only `cli_help/core.py` from `cc30ade` in the before copy. Remove project bytecode from the disposable copies. In a separate custom directory, copy the bundled Git worktree remove profile to `leaf.json` and change its first option to `--fixture`, its summary to `Read café 日本`, and its detail to `First line\nSecond\tfield.` in JSON. Copy it to `parent.json` with the command path `["git", "worktree"]`.
+
+From each comparison root, use the same [component controller](../tools/menu_benchmark/phase1/components.py) with `load-one profiles` and `load-stages`, appending the absolute custom directory to each command for the override workload. For the first-frame comparison, use an absolute `MENU_BENCH_DIR`, the [paired Bash/PTY controller](../tools/menu_benchmark/prose/paired.py) and the [media decoder dependencies](../tools/requirements-media.txt). Supply private inert Git and FFmpeg stubs in the test PATH. The controller launches both helpers with the system interpreter.
+
+```bash
+"$decoder" tools/menu_benchmark/prose/paired.py --cases small ffmpeg
+"$decoder" tools/menu_benchmark/prose/paired.py --cases small --git-override "$custom/leaf.json"
+```
+
+The Unicode comparison evaluated each of the 1,114,112 code points alone and embedded between a printable prefix, newline, tab and combining-text suffix. Both revisions returned identical verdicts and error text. They also agreed on empty strings, other input types and the serialized effective profiles. An invalid unrelated JSON file, a control in an unrelated description and a duplicate custom command each produced identical exit status, stdout and stderr in both real `--bash` and `--check` invocations. In a single Bash session per revision, reopening after editing and deleting the leaf inserted `--fixture`, then `--changed`, then the bundled `-f`. Each insertion preserved the suffix, the cursor and the unexecuted command.
+
+**Decision: retain the serial printable-text check.** Bundled loader CPU fell by 44.32 ms at the median. Both the bundled and overridden Git controls reached a usable first frame sooner at the median and p95 at both sizes. The complete collection still participates in every open. Both improvements postdate the frozen v0.4.0-alpha candidate and are included in the v0.4.1-alpha source.
+
+## Combined offline verification
+
+All 13 focused idle tests and all 20 focused loader tests passed on the host. The strict numerical gate initially flagged the two edited runtime source fingerprints. Review confirmed that the changed sources contain the timeout and printable-field checks and that no numerical declarations changed. Updating those fingerprints restored a clean strict check.
+
+All three sandboxes verified the same 1,015 tracked files before starting the suite. The SHA-256 of that manifest was `ff1fd7523b6866aa4511171e630bed4d307182e44b763cb39edd16c8c3ac1664`. Each run included the two pinned yq binaries, fixture setup scripts and its Ubuntu-specific client packages. The package tests built from the tested source. After verification, only the documentation was edited to record the outcomes.
+
+| Target | Ubuntu | Python | Pass | Fail | Skip | Suite (s) | End to end (s) |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| host | 26.04.1 | 3.14.4 | 1,890 | 0 | 1 | 2,452.3 | 2,463.4 |
+| noble310 | 24.04.5 | 3.10.20 | 1,890 | 0 | 1 | 2,720.8 | 2,739.5 |
+| noble312 | 24.04.5 | 3.12.3 | 1,890 | 0 | 1 | 2,455.0 | 2,469.2 |
+
+All three runs exited zero. The only skip on each target was the Windows-specific probe limitation, because POSIX completed the probe normally. The direct Noble launches initially stopped at `newuidmap` before any test ran. The documented transient user-service launch allowed rootless Podman to start each offline suite. End-to-end times include snapshot creation, fixture setup and preflight. The target logs, `source.sha256` and exact per-target argument lists are under `tests/reports/idle-validation-cc30ade/`. The candidate artifact checksum file and all five entries it covers still matched the original release record. [Sandbox procedure](development.md#isolated-local-debugging) · [Candidate verification and Noble launch method](release-candidate.md#combined-candidate-verification)

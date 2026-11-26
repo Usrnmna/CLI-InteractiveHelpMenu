@@ -486,18 +486,25 @@ def run_browser(screen, profile, query, keys, preview=False):
     browser.accent = option_accent()
     searching = False
     saved_query = query
+    drawn_size = None
     while True:
         # A helper launched through Bash process substitution may not receive
         # the foreground shell's resize signal. Poll the controlling terminal
         # so resizing remains reliable even when SIGWINCH is not delivered.
         size = os.get_terminal_size(0)
-        if (size.lines, size.columns) != screen.getmaxyx():
-            curses.resizeterm(size.lines, size.columns)
-        rows = draw(screen, browser, keys, searching, preview)
+        geometry = (size.lines, size.columns)
+        if geometry != screen.getmaxyx():
+            curses.resizeterm(*geometry)
+            drawn_size = None
+        if geometry != drawn_size:
+            rows = draw(screen, browser, keys, searching, preview)
+            drawn_size = geometry
         try:
             key = screen.get_wch()
         except curses.error:
+            # A timeout leaves the frame and its paging capacity valid.
             continue
+        drawn_size = None
         if key == curses.KEY_RESIZE:
             continue
         if searching:

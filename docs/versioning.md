@@ -13,23 +13,23 @@ For a plan transition, record the outgoing and incoming goals, what users gain f
 
 The patch-9 carry applies even when the same plan continues. If several rules call for a minor bump in the same release, advance the minor number once.
 
-The selected prerelease uses `0.4.0-alpha` in the version file, `v0.4.0-alpha` for the planned tag and **Version 0.4.0 - Alpha** for the changelog heading.
+The local candidate uses `0.4.1-alpha` in the version file, `v0.4.1-alpha` as its identifier and **Version 0.4.1 - Alpha** for the changelog heading.
 
 ## Proposed targets
 
 A proposed release must change the working program. Eligible changes include a Bash keybinding fix, an improvement to menu performance, and corrections to the option descriptions or literal spellings that the menu displays or inserts. README edits, audit reports, demonstration media, CI changes and test-runner improvements are maintenance. They can accompany a program change and carry no version increment on their own.
 
-The `0.3` series expanded the command help users can find and insert. The first `0.4` batch improves how users open and read that help. It combines per-open reuse of shared value formatting with selectable levels of explanation. The performance-only candidate remained unpublished, so both changes share the first number in the new series, `v0.4.0-alpha`. A later separately shipped step can advance the patch. [Selected changes](../CHANGELOG.md#version-040---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
+The `0.3` series expanded the command help users can find and insert. The first `0.4` batch improves how users open and read that help. It combines per-open reuse of shared value formatting with selectable levels of explanation. The performance-only candidate remained unpublished, so both changes share the first number in the new series, `v0.4.0-alpha`. Skipping unchanged idle frames and shortening serial validation deliver the next step together under `v0.4.1-alpha`. [Current patch](../CHANGELOG.md#version-041---alpha) · [Menu performance plan](ffmpeg-menu-performance-plan.md)
 
 The remaining targets assume each improvement meets its evidence criteria and ships separately in the order shown. [Roadmap tasks and dependencies](../ROADMAP.md#remaining-work)
 
 | Proposed release | Change to the working program | Evidence for inclusion |
 | --- | --- | --- |
-| v0.4.1-alpha | Make searches and selection changes redraw faster in large menus. | If repeated matching or text wrapping accounts for the delay, measure time from a keypress to the updated screen before and after the change. Confirm that editing a query refreshes the matches, changing selection shows the correct Details, and resizing rewraps the text. [Redraw experiments](ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
-| v0.4.2-alpha | Reduce CPU use while an open menu waits for input. | If idle redraws have measurable cost, compare idle CPU over the same interval and terminal geometry. Resize the terminal while idle, confirm the menu recovers, then check navigation, insertion and cancellation. [Runtime measurements](runtime-architecture.md#optimization-candidates) |
-| v0.4.3-alpha | Open menus faster for commands whose installed identity must be checked before showing help. | If traces identify redundant discovery work, compare first display time and probe counts on the same fixtures. Verify matching and mismatched executable identities, stale entries and failed probes still produce the expected help or fallback. [Discovery investigation](runtime-architecture.md#optimization-candidates) |
+| v0.4.1-alpha (selected) | Skip redraws during unchanged idle intervals and shorten startup with a whole-field check for printable text. | Both experiments met their acceptance criteria. [Runtime evidence](menu-cost-measurements.md#decisions) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate) |
+| v0.4.2-alpha (proposed) | Make searches and selection changes redraw faster in large menus. | If repeated matching or text wrapping accounts for the delay, measure time from a keypress to the updated screen before and after the change. Confirm that editing a query refreshes the matches, changing selection shows the correct Details, and resizing rewraps the text. [Redraw experiments](ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
+| v0.4.3-alpha (proposed) | Open menus faster for commands whose installed identity must be checked before showing help. | If traces identify redundant discovery work, compare first display time and probe counts on the same fixtures. Verify matching and mismatched executable identities, stale entries and failed probes still produce the expected help or fallback. [Discovery investigation](runtime-architecture.md#optimization-candidates) |
 
-The roadmap also calls for measuring startup profile loading. A change to the loading architecture would require a separate decision before becoming a target. Test selection, benchmarks and release checks can proceed in roadmap order independently of the release sequence. [Conditional decisions](../ROADMAP.md#conditional-decisions)
+The loading improvement retains serial, full-collection validation. Changes to the loading architecture require a separate decision. Test selection, benchmarks and release checks can proceed in roadmap order independently of the release sequence. [Conditional decisions](../ROADMAP.md#conditional-decisions)
 
 ### Assigning the next number
 

@@ -24,11 +24,16 @@ root = Path(os.environ["MENU_BENCH_DIR"]).resolve()
 assert Path(bench.ui.__file__).resolve().parent == root / "before/cli_help"
 
 
-def compare(case, width, height):
+def compare(case, width, height, override=None):
     """Warm both isolated Bash sessions, then alternate helpers for forty pairs."""
     line = bench.cases[case]
     filename = "git-worktree-remove" if case == "small" else "ffmpeg"
-    profile = json.loads((root / "before/profiles" / (filename + ".json")).read_bytes())
+    profile_path = root / "before/profiles" / (filename + ".json")
+    if case == "small" and override:
+        profile_path = override
+    profile = json.loads(profile_path.read_bytes())
+    if case == "small" and profile["command"] != ["git", "worktree", "remove"]:
+        raise ValueError(f"Expected a git worktree remove profile in {profile_path}")
     steps, _ = matrix.expected(profile, line.split(" ")[-1], height, width)
     with tempfile.TemporaryDirectory() as tmp, ExitStack() as scope:
         screen = bench.TerminalScreen
@@ -38,6 +43,8 @@ def compare(case, width, height):
             folder = Path(tmp, variant)
             folder.mkdir()
             env = dict(CLI_HELP_DISCOVERY="off", CLI_HELP_PYTHON="/usr/bin/python3", PYTHONDONTWRITEBYTECODE="1")
+            if case == "small" and override:
+                env["CLI_HELP_PROFILES"] = str(override.parent)
             with patch.object(bench.bash, "ROOT", root / variant):
                 session = bench.bash.BashSession(folder, extra_environment=env)
             sessions[variant] = session
@@ -58,7 +65,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", nargs="+", choices=("ffmpeg", "small", "map", "timeout"),
                         default=("ffmpeg", "small", "map", "timeout"))
+    parser.add_argument("--git-override", type=lambda name: Path(name).resolve(),
+                        help="Use this git worktree remove profile as the small-menu oracle and its directory as the custom collection")
     args = parser.parse_args()
     for width, height in ((80, 24), (60, 16)):
         for case in args.cases:
-            compare(case, width, height)
+            compare(case, width, height, args.git_override)

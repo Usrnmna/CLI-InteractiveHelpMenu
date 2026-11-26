@@ -692,6 +692,23 @@ class NumericalPresentationTests(unittest.TestCase):
         self.assertNotIn("guidance unavailable", view.compact)
         self.assertNotIn("unit/scale", " ".join(view.details))
 
+    def test_idle_timeouts_keep_frame_until_input_or_polled_resize(self):
+        profile = specimen()
+        screen = CellScreen(24, 80)
+        wide, narrow = ui.os.terminal_size((80, 24)), ui.os.terminal_size((60, 16))
+
+        def resize_screen(lines, columns):
+            screen.lines, screen.columns = lines, columns
+
+        with BrowserLoop(screen), ExitStack() as stack:
+            stack.enter_context(patch.object(ui.os, "get_terminal_size", side_effect=[wide, wide, narrow, narrow, narrow]))
+            stack.enter_context(patch.object(ui.curses, "resizeterm", resize_screen, create=True))
+            stack.enter_context(patch.object(screen, "get_wch", side_effect=[ui.curses.error()] * 3 + ["D", "\n"]))
+            refreshed = stack.enter_context(patch.object(screen, "refresh"))
+            self.assertIs(run_browser(screen, profile, "", load_keys(None)), first_option(profile))
+        self.assertEqual(refreshed.call_count, 3)  # Initial, resized, Detailed.
+        self.assertIn("Detailed", screen.text())
+
     def test_custom_details_keys_and_scripted_resize_keep_existing_controls(self):
         profile = specimen(synthetic_node("duration"))
         keys = load_keys(None)

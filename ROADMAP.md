@@ -2,16 +2,21 @@
 
 ## Remaining work
 
-**Remaining engineering experiments** cover unchanged idle redraws and serial profile validation. The serial prose-reuse follow-up measured a 4.4–5.4% improvement in warm FFmpeg opening time and fell below the 30% target. [Prose-reuse results](docs/serial-prose-reuse-experiment.md)
+**v0.4.1-alpha local candidate — awaiting the maintainer's source commit.** Both improvements met their acceptance checks. The experiment matrix passed 1,890 tests per target using temporary builds. Exact-package verification for the new version is pending. [Performance evidence](docs/menu-cost-measurements.md#combined-offline-verification) · [Candidate record](docs/release-candidate.md#v041-alpha-local-candidate)
 
-**Next release task — Phase 3.** The selected `v0.4.0-alpha` prerelease combines the retained shared-value formatting improvement and the three-level browser. Identify the reviewed source commit and verify fresh packages from that revision. [Release notes](docs/releases.md#version-040---alpha)
+- [x] Select idle redraw suppression and faster serial profile validation as one patch in the 0.4 plan.
+- [ ] Freeze the candidate source at a maintainer-confirmed commit.
+- [ ] Build twice from that revision and verify all 11 files against the source and the independent rebuild.
+- [ ] Run one full offline matrix with the first build and record the installed-terminal and lifecycle results.
+
+**v0.4.0-alpha verification is complete.** The earlier candidate remains unpublished and its artifacts are preserved in `dist/candidate-v0.4.0-alpha-combined/`. The table below records its phases. Phase 4 publication is skipped for both candidates. Phase 5 test-result reuse remains conditional. [Frozen v0.4.0-alpha evidence](docs/release-candidate.md#combined-candidate-verification) · [Conditional work](#conditional-decisions)
 
 | Phase | Current status | Completion evidence |
 | --- | --- | --- |
 | 1. Investigate menu performance (original roadmap task 4) | Complete | [Five measured decisions and follow-up acceptance checks](docs/menu-cost-measurements.md#decisions) |
 | 2. Reconcile the menu record and choose release contents | Complete | [Scope and version decision](#phase-2--close-the-menu-record-and-select-release-contents) and [terminal evidence](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record) |
-| 3. Verify the release candidate | Pending final source selection | Reproducible artifacts and results for the exact release inputs |
-| 4. Publish and verify distribution | Pending candidate verification, hosted checks and release authorization | Published assets match the verified files and the tag identifies the tested commit |
+| 3. Verify the release candidate | Complete | [Exact source, reproducible artifacts and installed-terminal results](docs/release-candidate.md#combined-candidate-verification) |
+| 4. Publish and verify distribution | Skipped | If publication resumes, confirm hosted checks on the release commit and verify the published downloads. |
 
 ### Phase 1 — Measure the remaining menu costs
 
@@ -20,24 +25,26 @@
 | Investigation | Decision and next step |
 | --- | --- |
 | Opening and interaction | **Experiment complete. Defer adoption.** At 80×24, serial prose reuse reduced unfiltered FFmpeg opening from 546 to 519 ms. At 60×16 it reduced opening from 555 to 530 ms. The small Git control showed little change. [Matched timings and verification](docs/serial-prose-reuse-experiment.md) |
-| Idle redraws | **Proceed** with skipping a draw on an unchanged timeout. Retain geometry polling and resize recovery. Both controls redrew 66 times per idle 10 seconds. [Idle evidence](docs/menu-cost-measurements.md#idle-redraws) |
-| Startup profile loading | **Proceed** with a serial text-validation experiment. Loading 76 files took 118 ms, compared with 0.4 ms for the selected Git file alone. Preserve full validation and override semantics. [Loading evidence](docs/menu-cost-measurements.md#startup-profile-loading) |
+| Idle redraws | **Complete. Retain.** Idle draws fell from 66 to zero per 10 seconds across both sizes and menus. Geometry polling, resize recovery and input remained responsive. [PTY evidence and acceptance checks](docs/menu-cost-measurements.md#idle-redraw-experiment) |
+| Startup profile loading | **Complete. Retain.** Bundled loader CPU fell from 118.36 to 74.04 ms at the median. The small menu opened faster with and without overrides, with matching full-set validation and diagnostics. [Load, frame and parity evidence](docs/menu-cost-measurements.md#serial-profile-validation-experiment) |
 | Guarded discovery | **Defer** a change. An ordinary valid hit made zero probes. A guarded yq hit spent 11 ms and made one required identity probe. [Discovery evidence](docs/menu-cost-measurements.md#guarded-discovery) |
 | Multi-core processing | **Defer pools and retain serial execution.** Four processes improved FFmpeg opening from 498 to 323 ms in the pool comparison, but peak PSS rose from 42 to 90 MiB. Threads slowed opening. Any production process architecture requires separate approval. [CPU limits, workload crossover and compatibility](docs/menu-cost-measurements.md#worker-pools-and-cpu-limits) |
 
 ### Phase 2 — Close the menu record and select release contents
 
 1. **Review record complete.** The user approved the revised mockups for implementation and requested verification at both sizes. The implementation record links the six actual FFmpeg frames, including the number of options visible at each level. [Design decision and terminal captures](docs/superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
-2. **Release contents selected.** The next prerelease will ship per-open reuse of shared value formatting together with Simple, Detailed and Expanded, compact category labels, shared unit notes and unit search. This is the first shipping batch in the 0.4 series. The performance-only candidate remained unpublished, so the combined batch retains `v0.4.0-alpha`. The serial prose-reuse prototype, idle-redraw suppression and serial profile-validation experiments remain outside the release. [Version assignment](docs/versioning.md#assigning-the-next-number) · [Changelog](CHANGELOG.md#version-040---alpha)
-3. **Documentation and captures checked.** The README, controls guide and gallery describe the selected menu. All 160 runtime, configuration, profile and version fingerprints from the November 25 capture match the release-scope checkout at `bc78f9f` and the capture-build manifest. All six public media files match the recorded hashes. The existing media cover the selected behavior. The exact release commit and its packages remain Phase 3 work. [Controls](docs/usage.md#browser-controls) · [Capture provenance](docs/assets/README.md#capture-evidence) · [Release notes](docs/releases.md#version-040---alpha)
+2. **Release contents selected.** The v0.4.0-alpha candidate includes per-open reuse of shared value formatting together with Simple, Detailed and Expanded, compact category labels, shared unit notes and unit search. This is the first shipping batch in the 0.4 series. The performance-only candidate remained unpublished, so the combined batch retains `v0.4.0-alpha`. The serial prose-reuse prototype, idle-redraw suppression and serial profile-validation experiments are outside that frozen version. [Version assignment](docs/versioning.md#assigning-the-next-number) · [Changelog](CHANGELOG.md#version-040---alpha)
+3. **Documentation and captures checked.** The README, controls guide and gallery describe the selected menu. All 160 runtime, configuration, profile and version fingerprints from the November 25 capture match the release-scope checkout at `bc78f9f` and the capture-build manifest. All six public media files match the recorded hashes. The existing media cover the selected behavior. Phase 3 records the exact release commit and package identities. [Controls](docs/usage.md#browser-controls) · [Capture provenance](docs/assets/README.md#capture-evidence) · [Release notes](docs/releases.md#version-040---alpha)
 
 ### Phase 3 — Build and test the selected candidate
 
-1. **Freeze the source inputs.** Identify the reviewed release commit. Include the runtime modules, tests and documentation intended for that release. Build from its clean checkout into a fresh output directory and keep earlier candidate files intact. [Build procedure](docs/releases.md#build-from-source)
-2. **Verify the artifacts.** Compare the source inventory and manifest hashes with the commit’s Git blobs. Verify individual and aggregate checksums, archive contents, launcher and installer payloads. Rebuild independently and compare the resulting files byte for byte. [Candidate checks](docs/release-candidate.md#final-source-and-package-checks) · [Reproducibility](docs/release-candidate.md#reproducibility-and-reporting)
-3. **Test the exact candidate.** Run the full offline suite on Ubuntu 26.04 with Python 3.14 and Ubuntu 24.04 with Python 3.10 and 3.12. Point the package tests at the candidate artifacts. Exercise install, historical upgrade, update and removal, plus the installed Bash menu, insertion, cancellation and terminal restoration. Confirm the three levels and selected category at 80×24 and 60×16. Record per-target passes, failures, skips and artifact identity. [Sandbox procedure](docs/development.md#isolated-local-debugging) · [Package and terminal checks](docs/release-candidate.md#final-source-and-package-checks)
+1. **Source frozen.** Commit `cc30ade99d1ddf2f593b409f66bd05dc0029f44c` contains the selected formatting improvement, the three-level menu and the Phase 2 release documentation. The two builds used separate clean detached checkouts.
+2. **Artifacts verified.** All 1,003 packaged source hashes matched the selected Git blobs. Both archives, the launcher, the embedded installer payload and the checksums passed verification. All 11 upload files matched the independent rebuild byte for byte. [Build commands and digests](docs/release-candidate.md#combined-candidate-verification)
+3. **Candidate tested.** Each of the three full offline runs passed 1,888 tests with zero failures and one Windows-only skip. The first build passed historical upgrade, update and removal on every target. The installed Bash adapter matched the six reference frames and preserved the filtered selection, pending command and terminal at 80×24 and 60×16. [Environment, results and installed-menu checks](docs/release-candidate.md#combined-candidate-verification)
 
 ### Phase 4 — Publish the verified prerelease
+
+**Skipped for this roadmap.** Use the following procedure if publication is authorized later.
 
 1. **Confirm hosted checks** on the exact release commit, including the configured Linux jobs and documentation links. Resolve failures against that revision. [CI scope](docs/development.md#continuous-integration)
 2. **Tag and publish when authorized.** Create the matching annotated tag on the verified commit. Prepare a draft prerelease, keep latest-stable selection disabled, attach the verified artifacts and checksums, and record the commit and verification results in the release body.
@@ -47,7 +54,7 @@
 
 | Trigger | Follow-up and evidence needed |
 | --- | --- |
-| Phase 1 identifies a material runtime cost | Test the specific remedy in isolation and repeat the matched measurements and behavior checks. The first prose-reuse experiment fell below its target. Remaining candidates include idle redraw suppression and faster serial profile validation. Selective loading, a persistent index or an additional process needs a separate architecture decision. [Performance experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
+| Phase 1 identifies a material runtime cost | Test the specific remedy in isolation and repeat the matched measurements and behavior checks. The prose-reuse experiment fell below its target. Both idle redraw suppression and faster serial profile validation met their acceptance checks. Selective loading, a persistent index or an additional process needs a separate architecture decision. [Performance experiments](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 | Validated test selection still leaves substantial cost | Pilot Phase 5 result reuse for one bounded group. Prove invalidation for changed inputs, environments, targets, fixtures and interrupted runs. Report executed, reused, failed and skipped outcomes separately. Consider CI selection or sharding after local parity and measured savings. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) · [Sharding pilot](docs/test-selection-plan.md#two-shard-host-pilot) |
 
 ### Completed work supporting these phases
@@ -76,7 +83,7 @@ The [family table](docs/audit-history.md#bundled-menu-progress) links each origi
 
 ## Runtime performance follow-up
 
-**Complete — baseline and Stage 1.** The [architecture baseline](docs/runtime-architecture.md#local-performance-baseline) and [Stage 1 evaluation](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) record opening costs, correctness and the decision to retain shared value formatting. [Phase 1](#phase-1--measure-the-remaining-menu-costs) completed the five remaining investigations. The [decision table](docs/menu-cost-measurements.md#decisions) records the next experiments and their acceptance checks.
+**Complete — baseline and Stage 1.** The [architecture baseline](docs/runtime-architecture.md#local-performance-baseline) and [Stage 1 evaluation](docs/ffmpeg-menu-performance-plan.md#stage-1-evaluation) record opening costs, correctness and the decision to retain shared value formatting. [Phase 1](#phase-1--measure-the-remaining-menu-costs) completed the five remaining investigations. The [decision table](docs/menu-cost-measurements.md#decisions) records the completed experiments, decisions and acceptance checks.
 
 ## Discovered command help
 

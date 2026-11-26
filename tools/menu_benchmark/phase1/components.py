@@ -22,11 +22,11 @@ def emit(**record):
     print(json.dumps(record), flush=True)
 
 
-def load_once(folder):
+def load_once(folder, custom=None):
     """Exclude interpreter startup from the load timer, include it in peak RSS."""
     cpu = time.process_time_ns()
     wall = time.monotonic_ns()
-    profiles = load_profiles(Path(folder))
+    profiles = load_profiles(Path(folder), custom)
     elapsed = (time.monotonic_ns() - wall) / 1e6
     cpu_ms = (time.process_time_ns() - cpu) / 1e6
     line = "git worktree remove "
@@ -87,7 +87,7 @@ def timed_call(owner, name, clock, totals, counts, key=None):
     return patch.object(owner, name, measured)
 
 
-def load_stages():
+def load_stages(custom=None):
     """Attribute the full collection's warm load CPU by operation and command relevance."""
     import core
     for trial in range(13):
@@ -95,13 +95,16 @@ def load_stages():
         def group(path):
             return "selected" if path.name == "git-worktree-remove.json" else "unrelated"
         with ExitStack() as scope:
+            scope.enter_context(timed_call(Path, "read_text", time.process_time_ns, totals, counts))
+            scope.enter_context(timed_call(json, "loads", time.process_time_ns, totals, counts))
             scope.enter_context(timed_call(core, "read_json", time.process_time_ns, totals, counts,
                                           lambda path: "read/" + group(path)))
             scope.enter_context(timed_call(core, "validate_profile", time.process_time_ns, totals, counts,
                                           lambda profile, path: "validate/" + group(path)))
             scope.enter_context(timed_call(core, "require_text", time.process_time_ns, totals, counts))
-            profiles = core.load_profiles(ROOT / "profiles")
-            assert len(profiles) == 76
+            profiles = core.load_profiles(ROOT / "profiles", custom)
+            if custom is None:
+                assert len(profiles) == 76
         if trial:
             emit(trial=trial, ms=totals, count=counts)
 
@@ -209,13 +212,13 @@ def presentation():
 
 if __name__ == "__main__":
     if sys.argv[1] == "load-one":
-        load_once(sys.argv[2])
+        load_once(sys.argv[2], Path(sys.argv[3]) if len(sys.argv) > 3 else None)
     else:
         with tempfile.TemporaryDirectory() as scratch:
             if sys.argv[1] == "load":
                 load_sweep(Path(scratch))
             elif sys.argv[1] == "load-stages":
-                load_stages()
+                load_stages(Path(sys.argv[2]) if len(sys.argv) > 2 else None)
             elif sys.argv[1] == "discovery":
                 discovery_cases(Path(scratch))
             elif sys.argv[1] == "presentation":

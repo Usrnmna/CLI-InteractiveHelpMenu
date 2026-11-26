@@ -87,7 +87,8 @@ arguments without the pending line's operands or option values.
 flowchart TD
     P["Prepare display and search text for every option in the selected profile"] --> R["Check terminal size, draw visible rows and details"]
     R --> W["Wait up to 150 ms for input"]
-    W -->|"Timeout or resize"| R
+    W -->|"Timeout, same geometry"| W
+    W -->|"Resize"| R
     W -->|"Navigation, search or level key"| U["Update selection, focus, filter, detail level or scroll"]
     U --> R
     W -->|"Accept or cancel"| E["Return selection or close"]
@@ -100,8 +101,7 @@ in Simple. Changing the level retains the filter and selected option while
 reallocating space between the list and its explanation. The browser redraws the visible
 window and recomputes filter matches and detail wrapping in the draw path.
 The timeout lets it detect resizes when Bash process substitution prevents
-delivery of the resize signal. Today the loop redraws even if a timeout finds
-the same terminal size. The browser runs on the helper's main thread. When the helper exits,
+delivery of the resize signal. A timeout at the same terminal size reuses the visible frame and its page capacity. The browser runs on the helper's main thread. When the helper exits,
 its profile objects and formatted text are released, and the discovery cache
 can survive on disk for the next request.
 [Browser and input loop](../cli_help/ui.py) · [Option presentation](../cli_help/presentation.py) · [Unit aliases](../cli_help/menu_units.py)
@@ -146,9 +146,7 @@ unmeasured. [PTY harness](../tests/test_bash_pty.py#L21) · [Discovery fixtures]
 
 ## Optimization candidates
 
-The redraw loop still checks geometry on each timeout. The measured follow-ups
-are skipping an unchanged redraw and reducing serial profile-validation cost
-while preserving full validation and custom overrides. Ordinary discovery
+The redraw loop checks geometry on each timeout and redraws after input or a resize. The loader validates every bundled and custom profile. It checks a whole printable field in one call and examines individual characters when it needs to distinguish allowed tabs and newlines from other controls. Ordinary discovery
 cache hits made zero probes in the measured fixture. The guarded yq route
 retained its required identity probe. Worker pools and serial prose reuse were
 evaluated and deferred. [Measurements and decisions](menu-cost-measurements.md#decisions) · [Prose-reuse experiment](serial-prose-reuse-experiment.md)

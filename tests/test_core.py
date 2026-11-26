@@ -108,6 +108,23 @@ class EditingTests(unittest.TestCase):
             result = next(item for item in profiles if item["command"] == profile["command"])
             self.assertEqual(result["description"], "Custom definition")
 
+    def test_profile_text_preserves_unicode_and_only_allows_tab_and_newline_controls(self):
+        profile = copy.deepcopy(self.profiles[0])
+        for description in ("plain text", "café 日本 e\u0301", "日本\tA\nB", "\n\t"):
+            with self.subTest(description=description):
+                profile["description"] = description
+                validate_profile(profile, Path("fixture.json"))
+        class PrintableClaim(str):
+            def isprintable(self):
+                return True
+
+        for control in ("\x00", "\x1b", "\r", "\x7f", "\x85", "\u200b", "\ud800"):
+            with self.subTest(control=control):
+                for text_type in (str, PrintableClaim):
+                    profile["description"] = text_type("日本\n\t" + control + "text")
+                    with self.assertRaisesRegex(HelpError, r"^fixture\.json: description contains a control character\.$"):
+                        validate_profile(profile, Path("fixture.json"))
+
 
 class BrowserTests(unittest.TestCase):
     def setUp(self):

@@ -6,7 +6,7 @@ Stage 1 retained formatting a shared value definition once per menu open. The [S
 
 ## Three-level menu investigation
 
-Phase 1 is complete. The matched warm FFmpeg opening rose from 518 to 548 ms after the redesign. Prose cleanup accounted for 244 ms of instrumented constructor CPU. The subsequent serial prose-reuse experiment reduced FFmpeg opening time by 4.4–5.4%, below the 30% target. [Experiment and decision](serial-prose-reuse-experiment.md) Idle draw suppression and a serial profile-validation fast path merit separate experiments. Defer guarded discovery changes and worker pools. Four processes improved FFmpeg latency but more than doubled peak proportional memory. The Stage 1 tables below describe the earlier shared-value optimization. [Measurement record](menu-cost-measurements.md) · [Five decisions and acceptance checks](menu-cost-measurements.md#decisions)
+Phase 1 is complete. The matched warm FFmpeg opening rose from 518 to 548 ms after the redesign. Prose cleanup accounted for 244 ms of instrumented constructor CPU. The subsequent serial prose-reuse experiment reduced FFmpeg opening time by 4.4–5.4%, below the 30% target. [Experiment and decision](serial-prose-reuse-experiment.md) The [idle experiment](menu-cost-measurements.md#idle-redraw-experiment) and [serial validation experiment](menu-cost-measurements.md#serial-profile-validation-experiment) record the subsequent measurements and decisions. Defer guarded discovery changes and worker pools. Four processes improved FFmpeg latency but more than doubled peak proportional memory. The Stage 1 tables below describe the earlier shared-value optimization. [Measurement record](menu-cost-measurements.md) · [Five decisions and acceptance checks](menu-cost-measurements.md#decisions)
 
 ## FFmpeg benchmark evidence
 
@@ -117,9 +117,8 @@ a plausible second experiment after the reference reuse.
   `Browser.options`, `option_label_width` and `wrap_cells` separately.
   Consider retaining category matches for the active query or the wrapped
   Details for the current option and width. Clear matches when the query
-  changes and rewrap when the selection or width changes. Measure idle
-  redraw suppression separately and retain geometry polling and resize
-  recovery. These follow-ups are independently testable.
+  changes and rewrap when the selection or width changes.
+- [x] Tested idle redraw suppression independently. The retained loop polls geometry and recovered after both shrinking and expanding. [Idle experiments and terminal checks](menu-cost-measurements.md#idle-redraw-experiment)
 - [ ] Keep the first experiment confined to presentation and browser
   construction. Treat selective profile loading, a persistent index, or
   additional processes as separate architecture proposals.

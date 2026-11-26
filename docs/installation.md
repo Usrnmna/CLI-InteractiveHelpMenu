@@ -8,7 +8,7 @@ are required. Run the scripts as the account that will use the browser, without
 `sudo`. No packages are downloaded or installed by these scripts.
 Automatic resize recovery also uses the standard Linux `stty` utility.
 
-These procedures install v0.4.0-alpha from the current checkout. The earlier
+These procedures install v0.4.1-alpha from the current checkout. The earlier
 [v0.1.2-alpha packages](releases.md#version-012---alpha) provide a versioned
 prerelease snapshot; the [v0.1.1-alpha packages](releases.md#version-011---alpha)
 are historical upgrade fixtures. A checkout or [local candidate](release-candidate.md)
