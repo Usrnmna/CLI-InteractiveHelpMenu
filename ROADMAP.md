@@ -8,30 +8,15 @@ Update the current unit when a provider group, layout checkpoint or target finis
 
 | Phase | Work | Status | Current unit or next action |
 | --- | --- | --- | --- |
-| 1 | Ubuntu providers | Complete | Reviewed 57/57 priority invocations and 346/346 shipped names across six images. Added selectable menus for 150 names. [Results and exceptions](docs/ubuntu-coverage-audit.md#phase-1-provider-review) |
-| 1 | Terminal baseline and renderer | Complete | [Baselines and two-size fit evidence](docs/audit-history.md#phase-1-details-layout-and-terminal-evidence) ready for reuse. |
-| 2 | Terminal integration and visual review | Next | Start the 60×16 routine pass. Track 0/5 routine sizes and 0/7 complete visual reviews. Reuse the rsync captures at two sizes, then check live resize. |
-| 3 | Combined verification | Planned | Track focused checks by target, inventory and strict-gate results, then each target’s full result. |
+| 3 | Combined verification | Next | Prepare the host, noble310 and noble312 fixtures. Batch the affected rendering and fixed-source checks on each target. |
 
-### Ubuntu command coverage expansion
+Phase 2 completed all five routine passes, seven visual reviews and one live resize. Its bounded provider follow-up added zero declarations. [Terminal results by size](docs/audit-history.md#phase-2-terminal-audit) · [Phase 1 provider ledger](docs/ubuntu-command-coverage/phase1-review.tsv)
 
-The Phase 1 provider ledger records all 347 invocations and exact image results. Revisit `/usr/bin/ptardiff -h` if the provider resolves the manual/script conflict. The command tables for the shipped `lxc` and `lxd` wrappers depend on the separately installed snap revision. Post-operand choices and unsupported literal shapes remain listed by invocation. [Provider audit](docs/ubuntu-coverage-audit.md#phase-1-provider-review) · [Per-invocation findings](docs/ubuntu-command-coverage/phase1-review.tsv)
+### Unresolved provider findings
 
-### Phase 2 — Verify terminal behavior and review the same captures
-
-Once the renderer is stable, run one compact integration pass at each of the five routine sizes below. Preserve existing coverage at other dimensions and reuse matching assertions. At each routine size, check short-menu spacing and footer clearance, rsync entry order and scrolling, and FFmpeg selection visibility and final-entry reachability. Perform one live wide-to-narrow resize with Details open. Check that columns recalculate, selection stays visible and all details remain reachable.
-
-| Columns × rows | Coverage for this feature | Audit focus |
-| --- | --- | --- |
-| 60×16 | Routine + visual, baseline | Compact wrapping, scrolling to the last entry and footer clearance. |
-| 80×24 | Routine + visual, baseline | Reference frames for both the width-only and height-only comparisons. |
-| 100×24 | Routine + visual | Compare with 80×24 for shorter wraps and any column transition at fixed height. |
-| 120×30 | Routine + visual | Gutters, wrapped descriptions and the selected entry after paging. |
-| 160×40 | Routine + visual | Reading order and name-to-description alignment in a wide frame. |
-| 80×40 | Visual only | Compare with 80×24. Equal usable width should preserve column count and wrapping as more rows become visible. |
-| 200×50 | Visual only | Three-column maximum, separation between neighboring entries and short-menu footer placement. |
-
-Review the routine passes’ rendered cells and capture the two visual-only sizes with the same inputs. Inspect the short menu and rsync at opening, and FFmpeg after paging and on its final page. Reuse the matching two-size rsync color and monochrome comparisons from Phase 1. Record dimensions, state, action, observed column count and color mode, distinguishing automated checks from visual observations. After a fix, repeat the affected cases and sizes. [Command-help audit procedure](docs/development.md#auditing-command-help)
+- Reopen `/usr/bin/ptardiff -h` when a revision resolves the manual/script argument conflict.
+- Reopen `/usr/sbin/lxc` and `/usr/sbin/lxd` when an applicable image or fixture identifies the installed snap revision and supplies its command tables.
+- The ledger retains post-operand choices, plus and punctuation spellings, and options owned by a selected program. Reopen the affected invocation on matching provider evidence or approval for the required argument or literal representation. [Exact dispositions and reopening conditions](docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance)
 
 ### Phase 3 — Verify one combined batch
 

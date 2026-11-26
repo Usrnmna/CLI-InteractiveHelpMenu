@@ -47,14 +47,19 @@ def retry_after_seconds(value, now):
 def retryable_failures(report):
     """Return GNU URLs to probe, or None if any reported failure cannot be retried."""
     entries = re.findall(r"^\* \[([^\]]+)\] <([^>]+)>", report, re.MULTILINE)
-    count = re.search(r"\|[^|\n]*Errors\s*\|\s*(\d+)\s*\|", report)
-    if not entries or not count or len(entries) != int(count.group(1)):
+    errors = re.search(r"\|[^|\n]*Errors\s*\|\s*(\d+)\s*\|", report)
+    timeouts = re.search(r"\|[^|\n]*Timeouts\s*\|\s*(\d+)\s*\|", report)
+    timeout_count = sum(status == "TIMEOUT" for status, _ in entries)
+    if (not entries or not errors or len(entries) - timeout_count != int(errors.group(1))
+            or timeout_count != (int(timeouts.group(1)) if timeouts else 0)):
         return None
     gnu_urls = []
     for status, url in entries:
         target = urlsplit(url)
         if target.scheme != "https":
             return None
+        if status == "TIMEOUT" and target.netloc in ("manpages.ubuntu.com", "www.gnu.org"):
+            continue
         if status == "429" and target.netloc == "www.gnu.org":
             if url not in gnu_urls:
                 gnu_urls.append(url)

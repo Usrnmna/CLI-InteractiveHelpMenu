@@ -54,6 +54,20 @@ class DocumentationRetryTests(unittest.TestCase):
         report = failure_report(("429", GNU_URL), ("429", GNU_URL), ("503", GITHUB_SOURCE))
         self.assertEqual(retry.retryable_failures(report), [GNU_URL])
 
+    def test_manual_timeouts_use_the_separate_lychee_timeout_count(self):
+        report = ("| ⏳ Timeouts | 3 |\n| 🚫 Errors | 0 |\n"
+                  "* [TIMEOUT] <https://manpages.ubuntu.com/manpages/resolute/man8/apt.8.html>\n"
+                  "* [TIMEOUT] <https://manpages.ubuntu.com/manpages/resolute/man1/hp-align.1.html>\n"
+                  f"* [TIMEOUT] <{GNU_URL}>\n")
+        self.assertEqual(retry.retryable_failures(report), [])
+        for invalid in (report.replace("www.gnu.org", "example.org"),
+                        report.replace("Timeouts | 3", "Timeouts | 4"),
+                        report.replace("Errors | 0", "Errors | 1"),
+                        report + f"* [404] <{GNU_URL}>\n"):
+            self.assertIsNone(retry.retryable_failures(invalid))
+        mixed = report.replace("Errors | 0", "Errors | 1")
+        self.assertEqual(retry.retryable_failures(mixed + f"* [429] <{GNU_URL}>\n"), [GNU_URL])
+
     def test_http_429_probe_retains_headers_and_reads_retry_after(self):
         headers = Message()
         headers["Retry-After"] = "70"

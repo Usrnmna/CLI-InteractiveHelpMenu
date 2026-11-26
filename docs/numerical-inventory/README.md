@@ -4,18 +4,18 @@ The inventory reconciles bundled options, discovery fixtures and route declarati
 
 ## Current enumeration and counting rules
 
-| Local checkout, November 25, 2026 | Count | What is counted |
+| Local checkout, November 26, 2026 | Count | What is counted |
 | --- | ---: | --- |
 | Bundled profiles and categories | 76 / 302 | Authored containers |
 | Option and keyword records | 6,487 | Includes 96 keyword records. Aliases occupy separate rows. |
 | Records taking a value | 3,875 | Includes 197 optional-value records |
 | Shared value definitions / positional groups | 327 / 3 | A definition may supply multiple options. Each repeated positional group has two components. |
 | Applicable numerical or operand contracts | 4,426 | Required option, keyword, positional and definition records under the maintained coverage policy |
-| Explicit named paths | 327 | Union of built-ins, driver paths, bundled profiles and primary matrix cases |
+| Explicit named paths | 444 | Union of built-ins, driver paths, bundled profiles and primary matrix cases |
 | Primary matrix | 162 cases / 948 expectations | Selected assertions about command help |
 | Embedded sources / parsed observations | 170 / 7,015 | Includes captured help and synthetic specimens |
 | Canonical option and keyword identities | 8,430 | Reconciles authored, parsed, arity-only and expected identities by command and flag |
-| Inventory identities / input files | 9,871 / 370 | Includes source, path and component identities as well as options |
+| Inventory identities / input files | 10,081 / 463 | Includes source, path and component identities as well as options |
 
 These populations overlap. A declared route establishes how help is requested. A fixture establishes what its captured or synthetic text contains. Neither establishes every option available in an installed edition. The 942 original authored records are the baseline for the manual revisits. [Bundled expansion by family](../audit-history.md#bundled-menu-progress)
 

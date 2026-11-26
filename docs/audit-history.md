@@ -23,6 +23,36 @@ At 80×24 the one-byte offset form and its two-line explanation appear together 
 
 Raw JSON frames and the capture driver are retained locally under `tests/reports/phase1-details/`. The files include the input, dimensions, key sequence, scroll ranges, plain cells and styled cells. For Phase 2 use the same rsync state, the three-entry bundled `git worktree remove ` menu in Simple at opening (first option `-f`, final option `-h`), and FFmpeg’s Codec parameters category in Simple (from opening, Right 13 times). Capture FFmpeg at entry 1 (`-alpha_mode`), after PageDown and at End (entry 92, `-trellis`). The stable two-size rsync captures can be reused. [Column and style regressions](../tests/test_detail_columns.py)
 
+## Phase 2 terminal audit
+
+The host audit at `e631cfb` used the real Bash binding, bundled profiles, discovery disabled and a private tmux server. Five routine passes supplied the first five visual reviews. Two additional sizes supplied visual evidence. Each capture used monochrome with `NO_COLOR=1` and `COLORFGBG=15;0`. At 80×24 and 160×40 the archived Phase 1 color and monochrome rsync frames matched the new cells, input and scroll counters on every page. The archived styled frames supplied the color review. [Phase 1 inputs and style observations](#phase-1-details-layout-and-terminal-evidence)
+
+| Size | Pass and review | rsync suffix columns (zero-based starts) | rsync visible at opening / total lines | FFmpeg Simple after PageDown (of 92) | FFmpeg Expanded final option, total lines |
+| --- | --- | --- | --- | --- | ---: |
+| 60×16 | Routine + visual, passed | 1 (0) | 7 / 53 | 5, `-bf` | 25 |
+| 80×24 | Routine + visual, passed | 1 (0) | 11 / 50 | 9, `-bug` | 21 |
+| 100×24 | Routine + visual, passed | 2 (0, 51) | 11 / 40 | 9, `-bug` | 19 |
+| 120×30 | Routine + visual, passed | 2 (0, 61) | 14 / 30 | 13, `-color_primaries` | 18 |
+| 160×40 | Routine + visual, passed | 3 (0, 54, 108) | 19 / 26 | 18, `-cutoff` | 16 |
+| 80×40 | Visual, passed | 1 (0) | 19 / 50 | 17, `-compression_level` | 21 |
+| 200×50 | Visual, passed | 3 (0, 67, 134) | 24 / 25 | 23, `-dia_size` | 16 |
+
+**Captured states.** Git opened in Simple on the pending line `git worktree remove ` and moved to End. Its single option list showed `-f`, `--force`, and `-h` on rows 5, 7 and 9 (one-based) at every size. FFmpeg opened on `ffmpeg ` in Simple. Right 13 times reached Codec parameters, entry 1 (`-alpha_mode`). PageDown selected the entry in the table. End selected entry 92 (`-trellis`). Two presses of D opened Expanded for that selection. Scrolling reached its last explanation line at every size. Both Git and FFmpeg showed one option list beside the category pane. The rsync frames use the expanded Network option and the exact input and keys in the Phase 1 recipe. Each scroll advances by at most one viewport.
+
+**Rendered-cell observations.** At 60×16 the short Git summaries could truncate in the options pane while the selected full summary remained readable below. At 200×50 the Git options still ended on row 9 and the footer occupied rows 49–50. All FFmpeg selections remained visible above both footer lines. At 100×24 the first rsync suffix column ended at gigabytes in binary units (`NG or NGiB`) and the second began with decimal `NGB`. At 160×40 the first column ended with `NKB` and the next began with `NM or NMiB`. At 200×50 three columns fit with distinct gutters. The one-byte offset explanation wrapped beneath its value in the last column through “granularity”. At fixed width, the 80×24 and 80×40 frames contained identical text on all 50 rsync Details lines.
+
+**Automated assertions.** The harness checked the active selection, scroll bounds and recovery of the pending line and cursor. Cell checks reconstructed every rsync Details line from overlapping pages, verified the order and units of all 13 accepted forms down each column and then across, and checked the final offset explanation in the same column. They also verified the Git option order, both footer lines, FFmpeg opening and final positions, and full final Details reachability. Escape restored all 21 fixed-size pending inputs. The guarded Git, rsync and FFmpeg functions never ran.
+
+**Live resize.** With `--bwlimit=RATE` selected, the live session shrank from 160×40 at lines 8–26/26 to 60×16 at lines 8–14/53. The suffix list went from three columns to one. Scrolling back to the beginning and through the final line reproduced all 53 lines of the separately opened narrow menu. Escape restored the entire pending line, including the trailing quoted operand `"pending file"`, with the cursor at byte 74 immediately after the final `--`.
+
+The local evidence directory `tests/reports/phase2-details/` contains the capture driver, a cell reader and 87 frames across 21 fixed-size menu sessions and one resize. The filenames identify dimensions and command. Each JSON file includes input, cursor, color mode, per-frame action, rendered cells, selection and scroll range. The durable results above and the Phase 1 recipe allow reproduction without the ignored reports. Five renderer tests and four provider-boundary tests passed on the host. The provider follow-up added zero declarations. [Provider dispositions and reopening conditions](ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance) · [Terminal harness](../tests/test_terminal_screen.py)
+
+## CI inventory and documentation follow-up
+
+Actions run `45799373693` stopped on inventory reconciliation before the Linux test suites. All three Linux jobs reported seven missing and 50 stale source reviews. The 50 changes comprise 44 edition-specific reference shards, five runtime modules and the reference builder. The seven new fixed inputs comprise four help texts, one argument-boundary table, one multi-command help capture and one rendered manual. All 57 are file-level census identities. The existing source-census disposition covers their roles. The corrected inventory assigned all 10,081 identities with zero diagnostics on the host (Python 3.14) and the prepared Noble Python 3.10 and 3.12 targets.
+
+The documentation job reported 3,076 successes and three timeouts among 3,079 link occurrences. The failures concerned the Ubuntu apt and hp-align manuals and the GNU Bash builtin index. Lychee 0.24.2 reports timeouts separately from errors. The bounded retry now counts both and permits a timeout on those two manual hosts. Every link from the failed report subsequently returned HTTP 200 in a fresh three-link Lychee run. The documentation retry and numerical inventory modules passed 31 host tests. The hosted run tested the original revision. [Retry controller](../scripts/retry_documentation_links.py) · [Verification workflow](development.md#continuous-integration)
+
 ## Bash integration, distribution and compatibility
 
 | Period | Change and verification |

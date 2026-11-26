@@ -373,8 +373,9 @@ is interrupted before a report is available. The final gate replaces that file
 with the Lychee report once available.
 Workflow and badge endpoints are checked
 alongside other external links. CI retries the full check once when every failure
-is an HTTP 429 from the GNU manuals host or an HTTP 503 from a GitHub source file
-page. Broken anchors, other errors, and a failed retry fail the job. Both attempt
+is a timeout at `manpages.ubuntu.com` or `www.gnu.org`, an HTTP 429 from
+`www.gnu.org`, or an HTTP 503 from a GitHub source file page. Broken anchors,
+other errors, and a failed retry fail the job. Both attempt
 reports are retained when a retry runs. Results appear in the Actions job summary.
 Both attempts include the contribution guide and pull request template explicitly because the Markdown glob skips hidden directories.
 
