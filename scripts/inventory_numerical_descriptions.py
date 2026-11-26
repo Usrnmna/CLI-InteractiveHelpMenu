@@ -37,7 +37,9 @@ PROTECTED_SOURCES = (
     "cli_help/presentation.py", "cli_help/menu_units.py", "cli_help/terminal_text.py", "cli_help/authoring.py", "cli_help/manual_import.py",
     "cli_help/bulk_scan.py", "cli_help/review.py", "cli_help/review_forms.py",
     "cli_help/collection.py", "scripts/inventory_numerical_descriptions.py",
-    "cli_help/diagnostics.py",
+    "cli_help/diagnostics.py", "cli_help/apt_editions.py", "cli_help/ubuntu_packaging.py",
+    "cli_help/bash_builtins.py", "cli_help/ubuntu_reference.py", "cli_help/ubuntu_manual_routes.py",
+    "scripts/build_ubuntu_reference.py",
     "scripts/check_numerical_coverage.py", "tests/run.sh", ".github/workflows/ci.yml",
 )
 CLASSIFICATIONS = {
@@ -298,6 +300,17 @@ class Inventory:
                             self.route((program, group, child), location, "builtin_explicit")
             for field, values in globals_by_kind.items():
                 self.declarations((program,), values[program], source, "builtin_global_arity", field == "GLOBAL_VALUES")
+        apt_path = Path("cli_help/apt_editions.py")
+        apt = ast.parse(self.read(apt_path, "apt_edition_route_declarations"))
+        for node in apt.body:
+            if not isinstance(node, ast.Assign) or node.targets[0].id not in ("NOBLE", "RESOLUTE"):
+                continue
+            for program, groups in ast.literal_eval(node.value).items():
+                for verbs, flags in groups:
+                    for verb in verbs.split():
+                        command = (program,) if verb == "@" else (program, verb)
+                        self.route(command, {"path": apt_path.as_posix(), "edition": node.targets[0].id},
+                                   "builtin_root" if verb == "@" else "builtin_explicit", declarations=flags)
         for file in sorted(self.files(Path("config/drivers.example"))):
             if file.suffix != ".json":
                 self.read(file, "driver_directory_context")
@@ -520,6 +533,11 @@ class Inventory:
 
     def finish(self):
         """Freeze observations and reconcile explicit paths without additive totals."""
+        for directory, role in (("config/ubuntu-reference", "ubuntu_reference_declarations"),
+                                ("tests/fixtures/ubuntu-coverage", "ubuntu_fixed_reference")):
+            if (self.root / directory).is_dir():
+                for path in sorted(self.files(Path(directory))):
+                    self.read(path, role)
         for path in PROTECTED_SOURCES:
             self.read(Path(path), "protected_runtime_contract_context")
         for path in sorted(self.files(Path("tests/fixtures/value-semantics"))):

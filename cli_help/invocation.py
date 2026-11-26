@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 
+from bash_builtins import BUILTINS
 from drivers import Driver, HelpRoute
 from errors import HelpError
 
@@ -36,6 +37,7 @@ class Invocation:
     name: str
     module: str | None = None
     interpreter_options: tuple[str, ...] = ()
+    builtin: str | None = None
 
 
 def assignment_name(word):
@@ -64,6 +66,8 @@ def resolve_invocation(words: list[str]) -> Invocation:
             break
         if name == "command" and (external_prefix or words[index] != "command"):
             raise ValueError("The command builtin is supported only before external prefixes.")
+        if index == len(words) - 1:
+            break
         index += 1
         if name == "command":
             if index < len(words) and words[index] == "--":
@@ -108,8 +112,16 @@ def resolve_invocation(words: list[str]) -> Invocation:
     if ASSIGNMENT.fullmatch(words[index]):
         raise ValueError("Leading shell assignments require an explicit env prefix.")
     executable_index = index
-    name = Path(words[index]).name
-    if name not in {"python", "python3"}:
+    word = words[index]
+    if not external_prefix and word == "builtin" and index + 1 < len(words):
+        if words[index + 1] not in BUILTINS:
+            raise HelpError("Select a documented Bash builtin.", "unsupported_subcommand")
+        index += 1
+        word = words[index]
+    if not external_prefix and word in BUILTINS:
+        return Invocation(index, index + 1, word, builtin=word)
+    name = Path(word).name
+    if name not in {"python", "python3"} or index + 1 == len(words):
         return Invocation(index, index + 1, name)
     index += 1
     options = []

@@ -62,6 +62,8 @@ def route_provenance(command, invocation, registry, static_profile=False):
     the original route remains unchanged for explicitly configured discovery.
     static_profile indicates an exact profile match for the selected path.
     """
+    if invocation.builtin and not static_profile:
+        return {"kind": "bash_builtin", "help_topic": invocation.builtin, "manual": "bash-builtins"}
     if invocation.module:
         arguments, manual = module_help_route(invocation.module, tuple(command[1:]), invocation.interpreter_options)
         return {"kind": "module_adapter", "help_arguments": list(arguments), "manual": manual}
@@ -277,12 +279,14 @@ def explain(root, line, point):
         observed = {}
 
         def observe(command, profile_path, invocation):
-            cache, cached_profile = inspect_cache(command, tokens[invocation.executable_index].value,
-                                                 invocation, settings, registry)
-            observed.update({"cache_profile": cached_profile, "invocation": invocation})
             origin = profile_origin(profile_path, paths)
+            static_profile = origin["kind"] in {"bundled", "custom"}
+            cache, cached_profile = (({"status": "not_applicable"}, None) if invocation.builtin and not static_profile else
+                                     inspect_cache(command, tokens[invocation.executable_index].value,
+                                                   invocation, settings, registry))
+            observed.update({"cache_profile": cached_profile, "invocation": invocation})
             report.update({"resolved_command": list(command), "profile": origin,
-                           "route": route_provenance(command, invocation, registry, origin["kind"] in {"bundled", "custom"}),
+                           "route": route_provenance(command, invocation, registry, static_profile),
                            "cache": cache, "discovery_mode": settings.mode})
 
         def passive_lookup(executable, subcommands=(), **module):

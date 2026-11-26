@@ -6,6 +6,8 @@ import re
 
 from drivers import Driver, HelpRoute, load_driver_files
 from errors import HelpError
+from ubuntu_packaging import APT_DRIVERS
+from ubuntu_manual_routes import MANUAL_ONLY
 
 
 # Explicit paths prevent filenames, aliases, and plugin names from becoming
@@ -59,7 +61,7 @@ class CommandPath:
 
 def load_driver_registry(directory: Path | None = None) -> dict[str, Driver]:
     """Construct built-in Git/Docker drivers and overlay optional local JSON files."""
-    registry = {}
+    registry = dict(APT_DRIVERS)
     for name in GLOBAL_VALUES:
         paths = {(): HelpRoute(("--help",), name)}
         for path in BUILTIN_PATHS:
@@ -154,5 +156,5 @@ def help_route(name: str, subcommands: tuple[str, ...], registry=None) -> HelpRo
     if name in registry and subcommands in registry[name].paths:
         return registry[name].paths[subcommands]
     if not subcommands:
-        return HelpRoute(("--help",), name)
+        return HelpRoute(() if name in MANUAL_ONLY else ("--help",), name)
     raise ValueError("Automatic discovery does not support this subcommand path. Add a driver or explicit profile.")

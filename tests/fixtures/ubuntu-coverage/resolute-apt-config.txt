@@ -1,0 +1,118 @@
+APT-CONFIG(8)                                   APT                                   APT-CONFIG(8)
+
+NAME
+       apt-config - APT Configuration Query program
+
+SYNOPSIS
+
+       apt-config [--empty] [--format '%f "%v";%n'] [-o=config_string] [-c=config_file] {shell |
+                  dump | {-v | --version} | {-h | --help}}
+
+DESCRIPTION
+       apt-config is an internal program used by various portions of the APT suite to provide
+       consistent configurability. It accesses the main configuration file /etc/apt/apt.conf in a
+       manner that is easy to use for scripted applications.
+
+       Unless the -h, or --help option is given, one of the commands below must be present.
+
+       shell
+           shell is used to access the configuration information from a shell script. It is given
+           pairs of arguments, the first being a shell variable and the second the configuration
+           value to query. As output it lists shell assignment commands for each value present. In
+           a shell script it should be used as follows:
+
+               OPTS="-f"
+               RES=`apt-config shell OPTS MyApp::options`
+               eval $RES
+           This will set the shell environment variable $OPTS to the value of MyApp::options with a
+           default of -f.
+
+           The configuration item may be postfixed with a /[fdbi]. f returns file names, d returns
+           directories, b returns true or false and i returns an integer. Each of the returns is
+           normalized and verified internally.
+
+       dump
+           Just show the contents of the configuration space.
+
+OPTIONS
+       All command line options may be set using the configuration file, the descriptions indicate
+       the configuration option to set. For boolean options you can override the config file by
+       using something like -f-,--no-f, -f=no or several other variations.
+
+       --empty
+           Include options which have an empty value. This is the default, so use --no-empty to
+           remove them from the output.
+
+       --format '%f "%v";%n'
+           Defines the output of each config option. %t will be replaced with its individual name,
+           %f with its full hierarchical name and %v with its value. Use uppercase letters and
+           special characters in the value will be encoded to ensure that it can e.g. be safely
+           used in a quoted-string as defined by RFC822. Additionally %n will be replaced by a
+           newline, and %N by a tab. A % can be printed by using %%.
+
+       -h, --help
+           Show a short usage summary.
+
+       -v, --version
+           Show the program version.
+
+       --audit
+           Show audit (and notice) messages. This overrides the quiet option, but only for notice
+           messages, not progress ones.
+
+       -c, --config-file
+           Configuration File; Specify a configuration file to use. The program will read the
+           default configuration file and then this configuration file. If configuration settings
+           need to be set before the default configuration files are parsed specify a file with the
+           APT_CONFIG environment variable. See apt.conf(5) for syntax information.
+
+       -o, --option
+           Set a Configuration Option; This will set an arbitrary configuration option. The syntax
+           is -o Foo::Bar=bar.  -o and --option can be used multiple times to set different
+           options.
+
+       --cli-version
+           Requests a specific CLI version. This is a pattern that takes a MAJOR.MINOR version. You
+           may omit the MINOR version, in which case the latest supported minor level will be used.
+
+           Version tracks are presented as follows: The version 3.2 has equivalent versions 0.32,
+           1.22, and 2.12, implementing new features for their specified major versions.
+
+           A special case is the X.9 version pattern: A version like 2.9 is followed by 3.0, but
+           2.10 follows directly on 2.8; given that we use odd version numbers as development
+           series (2.9 is the 3.0 development series).
+
+           This feature has been introduced in APT 3.1.10, and replaces the binary-specific
+           configuration. You may use the APT::Version to similar effect on older binaries, for
+           example, use -o APT::Version=2 to make apt(8) behave like the 2.x series.
+
+           The default value is the current APT version for apt(8) and 0.(10 * major + minor) for
+           the classic commands. The 0.X series is soft-deprecated and the other commands will roll
+           over to the 2.x series in the future.
+
+       --no-color, --color
+           Turn colors on or off. Colors are on by default on supported terminals for apt(8) and
+           can also be disabled using the NO_COLOR or APT_NO_COLOR environment variables, or
+           further configured by the APT::Color configuration option and scope, see apt.conf(5) for
+           information on that.
+
+SEE ALSO
+       apt.conf(5)
+
+DIAGNOSTICS
+       apt-config returns zero on normal operation, decimal 100 on error.
+
+BUGS
+       APT bug page[1]. If you wish to report a bug in APT, please see
+       /usr/share/doc/debian/bug-reporting.txt or the reportbug(1) command.
+
+AUTHORS
+       Jason Gunthorpe
+
+       APT team
+
+NOTES
+        1. APT bug page
+           https://bugs.debian.org/src:apt
+
+APT 3.2.1                                 30 November 2013                            APT-CONFIG(8)

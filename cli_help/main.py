@@ -12,6 +12,7 @@ import locale
 import os
 from pathlib import Path
 
+from bash_builtins import BUILTINS
 from core import HelpError, find_context, insert_option, load_profiles
 from discovery import Settings, discover
 from command_paths import load_driver_registry
@@ -178,7 +179,10 @@ def main():
             return 0
         settings = Settings.from_environment()
         if args.discover:
-            print(json.dumps(discover(args.discover[0], settings, args.refresh, tuple(args.discover[1:]), drivers), ensure_ascii=False, indent=2))
+            command, *path = args.discover
+            if not path and command in BUILTINS:
+                command, path = "builtin", [command]
+            print(json.dumps(discover(command, settings, args.refresh, tuple(path), drivers), ensure_ascii=False, indent=2))
             return 0
         from ui import load_keys, escape_delay
         config = os.environ.get("CLI_HELP_CONFIG")

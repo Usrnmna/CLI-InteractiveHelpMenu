@@ -6,7 +6,7 @@ Commands in this guide are run from the repository root unless stated otherwise.
 
 ## Editable help profiles
 
-Each file in [the bundled collection](../profiles/) describes one command or command/subcommand path. The [family audits](../ROADMAP.md#bundled-menu-progress) record which manual editions and aliases informed each menu. A
+Each file in [the bundled collection](../profiles/) describes one command or command/subcommand path. The [family audits](audit-history.md#bundled-menu-progress) record which manual editions and aliases informed each menu. A
 minimal additional profile has this structure:
 
 ```json
@@ -79,7 +79,7 @@ completed migration without asserting complete external-help coverage.
 | `options[].value_semantics` | Optional descriptive contract; quantities, counts, indices, levels, expressions and delegated values retain their own meanings |
 | `value_definitions` | Explicit shared semantic nodes, referenced within their owning profile |
 | `positional_value_semantics` | Optional explanation beside the existing `positional_group`; does not change insertion or arity |
-| `options[].kind` | `flag` by default; `keyword` permits a literal bare keyword such as `dev` |
+| `options[].kind` | Defaults to `flag`. A `keyword` can be a bare literal such as `dev`, `1025` or `2600n`. ASCII letters and digits may start a keyword. Later characters may also include underscores and hyphens. |
 | `options[].attached` | Boolean; recognizes an attached argument for a value-taking flag such as `-p22`; default false |
 | `options[].argument_style` | Explicit `separate`, `equals`, `attached`, or `attached_only` spelling for one value; omitted metadata retains legacy behavior |
 | `options[].bundle` | Boolean opt-in for a single-character short option; every member must have unambiguous declared arity; default false |

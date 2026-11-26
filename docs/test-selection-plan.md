@@ -1,6 +1,6 @@
 # Plan for shorter local test runs
 
-Use repeatable focused commands and the timed full-suite baseline to identify expensive checks. Then reduce measured duplicate work and validate test selection against the full suite. Start with iproute2 and use the yq revisit to test whether selection catches dependencies in shared test modules. [Roadmap](../ROADMAP.md#reducing-test-duration) · [Offline runner](../tests/run_sandbox.py) · [Full suite](../tests/run.sh)
+Use repeatable focused commands and the timed full-suite baseline to identify expensive checks. Then reduce measured duplicate work and validate test selection against the full suite. Start with iproute2 and use the yq revisit to test whether selection catches dependencies in shared test modules. [Test duration history](audit-history.md#test-duration-and-repository-workflow) · [Offline runner](../tests/run_sandbox.py) · [Full suite](../tests/run.sh)
 
 ## Phase status and gates
 

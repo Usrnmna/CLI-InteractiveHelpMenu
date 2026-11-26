@@ -1,0 +1,146 @@
+APT-MARK(8)                                     APT                                     APT-MARK(8)
+
+NAME
+       apt-mark - show, set and unset various settings for a package
+
+SYNOPSIS
+
+       apt-mark {-f=filename | {auto | manual} pkg...  | {showauto | showmanual} [pkg...] } |
+                {-v | --version} | {-h | --help}
+
+       apt-mark {hold | unhold | install | remove | purge} pkg...  |
+                {showhold | showinstall | showremove | showpurge} [pkg...]
+
+DESCRIPTION
+       apt-mark can be used as a unified front-end to set various settings for a package, such as
+       marking a package as being automatically/manually installed or changing dpkg selections such
+       as hold, install, deinstall and purge which are respected e.g. by apt-get dselect-upgrade or
+       aptitude.
+
+AUTOMATICALLY AND MANUALLY INSTALLED PACKAGES
+       When you request that a package is installed, and as a result other packages are installed
+       to satisfy its dependencies, the dependencies are marked as being automatically installed,
+       while the package you installed explicitly is marked as manually installed. Once an
+       automatically installed package is no longer depended on by any manually installed package
+       it is considered no longer needed and e.g.  apt-get or aptitude will at least suggest
+       removing them.
+
+       auto
+           auto is used to mark a package as being automatically installed, which will cause the
+           package to be removed when no more manually installed packages depend on this package.
+
+       manual
+           manual is used to mark a package as being manually installed, which will prevent the
+           package from being automatically removed if no other packages depend on it.
+
+       minimize-manual
+           minimize-manual is used to mark (transitive) dependencies of metapackages as
+           automatically installed. This can be used after an installation for example, to minimize
+           the number of manually installed packages; or continuously on systems managed by system
+           configuration metapackages.
+
+       showauto
+           showauto is used to print a list of automatically installed packages with each package
+           on a new line. All automatically installed packages will be listed if no package is
+           given. If packages are given only those which are automatically installed will be shown.
+
+       showmanual
+           showmanual can be used in the same way as showauto except that it will print a list of
+           manually installed packages instead.
+
+   Options
+       -f=filename, --file=filename
+           Read/Write package stats from the filename given with the parameter filename instead of
+           from the default location, which is extended_states in the directory defined by the
+           Configuration Item: Dir::State.
+
+PREVENT CHANGES FOR A PACKAGE
+       hold
+           hold is used to mark a package as held back, which will prevent the package from being
+           automatically installed, upgraded or removed.
+
+       unhold
+           unhold is used to cancel a previously set hold on a package to allow all actions again.
+
+       showhold
+           showhold is used to print a list of packages on hold in the same way as for the other
+           show commands.
+
+SCHEDULE PACKAGES FOR INSTALL, REMOVE AND PURGE
+       Some front-ends like apt-get dselect-upgrade can be used to apply previously scheduled
+       changes to the install state of packages. Such changes can be scheduled with the install,
+       remove (also known as deinstall) and purge commands. Packages with a specific selection can
+       be displayed with showinstall, showremove and showpurge respectively. More information about
+       these so called dpkg selections can be found in dpkg(1).
+
+OPTIONS
+       -h, --help
+           Show a short usage summary.
+
+       -v, --version
+           Show the program version.
+
+       --audit
+           Show audit (and notice) messages. This overrides the quiet option, but only for notice
+           messages, not progress ones.
+
+       -c, --config-file
+           Configuration File; Specify a configuration file to use. The program will read the
+           default configuration file and then this configuration file. If configuration settings
+           need to be set before the default configuration files are parsed specify a file with the
+           APT_CONFIG environment variable. See apt.conf(5) for syntax information.
+
+       -o, --option
+           Set a Configuration Option; This will set an arbitrary configuration option. The syntax
+           is -o Foo::Bar=bar.  -o and --option can be used multiple times to set different
+           options.
+
+       --cli-version
+           Requests a specific CLI version. This is a pattern that takes a MAJOR.MINOR version. You
+           may omit the MINOR version, in which case the latest supported minor level will be used.
+
+           Version tracks are presented as follows: The version 3.2 has equivalent versions 0.32,
+           1.22, and 2.12, implementing new features for their specified major versions.
+
+           A special case is the X.9 version pattern: A version like 2.9 is followed by 3.0, but
+           2.10 follows directly on 2.8; given that we use odd version numbers as development
+           series (2.9 is the 3.0 development series).
+
+           This feature has been introduced in APT 3.1.10, and replaces the binary-specific
+           configuration. You may use the APT::Version to similar effect on older binaries, for
+           example, use -o APT::Version=2 to make apt(8) behave like the 2.x series.
+
+           The default value is the current APT version for apt(8) and 0.(10 * major + minor) for
+           the classic commands. The 0.X series is soft-deprecated and the other commands will roll
+           over to the 2.x series in the future.
+
+       --no-color, --color
+           Turn colors on or off. Colors are on by default on supported terminals for apt(8) and
+           can also be disabled using the NO_COLOR or APT_NO_COLOR environment variables, or
+           further configured by the APT::Color configuration option and scope, see apt.conf(5) for
+           information on that.
+
+FILES
+       /var/lib/apt/extended_states
+           Status list of auto-installed packages. Configuration Item: Dir::State::extended_states.
+
+SEE ALSO
+       apt-get(8), aptitude(8), apt.conf(5)
+
+DIAGNOSTICS
+       apt-mark returns zero on normal operation, non-zero on error.
+
+BUGS
+       APT bug page[1]. If you wish to report a bug in APT, please see
+       /usr/share/doc/debian/bug-reporting.txt or the reportbug(1) command.
+
+AUTHORS
+       Mike O'Connor
+
+       APT team
+
+NOTES
+        1. APT bug page
+           https://bugs.debian.org/src:apt
+
+APT 3.2.1                                14 September 2024                              APT-MARK(8)

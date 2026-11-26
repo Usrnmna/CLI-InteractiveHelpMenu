@@ -588,3 +588,25 @@ class ResizeBindingTests(TerminalTestCase):
                 self.assertEqual(shell.cancel(), after)
                 self.assertEqual(shell.read_buffer(), (expected, len(expected_prefix) - int(accept)))
                 self.assertFalse(shell.executed.exists())
+
+
+@unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
+class UbuntuCoverageScreenTests(TerminalTestCase):
+    def test_builtin_midline_cancel_and_insert(self):
+        """Check a Bash-owned option in a real pending line with quoted text after the cursor."""
+        shell = self.start()
+        shell.text("export CLI_HELP_DISCOVERY=auto")
+        shell.keys("Enter")
+        shell.wait_for(lambda state: state.cells[state.y] == PROMPT.rstrip())
+        prefix, suffix = "builtin cd -P", " 'saved directory'"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for key in ("Escape", "Enter"):
+            frame = shell.open_menu()
+            self.assertIn("-P", "\n".join(frame.cells))
+            self.assertIn("> -L ", frame.cells[4])
+            shell.cancel(key)
+            line, point = shell.read_buffer()
+            self.assertEqual(line, (prefix if key == "Escape" else "builtin cd -L") + suffix)
+            self.assertEqual(point, len(prefix) + (key == "Enter"))
+        self.assertFalse(shell.executed.exists())

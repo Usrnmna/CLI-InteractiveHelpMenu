@@ -9,6 +9,10 @@ rankings. A passing case establishes the selected option declarations, argument
 counts, and literal insertion behavior for the recorded version. It does not
 establish complete option coverage or successful execution of the program's work.
 
+## Ubuntu default coverage
+
+On Ubuntu 24.04 and 26.04, root discovery can use a packaged reference when installed help yields no selectable declarations. It requires an installed executable, checks known provider paths and package revisions, and opens only the matching reference shard. Optional executables can be installed independently. Ubuntu 26.04 image results and the supported package-manager and Bash editions are recorded in the [Ubuntu coverage audit](ubuntu-coverage-audit.md).
+
 ## Programs and command paths
 
 Each tier inventory lists every command in matrix order, the source edition, and the outcome for that path.
@@ -223,7 +227,7 @@ For local reproduction, see [isolated local debugging](development.md#isolated-l
 
 ### Third-party command validation
 
-For bundled help, the [family inventories](../ROADMAP.md#bundled-menu-progress) map the selectable rows to their manuals. For discovery, see the [Essential](essential-discovery-audit.md), [Next](next-discovery-audit.md) and [Extended](extended-discovery-audit.md) route dispositions. Their tests use fixed documentation and inert targets in real terminals. The [combined offline matrix](next-extended-discovery-verification.md#full-suite-matrix) records 1,870 passes and one Windows-only skip per target on that later snapshot. Hosted results above apply to the linked commit.
+For bundled help, the [family inventories](audit-history.md#bundled-menu-progress) map the selectable rows to their manuals. For discovery, see the [Essential](essential-discovery-audit.md), [Next](next-discovery-audit.md) and [Extended](extended-discovery-audit.md) route dispositions. Their tests use fixed documentation and inert targets in real terminals. The [combined offline matrix](next-extended-discovery-verification.md#full-suite-matrix) records 1,870 passes and one Windows-only skip per target on that later snapshot. Hosted results above apply to the linked commit.
 
 The [complete expansion validation](compatibility-expansion-validation.md) records
 the earlier 129-route inventory, deterministic evidence, live versions, skips, and

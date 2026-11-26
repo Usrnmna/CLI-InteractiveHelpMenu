@@ -27,7 +27,7 @@ END = b"# <<< cli-interactive-help <<<"
 PAYLOAD = ("install.sh", "uninstall.sh", "update.sh", "review-update.sh", "update-from-github.sh",
            "scripts/release_update.py",
            "scripts/installation.py", "scripts/update_review.py", "scripts/guided_merge.py", "bash/interactive-help.bash",
-           "cli_help/*.py", "profiles/*.json", "config/keys.example.json", "config/drivers.example/*.json",
+           "cli_help/*.py", "profiles/*.json", "config/ubuntu-reference/*/*.jsonl", "config/keys.example.json", "config/drivers.example/*.json",
            "VERSION", "cli-help")
 OPTIONAL_PAYLOAD = {"cli-help"}  # Compiled launcher is present in binary release bundles.
 

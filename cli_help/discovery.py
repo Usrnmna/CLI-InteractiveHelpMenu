@@ -20,6 +20,7 @@ import subprocess
 import tempfile
 import time
 
+from bash_builtins import BUILTINS, HELP_SCRIPT, RELATED, builtin_profile
 from core import HelpError, validate_profile
 from command_paths import help_route
 from git_manual import git_manual_document
@@ -30,6 +31,8 @@ from media_help import media_help_document, media_manual_document
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 from npm_help import explain_syntax_only_options
 from system_help import align_system_manual, complete_system_document
+from ubuntu_reference import installed_reference, reference_profile, reference_record
+from ubuntu_packaging import APT_DRIVERS, apt_document, complete_dpkg_manual, dpkg_document
 from terminal_text import strip_terminal_sequences
 from utility_tables import utility_table_document
 from utility_manual import complete_utility_declarations, utility_manual_document
@@ -39,7 +42,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 18
+CACHE_VERSION = 19
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*|-[.#:](?=,\s+--)|(?<=, )-@)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -979,7 +982,16 @@ def parse_command_help(text: str, source: str, command, request=None, *, scope=N
     command = list(command)
     name = command[0] if command else ""
     cleaned = clean_output(text)
-    parsed = developer_help_document(cleaned, source, command, parse_help_document, scope) if name else None
+    parsed = None
+    if name in APT_DRIVERS:
+        parsed = apt_document(cleaned, command)
+        if parsed is None and len(command) > 1:
+            # A root document from an unreviewed edition cannot establish leaf ownership.
+            parsed = {"options": [], "option_lines": [], "shared": []}
+    elif name in {"dpkg", "dpkg-deb", "dpkg-query"}:
+        parsed = dpkg_document(cleaned, name)
+    if parsed is None and name:
+        parsed = developer_help_document(cleaned, source, command, parse_help_document, scope)
     if parsed is None and name == "git" and len(command) == 2:
         parsed = git_manual_document(cleaned.splitlines(), source, command)
     if name == "git" and parsed is not None:
@@ -994,6 +1006,8 @@ def parse_command_help(text: str, source: str, command, request=None, *, scope=N
         parsed = utility_table_document(command, cleaned, source, declaration_summary)
     if parsed is None:
         parsed = parse_help_document(cleaned, source)
+    if command == ["dpkg"] and cleaned.upper().startswith("DPKG(1)"):
+        complete_dpkg_manual(parsed, cleaned)
     if len(command) == 1 and name in {"curl", "wget", "jq", "rsync", "rg", "sort", "tail"}:
         complete_utility_declarations(parsed, name, cleaned, source)
     if name in {"systemctl", "journalctl", "ssh", "scp", "sftp", "ip", "ss", "openssl", "podman",
@@ -1388,6 +1402,8 @@ def merge_documents(command, documents):
                         "Its source identity or section scope differs from the requested command; supply matching help or a curated profile.",
                         "help_source_scope")
     result = merge_profiles(profiles)
+    if command[0] in {"dpkg", "dpkg-deb", "dpkg-query"}:
+        result["stop_at_positional"] = True
     boundaries = dict.fromkeys(flag for _, parsed in documents for flag in parsed.get("stop_at_options", ()))
     if boundaries:
         result["stop_at_options"] = list(boundaries)
@@ -1581,9 +1597,21 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     """
     if settings.mode == "off":
         raise HelpError("No static profile matches and automatic discovery is disabled.", "discovery_disabled")
+    if command == "builtin" and len(subcommands) == 1 and subcommands[0] in BUILTINS and module is None:
+        name = subcommands[0]
+        if settings.mode == "man":
+            raise HelpError(f"See Bash documentation with help '{name}' or man bash-builtins.", "usage_guidance")
+        def topic(word):
+            return run_probe(["/bin/bash", "--noprofile", "--norc", "-c", HELP_SCRIPT, "help", word],
+                             settings.timeout, check=True)
+        text = topic(name)
+        profile = builtin_profile(name, text, topic(RELATED[name]) if name in RELATED else text)
+        profile["discovery"] = {"sources": [f"Bash help {name}"], "warnings": [],
+                                "executable": "/bin/bash", "scope": "builtin"}
+        return profile
     name = Path(command).name
     manual_scope = None
-    if not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", name) or name in (".", ".."):
+    if (name not in ("[", "gnu[") and not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", name)) or name in (".", ".."):
         raise HelpError("Discovery requires a literal executable name.")
     if module is not None:
         if name not in ("python", "python3"):
@@ -1671,6 +1699,19 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     try:
         profile = merge_documents(command_path, documents)
     except HelpError as error:
+        if not subcommands and module is None and not variant and not route.source:
+            record = reference_record(name, executable)
+            if record:
+                try:
+                    installed_reference(record)
+                    profile = reference_profile(record, build_profile, validate_profile)
+                except HelpError as reference_error:
+                    if reference_error.code == "usage_guidance" and probe_failed:
+                        raise HelpError(f"{reference_error} Installed documentation lookup failed: {' '.join(warnings)}",
+                                        reference_error.code) from error
+                    raise
+                profile["discovery"].update(executable=executable, warnings=warnings)
+                return profile
         explanation = " ".join(warnings)
         error_type = ProbeError if probe_failed else HelpError
         raise error_type(f"{error} {explanation} Add a custom profile for this command.",

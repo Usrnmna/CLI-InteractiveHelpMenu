@@ -7,7 +7,10 @@ import re
 import shlex
 
 from command_paths import load_driver_registry, resolve_path
-from invocation import module_driver, resolve_invocation
+from bash_builtins import BUILTINS
+from ubuntu_packaging import APT_DRIVERS
+from ubuntu_reference import keyword_prefix
+from invocation import INTERPRETER_FLAGS, module_driver, resolve_invocation
 from errors import HelpError
 from arguments import VALUE_STYLES, option_tokens, value_forms
 
@@ -54,10 +57,13 @@ def validate_profile(profile: dict, source: Path):
     if not isinstance(profile, dict):
         raise HelpError(f"{source}: a profile must be an object.")
     command = profile.get("command")
-    if not isinstance(command, list) or not command or any(
+    bracket_utility = command in (["["], ["gnu["])
+    builtin_topic = (isinstance(command, list) and len(command) == 2 and command[0] == "builtin"
+                     and isinstance(command[1], str) and command[1] in BUILTINS)
+    if not (bracket_utility or builtin_topic) and (not isinstance(command, list) or not command or any(
         not isinstance(word, str) or not re.fullmatch(r"[A-Za-z0-9_.+-]+", word)
         for word in command
-    ):
+    )):
         raise HelpError(f"{source}: command must contain literal command words.")
     require_text(profile.get("description"), f"{source}: description")
     switch_syntax = profile.get("switch_syntax")
@@ -104,7 +110,9 @@ def validate_profile(profile: dict, source: Path):
                 raise HelpError(f"{source}: each option must be an object.")
             flag = option.get("flag")
             kind = option.get("kind", "flag")
-            pattern = r"[A-Za-z][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?|-[.@#:]"
+            pattern = r"[A-Za-z0-9][A-Za-z0-9_-]*" if kind == "keyword" else r"--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*=?|-[.@#:]"
+            if kind == "keyword" and command in (["testdisk"], ["photorec"]):
+                pattern += r"|/(?:log|debug|dump|list|version)"
             if kind == "flag" and command == ["vlc"]:
                 pattern += r"|--(?:global-)?key-jump\+(?:extrashort|short|medium|long)"
             if kind == "flag" and option.get("argument_style") == "attached_only" and isinstance(flag, str) and flag.endswith(":"):
@@ -256,7 +264,16 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
     try:
         invocation = resolve_invocation(words)
         executable_name = Path(tokens[invocation.executable_index].value).name
-        if (not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", executable_name) or executable_name in {".", ".."}):
+        if executable_name in {"python", "python3"} and not invocation.module:
+            # The cursor may be inside interpreter flags to the left of -m.
+            # The suffix identifies that boundary without becoming probe input.
+            suffix = tokens[invocation.executable_index + 1:]
+            for token in suffix:
+                if token.value == "-m" and start <= token.end:
+                    raise HelpError("Move the cursor after the supported module name.", "cursor_before_arguments")
+                if token.value not in INTERPRETER_FLAGS:
+                    break
+        if not invocation.builtin and executable_name not in {"[", "gnu["} and (not re.fullmatch(r"[A-Za-z0-9_.+][A-Za-z0-9_.+-]*", executable_name) or executable_name in {".", ".."}):
             # Explicit static definitions retain their literal command names.
             # Unrecognized option-looking words must not become diagnostic
             # command names, because they can contain attached secret values.
@@ -273,6 +290,11 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         raise HelpError(str(error)) from error
     argument_start = invocation.argument_start + path.argument_start - 1
     profile_path = path.words
+    if invocation.builtin:
+        profile_path = ("builtin", invocation.builtin)
+        if words[invocation.executable_index] != "builtin" and invocation.executable_index == 0 and any(
+                tuple(profile["command"]) == path.words for profile in profiles):
+            profile_path = path.words
     if invocation.module:
         # Explicit interpreter/module profiles are separate from ordinary pip
         # profiles; a different pip executable must never supply this context.
@@ -293,7 +315,12 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         # and invocation identity leave this boundary, never pending operands.
         observe(path.words, profile_path, invocation)
     matches = [profile for profile in profiles if tuple(profile["command"]) == profile_path]
-    if active and not query.startswith("-") and not (query and any(
+    apt_keyword = (len(path.words) == 1 and invocation.name in APT_DRIVERS and bool(query) and
+                   any(child and child[0].startswith(query) for child in APT_DRIVERS[invocation.name].paths))
+    if active and not query.startswith("-") and not apt_keyword and not (
+        query and not matches and not invocation.module and not invocation.builtin and len(path.words) == 1 and
+        len(words) == argument_start and keyword_prefix(tokens[invocation.executable_index].value, query)
+    ) and not (query and any(
         option.get("kind") == "keyword" and option["flag"].startswith(query)
         for profile in matches for category in profile["categories"] for option in category["options"]
     )):
@@ -306,7 +333,9 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
         # Only the executable and a recognized documentation path cross this
         # boundary. Pending global options, values, and action arguments do not.
         executable = tokens[invocation.executable_index].value
-        if invocation.module:
+        if invocation.builtin:
+            matches = [discover("builtin", subcommands=(invocation.builtin,))]
+        elif invocation.module:
             matches = [discover(executable, subcommands=path.words[1:], module=invocation.module,
                                 interpreter_options=invocation.interpreter_options)]
         else:
@@ -332,6 +361,9 @@ def find_context(line: str, point: int, profiles: list[dict], discover=None, dri
             options.setdefault(flag, {"argument": "VALUE", "attached": len(flag) == 2})
         for flag in resolved_route.option_flags:
             options.setdefault(flag, {"argument": ""})
+    if profile.get("discovery", {}).get("reference_sha256") and any(
+            options.get(word, {}).get("kind") == "keyword" and not word.startswith("/") for word in previous[:1]):
+        raise HelpError("Open root help before the selected subcommand.", "child_argument_boundary")
     if active:
         keyword_match = bool(query) and any(option.get("kind") == "keyword" and option["flag"].startswith(query) for option in options.values())
         if "=" in query or not (query.startswith("-") or keyword_match):

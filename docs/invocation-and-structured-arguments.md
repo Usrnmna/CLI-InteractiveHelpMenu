@@ -8,6 +8,10 @@ replaces one option or keyword token. All surrounding text, quoting, tabs, space
 and suffix arguments remain intact. Cursor offsets are Unicode character offsets;
 terminal display columns can differ for wide characters.
 
+## Bash builtins and external programs
+
+A bare builtin, `builtin NAME`, or `command -- NAME` opens the installed Bash help topic. For example, `echo ` opens Bash documentation and `/usr/bin/echo ` opens external utility documentation. An external prefix such as `env echo ` or `sudo echo ` also selects the executable. A literal custom root profile can override a bare builtin. In manual-only discovery mode, builtins give a Bash help reference. With discovery disabled, only static profiles are available. [Ubuntu reference editions](ubuntu-coverage-audit.md)
+
 ## Recognized prefixes
 
 Supported pending examples:
@@ -168,4 +172,4 @@ their token. Parent-driver options and other profiles retain their existing gram
   operator-maintained documentation, not automatic version verification.
 
 Ordinary curated profiles remain usable without installed targets in all discovery
-modes. The [family audits](../ROADMAP.md#bundled-menu-progress) identify the documented syntax and editions covered by each profile. Insertion checks establish the resulting line and cursor. Successful execution of a complete workload needs separate evidence.
+modes. The [family audits](audit-history.md#bundled-menu-progress) identify the documented syntax and editions covered by each profile. Insertion checks establish the resulting line and cursor. Successful execution of a complete workload needs separate evidence.

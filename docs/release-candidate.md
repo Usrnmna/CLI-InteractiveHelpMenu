@@ -5,7 +5,7 @@
 
 ## v0.4.1-alpha local candidate
 
-**Verified locally, unpublished — November 25, 2026.** Phase 4 publication is skipped. The first build passed the full offline suite and installed-menu checks on all three targets. [Roadmap](../ROADMAP.md#remaining-work)
+**Verified locally, unpublished — November 25, 2026.** Phase 4 publication is skipped. The first build passed the full offline suite and installed-menu checks on all three targets. [Release verification summary](audit-history.md#local-release-verification)
 
 The November 25, 2026 preparation selects both retained improvements. The runtime inputs match the [measured implementation](menu-cost-measurements.md#combined-offline-verification). SHA-256 for `cli_help/ui.py` is `9852b14abd235b29adfa54f03ab61a545f9e3955a1a6fa640c26ccdee19cc4a5` and for `cli_help/core.py` is `a78b5b7c6e4fe3d2b97ac2105d211685be74339102ed91f962fccb6ba6f3ef93`.
 
@@ -62,7 +62,7 @@ without treating it as evidence for the current candidate.
 
 The **verified upload set** is `dist/candidate-v0.4.0-alpha-combined/`. The independent rebuild is `dist/candidate-v0.4.0-alpha-combined-2/`. This record and the roadmap update were written after the builds in the working tree. Reproduce the assets from the frozen SHA.
 
-On November 25, 2026, the release inputs were frozen at `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. The working tree was clean at that commit. It records the [Phase 2 decision](../ROADMAP.md#phase-2--close-the-menu-record-and-select-release-contents) and keeps `VERSION` at `0.4.0-alpha`. The browser creates one shared-value formatting cache per open and cycles through Simple, Detailed and Expanded. The presentation and UI modules match the [pre-experiment hashes](serial-prose-reuse-experiment.md#reproduction). The idle loop still redraws after a timeout, and the loader still checks profile text character by character. The prose-reuse patch is a benchmark input under `tools/`.
+On November 25, 2026, the release inputs were frozen at `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. The working tree was clean at that commit. It records the [Menu review and release decision](audit-history.md#menu-review-and-v040-alpha-selection) and keeps `VERSION` at `0.4.0-alpha`. The browser creates one shared-value formatting cache per open and cycles through Simple, Detailed and Expanded. The presentation and UI modules match the [pre-experiment hashes](serial-prose-reuse-experiment.md#reproduction). The idle loop still redraws after a timeout, and the loader still checks profile text character by character. The prose-reuse patch is a benchmark input under `tools/`.
 
 **Build and provenance.** Two independent local clones checked out the full SHA with detached HEAD and clean status. The build host ran Ubuntu 26.04.1 LTS on x86_64, kernel 7.0.0-43-generic, glibc 2.43, GCC 15.2.0 (Ubuntu 15.2.0-16ubuntu1), Python 3.14.4, Bash 5.3.9 and tmux 3.6 with locale `C.UTF-8`. The highest glibc symbol version required by this launcher is `GLIBC_2.34` (`readelf --version-info`).
 

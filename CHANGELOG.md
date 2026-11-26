@@ -22,8 +22,8 @@ Packages built from that checkout use the `v0.3.1-alpha` filenames. The sandbox 
 
 The source for this version is [commit `6920a29`](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/commit/6920a29ca105036f385cf39f7eb844bb2fd11211).
 
-- Bundled menus now cover the reviewed command manuals, with concise summaries, searchable qualifications and literal insertion forms. [Family inventories and verification](ROADMAP.md#bundled-menu-progress)
-- Discovery readers preserve command-specific options and their applicable descriptions across all three maintained tiers. [Discovery evidence](ROADMAP.md#discovered-command-help)
+- Bundled menus now cover the reviewed command manuals, with concise summaries, searchable qualifications and literal insertion forms. [Family inventories and verification](docs/audit-history.md#bundled-menu-progress)
+- Discovery readers preserve command-specific options and their applicable descriptions across all three maintained tiers. [Discovery evidence](docs/audit-history.md#discovered-command-help)
 - The Bash adapter handles the Vi insertion binding on Ubuntu 26.04. The offline sandbox supports focused commands and optional timing across the three Ubuntu/Python targets. [Compatibility results](docs/compatibility.md#ubuntu-and-python-test-results) · [Sandbox procedure](docs/development.md#isolated-local-debugging)
 
 ## Version 0.1.2 - Alpha
