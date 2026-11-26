@@ -2,7 +2,7 @@
 
 ## Version 0.4.1 - Alpha
 
-Local candidate in preparation. This patch combines two measured improvements to opening and using the menu.
+Verified locally and unpublished. This patch combines two measured improvements to opening and using the menu. [Candidate verification](docs/release-candidate.md#v041-alpha-local-candidate)
 
 - An idle menu continues checking terminal size while skipping redraws of an unchanged frame. In 10-second idle intervals on the Ubuntu 26.04.1 benchmark host, repeated redraws fell from 66 to zero in both the FFmpeg and small Git menus. [Idle measurements and resize checks](docs/menu-cost-measurements.md#idle-redraw-experiment)
 - The loader validates an ordinary printable text field in one call. It still validates every bundled and custom profile, applies custom overrides in order and reports malformed fields. On the same host, median CPU time for loading 76 bundled profiles fell from 118.36 to 74.04 ms. [Validation and first-frame measurements](docs/menu-cost-measurements.md#serial-profile-validation-experiment)

@@ -2,12 +2,12 @@
 
 ## Remaining work
 
-**v0.4.1-alpha local candidate — awaiting the maintainer's source commit.** Both improvements met their acceptance checks. The experiment matrix passed 1,890 tests per target using temporary builds. Exact-package verification for the new version is pending. [Performance evidence](docs/menu-cost-measurements.md#combined-offline-verification) · [Candidate record](docs/release-candidate.md#v041-alpha-local-candidate)
+**v0.4.1-alpha is verified locally and unpublished.** Local candidate preparation is complete. Phase 4 publication is skipped. [Source, artifact digests and matrix results](docs/release-candidate.md#v041-alpha-local-candidate)
 
-- [x] Select idle redraw suppression and faster serial profile validation as one patch in the 0.4 plan.
-- [ ] Freeze the candidate source at a maintainer-confirmed commit.
-- [ ] Build twice from that revision and verify all 11 files against the source and the independent rebuild.
-- [ ] Run one full offline matrix with the first build and record the installed-terminal and lifecycle results.
+- [x] Select idle redraw suppression and faster serial profile validation as one patch in the 0.4 plan. [Performance evidence](docs/menu-cost-measurements.md#combined-offline-verification)
+- [x] Freeze the source at `cced50757a53612860d34bbcd77b0f2e0d99d0f0`.
+- [x] Verify all 1,003 packaged inputs and reproduce all 11 release files byte for byte.
+- [x] Run one full three-target offline matrix against the first build. Each target passed 1,890 tests with one Windows-only skip. Installed-menu and historical-upgrade checks passed on all three targets.
 
 **v0.4.0-alpha verification is complete.** The earlier candidate remains unpublished and its artifacts are preserved in `dist/candidate-v0.4.0-alpha-combined/`. The table below records its phases. Phase 4 publication is skipped for both candidates. Phase 5 test-result reuse remains conditional. [Frozen v0.4.0-alpha evidence](docs/release-candidate.md#combined-candidate-verification) · [Conditional work](#conditional-decisions)
 

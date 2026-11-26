@@ -5,11 +5,38 @@
 
 ## v0.4.1-alpha local candidate
 
+**Verified locally, unpublished — November 25, 2026.** Phase 4 publication is skipped. The first build passed the full offline suite and installed-menu checks on all three targets. [Roadmap](../ROADMAP.md#remaining-work)
+
 The November 25, 2026 preparation selects both retained improvements. The runtime inputs match the [measured implementation](menu-cost-measurements.md#combined-offline-verification). SHA-256 for `cli_help/ui.py` is `9852b14abd235b29adfa54f03ab61a545f9e3955a1a6fa640c26ccdee19cc4a5` and for `cli_help/core.py` is `a78b5b7c6e4fe3d2b97ac2105d211685be74339102ed91f962fccb6ba6f3ef93`.
 
 On Ubuntu 26.04.1 with Python 3.14.4, all 44 focused host sandbox tests passed in 39.565 seconds. Coverage included idle timeouts, terminal resize and recovery, menu interaction, profile validation, override precedence and prerelease selection. The checkout version and changelog heading agreed, and the offline Markdown link check passed. The builder selected the same 1,003 paths as the frozen v0.4.0-alpha manifest. The preparation logs and file hashes are under `tests/reports/v0.4.1-alpha-preparation/`.
 
-**Awaiting the maintainer's source commit.** After the source freeze, build in two fresh directories, compare all 11 files, then use the first build for the three offline suites and installed-terminal checks. The earlier experiment matrix exercised temporary packages. Record the frozen SHA, package hashes and exact-artifact results here after verification. Publication is skipped. [Roadmap](../ROADMAP.md#remaining-work)
+**Source and reproducibility.** The frozen source is `cced50757a53612860d34bbcd77b0f2e0d99d0f0`. Two separate source directories were populated directly from that commit using `git ls-tree -rz` and `git cat-file --batch`, preserving file modes. Each copy supplied exactly the 1,003 packaged paths and hashes approved at preparation. The other 12 tracked files comprise the Codex environment file and the historical release fixture.
+
+Both builds ran on Ubuntu 26.04.1 x86_64, kernel 7.0.0-43-generic, glibc 2.43, GCC 15.2.0 (Ubuntu 15.2.0-16ubuntu1) and Python 3.14.4. From each source directory, the build command was `LC_ALL=C.UTF-8 CC=/usr/bin/gcc /usr/bin/python3 -B scripts/build_release.py --output "$output"`, using a fresh absolute output path. The first set is in `dist/candidate-v0.4.1-alpha/` and the rebuild in `dist/candidate-v0.4.1-alpha-2/`. All 11 files matched byte for byte. Archive members, contents, modes, ownership and timestamps passed the package verifier. The standalone and bundled launchers matched, the launcher reported `0.4.1-alpha`, and the installer wrapper and payload matched the Linux archive. Both sets passed every checksum and installer `--verify` check.
+
+| First build file | SHA-256 |
+| --- | --- |
+| `BUILD-INFO.json` | `06365fcb1effd23b2842b097c60f82ffec0793c980f30cb95dd8ed3cd6b068da` |
+| `SHA256SUMS.checksum` | `f097624b0f23e3f5a9ffbf9edd393bee65c5f66e4d1ed7804ce0963702041bf1` |
+| `cli-help-v0.4.1-alpha-linux-x86_64` | `661970b86f834e129b99759a1bcfa34291ff9620f0808075d4c4a8fdd6a41929` |
+| `cli-interactive-help-v0.4.1-alpha-linux-x86_64.run` | `3c4c6c08bc7730882ebfe8191d07b947b6ecd5da4ebc4e78d0a87885cd6ce787` |
+| `cli-interactive-help-v0.4.1-alpha-linux-x86_64.tar.gz` | `483fa44880bcf0c117c92fced75863379dc3830514e3c682f8a1cabdac6e70f3` |
+| `cli-interactive-help-v0.4.1-alpha-source.tar.gz` | `79f4db4e733b7c9da53b43cb8db4b865ebbce3e2c1492c77dec1302446bdce78` |
+
+**Offline inputs.** Each target checked the same 1,015 tracked files against a manifest with SHA-256 `17c52d27da341f94385b1dc8e382cc15741f5e51dc95cbad1656abb45655f940`. The sandbox received the first build's 11 files and the release-specific client fixtures through `--include`. It checked the artifacts and the preserved v0.1.1-alpha fixture before running `bash tests/run.sh` with `CLI_HELP_TEST_RELEASE_DIR=/tmp/src/dist/candidate-v0.4.1-alpha` and `CLI_HELP_TEST_HISTORICAL_DIR=/tmp/src/releases/v0.1.1-alpha`. The host used Bubblewrap. The Noble targets ran in rootless Podman through the user service manager. [Sandbox procedure](development.md#isolated-local-debugging)
+
+**Matrix results.** Each target completed one full run and exited zero. All 1,891 test IDs matched discovery at the frozen revision. The sole skip was `test_probe_reports_the_windows_limitation` because the POSIX probe completed normally. All 15 exact-candidate package and installed-screen tests passed per target, including historical upgrade, repeated update and removal.
+
+| Target | Ubuntu | Python | Bash / tmux / glibc | Pass | Fail or error | Skip | Unittest (s) | End to end (s) |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| host | 26.04.1 | 3.14.4 | 5.3.9 / 3.6 / 2.43 | 1,890 | 0 | 1 | 2,444.338 | 2,476.13 |
+| noble310 | 24.04.5 | 3.10.20 | 5.2.21 / 3.4 / 2.39 | 1,890 | 0 | 1 | 2,720.290 | 2,759.92 |
+| noble312 | 24.04.5 | 3.12.3 | 5.2.21 / 3.4 / 2.39 | 1,890 | 0 | 1 | 2,456.249 | 2,490.70 |
+
+**Installed Bash menu.** The additional terminal checks ran after unittest discovery and are included in the end-to-end times. On each target the first build installed into a disposable prefix with `--no-rc` and reported `CLI Interactive Help Menu 0.4.1-alpha`. At 80×24 and 60×16 the idle screen stayed stable, responded to a shrink below minimum and restored the original menu when expanded. All six reference frames matched. The second filtered option stayed selected across all three detail levels. Escape restored the original line, cursor and terminal state. Selecting `-b:v` preserved the quoted suffix, insertion point and numbered scrollback. The pending command's execution marker stayed absent and uninstall removed the prefix.
+
+The dated verification record and status updates were written after both builds. Reproduce the packages from the frozen SHA. The ignored evidence directory `tests/reports/v041-cced507/` holds the build script and log, full source and artifact manifests, exact per-target runner arguments, terminal check, elapsed times and reconciled logs.
 
 ## Identity and evidence boundaries
 

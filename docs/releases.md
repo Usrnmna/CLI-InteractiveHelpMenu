@@ -6,7 +6,7 @@ See [version numbering and planned releases](versioning.md) when choosing the ne
 
 ## Version 0.4.1 - Alpha
 
-The local candidate skips unchanged idle frames and reduces the cost of validating profile text on menu open. The two changes form one patch in the 0.4 series. Performance measurements and regression results are available for both. Exact-package verification awaits the source freeze. [Changelog](../CHANGELOG.md#version-041---alpha) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate)
+The local candidate skips unchanged idle frames and reduces the cost of validating profile text on menu open. The two changes form one patch in the 0.4 series. Performance measurements and regression results are available for both. The first build was verified locally on all three offline targets and reproduced byte for byte. The candidate remains unpublished. [Changelog](../CHANGELOG.md#version-041---alpha) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate)
 
 ## Version 0.4.0 - Alpha
 
