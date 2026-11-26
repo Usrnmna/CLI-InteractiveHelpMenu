@@ -265,3 +265,11 @@ ypdomainname zcat zcmp zdiff zdump zegrep zenity zerofree zfgrep zforce zfs zfsd
 zfsslower-bpfcc zgrep zic zip zipcloak zipdetails zipgrep zipinfo zipnote zipsplit zjsdecode zless zmore
 znew zoxide zpool zramctl zsh zstd zstdcat zstdgrep zstdless zstdmt
 """.split())
+
+
+# Only these root manuals have audited replies that need provider-specific interpretation.
+REVIEWED_MANUAL_ROOTS = frozenset("""
+Xwayland dvipdf fprintd-delete fprintd-list git-upload-archive iscsi-iname iscsid iscsistart
+lzegrep lzfgrep lzgrep mysqld_qslower-bpfcc plog pod2html pon ps2pdfwr sh xdg-terminal-exec
+xtables-nft-multi xzegrep xzfgrep xzgrep
+""".split())

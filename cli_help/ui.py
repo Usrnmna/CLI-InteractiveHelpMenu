@@ -340,6 +340,163 @@ def row_summary(view, group):
     return (view.notice + " " if view.notice else "") + summary
 
 
+@dataclass
+class DetailRow:
+    """Visible text plus cell-positioned emphasis, shared by color and monochrome."""
+    text: str = ""
+    highlights: list = field(default_factory=list)
+    bitrate: bool = False
+
+
+@dataclass
+class DetailEntry:
+    """A list entry with its literal, unstyled explanation and scoped notes."""
+    prefix: str
+    literal: str
+    explanation: str
+    kind: str
+    notes: list = field(default_factory=list)
+
+
+def detail_entry(line, bitrate, value_list):
+    """Recognize the formatter's list rows and explicitly separated option declarations."""
+    if bitrate:
+        match = re.fullmatch(r"(.+?)\s{2,}(N(?: × [\d,.]+)?)", line)
+        if match:
+            return DetailEntry("", match[1], line[len(match[1]):], "conversion")
+    if line.startswith("Input ") and (" · " in line or re.fullmatch(r"Input [A-Z][A-Z_0-9|\[\].+-]*", line)):
+        name, separator, explanation = line[6:].partition(" · ")
+        return DetailEntry("Input ", name, separator + explanation, "value")
+    if line.startswith("Special input ") and ": " in line:
+        name, separator, explanation = line[14:].partition(": ")
+        literal, comma, qualification = name.partition(", ")
+        return DetailEntry("Special input ", literal, comma + qualification + separator + explanation, "special")
+    if value_list:
+        match = re.fullmatch(r"([^\s:]+)(: |\s{2,})(.+)", line)
+        if match:
+            return DetailEntry("", match[1], match[2] + match[3], "literal")
+    match = re.fullmatch(r"(-{1,2}[\w][\w.=-]*(?: [A-Z][A-Z_0-9]*)?)(\s{2,}|: )(.+)", line)
+    if match:
+        return DetailEntry("", match[1], match[2] + match[3], "option")
+    return None
+
+
+def wrapped_entry(entry, width, accent):
+    """Wrap one entry within its column and emphasize only the literal's cells."""
+    text = entry.prefix + entry.literal + entry.explanation
+    literal_start = len(entry.prefix)
+    literal_end = literal_start + len(entry.literal)
+    style = curses.A_BOLD | accent if entry.kind == "option" else curses.A_UNDERLINE
+    rows = []
+    offset = 0
+    for line in wrap_cells(text, width):
+        start = text.index(line, offset)
+        offset = start + len(line)
+        first, last = max(start, literal_start), min(offset, literal_end)
+        highlights = []
+        if first < last:
+            highlights.append((sum(map(cell_width, text[start:first])), text[first:last], style))
+        rows.append(DetailRow(line, highlights, entry.kind == "conversion"))
+    for note in entry.notes:
+        rows.extend(DetailRow("  " + part) for part in wrap_cells(note, width - 2))
+    return rows
+
+
+def list_rows(entries, width, accent):
+    """Choose the widest useful column count and balance contiguous whole entries by height."""
+    gutter = 3
+    # Use at least three entries per column and leave room for a short explanation.
+    for count in range(min(3, max(1, len(entries) // 3)), 0, -1):
+        stride = (width + gutter) // count
+        column_width = stride - gutter
+        if count > 1 and column_width < 30:
+            continue
+        blocks = [wrapped_entry(entry, column_width, accent) for entry in entries]
+        height = sum(map(len, blocks))
+        if count == 1:
+            return [row for block in blocks for row in block]
+        # Allow occasional wrapping. Extra lines beyond half the entry count cost too much height.
+        if height - len(entries) > max(2, len(entries) // 2):
+            continue
+        columns = []
+        index = 0
+        for remaining in range(count, 0, -1):
+            column = []
+            target = height / remaining
+            while index < len(entries) - remaining + 1:
+                block = blocks[index]
+                if remaining > 1 and column and abs(len(column) - target) <= abs(len(column) + len(block) - target):
+                    break
+                column.extend(block)
+                index += 1
+            columns.append(column)
+            height -= len(column)
+        rows = [DetailRow() for _ in range(max(map(len, columns)))]
+        for col, column in enumerate(columns):
+            for row, cell in zip(rows, column):
+                start = stride * col
+                row.text += " " * (start - sum(map(cell_width, row.text))) + cell.text
+                row.highlights.extend((start + x, word, attr) for x, word, attr in cell.highlights)
+                row.bitrate |= cell.bitrate
+        return rows
+
+
+def layout_details(lines, width, accent):
+    """Flow adjacent entries as a list. Full-width headings and prose delimit each list."""
+    rows = []
+    index = 0
+    bitrate = value_list = False
+    while index < len(lines):
+        line = display_text(lines[index])
+        entry = detail_entry(line, bitrate, value_list)
+        index += 1
+        if entry is None:
+            bitrate = line == "Input             Result (bps)"
+            value_list = line.casefold() in {"values:", "accepted values:", "accepted suffixes:", "choices:"}
+            heading = re.match(r"^(?:Value(?: variant \d+)?(?: \([^)]+\))?|Component [^:]+):", line)
+            for part in wrap_cells(line, width):
+                highlights = []
+                if bitrate or line.endswith(":"):
+                    highlights.append((0, part, curses.A_BOLD))
+                elif heading and part.startswith(heading[0]):
+                    highlights.append((0, heading[0], curses.A_BOLD))
+                rows.append(DetailRow(part, highlights))
+            continue
+        entries = [entry]
+        while index < len(lines):
+            following = detail_entry(display_text(lines[index]), bitrate, value_list)
+            if not following or following.kind != entry.kind:
+                break
+            entries.append(following)
+            index += 1
+        # Single-form qualifications belong to that literal, including when a column breaks.
+        # Keep shared qualifications spanning several forms below the complete list.
+        if entry.kind in {"value", "conversion"}:
+            names = {}
+            for item in entries:
+                # Repeated spellings can have different descriptions. A shared note stays full-width.
+                names[item.literal] = None if item.literal in names else item
+            shared = []
+            while index < len(lines):
+                note_line = display_text(lines[index])
+                name, separator, _ = note_line.partition(": ")
+                if not separator:
+                    break
+                if names.get(name) is not None:
+                    names[name].notes.append(note_line)
+                elif name in names or (", " in name and all(word in names for word in name.split(", "))):
+                    shared.append(lines[index])
+                else:
+                    break
+                index += 1
+            rows.extend(list_rows(entries, width, accent))
+            rows.extend(DetailRow(part) for note in shared for part in wrap_cells(note, width))
+        else:
+            rows.extend(list_rows(entries, width, accent))
+        bitrate = value_list = False
+    return rows
+
+
 def draw(screen, browser: Browser, keys, searching=False, preview=False):
     """Lay out one frame and return the focused pane's selectable page capacity."""
     height, width = screen.getmaxyx()
@@ -382,7 +539,7 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     if browser.focus == "categories":
         detail = [category["name"], terminal_prose(category.get("description", "")),
                   terminal_prose(browser.profile["description"])]
-    lines = [row for line in detail if line for row in wrap_cells(line, width - 1)]
+    lines = layout_details([line for line in detail if line], width - 1, browser.accent)
     top = 4 + bool(note)
     # Reserve at least two selectable rows at minimum size.
     available = height - 2 - top
@@ -434,8 +591,8 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
         text = row_summary(browser.text(item), group)
         row = marker + flag + " " * (fw - sum(map(cell_width, flag)) + 2) + ellipsize_cells(text, description_width)
         write(screen, y, left, row, budget, attr)
-        if not selected and browser.accent:
-            write(screen, y, left + 2, flag, fw, browser.accent)
+        if not selected:
+            write(screen, y, left + 2, flag, fw, curses.A_BOLD | browser.accent)
     if not options:
         write(screen, top, left, "No matches. Clear the filter or change category.", budget)
     browser.detail_offset = min(max(0, browser.detail_offset), max(0, len(lines) - body))
@@ -446,15 +603,20 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
         page = lines[offset:offset + body]
         heading = category["name"] if browser.focus == "categories" else label or category["name"]
         # Keep conversion units visible when scrolling past their table heading.
-        if offset and page and re.match(r"^\S.*?\s{2,}N(?: × |$)", page[0]):
+        if offset and page and page[0].bitrate:
             heading = "Result (bps)"
+        option_heading = option and browser.focus == "options" and heading == label
         heading = ellipsize_cells(heading, header_width - 3)
         write(screen, end, 0, heading + " " + "─" * max(0, header_width - sum(map(cell_width, heading)) - 1),
               header_width, curses.A_BOLD)
+        if option_heading and browser.accent:
+            write(screen, end, 0, heading, header_width, curses.A_BOLD | browser.accent)
         if counter:
             write(screen, end, width - 1 - len(counter), counter, len(counter))
         for y, line in enumerate(page, end + 1):
-            write(screen, y, 0, line, width - 1)
+            write(screen, y, 0, line.text, width - 1)
+            for column, word, attr in line.highlights:
+                write(screen, y, column, word, width - 1 - column, attr)
     key = lambda action: keys[action][0]
     write(screen, height - 2, 0, f"{key('up')}/{key('down')} move  {key('previous_category')}/{key('next_category')} category  "
           f"{key('focus')} focus  {key('search')} search", width - 1)

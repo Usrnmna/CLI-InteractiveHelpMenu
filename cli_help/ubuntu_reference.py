@@ -1,5 +1,7 @@
 """Resolve Ubuntu's packaged documentation for installed commands with missing help."""
 
+import hashlib
+from itertools import chain
 import json
 import os
 import shutil
@@ -70,14 +72,14 @@ def lookup_record(name, edition, directory, target):
     return None
 
 
-def installed_reference(record):
-    """Reject a known revision mismatch using passive local dpkg metadata.
+def installed_reference(record, *, require_version=False):
+    """Select declarations for the installed provider revision using passive local metadata.
 
     Documentation can live in a separate package that minimal installations
     omit. A verified image target can still use the labelled release reference.
     """
     if record.get("location_only"):
-        return
+        return record
     if "snap_revision" in record:
         try:
             revision = (Path("/snap") / record["package"] / "current").readlink().name
@@ -87,13 +89,14 @@ def installed_reference(record):
             raise HelpError(f"Consult {record['page']} for the installed {record['package']} snap. "
                             f"The reference covers revision {record['snap_revision']}.", "usage_guidance")
         if not record.get("launcher_package"):
-            return
+            return record
+    require_version = require_version or bool(record.get("revision_variants"))
     provider = record.get("launcher_package", record["package"])
     expected = record.get("launcher_version", record["version"])
     try:
         with Path("/var/lib/dpkg/status").open(encoding="utf-8", errors="replace") as status:
             package = version = state = ""
-            for line in status:
+            for line in chain(status, ("\n",)):
                 if line.startswith("Package: "):
                     package = line[9:].strip()
                 elif line.startswith("Version: "):
@@ -102,17 +105,34 @@ def installed_reference(record):
                     state = line[8:].strip()
                 elif not line.strip():
                     if package == provider and state.endswith(" installed"):
-                        if version != expected:
-                            raise HelpError(f"Installed {package} {version} differs from the Ubuntu reference "
-                                            f"{expected}. Consult {record['page']} for the installed edition.",
-                                            "usage_guidance")
-                        return
+                        if version == expected:
+                            return record
+                        variant = record.get("revision_variants", {}).get(version)
+                        if variant is not None:
+                            return {**record, "reviewed_manual_sha256": (), **variant}
+                        raise HelpError(f"Installed {package} {version} differs from the Ubuntu reference "
+                                        f"{expected}. Consult {record['page']} for the installed edition.",
+                                        "usage_guidance")
                     package = version = state = ""
-            if not record.get("targets"):
-                raise HelpError(f"The installed package database does not identify {record['package']} "
-                                f"as the provider for this reference. Consult {record['page']}.", "usage_guidance")
     except OSError:
-        return
+        if not require_version:
+            return record
+    if require_version or not record.get("targets"):
+        raise HelpError(f"The installed package database does not identify {provider} "
+                        f"as the provider for this reference. Consult {record['page']}.", "usage_guidance")
+    return record
+
+
+def matched_manual(record, output):
+    """Select a reviewed declaration only for an exact manual reply and installed revision."""
+    digest = hashlib.sha256(output.encode("utf-8")).hexdigest()
+    versions = (record, *record.get("revision_variants", {}).values())
+    if not any(digest in source.get("reviewed_manual_sha256", ()) for source in versions):
+        return None
+    selected = installed_reference(record, require_version=True)
+    if digest in selected.get("reviewed_manual_sha256", ()):
+        return selected
+    return None
 
 
 def keyword_prefix(command, query):
@@ -121,7 +141,14 @@ def keyword_prefix(command, query):
     if not executable:
         return False
     record = reference_record(Path(command).name, executable)
-    return bool(record and any(word.startswith(query) for word in record["keywords"]))
+    if not record:
+        return False
+    if record.get("revision_variants"):
+        possibilities = (record, *record["revision_variants"].values())
+        if not any(word.startswith(query) for item in possibilities for word in item.get("keywords", ())):
+            return False
+        record = installed_reference(record)
+    return any(word.startswith(query) for word in record["keywords"])
 
 
 def reference_profile(record, build_profile, validate):

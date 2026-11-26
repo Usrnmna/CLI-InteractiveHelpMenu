@@ -340,7 +340,7 @@ def main():
             else:
                 record = manual_record(name, source, file.read_text(encoding="utf-8"))
             for key in ("targets", "kernel", "directory", "location_only", "documentation", "snap_revision",
-                        "launcher_package", "launcher_version"):
+                        "launcher_package", "launcher_version", "reviewed_manual_sha256", "revision_variants"):
                 if key in source:
                     record[key] = source[key]
             variants.append(record)

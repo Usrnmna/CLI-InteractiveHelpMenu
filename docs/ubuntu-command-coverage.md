@@ -1,10 +1,10 @@
 # Ubuntu command coverage comparison
 
-[Roadmap](../ROADMAP.md#ubuntu-command-coverage-expansion) · [Shipped command inventory](ubuntu-command-coverage/shipped.tsv) · [Kernel companion paths](ubuntu-command-coverage/kernel-companions.tsv) · [Ranked and supplementary optional commands](ubuntu-command-coverage/optional.tsv)
+[Roadmap](../ROADMAP.md#remaining-work) · [Shipped command inventory](ubuntu-command-coverage/shipped.tsv) · [Kernel companion paths](ubuntu-command-coverage/kernel-companions.tsv) · [Ranked and supplementary optional commands](ubuntu-command-coverage/optional.tsv)
 
 ## Implemented batch
 
-The result columns in the linked inventories report the implemented root coverage. All 119 ranked command rows across 100 packages and all eight kernel paths have selectable results in the Resolute reference replay. The shipped union has 2,039 names with selectable coverage and 346 with command-specific usage or documentation guidance. The tables below retain the comparison against the original project snapshot. [Results, evidence, result codes and limitations](ubuntu-coverage-audit.md)
+The result columns in the linked inventories report the implemented root coverage. All 119 ranked command rows across 100 packages and all eight kernel paths have selectable results in the Resolute reference replay. After the Phase 1 provider review, the shipped union has 2,189 names with selectable coverage and 196 with command-specific usage or documentation guidance. The tables below retain the comparison against the original project snapshot. [Results, evidence, result codes and limitations](ubuntu-coverage-audit.md)
 
 ## Reference and project evidence
 

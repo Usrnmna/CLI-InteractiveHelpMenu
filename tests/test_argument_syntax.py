@@ -91,6 +91,19 @@ class ArgumentSyntaxTests(unittest.TestCase):
             find_context("typed -ba --fl", len("typed -ba --fl"), [profile])
         self.assertEqual(raised.exception.code, "child_argument_boundary")
 
+    def test_active_single_dash_prefix_retains_opaque_bundle_and_value_boundaries(self):
+        """Edit a declared flag prefix while preserving earlier tokens and ambiguous bundle starters."""
+        profile = copy.deepcopy(PROFILE)
+        for name in ("-encoding", "-axmode", "-option"):
+            profile["categories"][0]["options"].append({"flag": name, "summary": "Single-dash option"})
+        line = "typed -enc"
+        self.assertEqual(find_context(line, len(line), [profile]).query, "-enc")
+        for line, reason in (("typed -enc --fl", "unsupported_option"), ("typed -axm", "unsupported_option"),
+                             ("typed -opt", "cursor_in_value"), ("typed -missing", "unsupported_option")):
+            with self.subTest(line=line), self.assertRaises(HelpError) as raised:
+                find_context(line, len(line), [profile])
+            self.assertEqual(raised.exception.code, reason)
+
     def test_schema_conflicts_and_legacy_defaults(self):
         validate_profile(PROFILE, Path("fixture"))
         for change in ({"argument_style": []}, {"argument_style": "unknown"}, {"argument_style": "attached_only", "attached": True},

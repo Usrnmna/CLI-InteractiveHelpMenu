@@ -288,7 +288,7 @@ def capture_rsync(folder, demonstration):
               required=("Detailed   D change view", "2/38", "> --bwlimit=RATE", "nearest KiB/s"))
         terminal.send("D")
         frame("D | Expanded shows the bare rate and supported suffixes", 2800,
-              required=("Expanded   D change view", "2/38", "> --bwlimit=RATE", "1024 bytes/second", "Input NK or NKiB", "Lines 1–11/46")
+              required=("Expanded   D change view", "2/38", "> --bwlimit=RATE", "1024 bytes/second", "Input NK or NKiB", "Lines 1–11/", "Input NGB · GB/s")
               ).save(OUTPUT / "numerical-guidance.png")
         terminal.send("/bytes/second\n")
         frame("Search bytes/second | Find displayed numerical meaning", 2200,

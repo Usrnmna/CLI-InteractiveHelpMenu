@@ -8,24 +8,14 @@ Update the current unit when a provider group, layout checkpoint or target finis
 
 | Phase | Work | Status | Current unit or next action |
 | --- | --- | --- | --- |
-| 1 | Ubuntu providers | Planned | Start with the 12 records naming a possible option, then the 45 with an option-bearing synopsis. Track priority records reviewed out of 57 and shipped names reviewed out of 346. |
-| 1 | Terminal baseline and renderer | Planned | Capture rsync at both baseline sizes. Then track layout, styling and the two-size fit check. |
-| 2 | Terminal integration and visual review | Planned | Track routine sizes checked out of five, sizes visually reviewed out of seven, and the live resize. |
+| 1 | Ubuntu providers | Complete | Reviewed 57/57 priority invocations and 346/346 shipped names across six images. Added selectable menus for 150 names. [Results and exceptions](docs/ubuntu-coverage-audit.md#phase-1-provider-review) |
+| 1 | Terminal baseline and renderer | Complete | [Baselines and two-size fit evidence](docs/audit-history.md#phase-1-details-layout-and-terminal-evidence) ready for reuse. |
+| 2 | Terminal integration and visual review | Next | Start the 60×16 routine pass. Track 0/5 routine sizes and 0/7 complete visual reviews. Reuse the rsync captures at two sizes, then check live resize. |
 | 3 | Combined verification | Planned | Track focused checks by target, inventory and strict-gate results, then each target’s full result. |
 
-### Phase 1 — Review providers and develop the renderer
+### Ubuntu command coverage expansion
 
-#### Ubuntu command coverage expansion
-
-Review all **346 shipped names** whose strongest result is usage or guidance. Group aliases and siblings by provider. For each group, confirm option ownership, spelling and argument boundaries against version-matched evidence, add supported declarations and fixtures, and record the outcome by invocation and image. Retain guidance for positional-only commands, GUI launchers and internal helpers. Record the missing evidence for unresolved forms. [Shipped inventory](docs/ubuntu-command-coverage/shipped.tsv) · [Per-invocation findings](docs/ubuntu-command-coverage/usage-review.tsv) · [Batch audit](docs/ubuntu-coverage-audit.md)
-
-Run focused host checks as each group becomes ready. Cover routing, parsing, literal insertion, fixed discovery and the family’s Bash/tmux behavior. Group ready families in the impacted selector where mapped so shared checks run once per invocation. For unmapped edits or a selector that requests full verification, use explicit focused checks during development and carry the full run into Phase 3. [Command-help audit procedure](docs/development.md#auditing-command-help) · [Local test selection](docs/test-selection-plan.md#4-add-explicit-selection-for-local-audits)
-
-#### Terminal baseline, layout and highlighting
-
-1. **Before renderer edits**, locate the renderer, style handling, simulated screens and Bash/tmux checks. Capture the README’s rsync `--bwlimit=` accepted suffixes at **60×16 and 80×24**. Choose reproducible opening, paging and final-entry states for a short menu and dense FFmpeg menu. Provider review can proceed independently. [README example](README.md) · [Existing terminal coverage](docs/test-selection-plan.md#coverage-retained-by-the-four-candidates)
-2. Implement layout and highlighting together. Measure usable cells inside the Details frame after borders, padding and gutters. Fit long option or value lists into up to three balanced columns, allowing occasional wraps and reducing columns when descriptions wrap heavily. Keep short lists and prose in one column. Headings span the list. Keep each entry with its description and preserve source order down each column, then across. Preserve facts, searchable text and literal insertion. Use bold headings, a consistent accent for option names, and a distinct style for literal values with explanations in normal text. Preserve the selection highlight and monochrome alignment, indentation and gutters.
-3. Use fast host renderer tests immediately below and at both column transitions. Exercise compact values that reach three columns, mixed lengths, wrapped descriptions, short lists and prose. Check order, completeness, spacing and gutters. Assert representative styles and compare visible cells, wrapping and column positions in color and monochrome. Then inspect rsync at **80×24 and 160×40** in both modes. Follow a value to the last line of its explanation, including at a column boundary. Settle fit and styling before collecting other sizes. These two inspections count toward Phase 2 when inputs and menu state still match.
+The Phase 1 provider ledger records all 347 invocations and exact image results. Revisit `/usr/bin/ptardiff -h` if the provider resolves the manual/script conflict. The command tables for the shipped `lxc` and `lxd` wrappers depend on the separately installed snap revision. Post-operand choices and unsupported literal shapes remain listed by invocation. [Provider audit](docs/ubuntu-coverage-audit.md#phase-1-provider-review) · [Per-invocation findings](docs/ubuntu-command-coverage/phase1-review.tsv)
 
 ### Phase 2 — Verify terminal behavior and review the same captures
 
@@ -41,7 +31,7 @@ Once the renderer is stable, run one compact integration pass at each of the fiv
 | 80×40 | Visual only | Compare with 80×24. Equal usable width should preserve column count and wrapping as more rows become visible. |
 | 200×50 | Visual only | Three-column maximum, separation between neighboring entries and short-menu footer placement. |
 
-Review the routine passes’ rendered cells and capture the two visual-only sizes with the same inputs. Inspect the short menu and rsync at opening, and FFmpeg after paging and on its final page. Reuse the matching two-size rsync color and monochrome comparisons from Phase 1. Record dimensions, state, action, observed column count and color mode, distinguishing automated checks from visual observations. After a fix, repeat the affected cases and sizes. Provider audits can continue while this review runs. [Command-help audit procedure](docs/development.md#auditing-command-help)
+Review the routine passes’ rendered cells and capture the two visual-only sizes with the same inputs. Inspect the short menu and rsync at opening, and FFmpeg after paging and on its final page. Reuse the matching two-size rsync color and monochrome comparisons from Phase 1. Record dimensions, state, action, observed column count and color mode, distinguishing automated checks from visual observations. After a fix, repeat the affected cases and sizes. [Command-help audit procedure](docs/development.md#auditing-command-help)
 
 ### Phase 3 — Verify one combined batch
 

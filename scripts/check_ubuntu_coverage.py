@@ -33,17 +33,28 @@ def replay(edition):
             if identity in identities or file.stem != expected_shard or not re.fullmatch("[a-f0-9]{64}", record["sha256"]):
                 raise ValueError(f"{file}:{number} has a duplicate or invalid reference identity")
             identities.add(identity)
-            try:
-                profile = reference_profile(record, build_profile, validate_profile)
-                count = sum(len(c["options"]) for c in profile["categories"])
-                if count != len(record["options"]) + len(record["keywords"]):
-                    raise ValueError(f"{name} lost a declaration")
-                code = f"R{count}"
-            except HelpError as exc:
-                if exc.code != "usage_guidance" or record["options"] or record["keywords"]:
-                    raise
-                code = "L" if record.get("location_only") else "RU"
-            forms.setdefault(name, set()).add(code)
+            variants = [record]
+            for revision, fields in record.get("revision_variants", {}).items():
+                selected = {**record, "reviewed_manual_sha256": (), **fields}
+                if (revision != selected.get("launcher_version", selected["version"])
+                        or {"command", "directory", "targets", "package", "launcher_package"} & fields.keys()
+                        or not re.fullmatch("[a-f0-9]{64}", fields.get("sha256", ""))):
+                    raise ValueError(f"{file}:{number} has an invalid provider revision {revision}")
+                variants.append(selected)
+            for selected in variants:
+                if any(not re.fullmatch("[a-f0-9]{64}", digest) for digest in selected.get("reviewed_manual_sha256", ())):
+                    raise ValueError(f"{file}:{number} has an invalid manual digest")
+                try:
+                    profile = reference_profile(selected, build_profile, validate_profile)
+                    count = sum(len(c["options"]) for c in profile["categories"])
+                    if count != len(selected["options"]) + len(selected["keywords"]):
+                        raise ValueError(f"{name} lost a declaration")
+                    code = f"R{count}"
+                except HelpError as exc:
+                    if exc.code != "usage_guidance" or selected["options"] or selected["keywords"]:
+                        raise
+                    code = "L" if record.get("location_only") else "RU"
+                forms.setdefault(name, set()).add(code)
     return forms
 
 

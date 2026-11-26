@@ -6,6 +6,23 @@ The browser began as a way to choose a command option in Bash and return to an e
 
 The Ubuntu batch added edition-aware package-manager and Bash help, a bundled reference for installed commands with missing help, and a root result for every shipped name, kernel companion and ranked optional row. The family audit records source versions, the six image results and the verification matrix. [Ubuntu coverage audit](ubuntu-coverage-audit.md) The corrected combined snapshot passed 2,021 tests with one Windows-only skip on each of the three offline targets. [Verification matrix](ubuntu-coverage-audit.md#combined-offline-matrix-2026-11-26)
 
+## Phase 1 Details layout and terminal evidence
+
+Phase 1 reviewed 347 invocations across 346 previously guidance-only names. The review added 2,199 selectable declarations across 150 names and retained guidance for 197 invocations. The final focused host runs passed 109 provider, argument, discovery and integration tests and 53 renderer and terminal tests. A separate 60×16 Bash/tmux check exercised `xzgrep --reg` with a quoted trailing operand. Escape restored the pending line and cursor, and selecting `--regexp=` preserved the operand. [Provider results and exceptions](ubuntu-coverage-audit.md#phase-1-provider-review)
+
+The pre-edit baseline at `5783021` used the real Bash binding, the bundled rsync profile and an isolated tmux pane. With `CLI_HELP_DISCOVERY=off`, type `rsync --archive --compress --human-readable --itemize-changes --partial --` and press Alt-H, Ctrl-U, Right six times, Down, then D twice. This selects Network, option 2 of 38, `--bwlimit=RATE` in Expanded. Scroll with `]` through the final line. The harness checked that cancellation restored the exact line and cursor and that the guarded rsync function never executed. [Bundled rsync profile](../profiles/rsync.json) · [Terminal harness](../tests/test_terminal_screen.py)
+
+| Capture | Color mode | Accepted-suffix columns | Visible rows at opening / total Details rows |
+| --- | --- | ---: | ---: |
+| Baseline 60×16 | Monochrome | 1 | 7 / 53 |
+| Baseline 80×24 | Monochrome | 1 | 11 / 50 |
+| Revised 80×24 | Color and monochrome | 1 | 11 / 50 |
+| Revised 160×40 | Color and monochrome | 3 | 19 / 26 |
+
+At 80×24 the one-byte offset form and its two-line explanation appear together on the second page. At 160×40 the first column ends with `NKB · kB/s`, the second begins with `NM or NMiB · MiB/s`, and the third ends with the offset form. Its explanation reaches “granularity” on an indented line below that value. The columns start at cells 0, 54 and 108. Every color frame matched its monochrome counterpart cell for cell. The captured attributes showed underlined literals, normal explanation text, an accent on option names and reverse video on the selection. Both modes used `COLORFGBG=15;0` with `NO_COLOR=1` for monochrome.
+
+Raw JSON frames and the capture driver are retained locally under `tests/reports/phase1-details/`. The files include the input, dimensions, key sequence, scroll ranges, plain cells and styled cells. For Phase 2 use the same rsync state, the three-entry bundled `git worktree remove ` menu in Simple at opening (first option `-f`, final option `-h`), and FFmpeg’s Codec parameters category in Simple (from opening, Right 13 times). Capture FFmpeg at entry 1 (`-alpha_mode`), after PageDown and at End (entry 92, `-trellis`). The stable two-size rsync captures can be reused. [Column and style regressions](../tests/test_detail_columns.py)
+
 ## Bash integration, distribution and compatibility
 
 | Period | Change and verification |

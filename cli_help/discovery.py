@@ -31,7 +31,8 @@ from media_help import media_help_document, media_manual_document
 from invocation import INTERPRETER_FLAGS, PIP_MODULE_COMMANDS
 from npm_help import explain_syntax_only_options
 from system_help import align_system_manual, complete_system_document
-from ubuntu_reference import installed_reference, reference_profile, reference_record
+from ubuntu_manual_routes import REVIEWED_MANUAL_ROOTS
+from ubuntu_reference import installed_reference, matched_manual, reference_profile, reference_record
 from ubuntu_packaging import APT_DRIVERS, apt_document, complete_dpkg_manual, dpkg_document
 from terminal_text import strip_terminal_sequences
 from utility_tables import utility_table_document
@@ -42,7 +43,7 @@ from value_semantics import ValueContext, validate_profile_semantics, validate_v
 # Limits apply per source. Two sources are queried on an uncached auto lookup.
 MAX_OUTPUT_BYTES = 512 * 1024
 MAX_CACHE_BYTES = 2 * 1024 * 1024
-CACHE_VERSION = 19
+CACHE_VERSION = 20
 FLAG_PATTERN = re.compile(r"(?<![\w=:-])(--?[A-Za-z0-9][A-Za-z0-9_-]*(?:[.:][A-Za-z0-9][A-Za-z0-9_-]*)*|-[.#:](?=,\s+--)|(?<=, )-@)(?=$|[\s,=\[<])")
 # These are interpreter switches with no separate values or code operands.
 # Module routes are deliberately independent of user-editable driver files.
@@ -1646,7 +1647,16 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
     identity = cache_identity(command_path, executable, help_arguments, manual_name, manual, settings,
                               module, interpreter_options, manual_scope)
     freshness_warning = None
-    cache_verified = True
+    # Reviewed root manuals must be fingerprinted on each read. The man executable's
+    # identity alone cannot detect a replaced page or a provider-only package update.
+    checked_manual = None
+    if (manual and not subcommands and module is None and not route.source and not help_arguments
+            and name in REVIEWED_MANUAL_ROOTS):
+        candidate = reference_record(name, executable)
+        if candidate and any(item.get("reviewed_manual_sha256") for item in
+                             (candidate, *candidate.get("revision_variants", {}).values())):
+            checked_manual = candidate
+    cache_verified = checked_manual is None
     if module is not None and settings.mode == "auto":
         try:
             identity["module_fingerprint"] = module_fingerprint(executable, module, interpreter_options, settings.timeout)
@@ -1687,6 +1697,12 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
                                    environment_overrides={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"})
             else:
                 output = run_probe(argv, settings.timeout)
+            if checked_manual is not None and argv[0] == manual:
+                reviewed = matched_manual(checked_manual, output)
+                if reviewed is not None:
+                    profile = reference_profile(reviewed, build_profile, validate_profile)
+                    profile["discovery"].update(executable=executable, matched_manual=manual_name)
+                    return profile
             scope = manual_scope if label == f"man {manual_name}" else None
             parsed = parse_command_help(output, label, command_path, list(argv), scope=scope)
             if parsed["options"] or (scope and parsed["shared"]):
@@ -1700,11 +1716,11 @@ def discover(command: str, settings: Settings, refresh=False, subcommands=(), dr
         profile = merge_documents(command_path, documents)
     except HelpError as error:
         if not subcommands and module is None and not variant and not route.source:
-            record = reference_record(name, executable)
+            record = checked_manual or reference_record(name, executable)
             if record:
                 try:
-                    installed_reference(record)
-                    profile = reference_profile(record, build_profile, validate_profile)
+                    selected = installed_reference(record)
+                    profile = reference_profile(selected, build_profile, validate_profile)
                 except HelpError as reference_error:
                     if reference_error.code == "usage_guidance" and probe_failed:
                         raise HelpError(f"{reference_error} Installed documentation lookup failed: {' '.join(warnings)}",

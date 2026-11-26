@@ -4,13 +4,13 @@ The Ubuntu 26.04 amd64 image reconciliation covers 2,385 shipped names, eight ve
 
 | Ubuntu 26.04 profile | Selectable | Usage or manual guidance |
 | --- | ---: | ---: |
-| Desktop Default | 1,726 | 315 |
-| Desktop Extended | 1,764 | 323 |
-| Server Default | 1,506 | 233 |
-| Server Minimized | 1,238 | 199 |
-| Ubuntu Base | 486 | 56 |
-| Server Cloud | 1,329 | 171 |
-| Union by command name | 2,039 | 346 |
+| Desktop Default | 1,860 | 181 |
+| Desktop Extended | 1,901 | 186 |
+| Server Default | 1,609 | 130 |
+| Server Minimized | 1,321 | 116 |
+| Ubuntu Base | 506 | 36 |
+| Server Cloud | 1,424 | 76 |
+| Union by command name | 2,189 | 196 |
 
 A name with a selectable result on any applicable invocation counts in the first column. Each profile column in the TSV retains its own result. Comma-separated codes follow the listed invocation forms, with identical results collapsed. The original project comparison columns retain their historical meaning. The usage review records each affected invocation, image, source and outstanding argument evidence. [Usage and unresolved declarations](ubuntu-command-coverage/usage-review.tsv)
 
@@ -20,6 +20,27 @@ A name with a selectable result on any applicable invocation counts in the first
 | BU, RU | Source-backed usage or documentation reached through Bash or the packaged reference. Optionless helpers and unresolved selection grammars both occur here. |
 | L | The executable or snap launcher was identified. The menu points to the installed package or snap. The interface still needs a matching command-specific source. |
 | — | The inspected image does not expose this invocation. |
+
+## Phase 1 provider review
+
+The original 346 guidance-only names exposed 347 invocation paths. Both paths for `on_ac_power` resolve to the same argument-free helper. Bash `true` and `false` also have usage records, but their external forms already supplied selectable menus and placed those names outside this batch. [Exact invocations, image outcomes, revisions and limitations](ubuntu-command-coverage/phase1-review.tsv)
+
+| Review group | Invocations | Newly selectable roots | Retained guidance | Selectable declarations |
+| --- | ---: | ---: | ---: | ---: |
+| Named option in manual | 12 | 10 | 2 | 458 |
+| Option-bearing synopsis | 45 | 39 | 6 | 771 |
+| Remaining providers | 290 | 101 | 189 | 970 |
+| Total | 347 | 150 | 197 | 2,199 |
+
+Counts include each literal spelling once per root. The 197 retained invocations represent 196 names. Separate and attached operands, equals forms, optional values, aliases and commands selected after an operand have distinct findings in the ledger. For example, the FUSE mount helpers read the source and destination before `-o`, and `fprintd-delete` accepts root help while its finger selector follows a username. The provider review also exposed a partial-name edit failure for single-dash options such as Tcl’s `-encoding`. Selecting a known partial name now preserves the following operand. Completed prior tokens, declared bundles and attached arguments retain their argument checks.
+
+The original ISO layer manifests, Ubuntu Base dpkg database and Cloud dpkg database supplied installed revisions for all six profiles. The fallback checks the executable path, resolved target and package revision. A separately verified revision can carry its own source digest, declarations and manual fingerprints. The 111 alternate name/revision pairs in this batch cover 98 names. Signed Ubuntu archive indexes and package payloads supplied the older editions. Evidence includes byte comparisons, matching option-parser sections and fixed help from extracted binaries. [Per-revision verification](ubuntu-command-coverage/revision-evidence.tsv) · [Ubuntu snapshot service](https://snapshot.ubuntu.com/)
+
+For 22 Resolute roots, generic parsing recovered an incomplete menu or assigned another program’s options to the root. Examples include the unsupported-option list in `xzgrep(1)`, `git archive --remote` in the server helper’s manual, and `poff` options in the shared PPP manual. Discovery fingerprints the existing fixed manual reply and selects the reviewed record only when its executable provider, package revision and manual digest match. Explicit drivers retain precedence. These roots recheck the actual reply on each lookup. A missing manual uses the existing fallback. The Resolute C and C.UTF-8 replays covered 43 distinct rendered-manual/revision cases across 37 command/revision pairs. Eighteen roots also passed live installed-manual discovery on the host. The three open-iscsi roots and `mysqld_qslower-bpfcc` used archived package manuals. [Installed and archived manual fingerprints](ubuntu-command-coverage/manual-evidence.tsv) · [Fixed discovery and revision regressions](../tests/test_ubuntu_reference_revisions.py)
+
+The host replay of the reviewed Noble counterparts added 645 declarations across 75 newly selectable roots. Exact manual matching also applies to the Noble revisions of `plog`, `pod2html` and `sh`. The archive’s owning binaries and manuals were checked at their recorded revisions. Rendering those pages with Noble and host tooling in C and C.UTF-8 produced eight distinct fingerprints. `netaddr`, `threadsnoop-bpfcc` and `spa-json-dump` retain Noble-specific guidance. The Noble Python target suites remain scheduled for Phase 3.
+
+Three invocations require more provider evidence before a root choice can be added. The shipped `lxc` and `lxd` wrappers delegate to a separately installed LXD snap. Its revision determines the command table. For `/usr/bin/ptardiff -h`, the Perl manual describes a flag, while the script requires an argument and then calls an undefined handler. Other limitations include options supplied by a user-selected editor or pager and literal spellings outside the current profile grammar. For example, bdftruncate’s `+w` and xsetpointer’s `+c` are plus-prefixed switches. The xsetmode and wpa_action choices follow a required operand, and the Perl menu preserves attached debugger and module operands without validating their internal syntax. The ledger identifies the applicable profiles and provider at each invocation. [Remaining guidance](ubuntu-command-coverage/usage-review.tsv)
 
 ## Runtime and sources
 
@@ -45,7 +66,7 @@ HP printer options preserve joined short operands and long options with equals s
 
 Run `python3 -B scripts/check_ubuntu_coverage.py` from the checkout. It validates source identities, reconstructs both editions' menus, checks image applicability and reconciles the recorded result codes. The focused tests use independently specified spellings and argument counts. The complete fixed Bash and package replies can be compared with the collector in each supported fixture environment.
 
-Each installed JSON Lines record contains an invocation, source package and revision, manual or fixed request, source digest, literal declarations and usage. The digest identifies rendered UTF-8 text for manual and help inputs, binary bytes for embedded usage, or the inspected path tuple for location evidence. To refresh a manual, render the matching package page at width 100 with `man -P /bin/cat --no-hyphenation --no-justification -l PAGE`. Give the reference builder a complete edition manifest mapping each command to `package`, `version`, `page` and `file`. A `variants` array can distinguish providers by `targets` and `directory`. A source with separately reviewed declarations can supply `declarations` in the same record. Build into an empty directory and review the differences against the installed shards. [Reference builder](../scripts/build_ubuntu_reference.py) · [Numerical review and reconciliation](numerical-inventory/README.md)
+Each installed JSON Lines record contains an invocation, source package and revision, manual or fixed request, source digest, literal declarations and usage. The digest identifies rendered UTF-8 text for manual and help inputs, binary bytes for embedded usage, or the inspected path tuple for location evidence. To refresh a manual, render the matching package page at width 100 with `man -P /bin/cat --no-hyphenation --no-justification -l PAGE`. Give the reference builder a complete edition manifest mapping each command to `package`, `version`, `page` and `file`. A `variants` array can distinguish providers by `targets` and `directory`. A source with separately reviewed declarations can supply `declarations` in the same record. Use `revision_variants` for additional verified package revisions. A revision entry identifies its own source and may replace declarations with evidence for that edition. For an exact-manual override, record the SHA-256 of each fixed rendered reply in `reviewed_manual_sha256` on that revision, identify the executable owner separately if the manual ships in a different package, and add the root to `REVIEWED_MANUAL_ROOTS`. Build into an empty directory and review the differences against the installed shards. [Reference builder](../scripts/build_ubuntu_reference.py) · [Numerical review and reconciliation](numerical-inventory/README.md)
 
 ## Verification
 
@@ -64,6 +85,6 @@ Each full run used the same frozen source snapshot `33268767f1b67e82f2bd570036ea
 
 The skip on each target covers the Windows-only case. The earlier combined run exposed the same three passive diagnostic failures on every target. Explicit nested profiles using a builtin name had been labeled as Bash help. The three failures reproduced on the host, then passed after route and cache provenance followed the selected profile. Two earlier, interrupted runs were superseded as additional manual evidence was incorporated. They contributed no full-suite pass results.
 
-Of the 2,355 shipped names that lacked maintained project evidence in the original comparison, 2,009 now have selectable menus and 346 have usage or documentation. The six names that previously had selectable subpaths only now have a selectable root. Among ranked optional invocations, 96 gained coverage from a baseline without maintained evidence and eight gained a selectable root alongside existing subpaths.
+Of the 2,355 shipped names that lacked maintained project evidence in the original comparison, 2,009 had selectable menus and 346 had usage or documentation at that snapshot. The six names that previously had selectable subpaths only now have a selectable root. Among ranked optional invocations, 96 gained coverage from a baseline without maintained evidence and eight gained a selectable root alongside existing subpaths.
 
 With the host manual directory empty, discovery for `getweb 10 'untouched value'` selected the packaged model `1025` and preserved the quoted argument. The clean-install fallback smoke check produced 12 selectable entries for `cmp`. The per-image conclusions come from filesystem and route replay. The matrix exercised the host and the two Noble fixture environments.

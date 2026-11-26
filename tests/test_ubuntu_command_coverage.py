@@ -260,7 +260,7 @@ class UbuntuReferenceTests(unittest.TestCase):
         from ubuntu_reference import reference_record
         with patch("ubuntu_reference.ubuntu_edition", return_value="resolute"):
             with patch("discovery.shutil.which", side_effect=lambda name: "/usr/bin/sensors" if name == "sensors" else None), \
-                    patch("discovery.installed_reference"), patch("discovery.executable_identity", return_value={}), \
+                    patch("discovery.installed_reference", side_effect=lambda record: record), patch("discovery.executable_identity", return_value={}), \
                     patch("discovery.run_probe", side_effect=AssertionError("unexpected probe")):
                 ctx = find_context("sensors ", 8, [], lambda cmd: discover(cmd, Settings()))
                 self.assertIn("--fahrenheit", rows(ctx.profile))

@@ -138,5 +138,9 @@ def option_tokens(word, options, strict=True, *, switch_syntax=None, partial_inv
         raise HelpError("Complete the bundle's value using its declared spelling, or enter the options separately.", rejected_value_form)
     declared_forms = any(option.get("argument_style") for option in options.values())
     if (enabled or declared_forms) and word.startswith("-") and (strict or not word.startswith("--") and len(word) > 2):
+        # Only the active token can be an incomplete single-dash option name.
+        # An unknown member after a declared bundle starter still makes it opaque.
+        if not strict and not options.get(word[:2], {}).get("bundle") and any(name.startswith(word) for name in options):
+            return []
         raise HelpError("An undeclared option or bundle member makes argument arity unknown.", "unsupported_option")
     return []
