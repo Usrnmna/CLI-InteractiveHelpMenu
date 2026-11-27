@@ -4,6 +4,10 @@
 
 See [version numbering and planned releases](versioning.md) when choosing the next release number.
 
+## Version 0.5.0 - Alpha
+
+The selected candidate adds Ubuntu command coverage to the Bash menu, including package-manager routes, builtin help and edition-specific reference files. Those files install with the runtime. Optional tools are installed separately by the user. The filenames below describe the planned local outputs. Both builds and installed-package verification are pending. [Release contents](../CHANGELOG.md#version-050---alpha) · [Local candidate checklist](../ROADMAP.md#remaining-work)
+
 ## Version 0.4.1 - Alpha
 
 The local candidate skips unchanged idle frames and reduces the cost of validating profile text on menu open. The two changes form one patch in the 0.4 series. Performance measurements and regression results are available for both. The first build was verified locally on all three offline targets and reproduced byte for byte. The candidate remains unpublished. [Changelog](../CHANGELOG.md#version-041---alpha) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate)
@@ -12,7 +16,7 @@ The local candidate skips unchanged idle frames and reduces the cost of validati
 
 The locally verified, unpublished candidate combines per-open reuse of shared value formatting with the three-level browser. Simple leaves more room for options. The default `D` key cycles through Detailed and Expanded without losing the selection or filter. Compact category labels retain access to full titles, and applicable options can be found by unit. [Changelog and timing evidence](../CHANGELOG.md#version-040---alpha) · [Six terminal captures](superpowers/plans/2026-11-24-menu-detail-levels.md#review-record)
 
-The earlier unpublished performance candidate uses the same `0.4.0-alpha` version string and artifact filenames as the combined candidate. Its packages and verification results predate the three-level menu. The November 25 screenshots and animation came from a separate local build with the redesigned menu. The combined candidate comes from `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. Its [local verification record](release-candidate.md#combined-candidate-verification) identifies the combined packages by SHA-256. [Capture provenance](assets/README.md#capture-evidence) · [Release decision](audit-history.md#menu-review-and-v040-alpha-selection)
+The earlier unpublished performance candidate uses the same `0.4.0-alpha` version string and artifact filenames as the combined candidate. Its packages and verification results predate the three-level menu. The November 25 screenshots and animation came from a separate local build with the redesigned menu. The combined candidate comes from `cc30ade99d1ddf2f593b409f66bd05dc0029f44c`. Its [local verification record](release-candidate.md#combined-candidate-verification) identifies the combined packages by SHA-256. [Capture provenance](assets/README.md#november-25-historical-capture) · [Release decision](audit-history.md#menu-review-and-v040-alpha-selection)
 
 ## Local package formats
 
@@ -34,10 +38,10 @@ source archive with a compatible Python/Bash installation.
 
 | Artifact | Purpose |
 | --- | --- |
-| `cli-interactive-help-v0.4.1-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
-| `cli-interactive-help-v0.4.1-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
-| `cli-interactive-help-v0.4.1-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
-| `cli-help-v0.4.1-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
+| `cli-interactive-help-v0.5.0-alpha-source.tar.gz` | Maintained source, tests, fixtures, documentation, configuration, optional development tools, and shell installers |
+| `cli-interactive-help-v0.5.0-alpha-linux-x86_64.tar.gz` | Complete source/runtime bundle plus compiled `cli-help` launcher |
+| `cli-interactive-help-v0.5.0-alpha-linux-x86_64.run` | Self-extracting installer or updater, with embedded archive verification |
+| `cli-help-v0.5.0-alpha-linux-x86_64` | Compiled launcher; requires the adjacent runtime from an extracted archive |
 | `BUILD-INFO.json` | Version, compiler/platform details, and hashes of all packaged source inputs |
 | `*.checksum` | SHA-256 checksums for each artifact, plus the aggregate `SHA256SUMS.checksum` |
 
@@ -57,7 +61,7 @@ The earlier [published v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-I
 
 The files under `releases/v0.1.1-alpha/` are preserved historical packages, also
 associated with the [GitHub Releases page](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases).
-Their artifact names use `v0.1.1-alpha` in place of `v0.4.1-alpha` above.
+Their artifact names use `v0.1.1-alpha` in place of `v0.5.0-alpha` above.
 Those packages predate the current command-context and argument-syntax modules,
 passive diagnostics, module-cache freshness guards, terminal-width fixes,
 collection recovery, and GitHub updater. Their source archive is complete for
@@ -66,7 +70,7 @@ checksums must remain unchanged. They are used as isolated upgrade fixtures.
 
 ## Verify and install
 
-Run these commands in the v0.4.1-alpha build output directory. For a published package, use the matching filenames and checksums from that release.
+Run these commands in the v0.5.0-alpha build output directory. For a published package, use the matching filenames and checksums from that release.
 
 ```bash
 sha256sum -c SHA256SUMS.checksum
@@ -76,15 +80,15 @@ For an individual downloaded artifact, use its matching `.checksum` file instead
 For the self-extracting installer:
 
 ```bash
-bash cli-interactive-help-v0.4.1-alpha-linux-x86_64.run --verify
-bash cli-interactive-help-v0.4.1-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
+bash cli-interactive-help-v0.5.0-alpha-linux-x86_64.run --verify
+bash cli-interactive-help-v0.5.0-alpha-linux-x86_64.run install --prefix "$HOME/apps/cli-help" --no-rc
 ```
 
 Installer arguments such as `--prefix "$HOME/apps/cli-help"` and `--no-rc` are
 forwarded literally. Existing installations can be upgraded without removal:
 
 ```bash
-bash cli-interactive-help-v0.4.1-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
+bash cli-interactive-help-v0.5.0-alpha-linux-x86_64.run update --prefix "$HOME/apps/cli-help"
 ```
 
 The installer requires `tar`, `tail`, `mktemp`, and `sha256sum`, in addition to the
@@ -103,8 +107,8 @@ continues through the Python runtime. Custom launcher changes are preserved.
 ## Extracted runtime and native launcher
 
 ```bash
-tar -xzf cli-interactive-help-v0.4.1-alpha-linux-x86_64.tar.gz
-cd cli-interactive-help-v0.4.1-alpha
+tar -xzf cli-interactive-help-v0.5.0-alpha-linux-x86_64.tar.gz
+cd cli-interactive-help-v0.5.0-alpha
 ./cli-help --version
 ./cli-help --check
 ./cli-help install
@@ -125,8 +129,8 @@ executable. Downloading that file alone is insufficient for browser operation.
 GCC is required in addition to the runtime dependencies. For a local build on Linux x86_64:
 
 ```bash
-python3 scripts/build_release.py --output dist/release-v0.4.1-alpha
-cd dist/release-v0.4.1-alpha
+python3 scripts/build_release.py --output dist/release-v0.5.0-alpha
+cd dist/release-v0.5.0-alpha
 sha256sum -c SHA256SUMS.checksum
 ```
 

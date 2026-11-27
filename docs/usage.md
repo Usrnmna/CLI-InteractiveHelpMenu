@@ -54,6 +54,12 @@ Escape followed by `h` in terminals that do not transmit Alt combinations direct
 
 ### Other pending input examples
 
+On supported Ubuntu editions, type `apt install ` and press Alt-H to browse
+that verb’s options. Type `builtin read ` to browse the installed Bash topic.
+For names shared with an executable, `echo ` selects the Bash builtin and
+`/usr/bin/echo ` selects the external utility. Keep the trailing space after
+the command or verb. Escape returns to the pending line. [Ubuntu terminal snapshots](assets/README.md#ubuntu-command-menus)
+
 Examples of supported pending input:
 
 ```text

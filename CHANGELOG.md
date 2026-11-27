@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.5.0 - Alpha
+
+The maintainer selected the accepted Ubuntu coverage batch for this local release candidate. Package builds and installed-candidate verification are pending. [Release roadmap](ROADMAP.md#remaining-work)
+
+- Browse edition-specific APT verbs and dpkg actions while composing a command. The menu accounts for option aliases and required operands, including the three values for `dpkg --compare-versions`.
+- Browse installed Bash help for 61 builtin names. A bare `echo` and `/usr/bin/echo` select their respective providers. Topics with no selectable switch give usage guidance.
+- On supported Ubuntu installations, eligible roots can use packaged help when local documentation is missing. Reviewed declarations can also supply the menu for an exact installed manual and provider revision. Across six Ubuntu 26.04 amd64 images, 2,189 of 2,385 shipped names have a selectable root on at least one applicable invocation. The other 196 have command-specific guidance. All eight inventoried kernel paths and 119 command rows from 100 ranked optional packages have selectable results on 26.04. Ubuntu 24.04 supplies 117 of the ranked rows. [Ubuntu coverage audit](docs/ubuntu-coverage-audit.md)
+- Expanded Details lays out supported value spellings and their explanations together in up to three columns as terminal width permits. [Rendered terminal results](docs/audit-history.md#phase-2-terminal-audit)
+
 ## Version 0.4.1 - Alpha
 
 Verified locally and unpublished. This patch combines two measured improvements to opening and using the menu. [Candidate verification](docs/release-candidate.md#v041-alpha-local-candidate)

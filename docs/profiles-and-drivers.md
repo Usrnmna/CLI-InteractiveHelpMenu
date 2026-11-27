@@ -226,7 +226,9 @@ guided corrections for collections with scan reports. See
 
 ## Activation and manual composition
 
-Only built-in Git/Docker drivers are active without `CLI_HELP_DRIVERS`. Supplying
+The default registry includes Git, Docker and five APT tools. Bash topic lookup and the Ubuntu root reference use their own built-in providers. [Ubuntu runtime sources](ubuntu-coverage-audit.md#runtime-and-sources)
+
+Supplying
 that variable selects one directory; no search path, automatic supplied-driver
 activation, or directory layering is performed. `--doctor` reports the selection,
 and `--explain` reports the selected route's file separately from profile

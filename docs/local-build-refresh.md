@@ -1,6 +1,6 @@
 # Local build documentation and repository refresh
 
-This work covers the checkout identified by VERSION and the runtime inputs used for the captures. Release history retains its original dates and verification scope.
+This record covers the November 25 checkout and the runtime inputs used for its captures. The [current gallery](assets/README.md#capture-evidence) records subsequent checkout captures separately. Release history retains its original dates and verification scope.
 
 | Phase | Work | Verification |
 | --- | --- | --- |
@@ -14,6 +14,6 @@ Phases 2a, 2b and 2c can proceed independently after the input inventory.
 
 ## November 25 verification
 
-- **Runtime and media.** The November 25 capture used the unpacked Linux build marked `0.4.0-alpha`. Its 160 runtime, key configuration and profile inputs matched the working tree. All 21 animation frames matched the independent tmux replay. The six FFmpeg screens matched the packaged runtime at 80×24 and 60×16. [Capture evidence](assets/README.md#capture-evidence) · [FFmpeg frames](superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
+- **Runtime and media.** The November 25 capture used the unpacked Linux build marked `0.4.0-alpha`. Its 160 runtime, key configuration and profile inputs matched the working tree. All 21 animation frames matched the independent tmux replay. The six FFmpeg screens matched the packaged runtime at 80×24 and 60×16. [Capture evidence](assets/README.md#november-25-historical-capture) · [FFmpeg frames](superpowers/plans/2026-11-24-menu-detail-levels-verification.md)
 - **Audit evidence.** The family table reconciles the 942 original and 6,487 current rows in 76 profiles. Tier-specific summaries record the disposition of all 162 discovery routes. The strict gate passed all 4,426 required records. [Development cycle](audit-history.md) · [Numerical inventory](numerical-inventory/README.md)
 - **Repository and package documentation.** The primary link check and its retry include both GitHub Markdown guides. The new source bundle includes the root roadmap so its navigation also works in extracted packages. Dependabot retains the weekly Actions and optional media dependency groups. [Repository settings](development.md#repository-configuration) · [Build contents](releases.md#build-from-source)

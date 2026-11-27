@@ -24,6 +24,10 @@ trim_trailing_whitespace = false
 trim_trailing_whitespace = false
 insert_final_newline = unset
 
+# A final tab can represent an empty image or provider field in the audit ledger.
+[docs/ubuntu-command-coverage/*.tsv]
+trim_trailing_whitespace = false
+
 # A blank context line in a benchmark patch contains one significant space.
 [tools/menu_benchmark/**/*.patch]
 trim_trailing_whitespace = false

@@ -33,6 +33,10 @@ and machine-specific capture reports in ignored locations. -->
 or migration requirements. Release candidates need exact source provenance and
 checksum evidence; local preparation does not establish publication. -->
 
+<!-- For Ubuntu coverage, identify the affected image, provider revision,
+invocation and argument boundary. For candidate verification, link the frozen
+source, reproducibility result and per-target outcomes for the same packages. -->
+
 <!-- Before submitting, inspect the diff for credentials, private paths, complete
 pending buffers, raw captures, tool homes, staging files, and recovery backups.
 Reports require review and redaction before sharing. -->

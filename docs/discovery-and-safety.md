@@ -16,7 +16,11 @@ flowchart TD
     P -->|No| M{Discovery mode}
     M -->|off| E[Diagnostic; pending command retained]
     M -->|Valid fresh matching cache in man or auto| B
-    M -->|man: cache miss or refresh| A[Manual lookup only]
+    M -->|auto and builtin| U[Request the allowlisted Bash help topic]
+    U -->|Options| B
+    U -->|Usage only| E
+    M -->|man and builtin| E
+    M -->|man and external command| A[Read the fixed local manual]
     M -->|auto: cache miss or refresh| H[Applicable fixed help and manual sources]
     A --> T[Strip complete terminal sequences and parse descriptions]
     H --> T
@@ -24,7 +28,12 @@ flowchart TD
     S --> V[Validate applicable root declarations]
     S --> N[Retain nested or unassigned source context]
     V -->|Usable options| B
-    V -->|No usable options| E
+    A -->|Exact reviewed manual and provider| R[Read the matching Ubuntu declaration]
+    H -->|Exact reviewed manual and provider| R
+    V -->|No usable options on eligible Ubuntu root| R
+    R -->|Selectable options or keywords| B
+    R -->|Usage or provider mismatch| E
+    V -->|Other unresolved source| E
 ```
 
 Ordinary profiles open directly. Guarded profiles display their curated rows after successful discovery and identity verification. A cached ordinary discovery result can avoid new probes. See [which reference files are read](runtime-architecture.md#2-which-reference-files-are-read) for the sequence.
@@ -65,10 +74,14 @@ documentation without invoking target programs, select man-only discovery:
 export CLI_HELP_DISCOVERY=man
 ```
 
-The available modes are `auto` (default, help output plus manual pages), `man`
-(manual pages only), and `off` (custom and bundled profiles only). Man-only mode
-requires an installed executable and a usable local manual page. It invokes the
-manual renderer, but never invokes the target executable.
+In `auto`, supported Bash builtins use a fixed help topic from a fresh Bash.
+External commands use the documentation requests for their route. In `man`,
+external commands use the fixed manual route and builtins give a Bash documentation
+reference. In either mode, eligible external roots on Ubuntu 24.04 or 26.04
+can use a packaged reference when installed documentation yields no menu.
+For certain audited manuals, the executable provider, package revision and
+rendered manual fingerprint select the reviewed declaration directly. In
+`off`, browsing requires an applicable static profile. [Ubuntu sources and limits](ubuntu-coverage-audit.md#runtime-and-sources)
 
 The parser recognizes common GNU-style flags, short/long aliases, multiline
 descriptions, required `=VALUE` and uppercase argument placeholders, and optional
@@ -137,13 +150,14 @@ unsupported forms, including generic 7-Zip attached-value declarations. The
 [explicit syntax guide](argument-syntax.md) describes the curated static subset;
 it does not change generic discovery or its requests.
 
-Automatic subcommand discovery uses the built-in Git and Docker drivers and any
+Automatic subcommand discovery uses the built-in Git, Docker and APT routes and any
 loaded [JSON compatibility drivers](profiles-and-drivers.md#loadable-compatibility-drivers).
 Other programs retain top-level discovery unless an explicit subcommand profile
 exists. Arbitrary positional words are not inferred as executable subcommands.
-Aliases, shell functions, and builtins are not discovery sources;
-executable resolution uses `PATH`, which may differ from a same-named shell alias
-or function.
+An allowlisted bare builtin or `builtin NAME` selects installed Bash help.
+An absolute executable path or external prefix such as `env` selects the
+external program. Executable lookup uses the literal path or `PATH`. Shell
+aliases and functions are outside this lookup. [Invocation examples](invocation-and-structured-arguments.md#bash-builtins-and-external-programs)
 
 If no usable options are found, a diagnostic is displayed and the pending input
 is preserved. A custom JSON profile can supply the missing documentation.

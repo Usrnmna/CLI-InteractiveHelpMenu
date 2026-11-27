@@ -3,6 +3,10 @@
 [Release formats and build procedure](releases.md) · [Development and tests](development.md) ·
 [Installation and recovery](installation.md) · [Documentation index](README.md)
 
+## v0.5.0-alpha local candidate
+
+The Ubuntu coverage release is selected for local packaging. Its source handoff is accepted. Both reproducibility builds and all three exact-package runs are pending. The earlier matrix verified the command coverage on the host and two Noble targets. It supplies the provider and terminal baseline for the installed checks. [Release checklist and target status](../ROADMAP.md#remaining-work) · [Accepted verification](audit-history.md#phase-3-combined-verification)
+
 ## v0.4.1-alpha local candidate
 
 **Verified locally, unpublished — November 25, 2026.** Phase 4 publication is skipped. The first build passed the full offline suite and installed-menu checks on all three targets. [Release verification summary](audit-history.md#local-release-verification)
@@ -127,11 +131,11 @@ At both 80×24 and 60×16, cancellation restored the original screen, cursor, Re
 From a clean copy of the maintainer-confirmed revision, build the first set and check its digests:
 
 ```bash
-python3 scripts/build_release.py --output dist/candidate-v0.4.1-alpha
-(cd dist/candidate-v0.4.1-alpha && sha256sum -c SHA256SUMS.checksum)
+python3 scripts/build_release.py --output dist/candidate-v0.5.0-alpha
+(cd dist/candidate-v0.5.0-alpha && sha256sum -c SHA256SUMS.checksum)
 ```
 
-Build again from a second clean copy of the same revision with the same toolchain in a fresh directory, such as `dist/candidate-v0.4.1-alpha-2/`. Verify the manifest against the Git blobs and compare all 11 files byte for byte. Supply the first set and the historical installer to each offline sandbox before running its full suite. The [v0.4.0-alpha record](#combined-candidate-verification) gives the fixture and launch procedure.
+Build again from a second clean copy of the same revision with the same toolchain in a fresh directory, such as `dist/candidate-v0.5.0-alpha-2/`. Verify the manifest against the Git blobs and compare all 11 files byte for byte. Supply the first set and the historical installer to each offline sandbox before running its full suite. The [v0.4.0-alpha record](#combined-candidate-verification) gives the fixture and launch procedure.
 The five artifacts, five individual checksum files, and aggregate checksum use
 the existing release format. No artifact is uploaded automatically.
 
@@ -139,7 +143,7 @@ The package regression harness can inspect and exercise these exact artifacts
 instead of building its own temporary candidate:
 
 ```bash
-export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.4.1-alpha"
+export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.5.0-alpha"
 export CLI_HELP_TEST_HISTORICAL_DIR="$PWD/releases/v0.1.1-alpha"
 python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v
 python3 -B -m unittest discover -s tests -p test_release_terminal.py -v
@@ -182,13 +186,13 @@ and isolated locations rather than personal shell files. For example, from the
 repository root:
 
 ```bash
-candidate="$PWD/dist/candidate-v0.4.1-alpha"
+candidate="$PWD/dist/candidate-v0.5.0-alpha"
 scratch=$(mktemp -d)
 mkdir -p "$scratch/home" "$scratch/config" "$scratch/cache" "$scratch/data" "$scratch/tmp"
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" TMPDIR="$scratch/tmp" \
   CLI_HELP_PYTHON="$(command -v python3)" PYTHONDONTWRITEBYTECODE=1 \
-  bash "$candidate/cli-interactive-help-v0.4.1-alpha-linux-x86_64.run" \
+  bash "$candidate/cli-interactive-help-v0.5.0-alpha-linux-x86_64.run" \
   install --prefix "$scratch/runtime" --no-rc
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" \

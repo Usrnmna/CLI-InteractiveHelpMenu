@@ -31,6 +31,9 @@ their execution checks, and the optional regeneration dependencies.
 | [cli_help/arguments.py](../cli_help/arguments.py) | Explicit value spellings and opt-in short bundle interpretation |
 | [cli_help/invocation.py](../cli_help/invocation.py) | Bounded prefix grammar and immutable Python module routes with original token offsets |
 | [cli_help/command_paths.py](../cli_help/command_paths.py) | Explicit subcommand paths, global-option arity, fixed help routes |
+| [cli_help/bash_builtins.py](../cli_help/bash_builtins.py) | Fixed Bash help topics, documented synonyms and usage guidance |
+| [cli_help/ubuntu_packaging.py](../cli_help/ubuntu_packaging.py), [APT edition tables](../cli_help/apt_editions.py) | APT verbs and dpkg actions with edition-specific operand boundaries |
+| [cli_help/ubuntu_reference.py](../cli_help/ubuntu_reference.py) | Per-edition lookup, provider revisions and exact-manual overrides for eligible Ubuntu roots |
 | [cli_help/drivers.py](../cli_help/drivers.py) | Validated JSON driver loading and built-in route overlays |
 | [cli_help/manual_import.py](../cli_help/manual_import.py) | Manual rendering, profile generation, and manual-only driver import |
 | [cli_help/bulk_scan.py](../cli_help/bulk_scan.py) | Executable inventory, bulk manual imports, and checkpointed diagnostic reports |
@@ -258,6 +261,14 @@ describe automatic and manual recovery; other terminal environments remain
 subject to their own validation.
 
 ## Repository configuration
+
+For the v0.5.0-alpha freeze, keep the reviewed Ubuntu TSV ledgers and both runtime
+JSON Lines editions in the source manifest. Store raw image downloads, fixture
+payloads, build copies and transcripts under the ignored output directories.
+The Git and package exclusions also cover temporary `cli-help-provider-*` and
+`cli-help-priority-*` directories created beneath maintained paths.
+The [candidate checklist](../ROADMAP.md#remaining-work) groups repository checks
+before the freeze and uses the same packages for all three offline targets.
 
 The repository supplies one root [.gitignore](../.gitignore) and one root [.gitattributes](../.gitattributes). There are no maintained nested overrides, submodules, hook scripts, or custom merge/diff driver configurations. Personal excludes, hooks and checkout-local Git settings can differ between contributors.
 

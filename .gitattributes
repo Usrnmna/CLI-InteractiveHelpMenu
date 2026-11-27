@@ -23,6 +23,7 @@
 tests/fixtures/**/*.txt whitespace=-trailing-space
 # Empty trailing TSV fields delimit columns in maintained inventories.
 tests/fixtures/**/*.tsv whitespace=-trailing-space
+docs/ubuntu-command-coverage/*.tsv whitespace=-trailing-space
 # Unified diffs include a single space on blank context lines.
 tools/menu_benchmark/**/*.patch text eol=lf whitespace=-trailing-space
 # Terminal recordings and structured capture metadata are UTF-8 text.
@@ -32,6 +33,9 @@ tools/menu_benchmark/**/*.patch text eol=lf whitespace=-trailing-space
 
 # Curated inventory decisions require review; generated facts stay in reports/.
 docs/numerical-inventory/review.json text eol=lf -linguist-generated
+# Provider revisions and manual fingerprints are reviewed alongside their ledgers.
+config/ubuntu-reference/*/*.jsonl text eol=lf -linguist-generated
+docs/ubuntu-command-coverage/*.tsv -linguist-generated
 
 # Preserve media and compressed manual fixtures byte for byte.
 *.gif binary

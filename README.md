@@ -2,7 +2,7 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**Local checkout · 0.4.1-alpha** · [Selected prerelease contents](CHANGELOG.md#version-041---alpha)
+**Local candidate source · 0.5.0-alpha · package verification pending** · [Selected prerelease contents](CHANGELOG.md#version-050---alpha)
 
 **Find the right option without leaving an unfinished Bash command.**
 
@@ -17,7 +17,7 @@ whose flags and argument syntax are difficult to remember.
 
 ![Bash demonstration cycling through three detail levels for the rsync bandwidth limit, inserting options and returning to the pending command.](docs/assets/option-insertion.gif)
 
-Recorded from the November 25 local build with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
+Recorded from the v0.5.0-alpha source checkout with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
 [Scrolled option list](docs/assets/ls-browser.png) ·
 [Resulting command line](docs/assets/option-inserted.png) ·
 [Capture method and limits](docs/assets/README.md)
@@ -32,6 +32,7 @@ Recorded from the November 25 local build with discovery off. The same rsync opt
   Expanded. Search for units such as `bps`, `KiB/s` or `MHz` without changing the value you type.
 - **Several help sources:** bundled and custom profiles, installed help output,
   local manuals, and explicit drivers for supported subcommand paths.
+- **Ubuntu command coverage:** browse APT verbs, dpkg actions and Bash builtin topics. For eligible installed commands, a packaged Ubuntu reference supplies selectable options or usage guidance when local help is missing. [Coverage by edition and image](docs/ubuntu-coverage-audit.md)
 - **Editable help collections:** import a manual, scan installed commands, and
   correct options, categories, and routes through guided forms and previews.
 - **Configurable operation:** launch and navigation keys, discovery modes,
@@ -81,7 +82,7 @@ For a temporary session in an existing Bash shell, source
 [terminal-pane setup](docs/usage.md#run-in-a-terminal-pane) gives the exact
 launch command for an editor or app.
 
-For a v0.4.1-alpha installer or archive, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
+To build a v0.5.0-alpha installer or archive locally, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
 
 ### Insert the first option
 
@@ -117,12 +118,21 @@ For rsync `--bwlimit=`, a bare `5000` means 5000 KiB/s. Search for `KiB/s` or `b
 ```mermaid
 flowchart TD
     A[Pending Bash command] -->|Alt-H| B[Browse and search help]
-    B -->|Select option with Enter| C[Insert option]
+    B -->|Command has usage guidance only| D
+    B -->|Select option or keyword with Enter| C[Insert literal spelling]
     B -->|Cancel| D[Keep original line and cursor]
     C --> E[Continue editing at Bash prompt]
     D --> E
     E -->|Separate Enter| F[Bash executes command]
 ```
+
+### Ubuntu package and builtin help
+
+Type `apt install ` in Bash and press **Alt-H** to browse the options for that verb. The trailing space places the cursor after the verb. Escape returns to the prompt with the command still pending.
+
+![APT install in Simple view on Ubuntu 26.04, showing a scrollable list of 75 options.](docs/assets/ubuntu-apt.png)
+
+For a shell builtin, try `builtin read `. For a shared name such as `echo`, the bare name selects Bash help and the absolute path selects the external utility. [Bash read snapshot](docs/assets/bash-read.png) · [Coverage by Ubuntu image and edition](docs/compatibility.md#ubuntu-default-coverage)
 
 ## Compatibility and execution boundaries
 
@@ -148,7 +158,7 @@ next help request:
 export CLI_HELP_DISCOVERY=man
 ```
 
-For commands that need discovery, manual-only lookup needs an installed executable and a usable local manual.
+For external commands, manual-only lookup requires an installed executable. Eligible Ubuntu roots can also use the packaged reference when a local manual is missing. A builtin in this mode points to the Bash documentation.
 `CLI_HELP_DISCOVERY=off` restricts browsing to static profiles. Bulk manual scanning,
 manual import, and review preview do not invoke target programs. The
 [discovery and safety guide](docs/discovery-and-safety.md) explains all modes,
@@ -190,7 +200,7 @@ covers custom destinations and existing shell sessions after removal.
 | Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
 | Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
 | Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
-| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.4.1-alpha changes](CHANGELOG.md#version-041---alpha) |
+| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.5.0-alpha changes](CHANGELOG.md#version-050---alpha) |
 | Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
 | Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
 

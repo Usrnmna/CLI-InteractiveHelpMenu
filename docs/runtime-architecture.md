@@ -44,16 +44,23 @@ runtime modes. The Alt-H binding invokes Python directly.
 ```mermaid
 flowchart TD
     P["Read and validate all bundled and custom profile JSON"] --> C["Resolve command path and editable context"]
-    D["Build Git and Docker routes and overlay configured driver JSON"] --> C
+    D["Build Git, Docker and APT routes and overlay configured driver JSON"] --> C
     K["Merge browser defaults with optional keybinding JSON"] --> C
     C --> S{"Exact static profile?"}
     S -->|"Ordinary static match"| B["Use static profile"]
     S -->|"Guarded match or no match"| F["Resolve discovery route and check identity when required"]
+    F -->|"Bash builtin in auto"| T["Read the fixed Bash help topic"]
+    T -->|"Selectable rows"| A
+    T -->|"Usage only"| X
+    F -->|"Bash builtin in man"| X
     F -->|"Discovery disabled or request rejected"| X["Return diagnostic without a buffer edit"]
     F --> H{"Fresh valid discovery cache?"}
     H -->|Hit| M["Discovery result available"]
     H -->|"Miss or bypass"| Q["Run allowed help or man requests in sequence"]
     Q -->|"Parse, merge, and cache when eligible"| M
+    Q -->|"Eligible Ubuntu root with missing declarations or an exact reviewed manual"| U["Read edition shard and match provider"]
+    U -->|"Selectable declarations"| A
+    U -->|"Usage or provider mismatch"| X
     M -->|"Guarded match"| G["Use static profile"]
     M -->|"No static match"| A["Use discovered profile"]
 ```
@@ -63,6 +70,7 @@ flowchart TD
 | `profiles/*.json` and optional `CLI_HELP_PROFILES/*.json` | Reads UTF-8 files in sorted order, validates every profile and retains the effective collection in memory. Custom files replace bundled entries by exact `command` tuple. Duplicate tuples in one directory fail validation. |
 | Optional `CLI_HELP_DRIVERS/*.json` | Reads and validates the configured directory and overlays routes by executable and subcommand. Drivers supply fixed documentation requests and argument-boundary rules. The shipped `config/drivers.example/` collection requires activation. |
 | Optional `CLI_HELP_CONFIG` | Reads one JSON file and merges its key bindings with the defaults in `ui.py`. |
+| `config/ubuntu-reference/{noble,resolute}/*.jsonl` | For an eligible external root, reads the shard for its edition and initial. The lookup checks the installed path, target and provider evidence. An exact manual override also requires its reviewed fingerprint. [Reference lookup](../cli_help/ubuntu_reference.py) |
 | Discovery cache | Looks up one JSON file by the hash of the resolved command, route, executable identity and discovery settings. It validates the stored identity, age and profile. Successful discovery can write a cache file using atomic replacement. |
 
 Static profiles supply the displayed menu. A profile with an identity guard,

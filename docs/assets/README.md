@@ -2,7 +2,7 @@
 
 [Project overview](../../README.md) · [Controls and usage](../usage.md) · [Development guide](../development.md)
 
-The five screenshots and animation show the November 25 local build of v0.4.0-alpha running in Bash. The images contain the terminal’s actual text, highlights and cursor. Each caption describes the action at that point. The animation pauses on each step for readability. See the [menu measurements](../menu-cost-measurements.md) for timings.
+The seven screenshots and animation show the v0.5.0-alpha source checkout running in Bash on Ubuntu 26.04.1. The images contain the terminal’s actual text, highlights and cursor. Each caption describes the action at that point. The animation pauses on each step for readability. See the [menu measurements](../menu-cost-measurements.md) for timings.
 
 | Asset | What it shows |
 | --- | --- |
@@ -12,6 +12,15 @@ The five screenshots and animation show the November 25 local build of v0.4.0-al
 | [Assembled command](option-inserted.png) | After Escape, the two-line rsync command still contains its original flags, the bandwidth limit, the quoted exclusion and both paths. |
 | [Scrolled ls browser](ls-browser.png) | Expanded view shows lines 17–27 of 28 for `--hide=PATTERN`, option 12 of 20 in Display. Explicitly named files still appear, and `-a` or `-A` overrides the pattern. |
 | [Guided review](guided-review.png) | The [guided reviewer](../review.md#interactive-review-and-correction) shows an edited summary and the prompt for the option’s argument placeholder in a disposable example collection. |
+
+## Ubuntu command menus
+
+| Pending input | Checkout snapshot at 100×24 |
+| --- | --- |
+| `apt install ` | [APT install options](ubuntu-apt.png). The Resolute menu opens in Simple with 75 choices. Escape returns to the pending verb. |
+| `builtin read ` | [Bash read options](bash-read.png). The installed Bash topic opens with 12 choices, including `-a array`, `-d delim` and `-t timeout`. |
+
+Both captures use automatic discovery. Each session entered the pending line, pressed Alt-H, and cancelled with Escape. The cursor returned to the trailing space. The [provider audit](../ubuntu-coverage-audit.md#runtime-and-sources) explains why menu contents can differ on Noble.
 
 ## Demonstration sequence
 
@@ -27,30 +36,27 @@ rsync --archive --compress --human-readable --itemize-changes --partial --bwlimi
 ls -l --human-readable --hide='*.tmp' "/srv/project files/"
 ```
 
-The recorder uses an isolated home and Readline configuration, disables discovery, and opens a 100×24 Bash terminal. Execution guards for both commands stayed silent. The rsync buffer and cursor matched before and after Escape. In a third session, the reviewer cancelled the partial edit and the collection JSON remained byte-identical.
+The rsync, ls and guided-review sessions use isolated homes and Readline configurations, discovery off, and 100×24 Bash terminals. Execution guards for both commands stayed silent. The rsync buffer and cursor matched before and after Escape. In a third session, the reviewer cancelled the partial edit and the collection JSON remained byte-identical.
 
 ## Regeneration
 
-The [capture program](../../tools/capture_readme_media.py) runs on Linux or WSL with Bash 4.4+, Python 3.10+ and DejaVu Sans Mono. Install its optional [rendering dependencies](../../tools/requirements-media.txt) in a virtual environment. To capture an unpacked build from the repository root, use fresh output and evidence directories.
+The [capture program](../../tools/capture_readme_media.py) runs on Linux or WSL with Bash 4.4+, Python 3.10+ and DejaVu Sans Mono. Install its optional [rendering dependencies](../../tools/requirements-media.txt) in a virtual environment. To reproduce the source-checkout gallery on Ubuntu with APT and Bash available:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r tools/requirements-media.txt
-build=.cache/readme-media-build
-version=$(cat VERSION)
-python3 scripts/build_release.py --output "$build"
-(cd "$build" && sha256sum -c SHA256SUMS.checksum)
-mkdir "$build/unpacked"
-tar -xzf "$build/cli-interactive-help-v${version}-linux-x86_64.tar.gz" -C "$build/unpacked"
-.venv/bin/python tools/capture_readme_media.py \
-  --runtime-root "$build/unpacked/cli-interactive-help-v${version}" \
+.venv/bin/python tools/capture_readme_media.py --ubuntu \
   --output .cache/readme-media-images \
   --evidence tests/reports/readme-media
 ```
 
-Omit `--runtime-root` to capture the checkout directly. `CLI_HELP_MEDIA_FONT` selects a different monospaced TrueType font. Inspect every PNG and decoded animation frame before replacing the public files.
+For an unpacked candidate, pass its runtime root with `--runtime-root`. Omit `--ubuntu` for the rsync, ls and reviewer demonstration alone. `CLI_HELP_MEDIA_FONT` selects a different monospaced TrueType font. Inspect every PNG and decoded animation frame before replacing the public files.
 
 ## Capture evidence
+
+The November 26 checkout recording used Bash 5.3.9, APT 3.2.1ubuntu0.1, Python 3.14.4, Pillow 13.0.0, pyte 0.8.2 and wcwidth 0.9.2. The recorder identified 224 source files, including the two Ubuntu reference editions. The seven PNGs and 21 animation frames were inspected. Raw recordings, displayed cells, input positions, and source and image digests are retained locally under `tests/reports/v050-checkout-media/`. Installed-package checks are listed in the [candidate roadmap](../../ROADMAP.md#remaining-work).
+
+### November 25 historical capture
 
 The November 25 session used Ubuntu 26.04.1, Bash 5.3.9, Python 3.14.4, Pillow 13.0.0, pyte 0.8.2 and wcwidth 0.9.2. The local runtime archive had SHA-256 `6c889a9c73ce6bd7f4b6a11884f6adc9c8684d129b6798034f8c30c697f9d69b`. All 160 fingerprinted application, configuration, profile and version files matched the package manifest and the working tree. The build supplied the runtime for these captures and predates the resulting documentation edits.
 

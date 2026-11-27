@@ -2,7 +2,19 @@
 
 ## Remaining work
 
-**No required work remains for the Ubuntu coverage batch.** [Maintainer acceptance](docs/audit-history.md#ubuntu-coverage-handoff-acceptance)
+**Next action: prepare the local verification inputs for v0.5.0-alpha.** The maintainer accepted the Ubuntu command coverage and selected its version. The candidate still needs a reproducible build and verification of the installed packages. [Coverage acceptance](docs/audit-history.md#ubuntu-coverage-handoff-acceptance) · [Candidate procedure](docs/release-candidate.md#final-source-and-package-checks)
+
+- [ ] **Prepare and freeze.** Review the version, changelog, operating guides, gallery and repository rules together. Batch the offline Markdown link check, `git diff --check`, Git attribute and ignore checks, and workflow lint. Check maintained Ubuntu data and screenshots remain visible and temporary provider directories stay outside the package. Prepare the existing host, noble310 and noble312 fixtures once, including the historical installer. Reuse the accepted provider and terminal evidence where the inputs match. Resolve discrepancies with focused checks, then record the maintainer-confirmed revision, source paths, modes and hashes, toolchain, and fixture identities.
+- [ ] **Build and compare two copies.** Use fresh directories, the same frozen source and the same compiler. Match the source manifest to Git, compare all 11 outputs byte for byte, check archive members and modes, launcher version, installer payload and checksums. Confirm the archives and installed file list include both editions under `config/ubuntu-reference/`. Select the first build for all three targets.
+- [ ] **Verify one combined matrix.** Run full unsharded discovery once per target with that first build, the preserved v0.1.1-alpha installer and the corresponding offline fixtures. Run the three targets concurrently where practical. Include the discovered lifecycle and installed-terminal cases in that run. From a disposable installed prefix, exercise an Ubuntu reference with the local manual unavailable, a Bash builtin and its external form, and an APT verb. Check insertion and cancellation against a pending line. Add focused checks only for cases outside discovery. Record each target separately.
+
+  | Target | Environment | Exact-package result |
+  | --- | --- | --- |
+  | host | Ubuntu 26.04 / Python 3.14 | Pending |
+  | noble310 | Ubuntu 24.04 / Python 3.10 | Pending |
+  | noble312 | Ubuntu 24.04 / Python 3.12 | Pending |
+
+- [ ] **Record local verification.** Retain the source and fixture identities, both build locations, checksums, per-target discovery, passes, failures, skip reasons and exit statuses. Reproduce any failure with the smallest relevant check first. If a fix changes a packaged input, rebuild and verify the corrected candidate across all targets. Keep final artifact hashes and transcripts outside the frozen inputs. When the gates pass, record the candidate as locally verified and unpublished. [Reporting procedure](docs/release-candidate.md#reproducibility-and-reporting)
 
 ### Unresolved provider findings
 

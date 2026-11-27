@@ -1,8 +1,12 @@
 # Documentation visuals and repository configuration review
 
+## November 26, 2026 candidate checkout
+
+The current source gallery includes the APT install and Bash read menus alongside the refreshed rsync, ls and guided-review views. The recorder used the working checkout with `VERSION` set to `0.5.0-alpha`. The local candidate package checks are pending. [Checkout capture evidence](assets/README.md#capture-evidence) · [Release checklist](../ROADMAP.md#remaining-work)
+
 ## November 25, 2026 local build
 
-The public media now show the three-level browser from the November 25 local v0.4.0-alpha build. The capture ran the unpacked runtime on Ubuntu 26.04.1 with Bash 5.3.9 and Python 3.14.4. All 160 fingerprinted runtime inputs matched the archive manifest and the working tree. The archive predates the resulting documentation edits. [Capture environment, archive hash and asset inventory](assets/README.md#capture-evidence)
+The gallery at that revision showed the three-level browser from the November 25 local v0.4.0-alpha build. The capture ran the unpacked runtime on Ubuntu 26.04.1 with Bash 5.3.9 and Python 3.14.4. All 160 fingerprinted runtime inputs matched the archive manifest and the working tree. The archive predates the resulting documentation edits. [November 25 archive and capture evidence](assets/README.md#november-25-historical-capture)
 
 The refreshed animation follows the same rsync option through Simple, Detailed and Expanded before insertion. All 21 frames and their durations matched the recorded states across the 40.5-second loop. An independent tmux 3.6 replay matched all 21 screens at 100×24. The final rsync and ls cursor offsets were 156 and 60. The execution guards stayed silent, Escape preserved the pending rsync command, and cancelling the guided edit preserved the collection bytes. [Demonstration sequence](assets/README.md#demonstration-sequence)
 

@@ -11,7 +11,16 @@ establish complete option coverage or successful execution of the program's work
 
 ## Ubuntu default coverage
 
-On Ubuntu 24.04 and 26.04, root discovery can use a packaged reference when installed help yields no selectable declarations. It requires an installed executable, checks known provider paths and package revisions, and opens only the matching reference shard. Optional executables can be installed independently. Ubuntu 26.04 image results and the supported package-manager and Bash editions are recorded in the [Ubuntu coverage audit](ubuntu-coverage-audit.md).
+On Ubuntu 24.04 and 26.04, eligible external roots can use a packaged reference when installed help yields no selectable declarations. Certain reviewed manuals also select a declaration when the provider revision and manual fingerprint match. Optional executables can be installed independently. APT and dpkg routes follow the installed edition. Bash builtins use their own help topics.
+
+| Audited scope | Ubuntu 26.04 (Resolute) | Ubuntu 24.04 (Noble) |
+| --- | --- | --- |
+| Shipped names on six Resolute amd64 images | 2,189 selectable on at least one applicable invocation, 196 guidance only | The six-image census covers Resolute |
+| Ranked optional command rows across 100 packages | 119 selectable | 117 selectable. The archive lacks the `magick` and `starship` invocations |
+| APT root-to-verb routes across five tools | 112 | 104 |
+| Bash builtin topics | 44 selectable, 17 with usage | 42 selectable, 19 with usage |
+
+The eight audited kernel companions use versioned executable paths for the recorded Resolute kernel package. The [Ubuntu coverage audit](ubuntu-coverage-audit.md) gives per-image results, provider revisions and usage-only outcomes.
 
 ## Programs and command paths
 
@@ -27,7 +36,7 @@ The [machine-readable matrix](../tests/fixtures/help/matrix.json) owns the test 
 
 ## Enable the drivers
 
-The included collection extends the built-in Git and Docker routes. Enable it
+The included collection extends the default Git, Docker and APT routes. Enable it
 from the source checkout:
 
 ```bash

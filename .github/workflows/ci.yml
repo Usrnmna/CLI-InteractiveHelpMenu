@@ -241,6 +241,8 @@ jobs:
           test -s "$events"
           cp -- "$events" "$reports/events.jsonl"
       - name: Build and verify local candidate artifacts
+        # Each participating hosted runner builds its own temporary package.
+        # The local candidate matrix uses the same reproducible artifacts on all targets.
         if: matrix.shard <= 1
         shell: bash
         run: |

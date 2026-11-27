@@ -1,5 +1,7 @@
 # Ubuntu command coverage audit
 
+The maintainer accepted these source and invocation results for v0.5.0-alpha. The [candidate checklist](../ROADMAP.md#remaining-work) tracks local package verification separately.
+
 The Ubuntu 26.04 amd64 image reconciliation covers 2,385 shipped names, eight versioned kernel paths and all 119 command rows selected by the 100-package ranking. The optional inventory retains its other 86 comparison rows. The shipped replay used the image path and resolved provider, the default driver registry, bundled profiles, fixed package and Bash replies, and the packaged fallback. Each selectable result went through the context resolver and literal insertion. The image check replays missing-manual conditions. The images themselves were inspected as filesystems. [Shipped results](ubuntu-command-coverage/shipped.tsv) · [Kernel results](ubuntu-command-coverage/kernel-companions.tsv) · [Optional results](ubuntu-command-coverage/optional.tsv)
 
 | Ubuntu 26.04 profile | Selectable | Usage or manual guidance |

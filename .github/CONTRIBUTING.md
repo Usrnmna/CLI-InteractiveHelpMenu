@@ -12,6 +12,11 @@ Feature and compatibility requests should explain the intended interaction;
 command requests should identify the implementation, version, route, and public
 documentation where available.
 
+For Ubuntu coverage reports, identify the image, exact invocation and package or
+snap revision. Include the builtin spelling or executable path when names overlap.
+For a guidance-only menu, cite the source that establishes the option owner,
+spelling and argument position. [Provider findings](../docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance)
+
 Credentials, private paths, command histories, raw captures, and unredacted
 diagnostic reports should remain local. Summaries of reason codes and relevant
 configuration choices are usually sufficient. See
@@ -30,6 +35,11 @@ The [sandbox guide](../docs/development.md#isolated-local-debugging) covers test
 working-tree edits, including new fixtures. Local iproute2 and yq audits can use
 the impacted suite. Record the target, selected tests, required fixtures and any
 fallback to full discovery. Hosted CI runs the complete suite on each target.
+
+For a local release candidate, combine the finished changes before freezing the
+source. Use the first reproducible build for one full offline run on each target.
+Record installed-package and historical-upgrade results for those same artifacts.
+[Candidate checklist](../ROADMAP.md#remaining-work)
 
 Run relevant checks from the repository root. For runtime changes, the full
 validation entry point is:

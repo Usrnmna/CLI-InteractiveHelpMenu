@@ -93,7 +93,7 @@ class TerminalStream(pyte.Stream):
 class Terminal:
     """Run isolated Bash, capture its output, and retain actual terminal cells."""
 
-    def __init__(self, folder):
+    def __init__(self, folder, discovery="off"):
         self.folder = folder
         self.screen = TerminalScreen(COLUMNS, ROWS)
         self.stream = TerminalStream(self.screen)
@@ -118,7 +118,7 @@ class Terminal:
             fcntl.ioctl(0, termios.TIOCSWINSZ, struct.pack("HHHH", ROWS, COLUMNS, 0, 0))
             environment = {"HOME": str(folder), "PATH": os.environ["PATH"],
                            "TERM": "xterm-256color", "LC_ALL": "C.UTF-8",
-                           "CLI_HELP_DISCOVERY": "off", "INPUTRC": "/dev/null"}
+                           "CLI_HELP_DISCOVERY": discovery, "INPUTRC": "/dev/null"}
             os.execve("/bin/bash", ["bash", "--noprofile", "--rcfile", str(rcfile), "-i"], environment)
         self.until("demo $ ")
         self.send("\x0c", "demo $ ")
@@ -408,6 +408,29 @@ def capture_review(folder):
         terminal.close()
 
 
+def capture_ubuntu(folder):
+    """Capture installed APT and Bash documentation with synthetic pending input."""
+    captures = {}
+    for name, command, caption in (
+        ("ubuntu-apt", "apt install", "APT install | Browse options for the installed edition"),
+        ("bash-read", "builtin read", "Bash builtin | Browse options from the installed read help topic"),
+    ):
+        session = folder / name
+        session.mkdir()
+        terminal = Terminal(session, discovery="auto")
+        try:
+            line = command + " "
+            terminal.send(line, command)
+            terminal.send("\x1bh", "Interactive help")
+            render(terminal.screen, command, caption).save(OUTPUT / (name + ".png"))
+            cells = list(terminal.screen.display)
+            terminal.send("\x1b", "\x1b[?1049l")
+            captures[name] = {"cells": cells, **terminal.check_buffer(line)}
+        finally:
+            terminal.close()
+    return captures
+
+
 def source_fingerprints():
     """Identify the generator, default profiles, and runtime used for each capture."""
     sources = {}
@@ -415,7 +438,7 @@ def source_fingerprints():
         (ROOT, [ROOT / "tools/capture_readme_media.py", ROOT / "tools/requirements-media.txt"]),
         (RUNTIME, [RUNTIME / "VERSION", *(RUNTIME / "cli_help").glob("*.py"),
                    *(RUNTIME / "bash").glob("*.bash"), *(RUNTIME / "config").rglob("*.json"),
-                   *(RUNTIME / "profiles").glob("*.json")]),
+                   *(RUNTIME / "profiles").glob("*.json"), *(RUNTIME / "config/ubuntu-reference").rglob("*.jsonl")]),
     ):
         for path in sorted(paths):
             sources[path.relative_to(folder).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -432,6 +455,8 @@ def main():
                         help="Destination for the named public images and animation")
     parser.add_argument("--evidence", type=Path, default=ROOT / "tests/reports/readme-media",
                         help="Private destination for raw terminal output and capture assertions")
+    parser.add_argument("--ubuntu", action="store_true",
+                        help="Also record APT install and Bash read with automatic discovery on Ubuntu")
     args = parser.parse_args()
     RUNTIME = args.runtime_root.resolve(strict=True)
     sys.path.insert(0, str(RUNTIME / "cli_help"))
@@ -454,6 +479,7 @@ def main():
         result, browser_events = capture_rsync(browser, demonstration)
         ls_result, ls_events = capture_ls(ls, demonstration)
         review_result, review_events = capture_review(review)
+        ubuntu = capture_ubuntu(folder) if args.ubuntu else {}
     demonstration.save()
     for name, events in [("browser", browser_events), ("ls", ls_events), ("review", review_events)]:
         header = {"version": 2, "width": COLUMNS, "height": ROWS, "env": {"TERM": "xterm-256color"}}
@@ -476,8 +502,9 @@ def main():
         dependencies={name: version(name) for name in ("Pillow", "pyte", "wcwidth")},
         review=review_result,
         sources=sources,
+        ubuntu=ubuntu,
         assets={name: hashlib.sha256((OUTPUT / name).read_bytes()).hexdigest()
-                for name in MEDIA_NAMES},
+                for name in (*MEDIA_NAMES, *(key + ".png" for key in ubuntu))},
     )
     (evidence / "scenes.json").write_text(json.dumps(demonstration.scenes, indent=2) + "\n")
     (evidence / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
