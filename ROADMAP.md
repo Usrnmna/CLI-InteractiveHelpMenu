@@ -20,9 +20,9 @@ The split view resumes at 80 columns. The prototype follows the frozen release b
 
 ### Terminal resizing during operations
 
-- [ ] **Review the corrected Git header at 60×16.** The selected treatment shortens the generic prefix to `Help`. The full `git stash push` path and the Shift+D control remain visible. [Matched before/after snapshots](docs/terminal-resize-review.md#phase-1--review-the-layout-boundary)
-- [ ] **Capture the six operation cases.** Group active search, Details paging, moving summaries, long lists, size-limit recovery and Bash prompt restoration into focused passes. [Case matrix](docs/terminal-resize-review.md#phase-2--exercise-operations-already-in-progress)
-- [ ] **Review results with the maintainer.** Use the numbered frames to record what to keep, revise or defer before choosing development changes. [Decision record](docs/terminal-resize-review.md#phase-3--review-the-frames-and-choose-development-work)
+The maintainer accepted the compact header. All six Phase 2 cases have live before/after captures. [Accepted header](docs/terminal-resize-review.md#phase-1--review-the-layout-boundary) · [Six-case gallery](docs/terminal-resize-results.md)
+
+- [ ] **Review the resize results before choosing UI changes.** The two open findings concern the reading position in Details after a width change and the stray wrapped row after growing a Bash prompt. Record which cases to keep, revise or defer. [Case B · reading position](docs/terminal-resize-results.md#b--reading-a-long-explanation) · [Case F · Bash redraw](docs/terminal-resize-results.md#f--returning-to-a-wrapped-bash-edit) · [Decision record](docs/terminal-resize-review.md#phase-3--review-the-frames-and-choose-development-work)
 - [ ] **Verify the accepted changes in one batch.** Compare affected before/after frames, collect sign-off and share one combined gate for runtime changes. [Verification plan](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
 
 ### Unresolved provider findings
