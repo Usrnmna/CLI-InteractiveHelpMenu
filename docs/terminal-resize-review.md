@@ -1,10 +1,10 @@
 # Terminal resize tests and visual review
 
-The first review asks whether a user can still identify the command and the selected option after resizing. Later phases cover resizing while typing, reading, scrolling, inserting and cancelling. Only the four baseline frames below have been captured for this plan. The other cases describe proposed checks.
+The first review asks whether a user can still identify the command and the selected option after resizing. Later phases cover resizing while typing, reading, scrolling, inserting and cancelling. Phase 1 has matched captures from both runs. Phases 2–4 describe the remaining checks and review decisions.
 
 ## Phase 1 · Review the layout boundary
 
-These four PNGs follow one live Bash/tmux session on Resolute. The pending command was `git stash push --pat▏ 'café.txt'`, with the narrow menu enabled. Alt-H opened the menu, `--patch` was highlighted, and Shift+D selected Detailed. The checkout was based on `35d23aa` with the APT guidance changes. Bash 5.3.9 and Ubuntu’s tmux package `3.6a-2ubuntu0.2` rendered the frames in color. The terminal then changed size three times without further menu input.
+The four baseline PNGs follow one live Bash/tmux session on Resolute. The pending command was `git stash push --pat▏ 'café.txt'`, with the narrow menu enabled. Alt-H opened the menu, `--patch` was highlighted, and Shift+D selected Detailed. The checkout was based on `35d23aa` with the APT guidance changes. Bash 5.3.9 and Ubuntu’s tmux package `3.6a-2ubuntu0.2` rendered the frames in color. The terminal then changed size three times without further menu input.
 
 | 1 · 80×24 before | 2 · 79×24 after shrinking one column |
 | --- | --- |
@@ -16,7 +16,15 @@ These four PNGs follow one live Bash/tmux session on Resolute. The pending comma
 
 **Observed.** The menu kept Detailed, the `--pat` filter and `--patch` at 1/8. At 79 columns the Options screen replaced the split view. At 60 columns the command title read `Interactive help | git stas…`. Growing restored the full title and reproduced the original 80×24 cells exactly. Escape returned the exact original line and cursor at offset 20. The existing 60×16 Git regression also expects a complete child-command title in Simple. That failure reproduces on the unmodified `35d23aa` checkout. [Git terminal assertion](../tests/test_git_stash_worktree_menus.py)
 
-**Decision requested.** Is the selected option easy to follow across frames 1 and 2? For frame 3, should the narrow header prioritize the full command path by shortening “Interactive help” first, shorten the key explanation while keeping Shift+D visible, or keep the current header? Record the preferred treatment before changing it. The first option preserves both the command and the explicit control in this example.
+**Header change for review.** The maintainer chose to shorten “Interactive help” first. At 60×16, the revised title reads `Help | git stash push`, with `Detailed   Shift+D change view` visible at the right edge. The key retains its separate highlight. The Git regression checks the same command in Simple.
+
+| Before · 60×16 | After · 60×16 |
+| --- | --- |
+| ![Detailed clips the command after git stas](assets/resize-review/3-minimum.png) | ![Detailed shows Help, the full git stash push path and Shift+D](assets/resize-review/3-minimum-after.png) |
+
+The second live session repeated the same keystrokes and dimensions. At 60×16 only the title row changed. The three other PNGs matched the baseline images byte for byte. Both sessions returned to Bash with the original quoted line and cursor at offset 20. The remaining visual decision is whether this compact title is easy to identify.
+
+The focused group passed 23 checks each on Resolute (Python 3.14) and Noble (Python 3.10 and 3.12), including the formerly failing Git assertion. Tests cover all three levels, split and narrow layouts, wide characters and remapped level keys. The strict numerical gate passed. The combined full-suite run remains in phase 4.
 
 ## Phase 2 · Exercise operations already in progress
 
@@ -41,7 +49,7 @@ Record automated outcomes separately from what the reviewer can see. A tmux capt
 
 | Review point | Evidence | Maintainer response | Next action |
 | --- | --- | --- | --- |
-| Command identity at minimum width | Phase 1 frames 1–4 above | Open | Choose header priority and whether to prototype it. |
+| Command identity at minimum width | Phase 1 before/after pair above | Shorten the generic prefix first | Review the rendered compact title at 60×16. |
 | Search, list and reading continuity | Phase 2 A–D | Awaiting captures | Identify the frame and content that should stay visible. |
 | Recovery and prompt restoration | Phase 2 E–F | Awaiting captures | Identify any lost input, visual residue or confusing recovery step. |
 

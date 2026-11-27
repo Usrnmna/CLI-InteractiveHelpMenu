@@ -140,7 +140,9 @@ class GitMenuTests(TerminalTestCase):
         shell.wait_for(lambda state: state.selected_row.startswith("> push "))
         shell.cancel("Enter")
         self.assertEqual(shell.read_buffer(), ("git stash push ", len("git stash push ")))
-        self.assertTrue(shell.open_menu().cells[0].startswith("Interactive help | git stash push "))
+        header = shell.open_menu().cells[0]
+        self.assertTrue(header.startswith("Help | git stash push "), header)
+        self.assertTrue(header.endswith("Simple   Shift+D change view"), header)
         shell.cancel()
         shell.text("-- 'a path' ")
         shell.keys("Escape", "h")

@@ -138,6 +138,28 @@ class MenuLevelTests(unittest.TestCase):
                 self.assertEqual(screen.cells[0, start + len("Simple   "), ui.curses.A_BOLD | 17], label)
                 self.assertNotIn("motion", screen.text())
 
+    def test_command_title_yields_its_prefix_before_clipping_the_path(self):
+        """Keep the path and effective level binding visible in split and narrow layouts."""
+        cases = (
+            (80, "git stash push", "Interactive help | git stash push", " change view"),
+            (60, "git stash push", "Help | git stash push", " change view"),
+            (60, "git some longer subcommand", "git some longer subcommand", " change view"),
+            (60, "tool example-界界界 long subcommand", "tool example-界界界 long subcommand", ""),
+        )
+        profile = {"description": "Title test", "categories": [{"name": "Options", "options": [
+            {"flag": "-v", "summary": "Show version"}]}]}
+        for width, command, title, suffix in cases:
+            for guided in (False, True):
+                for level in ui.LEVELS:
+                    with self.subTest(width=width, command=command, guided=guided, level=level):
+                        browser = Browser(dict(profile, command=command.split()), guided=guided)
+                        browser.level = level
+                        screen = CellScreen(16, width)
+                        draw(screen, browser, load_keys())
+                        self.assertEqual(screen.cells[0, 0, ui.curses.A_BOLD], title)
+                        hint = level + "   Shift+D" + suffix
+                        self.assertEqual(screen.cells[0, width - 1 - len(hint), 0], hint)
+
     def test_motion_deadline_unicode_and_final_frame(self):
         screen = CellScreen(16, 60)
         motion = ui.SummaryScroll()

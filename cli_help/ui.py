@@ -696,12 +696,22 @@ def draw_title(screen, browser, keys, preview, width):
     key = key_label(keys, "cycle_detail")
     if len(key) == 1 and "A" <= key <= "Z":
         key = "Shift+" + key
-    hint = browser.level + "   " + key + " change view"
+    command = " ".join(browser.profile["command"])
+    prefix = "Help preview | " if preview else "Interactive help | "
+    binding = browser.level + "   " + key
+    hint = binding + " change view"
     hint_width = sum(map(cell_width, hint))
-    title = ("Help preview | " if preview else "Interactive help | ") + " ".join(browser.profile["command"])
-    title_width = width - hint_width - 1
-    write(screen, 0, 0, ellipsize_cells(title, title_width), title_width, curses.A_BOLD | browser.section_color)
+    if not preview:
+        prefix_room = width - hint_width - 1 - sum(map(cell_width, command))
+        if len(prefix) > prefix_room:
+            prefix = "Help | " if prefix_room >= len("Help | ") else ""
+        if prefix_room < 0:
+            hint = binding
+            hint_width = sum(map(cell_width, hint))
     hint_start = width - hint_width
+    title_width = hint_start - 1
+    write(screen, 0, 0, ellipsize_cells(prefix + command, title_width), title_width,
+          curses.A_BOLD | browser.section_color)
     write(screen, 0, hint_start, hint, hint_width)
     write(screen, 0, hint_start, browser.level, len(browser.level), curses.A_BOLD)
     write(screen, 0, hint_start + len(browser.level) + 3, key, sum(map(cell_width, key)),

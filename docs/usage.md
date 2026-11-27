@@ -166,7 +166,7 @@ session with the adapter loaded. Open a menu with **Alt-H** in a 60–79-column
 terminal. At 80 columns and above the split view resumes.
 
 **Shift+D** cycles Simple → Detailed → Expanded → Simple on any of the three screens.
-The header shows the active level. Categories and Options keep their lists visible.
+The header shows the active level. When a long command needs more room, the menu shortens “Interactive help” to “Help” and can drop the prefix entirely. For longer paths it also drops “change view” before clipping the command. The level and its key stay visible. Categories and Options keep their lists visible.
 Use **→** to read the selected option at that level on the Details screen, where
 **Shift+D** changes the explanation in place. **←** returns to the same option and filter.
 

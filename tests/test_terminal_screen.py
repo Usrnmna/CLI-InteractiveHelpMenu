@@ -228,7 +228,9 @@ class TmuxShell:
 
     def open_menu(self, keys=("Escape", "h")):
         self.keys(*keys)
-        return self.wait_for(lambda state: state.alternate == 1 and "Interactive help" in state.cells[0])
+        # Narrow titles may use all remaining cells for the command path.
+        return self.wait_for(lambda state: state.alternate == 1 and
+                             re.search(r"\b(?:Simple|Detailed|Expanded)   \S", state.cells[0]))
 
     def cancel(self, key="Escape"):
         self.keys(key)
