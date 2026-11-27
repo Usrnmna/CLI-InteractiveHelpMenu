@@ -37,7 +37,7 @@ PROTECTED_SOURCES = (
     "cli_help/presentation.py", "cli_help/menu_units.py", "cli_help/terminal_text.py", "cli_help/authoring.py", "cli_help/manual_import.py",
     "cli_help/bulk_scan.py", "cli_help/review.py", "cli_help/review_forms.py",
     "cli_help/collection.py", "scripts/inventory_numerical_descriptions.py",
-    "cli_help/diagnostics.py", "cli_help/apt_editions.py", "cli_help/ubuntu_packaging.py",
+    "cli_help/diagnostics.py", "cli_help/apt_editions.py", "cli_help/apt_option_help.py", "cli_help/ubuntu_packaging.py",
     "cli_help/bash_builtins.py", "cli_help/ubuntu_reference.py", "cli_help/ubuntu_manual_routes.py",
     "scripts/build_ubuntu_reference.py",
     "scripts/check_numerical_coverage.py", "tests/run.sh", ".github/workflows/ci.yml",

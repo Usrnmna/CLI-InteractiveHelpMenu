@@ -592,6 +592,37 @@ class ResizeBindingTests(TerminalTestCase):
 
 @unittest.skipUnless(TMUX_AVAILABLE, "Rendered-screen tests require Linux and tmux")
 class UbuntuCoverageScreenTests(TerminalTestCase):
+    def test_apt_manual_search_levels_and_midline_insertion(self):
+        """Search installed APT guidance, then cancel and insert at the same quoted operand."""
+        with patch.object(sys, "path", [str(ROOT / "cli_help"), *sys.path]):
+            from ubuntu_reference import ubuntu_edition
+        if not ubuntu_edition() or not Path("/usr/bin/apt").is_file():
+            self.skipTest("Requires a supported Ubuntu APT installation")
+        shell = self.start()
+        shell.text("export CLI_HELP_DISCOVERY=auto")
+        shell.keys("Enter")
+        shell.resize(60, 16)
+        prefix, suffix = "apt install --pur", " 'graphviz'"
+        shell.text(prefix + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        for close in ("Escape", "Enter"):
+            shell.open_menu()
+            shell.keys("/", "C-u")
+            shell.text("asterisk")
+            shell.keys("Enter")
+            simple = shell.wait_for(lambda s: s.selected_row.startswith("> --purge "))
+            self.assertIn("Simple", simple.cells[0])
+            shell.keys("D")
+            detailed = shell.wait_for(lambda s: "Detailed" in s.cells[0])
+            self.assertIn("asterisk", " ".join(detailed.detail_body))
+            expanded = shell.find_detail("home directories")
+            self.assertTrue(expanded.selected_row.startswith("> --purge "))
+            shell.cancel(close)
+            if close == "Escape":
+                self.assertEqual(shell.read_buffer(), (prefix + suffix, len(prefix)))
+            else:
+                self.assertEqual(shell.read_buffer(), ("apt install --purge" + suffix, len("apt install --purge ")))
+
     def test_builtin_midline_cancel_and_insert(self):
         """Check a Bash-owned option in a real pending line with quoted text after the cursor."""
         shell = self.start()

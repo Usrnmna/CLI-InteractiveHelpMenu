@@ -16,7 +16,14 @@ After the combined gate, record the package and installed-prefix outcomes and fi
 
 Review the opt-in Categories → Options → Details flow from the development checkout.
 The split view resumes at 80 columns. The prototype follows the frozen release build. The development browser now offers the optional scrolling summary in both layouts.
-[Preview controls](docs/usage.md#narrow-menu-preview) · [Terminal verification](docs/audit-history.md#narrow-menu-navigation-preview)
+[Preview controls](docs/usage.md#narrow-menu-preview) · [Terminal verification](docs/audit-history.md#narrow-menu-navigation-preview) · [Five live scenarios](docs/menu-demo-storyboards.md) · [APT option review](docs/ubuntu-coverage-audit.md#apt-option-guidance-in-simple-detailed-and-expanded)
+
+### Terminal resizing during operations
+
+- [ ] **Review the four baseline frames.** Compare 80×24 → 79×24 → 60×16 → 80×24 and choose how the minimum-width header should identify the command. The existing Git title assertion also fails on the starting checkout. [Baseline snapshots and decision](docs/terminal-resize-review.md#phase-1--review-the-layout-boundary)
+- [ ] **Capture the six operation cases.** Group active search, Details paging, moving summaries, long lists, size-limit recovery and Bash prompt restoration into focused passes. [Case matrix](docs/terminal-resize-review.md#phase-2--exercise-operations-already-in-progress)
+- [ ] **Review results with the maintainer.** Use the numbered frames to record what to keep, revise or defer before choosing development changes. [Decision record](docs/terminal-resize-review.md#phase-3--review-the-frames-and-choose-development-work)
+- [ ] **Verify the accepted changes in one batch.** Compare affected before/after frames, collect sign-off and share one combined gate for runtime changes. [Verification plan](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
 
 ### Unresolved provider findings
 

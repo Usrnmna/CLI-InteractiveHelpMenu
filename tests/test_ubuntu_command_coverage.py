@@ -33,6 +33,55 @@ class UbuntuPackagingTests(unittest.TestCase):
             return build_profile([name, *subcommands], documents)
         return find_context(line, len(line) if cursor is None else cursor, [], lookup)
 
+    def test_all_apt_option_levels_on_both_editions(self):
+        """Replay every existing route with its own manual and root help; exclude verb keywords."""
+        from presentation import option_text
+        from ubuntu_packaging import NOBLE, RESOLUTE, apt_declarations
+
+        for edition, table, expected in (("noble", NOBLE, 4301), ("resolute", RESOLUTE, 5122)):
+            count = 0
+            for name in table:
+                for verb, declarations in apt_declarations(table, name).items():
+                    line = name + " " if verb == "@" else f"{name} {verb} "
+                    context = self.menu(edition, line)
+                    category = next(c for c in context.profile["categories"] if c["name"] == "Options")
+                    options = {o["flag"]: o for o in category["options"]}
+                    self.assertEqual(options.keys(), declarations.keys(), (edition, line))
+                    for flag, required in declarations.items():
+                        where = (edition, line, flag)
+                        option = options[flag]
+                        view = option_text(context.profile, category, option)
+                        self.assertEqual(bool(option.get("argument")), required, where)
+                        self.assertNotIn("Set the " + flag + " option", view.summary, where)
+                        self.assertTrue(view.detailed and view.detailed[0] != view.summary, where)
+                        self.assertTrue(set(view.expanded) - set(view.detailed) - {view.argument_rule}, where)
+                        self.assertIn(view.detailed[0].casefold(), view.searchable, where)
+                        count += 1
+            self.assertEqual(count, expected)
+
+    def test_apt_manual_meanings_follow_the_command(self):
+        """Independent manual expectations for collisions, inverse flags and edition boundaries."""
+        cases = (
+            ("apt install", "-f", "Fix-Broken"), ("apt search", "-f", "ShowFull"),
+            ("apt-mark auto", "-f", "extended_states"), ("apt-cache showsrc", "--only-source", "Cache::Only-Source"),
+            ("apt-get source", "--only-source", "Get::Only-Source"), ("apt list", "-i", "Cmd::Installed"),
+            ("apt-cache depends", "-i", "Pre-Depends"), ("apt list", "-v", "List-Include-Summary"),
+            ("apt-mark markauto", "-v", "MarkAuto::Verbose"), ("apt", "-v", "installed APT release"),
+            ("apt install", "-qq", "implies yes"), ("apt-cache search", "-s", "srcpkgcache"),
+            ("apt-get source", "-a", "Host-Architecture"), ("apt show", "-a", "Cache::AllVersions"),
+            ("apt-config dump", "--format", "%n"), ("apt-get indextargets", "--format", "$(FILENAME)"),
+            ("apt-mark hold", "-s", "Mark::Simulate"), ("apt install", "--no-remove", "stops immediately"),
+            ("apt install", "--remove", "Permit removals"), ("apt-cache depends", "--breaks", "--no-breaks"),
+            ("apt-get update", "--allow-releaseinfo-change-suite", "Other changed fields"),
+        )
+        for edition in ("noble", "resolute"):
+            for command, flag, meaning in cases:
+                option = rows(self.menu(edition, command + " ").profile)[flag]
+                self.assertIn(meaning, option["summary"] + " " + option["detail"], (edition, command, flag))
+            install = rows(self.menu(edition, "apt install ").profile)
+            for option in ("--strict-pinning", "--comment", "--list-columns", "--cli-version", "--audit"):
+                self.assertEqual(option in install, edition == "resolute", option)
+
     def test_apt_simulation_levels_aliases_and_short_option_scope(self):
         from presentation import option_text
 

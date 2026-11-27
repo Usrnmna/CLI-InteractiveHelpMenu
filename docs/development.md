@@ -217,6 +217,8 @@ literal insertion, alternate-screen restoration, and numbered scrollback.
 
 ## Rendered-screen regressions
 
+For changes to terminal layout or navigation, include a visual review in phase planning. Identify the operation, geometry and state that must survive. Capture the same live interaction before and after the proposed change, show the frames to the maintainer, and record which result to keep, revise or defer before choosing the next development batch. Reuse these frames for the automated cell checks. The [resize review](terminal-resize-review.md) includes a four-frame baseline and six proposed cases.
+
 [test_terminal_screen.py](../tests/test_terminal_screen.py) launches isolated
 tmux servers and interactive Bash sessions with `TERM=tmux-256color`. It checks
 rendered cells, cursor coordinates, alternate-screen state, and numbered

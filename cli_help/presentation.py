@@ -73,6 +73,11 @@ class OptionText:
                    "[varies]": "Meaning varies by target; see Expanded.",
                    "[unverified]": "Value guidance is unverified."}.get(self.notice)
         sentences = list(self.prose)
+        # Keep the short view within the behavior section when the next sentence
+        # opens a separate reference section. Expanded retains both sections.
+        if (len(sentences) > 1 and sentences[0].startswith("Behavior: ")
+                and sentences[1].startswith(("Configuration: ", "Notes: ", "Example: "))):
+            sentences = sentences[:1]
         if not sentences:
             sentences = [self.numerical.compact or self.argument_rule]
         return tuple(dict.fromkeys(s for s in (warning, *sentences[:2]) if s))[:2]

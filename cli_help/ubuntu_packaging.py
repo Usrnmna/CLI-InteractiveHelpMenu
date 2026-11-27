@@ -2,7 +2,8 @@
 
 import re
 
-from apt_editions import DESCRIPTIONS, NOBLE, RESOLUTE, VERB_HELP
+from apt_editions import NOBLE, RESOLUTE, VERB_HELP
+from apt_option_help import option_guidance
 from drivers import Driver, HelpRoute
 
 
@@ -73,11 +74,12 @@ def apt_document(text, command):
     rows = []
     if verb in verbs and len(path) <= 1:
         for flag, required in verbs[verb].items():
-            summary = DESCRIPTIONS.get(flag) or f"Set the {flag} option for {' '.join(command)}."
-            entry = {"flag": flag, "argument": APT_VALUES[flag] if required else "",
-                     "summary": summary, "category": "Options"}
             if name in {"apt", "apt-get"} and "--simulate" in verbs[verb] and flag in SIMULATION_FLAGS and not required:
-                entry.update(summary=DESCRIPTIONS["--simulate"], detail=SIMULATION_DETAIL)
+                summary, detail = "Simulate package actions without changing the system", SIMULATION_DETAIL
+            else:
+                summary, detail = option_guidance(name, verb, flag, verbs[verb])
+            entry = {"flag": flag, "argument": APT_VALUES[flag] if required else "",
+                     "summary": summary, "detail": detail, "category": "Options"}
             if required and len(flag) == 2:
                 entry["attached"] = True
             rows.append(entry)
