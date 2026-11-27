@@ -47,6 +47,38 @@ The host audit at `e631cfb` used the real Bash binding, bundled profiles, discov
 
 The local evidence directory `tests/reports/phase2-details/` contains the capture driver, a cell reader and 87 frames across 21 fixed-size menu sessions and one resize. The filenames identify dimensions and command. Each JSON file includes input, cursor, color mode, per-frame action, rendered cells, selection and scroll range. The durable results above and the Phase 1 recipe allow reproduction without the ignored reports. Five renderer tests and four provider-boundary tests passed on the host. The provider follow-up added zero declarations. [Provider dispositions and reopening conditions](ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance) · [Terminal harness](../tests/test_terminal_screen.py)
 
+## Phase 3 combined verification
+
+The starting checkout at `70d2d29a0b01562767abe044e9ebdc60f3e5a2e7` had a clean index and working tree. The report-only selector compared the integrated checkout with the pre-review base `5783021`. It found 85 shared or unmapped source paths, zero missing inputs and 2,066 discovered test IDs. Full discovery was reserved for the final matrix.
+
+Each target passed 93 focused tests across the Details columns, menu levels, argument syntax, five Ubuntu provider and fixed-source modules, CI shard tooling and documentation retries. The installed Bash and package help matched the edition-specific captures on each target. The Phase 2 binding, runtime, profiles, configuration and capture harness still matched `e631cfb`. The saved frames passed the seven-size cell checks again. The five routine passes, seven visual reviews and live resize retain their original attribution. [Terminal evidence](#phase-2-terminal-audit)
+
+The two-edition replay validated 2,454 Resolute and 2,014 Noble reference names. Across six images, 2,189 of 2,385 shipped names exposed a selectable root on at least one applicable invocation and 196 retained guidance. All eight kernel paths had selectable menus. Of 205 optional comparison rows, the 100 ranked packages accounted for 119 command rows. The three rank bands supplied 28, 28 and 63 selectable rows on Resolute and 28, 28 and 61 on Noble. The two Noble exceptions were `magick` and `starship`. An additional reconciliation matched each of the 347 reviewed invocations to its image paths, provider evidence and shipped outcome, including revision-specific guidance rows. The 150 selectable and 197 guidance outcomes require no declaration changes. The Phase 2 reopening conditions still apply. [Ubuntu inventories and provider findings](ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance)
+
+Both collections validated 76 profiles, with seven default drivers and 55 drivers with examples enabled. The numerical census reconciled all 10,081 reviews across 463 inputs with zero diagnostics. The strict gate passed all 4,426 required contracts with 93 warnings, 11 informational diagnostics, zero errors and zero debt. The SHA-256 of the reviewed fingerprint file was `765e50e5e1cf9741ae3f88c28a73c3454e6086a4833aab70f8bc26f54e82af69`. [Numerical review](numerical-inventory/README.md)
+
+The source freeze captured all 1,128 tracked paths using working-tree bytes and modes. Only the roadmap progress row and this audit entry differed from the starting commit. There were no required untracked source files. The sandbox source identity was `26c23ab7f638ecbf0f2ecd030957e1a74c8ccbf49dc164966601ec1cef3576cd`. The common tar SHA-256 was `ca9348610703fe4cf67ef104cccb731a91441e534bc8ebd14db371c1fd3e9f9b`. Its per-file SHA-256 and mode manifest hashed to `93633bf1be832877a0f4973483c8fe6798394ee2f110059d1434c0170545bf85`. Each isolated backend received a copy of this archive with its separately verified fixtures appended. The full command was `bash tests/run.sh` through the documented package loader with both pinned yq binaries available. [Offline setup](test-selection-plan.md#reproduce-the-paired-offline-baseline)
+
+| Fixture input | Host | Both Noble targets |
+| --- | --- | --- |
+| Package and loader manifest SHA-256 | `f08addd63144ff211587db461169f9f26302e5a969aea6865ec70ff879e19984` (7 files) | `585b29b53ef075b24e12ddad0d32b612f0182e32824f4f300be2800b1babee8c` (9 files) |
+| Bash / Git | 5.3.9 / 2.53.0 | 5.2.21 / 2.43.0 |
+| APT / dpkg help edition | 3.2.1 / 1.23.7 | 2.8.4 / 1.22.6 |
+| FFmpeg / rsync | 8.0.1-3ubuntu2 / 3.4.1 | 6.1.1-3ubuntu5 / 3.2.7 |
+| OpenSSH | 10.2p1 Ubuntu-2ubuntu3.8 | 9.6p1 Ubuntu-3ubuntu13.20 |
+| fzf / fd | 0.67.0 / 10.3.0 | 0.44.1 / 9.0.0 |
+| yq | 4.44.3 and 4.54.3 | 4.44.3 and 4.54.3 |
+
+The host used Bubblewrap with the host's read-only system binaries. The local Noble image IDs were `e05a15a36a33d8f54d98343dab179577ac0bab42b9c0c6c80e3afa6074870a9c` for Python 3.10 and `4d001d43e59e5ce93b41e31e90983d6bd1035b6d0a1c9c0694e8ac17e2d5e0b6` for Python 3.12. The local evidence directory `tests/reports/ubuntu-phase3-70d2d29/` retains the frozen archive and documentation patch, path and fixture manifests, selector report, inventory and strict results, and per-target commands, logs and exit statuses.
+
+| Target | Ubuntu | Python | Focused passes | Full passes | Failures / errors | Skips | Exit | Unittest time |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| host | 26.04.1 | 3.14.4 | 93 | 2,065 | 0 / 0 | 1 | 0 | 2,525.551 s |
+| noble310 | 24.04.5 | 3.10.20 | 93 | 2,065 | 0 / 0 | 1 | 0 | 2,812.714 s |
+| noble312 | 24.04.5 | 3.12.3 | 93 | 2,065 | 0 / 0 | 1 | 0 | 2,541.678 s |
+
+Each unsharded transcript matched all 2,066 discovered IDs in order, including the five CI shard-tool tests. The only skip on each target was `test_functional_matrix.EdgeCaseTests.test_probe_reports_the_windows_limitation`, with reason “POSIX hosts complete the probe normally”. There were zero fixture-level skips. Each target ran the full suite once. The matrix closed on the first frozen snapshot. Subsequent edits recorded progress and the final results in the roadmap and audits.
+
 ## CI inventory and documentation follow-up
 
 Actions run `45799373693` stopped on inventory reconciliation before the Linux test suites. All three Linux jobs reported seven missing and 50 stale source reviews. The 50 changes comprise 44 edition-specific reference shards, five runtime modules and the reference builder. The seven new fixed inputs comprise four help texts, one argument-boundary table, one multi-command help capture and one rendered manual. All 57 are file-level census identities. The existing source-census disposition covers their roles. The corrected inventory assigned all 10,081 identities with zero diagnostics on the host (Python 3.14) and the prepared Noble Python 3.10 and 3.12 targets.

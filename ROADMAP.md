@@ -2,40 +2,39 @@
 
 ## Remaining work
 
-### Batch progress
+**Next action: review the Ubuntu coverage handoff.** Phase 3 met its verification criteria on the frozen snapshot. The remaining closeout step is the maintainer’s review of the documentation. [Combined verification record](docs/audit-history.md#phase-3-combined-verification)
 
-Update the current unit when a provider group, layout checkpoint or target finishes, or when a blocker changes the next action. Count exact invocations in the priority review and unique shipped names in the overall review. Keep per-invocation evidence in the linked inventory.
+- [ ] Review the unstaged changes to this roadmap, the [audit history](docs/audit-history.md#phase-3-combined-verification) and the [Ubuntu provider audit](docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance). Confirm that the three target results refer to the same snapshot and that the recorded guidance reflects the evidence for each applicable image. Accept the handoff or identify a specific discrepancy. Acceptance closes this batch.
 
-| Phase | Work | Status | Current unit or next action |
-| --- | --- | --- | --- |
-| 3 | Combined verification | Next | Prepare the host, noble310 and noble312 fixtures. Batch the affected rendering and fixed-source checks on each target. |
-
-Phase 2 completed all five routine passes, seven visual reviews and one live resize. Its bounded provider follow-up added zero declarations. [Terminal results by size](docs/audit-history.md#phase-2-terminal-audit) · [Phase 1 provider ledger](docs/ubuntu-command-coverage/phase1-review.tsv)
+For a documentation correction, check the affected text and links. If review finds a discrepancy in a tested input, use the [batch procedure](#how-to-audit-a-batch) for the corrected snapshot. The existing three-target matrix covers the submitted program and fixtures.
 
 ### Unresolved provider findings
 
-- Reopen `/usr/bin/ptardiff -h` when a revision resolves the manual/script argument conflict.
-- Reopen `/usr/sbin/lxc` and `/usr/sbin/lxd` when an applicable image or fixture identifies the installed snap revision and supplies its command tables.
-- The ledger retains post-operand choices, plus and punctuation spellings, and options owned by a selected program. Reopen the affected invocation on matching provider evidence or approval for the required argument or literal representation. [Exact dispositions and reopening conditions](docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance)
+Reviewed usage guidance is a completed inventory outcome. Reopen only the affected invocation when its condition below is met. The ledger identifies each path, applicable image, package revision, source and disposition. [Invocation ledger](docs/ubuntu-command-coverage/phase1-review.tsv) · [Evidence and reopening conditions](docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance)
 
-### Phase 3 — Verify one combined batch
-
-1. Bring the provider changes, renderer, tests and sources together. Prepare the matching fixtures for `host`, `noble310` and `noble312` once. Run affected rendering and fixed-source checks together per target. Reconcile Ubuntu invocation outcomes and numerical facts, validate collections and run the strict numerical gate on the integrated profiles. Record unresolved paths and their evidence before freezing the inputs.
-2. Freeze one source snapshot including required untracked files and identify each target’s fixtures. Run **one full offline suite per target** against that snapshot. Independent targets can run concurrently in isolated environments. Report each target as it finishes. If a failure requires an edit, reproduce it with the smallest affected check, then verify the corrected snapshot under the same combined gate. Record versions, snapshot and fixture identities, passes, failures and skips in the audit history. [Batch verification](docs/development.md#auditing-command-help) · [Offline target setup](docs/test-selection-plan.md#reproduce-the-paired-offline-baseline)
+| Finding | Evidence or decision needed | Action when available |
+| --- | --- | --- |
+| `/usr/bin/ptardiff -h` | A matching Perl revision resolves the conflict between the manual and the packaged script. | Compare the manual with the script and check both bare `-h` and the value-taking form. Declare help only if its arity and behavior agree. |
+| `/usr/sbin/lxc` and `/usr/sbin/lxd` | A Server Default, Server Minimized or Server Cloud image or matching fixture identifies the installed LXD snap revision and supplies its command tables. | Verify the client and daemon tables separately, then record each wrapper’s result for that image. |
+| Choices after required operands | A matching provider documents a root form, or an explicitly approved change can represent the later argument position. | Check the FUSE helpers, `fprintd-delete`, `xsetmode` and `wpa_action` at their documented positions. Preserve preceding operands during selection and insertion. |
+| Plus-prefixed and punctuation spellings | An explicitly approved representation supports the exact literal or alias. | Check `+w`, `+c`, shell toggles, `-?` and `-#` against their respective providers. Verify literal insertion and shell quoting with a pending operand. |
+| Delegated and compound arguments | Fixed evidence establishes which program owns the spelling, its revision and its argument form. A grammar change requires explicit approval. | Declare only choices the identified provider owns and the menu can insert faithfully. Keep positional guidance for the other cases. |
 
 ## Conditional decisions
 
-| Trigger | Follow-up |
+These decisions have their own triggers and can be taken up after the Ubuntu handoff.
+
+| Trigger | Action and completion criterion |
 | --- | --- |
-| Noble package selection changes | Revisit `magick` and `starship` when reviewing optional installation instructions. Noble's reference archive provides ImageMagick 6 and has no ranked `starship` package. Resolute has both roots. |
-| New measurements identify a material runtime cost | Isolate the proposed change, repeat matched timings and confirm behavior. Selective loading, a persistent index or an additional process requires a separate architecture decision. [Performance plan](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
-| Three-shard hosted pilot is ready for comparison | Run the manual timed control and three-shard pilot on the same commit. Compare per-target outcomes, queue time, elapsed time to the last check, and runner-minutes before changing push or pull-request defaults. Hosted parity and speedup are pending. [Manual CI pilot](docs/development.md#manual-three-shard-pilot) · [Earlier two-shard measurement](docs/test-selection-plan.md#two-shard-host-pilot) |
-| Focused test selection still leaves substantial cost | Pilot result reuse for one bounded group. Check invalidation for changed inputs, environments, targets, fixtures and interrupted runs. Record executed, reused, failed and skipped results. Consider CI test selection after local parity and measured savings. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) |
+| Noble package availability changes | Check rank 62 (`magick`) and rank 95 (`starship`) against the matching archive. Update the affected optional row and installation guidance when the package supplies that executable. [Ranked inventory](docs/ubuntu-command-coverage/optional.tsv) |
+| The maintainer authorizes the hosted shard comparison | Run `timed-control`, then `three-shard-pilot` on the same commit using the control run ID. Verify per-target discovery, outcomes and skip reasons. Record queue delays, elapsed time to the last required job, slowest shard and total runner-minutes. Use those results to decide whether to propose changing CI defaults. [Manual CI pilot](docs/development.md#manual-three-shard-pilot) |
+| Measurements identify a material menu or discovery cost | Isolate the measured operation, compare matched timings and verify the affected behavior. Obtain explicit approval before introducing selective loading, a persistent index or another process. [Performance plan](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
+| Focused test selection still leaves substantial cost | Pilot opt-in result reuse for one group. Verify invalidation for changed sources, tests, targets, fixtures and environments, including interrupted runs. Compare executed, reused, failed and skipped counts to a full run. Record parity and measured savings before considering CI selection. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) |
 
 ## How to audit a batch
 
-Follow the [command-help audit procedure](docs/development.md#auditing-command-help) for evidence, reconciliation and verification.
+For reopened provider rows, group changes that share evidence or fixtures. Run focused host checks for routing, arity, exact insertion and pending-buffer preservation as each group changes. Batch the affected rendering and fixed-source checks across targets, reconcile the changed inventories, validate both collections and run the strict numerical gate. Freeze the combined inputs once and run one full offline suite per target (`host`, `noble310`, `noble312`). Record each target as it finishes. [Command-help audit procedure](docs/development.md#auditing-command-help) · [Offline target setup](docs/test-selection-plan.md#reproduce-the-paired-offline-baseline)
 
 ## Recording progress and finishing the audit
 
-Record the next action and any unresolved paths or blockers here. Link family results and their evidence from the [audit history](docs/audit-history.md), which also records completed performance work, edit reviews and release verification.
+Keep the next action and its dependency here. Record completed reviews, source identities and test outcomes in the [audit history](docs/audit-history.md) or the relevant family audit.
