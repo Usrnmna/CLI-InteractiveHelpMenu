@@ -22,7 +22,7 @@ The split view resumes at 80 columns. The prototype follows the frozen release b
 
 The maintainer accepted the compact header. All six Phase 2 cases have live before/after captures. [Accepted header](docs/terminal-resize-review.md#phase-1--review-the-layout-boundary) · [Six-case gallery](docs/terminal-resize-results.md)
 
-- [ ] **Review the resize results before choosing UI changes.** The two open findings concern the reading position in Details after a width change and the stray wrapped row after growing a Bash prompt. Record which cases to keep, revise or defer. [Case B · reading position](docs/terminal-resize-results.md#b--reading-a-long-explanation) · [Case F · Bash redraw](docs/terminal-resize-results.md#f--returning-to-a-wrapped-bash-edit) · [Decision record](docs/terminal-resize-review.md#phase-3--review-the-frames-and-choose-development-work)
+- [ ] **Review the revised B and F frames.** The maintainer accepted A, C, D and E. B now keeps the reading position through reflow and groups repeated value rules across command pages. F also reproduces in plain Bash. Decide whether the documented Ctrl-L recovery closes F or whether to investigate automatic recovery separately. [B and F comparisons](docs/terminal-resize-results.md#b-and-f-follow-up)
 - [ ] **Verify the accepted changes in one batch.** Compare affected before/after frames, collect sign-off and share one combined gate for runtime changes. [Verification plan](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
 
 ### Unresolved provider findings

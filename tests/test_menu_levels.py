@@ -323,6 +323,24 @@ class TerminalMenuLevelTests(TerminalTestCase):
         self.assertEqual(shell.read_buffer(), ("rsync --archive" + suffix, len("rsync --archive ")))
         self.assertFalse(shell.executed.exists())
 
+    def test_wide_detail_scroll_opens_same_phrase_in_narrow_details(self):
+        """Reflow a multi-column qualification and restore its reading position on return."""
+        shell = self.start()
+        shell.text("export CLI_HELP_NARROW_MENU=1")
+        shell.keys("Enter")
+        shell.resize(160, 40)
+        shell.text("rsync ")
+        shell.open_menu()
+        shell.keys(*(["Right"] * 6), "Down", "D", "D", *(["]"] * 5))
+        before = shell.wait_for(lambda s: s.detail_range[0] == 6 and "supported" in s.detail_body[0])
+        after = shell.resize(60, 16)
+        self.assertTrue(after.cells[1].startswith("Details"))
+        self.assertEqual(after.cells[3], "--bwlimit=RATE")
+        self.assertIn("fractions are supported", after.cells[4])
+        self.assertEqual(shell.resize(160, 40).detail_body, before.detail_body)
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), ("rsync ", 6))
+
     def test_alt_h_scrolls_only_the_highlighted_summary(self):
         """Check default motion, the static override, and the unlisted keyboard toggle through Bash."""
         shell = self.start()

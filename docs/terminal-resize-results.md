@@ -81,3 +81,35 @@ After a shrink to 60×16, Esc and Ctrl-C each restored the original Unicode comm
 **Review:** Should the next development batch investigate recovery from the duplicate tail, given that plain Bash can reproduce it at the top of the screen?
 
 [Phase plan and maintainer decision record](terminal-resize-review.md#phase-3--review-the-frames-and-choose-development-work)
+
+## B and F follow-up
+
+The maintainer accepted A, C, D and E. All 36 frames from those cases matched their original terminal cells on replay. The B and F comparisons below are ready for review. The follow-up record identifies the base commit, runtime hashes, dimensions, cursor positions and captured cells. [Terminal cells and control results](assets/resize-review/bf/terminal-cells.json)
+
+**B · Reading position.** With rsync’s bandwidth Details scrolled so the top left column ends a sentence with “supported”, shrinking from 160×40 to 60×16 keeps “fractions are supported” on the first text row. Guided navigation opens directly in Details. The split layout keeps the phrase in its Details pane. Growing back restores the same wide cells and line range (6–24 of 41). On the separate 80×24 → 80×16 height change, “Input NB · B/s” stayed at the top. All 55 lines at the destination matched a fresh open, including 13 input forms and one shared zero rule.
+
+| Previous at 60×16 | Revised at 60×16 |
+| --- | --- |
+| ![Guided menu reopened Options at the original selection](assets/resize-review/phase2/B-guided-narrow.png) | ![Guided menu stays on the fraction explanation in Details](assets/resize-review/bf/B-guided-narrow.png) |
+
+[Guided starting phrase at 160×40](assets/resize-review/bf/B-guided-reading.png) · [Split starting phrase](assets/resize-review/bf/B-split-reading.png) · [Previous split result](assets/resize-review/phase2/B-width-after.png) · [Revised split result](assets/resize-review/bf/B-split-narrow.png)
+
+**Shared value rules.** Expanded Details gives each unit its own label and states a shared special value once within its applicable forms. For rsync, 12 bare and suffixed forms share the zero rule. The one-byte offset expression keeps its own grammar. For Go’s two timeout spellings, six suffix forms share a zero rule. The literal spellings and compound duration are still listed. This formatting also applies to custom profiles, positional groups and component values. Distinct meanings and version variants keep separate explanations.
+
+| Previous rsync rules at 160×40 | Grouped rules at 160×40 |
+| --- | --- |
+| ![Twelve occurrences of No bandwidth limit across the original table](assets/resize-review/bf/B-old-grouped.png) | ![One zero rule shared by bare numbers and suffix forms, with separate unit and offset notes](assets/resize-review/bf/B-grouped.png) |
+
+### F recovery
+
+Widening a top-positioned prompt with the cursor before the quoted destination reproduced the duplicate row after Esc, after Ctrl-C, and in Bash with the menu adapter absent. The width-only control also reproduced it. A height-only change, a bottom-positioned prompt, a cursor at the end, and the Enter insertion each left a clean viewport. The captures isolate the display behavior to a case plain Bash and tmux can reproduce. They do not identify which implementation draws the stale row.
+
+At the Bash prompt, the default Ctrl-L binding redrew the pending command once. All eight controls retained the exact buffer, cursor offset and all 80 scrollback markers after the redraw. The execution marker stayed clear. In the pair below, the caret is at character 108 both times.
+
+| Before Ctrl-L at 80×24 | After Ctrl-L at 80×24 |
+| --- | --- |
+| ![An extra command tail is visible above the Bash prompt](assets/resize-review/bf/F-escape-before.png) | ![The same edit and cursor with the stray row cleared](assets/resize-review/bf/F-escape-after.png) |
+
+[Plain Bash before Ctrl-L](assets/resize-review/bf/F-plain-before.png) · [Plain Bash after Ctrl-L](assets/resize-review/bf/F-plain-after.png)
+
+**Verification.** On host, noble310 and noble312, 121 focused tests passed per target. After the final-page adjustment, 10 focused checks per target passed, including the new end-of-page and cross-command regressions. A separate rendering pass prepared Expanded text for all 76 bundled profiles, including 4,096 options with value declarations. Both collection checks and the strict numerical gate passed with 4,426 of 4,426 required records complete. The combined full-suite gate follows maintainer review.

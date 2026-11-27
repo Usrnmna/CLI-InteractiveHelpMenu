@@ -50,8 +50,9 @@ Record automated outcomes separately from what the reviewer can see. A tmux capt
 | Review point | Evidence | Maintainer response | Next action |
 | --- | --- | --- | --- |
 | Command identity at minimum width | Phase 1 before/after pair above | Keep the compact header | Complete. |
-| Search, list and reading continuity | [Phase 2 A–D](terminal-resize-results.md#a--editing-a-search) | Awaiting review | Choose reading-position behavior when Details reflows or changes screens. |
-| Recovery and prompt restoration | [Phase 2 E–F](terminal-resize-results.md#e--crossing-the-minimum-size) | Awaiting review | Decide whether to investigate the duplicate tail after growing a top-positioned prompt. |
+| A, C, D and E | [Original gallery](terminal-resize-results.md) | Keep the search, summary, list and size-warning behavior | Complete. All 36 replayed frames matched the original terminal cells. |
+| B · Paged Details | [Reading position and grouped rules](terminal-resize-results.md#b-and-f-follow-up) | Keep Details open at the same phrase and group equivalent value rules across command pages | Review the revised split and guided frames. |
+| F · Wrapped Bash prompt | [Redraw controls and recovery](terminal-resize-results.md#f-recovery) | Investigate the duplicate row | Review the plain Bash control and decide whether the documented Ctrl-L recovery is sufficient. |
 
 For feedback, record the frame number, what became hard to find, and the desired outcome. Mark the case **keep**, **revise** or **defer**. Put accepted changes and their exact comparison frames in the roadmap. Keep open preferences separate from reproduced defects. Record any architecture decision for explicit approval.
 

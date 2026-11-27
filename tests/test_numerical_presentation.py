@@ -151,6 +151,41 @@ class NumericalPresentationTests(unittest.TestCase):
             self.assertEqual(profile, before)
         self.assertGreater(selected, 0)  # Scope grows with explicit metadata, not historical totals.
 
+    def test_shared_special_values_preserve_subset_and_variant_boundaries(self):
+        """The same zero rule can group only the forms for which it was declared."""
+        node = synthetic_node()
+        forms = node["forms"]
+        forms[0]["special_values"] = [{"value": "0", "meaning": "Unlimited"}]
+        for token, meaning in (("k", "Unlimited"), ("m", "Use automatic mode")):
+            form = dict(forms[0], id=token, notation="suffix", syntax="N" + token, tokens=[token], case="sensitive",
+                        special_values=[{"value": "0", "meaning": meaning}])
+            forms.append(form)
+        other = deepcopy(node)
+        other["applicability"]["version"]["min"] = "2"
+        other["applicability"]["version"]["before"] = "3"
+        other["forms"][2]["special_values"][0]["meaning"] = "Unlimited"
+        profile = specimen(node, other)
+        lines = Browser(profile).text(first_option(profile)).numerical.expanded
+        split = next(i for i, line in enumerate(lines) if line.startswith("Value variant 2"))
+        self.assertEqual([line for line in lines[:split] if line.startswith("0 (")],
+                         ["0 (bare numbers and Nk): Unlimited.", "0 (Nm): Use automatic mode."])
+        self.assertEqual([line for line in lines[split:] if line.startswith("0 (")],
+                         ["0 (bare numbers and suffix forms): Unlimited."])
+
+    def test_rsync_and_go_show_each_shared_zero_rule_once(self):
+        for profile, flag, expected, other in (
+                ("rsync", "--bwlimit=", "0 (bare numbers and suffix forms): No bandwidth limit.",
+                 "Input N[SIZE_SUFFIX][+1|-1]"),
+                ("go-test", "-timeout", "0 (suffix forms): Disable the test timeout alarm.",
+                 "Input 0 | +0 | -0"),
+                ("go-test", "-test.timeout", "0 (suffix forms): Disable the test timeout alarm.",
+                 "Input 0 | +0 | -0")):
+            with self.subTest(profile=profile, flag=flag):
+                _, _, view = self.view(profile, flag)
+                self.assertEqual(view.expanded.count(expected), 1)
+                self.assertTrue(any(line.startswith(other) for line in view.expanded))
+                self.assertFalse(any(line.startswith("Special input ") for line in view.expanded))
+
     def test_reference_rates_keep_bits_bytes_and_version_scope_distinct(self):
         for name, flag, source, unit in (("rsync", "--bwlimit=", "rsync", "bytes/second"),
                                          ("scp", "-l", "openssh", "bits/second"),

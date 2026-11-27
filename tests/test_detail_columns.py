@@ -69,6 +69,33 @@ class DetailColumnTests(unittest.TestCase):
                     frames.append((screen.detail_body(), positions))
                 self.assertEqual(frames[0], frames[1])
 
+    def test_resize_tracks_the_same_word_in_the_same_repeated_paragraph(self):
+        paragraph = "One two three four five six seven eight nine ten eleven twelve."
+        content = ["Intro", paragraph, "Middle", paragraph, "Following", "End"]
+        browser = Browser(specimen())
+        narrow = layout_details(content, 16, 0)
+        wide = layout_details(content, 40, 0)
+        source = (paragraph, 1)
+        first = next(i for i, row in enumerate(narrow) if row.positions and row.positions[0][0] == source)
+        browser.detail_offset = first + 2
+        browser.position_details(narrow, 2, (60, 16))
+        phrase = browser.reading_anchor
+        self.assertEqual(phrase[0], source)
+        index = browser.position_details(wide, 2, (80, 24))
+        self.assertIn(paragraph[phrase[1]:].split()[0], wide[index].text)
+        self.assertEqual(wide[index].positions[0][0], source)
+        self.assertEqual(browser.position_details(narrow, 2, (60, 16)), first + 2)
+
+    def test_last_page_keeps_its_final_phrase_after_reflow(self):
+        content = ["A long explanation with several words to wrap."] * 5 + ["Argument required."]
+        browser = Browser(specimen())
+        browser.detail_offset = 100
+        for width, body in [(22, 4), (60, 6), (22, 4)]:
+            lines = layout_details(content, width, 0)
+            offset = browser.position_details(lines, body, (width, body))
+            self.assertEqual(lines[offset:offset + body][-1].text, "Argument required.")
+            self.assertEqual(browser.next_detail_offset, 0)
+
     def test_mixed_lengths_keep_wrapped_meaning_in_its_column(self):
         items = [f"--flag{i}  Summary" for i in range(9)]
         items[3] = "--flag3  A description with several words that finishes here."

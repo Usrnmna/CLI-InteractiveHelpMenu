@@ -3,7 +3,7 @@ from decimal import Decimal
 import json
 import re
 
-from value_semantics import _unit_text, _explain_node
+from value_semantics import _unit_text, _explain_node, form_scope
 
 
 _TIME = {"0.000000001": ("ns", "nanosecond"), "0.000001": ("µs", "microsecond"),
@@ -136,6 +136,7 @@ def _expanded_node(node, title):
     lines = _explain_node({**node, "components": []}, title, presentation=True)
     forms_display = []
     notes = []
+    labels = {}
     table = len(forms) > 1 and all((f.get("unit") or {}).get("base") == "bit"
                                    and f["unit"].get("per") == "second" and f["unit"].get("multiplier") for f in forms)
     if table:
@@ -147,6 +148,7 @@ def _expanded_node(node, title):
             syntax = " or ".join("N" + token for token in tokens)
         elif tokens and tokens != [syntax]:
             syntax += " (" + ", ".join(tokens) + ")"
+        labels[form["id"]] = syntax
         unit = form.get("unit")
         if table:
             factor = Decimal(unit["multiplier"])
@@ -157,23 +159,24 @@ def _expanded_node(node, title):
             forms_display.append("Input " + syntax + (" · " + label if label else ""))
         for key in ("meaning", "grammar"):
             if form.get(key):
-                notes.append((syntax, form[key]))
+                notes.append((form, form[key]))
         if form.get("case") in ("sensitive", "insensitive", "unverified"):
-            notes.append((syntax, "Token case unverified." if form["case"] == "unverified" else "Tokens are case " + form["case"] + "."))
+            notes.append((form, "Token case unverified." if form["case"] == "unverified" else "Tokens are case " + form["case"] + "."))
         bounds = form.get("bounds") or {}
         if bounds:
             low = "[" if "min" in bounds and bounds.get("min_inclusive", True) else "("
             high = "]" if "max" in bounds and bounds.get("max_inclusive", True) else ")"
-            notes.append((syntax, f"Range {low}{bounds.get('min', '-infinity')}, {bounds.get('max', '+infinity')}{high}."))
+            notes.append((form, f"Range {low}{bounds.get('min', '-infinity')}, {bounds.get('max', '+infinity')}{high}."))
         if unit and not (unit.get("base") and unit.get("multiplier")):
-            notes.append((syntax, "Unit/scale not verified. " + (unit.get("reason") or "")))
+            notes.append((form, "Unit/scale not verified. " + (unit.get("reason") or "")))
         if not unit and node["kind"] in {"quantity", "duration"} and not form.get("sentinel"):
-            notes.append((syntax, "Unit/scale not verified."))
+            notes.append((form, "Unit/scale not verified."))
     grouped = {}
-    for syntax, note in notes:
-        grouped.setdefault(note, []).append(syntax)
-    for note, syntaxes in grouped.items():
-        forms_display.append(", ".join(dict.fromkeys(syntaxes)) + ": " + note)
+    for form, note in notes:
+        grouped.setdefault(note, []).append(form)
+    # Emit individual qualifications first so the layout attaches each to its input.
+    for note, members in sorted(grouped.items(), key=lambda item: len(item[1]) > 1):
+        forms_display.append(form_scope(forms, members, labels) + ": " + note)
     rest = []
     for line in lines:
         if line.startswith(("Input ", "Evidence:", "Investigation:", "Reference:", "Source qualification:")):

@@ -785,6 +785,30 @@ def _scope_text(scope):
     return "; ".join(parts)
 
 
+def form_scope(forms, members, labels=None):
+    """Name complete notation groups concisely and list exact forms for partial groups.
+
+    Members belong to a single semantic node. Use form IDs for membership so
+    similar spellings in another component or applicability variant never merge.
+    """
+    labels = labels or {}
+    if len(members) == 1:
+        form = members[0]
+        return labels.get(form["id"], form.get("syntax") or form["id"])
+    names = {"number": "bare numbers", "suffix": "suffix forms", "prefix": "prefix forms",
+             "literal": "literal forms", "expression": "expressions"}
+    selected = {form["id"] for form in members}
+    parts = []
+    for notation in dict.fromkeys(form["notation"] for form in members):
+        family = [form for form in forms if form["notation"] == notation]
+        if all(form["id"] in selected for form in family):
+            parts.append(names[notation])
+        else:
+            parts.extend(labels.get(form["id"], form.get("syntax") or form["id"])
+                         for form in family if form["id"] in selected)
+    return " and ".join(parts) if len(parts) < 3 else ", ".join(parts[:-1]) + ", and " + parts[-1]
+
+
 def _explain_node(node, label="Value", *, presentation=False):
     """Explain one declaration, optionally placing interpretation and scope first.
 
@@ -838,6 +862,7 @@ def _explain_node(node, label="Value", *, presentation=False):
     for field, title in (("subject", "Subject"), ("origin", "Index origin"), ("ordering", "Ordering"), ("time_basis", "Time basis")):
         if node.get(field) is not None:
             lines.append(f"{title}: {node[field]}.")
+    special_groups = {}
     for form in forms:
         text = f"Input {form.get('syntax') or form['id']}"
         if form.get("tokens"):
@@ -860,7 +885,15 @@ def _explain_node(node, label="Value", *, presentation=False):
             text += "]" if "max" in bounds and bounds.get("max_inclusive", True) else ")"
         lines.append(text + ".")
         for special in form.get("special_values", []):
-            lines.append(f"Special input {form.get('syntax') or form['id']}, magnitude {special.get('value') or '?'}: {special.get('meaning') or 'meaning not documented'}.")
+            value = special.get("value") or "?"
+            meaning = special.get("meaning") or "meaning not documented"
+            if presentation:
+                special_groups.setdefault((value, meaning), []).append(form)
+            else:
+                lines.append(f"Special input {form.get('syntax') or form['id']}, magnitude {value}: {meaning}.")
+    for (value, meaning), members in special_groups.items():
+        scope_text = form_scope(forms, members)
+        lines.append(f"{value} ({scope_text}): {meaning.rstrip('.')}.")
     if not forms:
         lines.append("Accepted forms: not documented.")
     for field, title in (("when_absent", "Option absent"), ("when_value_omitted", "Operand omitted")):
@@ -873,8 +906,12 @@ def _explain_node(node, label="Value", *, presentation=False):
                             if key is not None and _special_key(s.get("value"), form) == key), None)
             detail = (special.get("meaning") if special else form.get("meaning")) or (
                 _unit_text(form.get("unit")) if "unit" in form else node.get("subject") or node.get("meaning") or "meaning not documented")
-            detail += (f" (literal {rule['value']})" if form.get("notation") == "literal" else
-                       f" (input {form.get('syntax') or form['id']}; magnitude {rule['value']})")
+            if presentation and special and len(special_groups[(special["value"], special["meaning"])]) > 1:
+                # The group already explains the meaning. Keep the exact default and its form.
+                detail = f"{rule['value']} ({form.get('syntax') or form['id']})"
+            else:
+                detail += (f" (literal {rule['value']})" if form.get("notation") == "literal" else
+                           f" (input {form.get('syntax') or form['id']}; magnitude {rule['value']})")
         state = rule.get("state", "unverified").replace("_", " ")
         lines.append(f"{title}: " + ("" if state == "known" else state + "; ") + detail + ".")
     if "grammar" in node:

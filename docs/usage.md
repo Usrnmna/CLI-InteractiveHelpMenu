@@ -142,7 +142,10 @@ Details uses bold section labels, paragraph spacing and underlined terms in both
 layouts. Flags, placeholders, numbers and words such as “default” and “requires”
 stand out in running text. Color terminals also distinguish section labels from
 terms. Value-list explanations wrap in the same column as their literal, and
-rules that apply to several values span the pane. For Bash builtins with a
+rules that apply to several values span the pane. Forms with the same special
+value and meaning share one explanation. Different units, meanings and
+version-specific rules keep their own labels. Resizing while reading Details
+keeps the current phrase visible, or the ending if reading the final page. For Bash builtins with a
 matching help declaration, the selected option's behavior appears first.
 Expanded keeps the rest of the builtin reference available below it.
 
@@ -244,7 +247,9 @@ prompt rows in the tested Bash 5.2.21/tmux 3.4 environment. It retains the pendi
 buffer, cursor, and terminal scrollback. Unchanged dimensions retain the previous
 viewport. Dimension detection uses the standard Linux `stty` utility.
 
-If stale rows remain, close the browser and press **Ctrl-L at the Bash prompt**.
+Widening the terminal again at a top-positioned Bash prompt can leave a second
+copy of a wrapped line on screen. This also occurred in plain Bash 5.3.9 with
+tmux 3.6a. If stale rows remain, press **Ctrl-L at the Bash prompt**.
 This redraws the pending command at the top of the viewport without executing
 it. In the tested tmux environment, earlier output remains available in
 scrollback. Ctrl-L changes the visible viewport rather than restoring its

@@ -2851,7 +2851,7 @@
         },
         {
           "argument": "RATE",
-          "detail": "For transfers, the limit applies to the average socket rate, so short bursts can exceed it. Rates round to the nearest KiB/s. Fractional bytes are truncated. A result of 0 sets no client cap, 1 to 511 bytes/s is rejected, and 512 bytes/s rounds to 1 KiB/s. Use a size suffix without a trailing /s. At daemon startup supply a whole number of KiB/s without a suffix. Clients can request a lower rate. Zero sets no cap.",
+          "detail": "For transfers, the limit applies to the average socket rate, so short bursts can exceed it. Rates round to the nearest KiB/s. Fractional bytes are truncated. A fraction below one byte per second truncates to zero. Rates of 1 to 511 bytes/s are rejected, and 512 bytes/s rounds to 1 KiB/s. Omit /s from size suffixes. K through P and KiB through PiB use powers of 1024. KB through PB use powers of 1000. At daemon startup supply whole KiB/s without a suffix. A daemon limit of 0 allows any client rate. Clients can request a lower rate.",
           "flag": "--bwlimit=",
           "summary": "Limit bandwidth (bare rate in KiB/s)",
           "value_semantics": {

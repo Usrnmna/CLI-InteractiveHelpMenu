@@ -103,6 +103,9 @@ class Browser:
     summary_field: tuple | None = field(default=None, init=False, repr=False)
     compact_page: str | None = None
     next_detail_offset: int = field(default=0, init=False)
+    reading_anchor: tuple | None = field(default=None, init=False, repr=False)
+    reading_end: bool = field(default=False, init=False, repr=False)
+    detail_size: tuple | None = field(default=None, init=False, repr=False)
     _text: dict = field(default_factory=dict, init=False, repr=False)
 
     def __post_init__(self):
@@ -151,19 +154,54 @@ class Browser:
     def move_category(self, amount):
         self.category = max(0, min(len(self.profile["categories"]) - 1, self.category + amount))
         self.selected = self.detail_offset = 0
+        self.leave_reading_position()
 
     def move_option(self, amount):
         self.selected = max(0, min(max(0, len(self.options()) - 1), self.selected + amount))
         self.detail_offset = 0
+        self.leave_reading_position()
 
     def set_query(self, query):
         self.query = query
         self.selected = self.detail_offset = 0
+        self.leave_reading_position()
         if not self.options():
             for index in range(len(self.profile["categories"])):
                 if self.options(index):
                     self.category = index
                     break
+
+    def leave_reading_position(self):
+        """Discard the previous option's phrase when navigation starts a new reading context."""
+        self.reading_anchor = None
+        if self.compact_page == "details":
+            self.compact_page = "options"
+
+    def position_details(self, lines, body, size):
+        """Reflow the current phrase into view, retaining it through a resize round trip."""
+        offset = self.detail_offset
+        last = max(0, len(lines) - body)
+        if self.reading_anchor is not None and self.detail_size != size:
+            source, point = self.reading_anchor
+            best = -1
+            for index, row in enumerate(lines):
+                for origin, start in row.positions:
+                    if origin == source and best < start <= point:
+                        offset, best = index, start
+            if self.reading_end:
+                # A reader on the final page keeps the final line and the return-to-top control.
+                offset = last
+            if best == -1:
+                self.reading_anchor = None
+        self.detail_size = size
+        self.detail_offset = offset = min(max(0, offset), last)
+        self.next_detail_offset = min(offset + body, last) if offset < last else 0
+        if self.reading_anchor is None:
+            self.reading_end = offset == last and last > 0
+            # Read down the leftmost column. A spacer anchors to the next visible phrase.
+            self.reading_anchor = next((row.positions[0] for row in lines[offset:offset + body]
+                                        if row.text.strip() and row.positions), None)
+        return offset
 
 
 def display_text(value: str) -> str:
@@ -504,6 +542,8 @@ class DetailRow:
     text: str = ""
     highlights: list = field(default_factory=list)
     bitrate: bool = False
+    # Each occupied column contributes a source paragraph and character offset.
+    positions: list = field(default_factory=list)
 
 
 @dataclass
@@ -514,6 +554,7 @@ class DetailEntry:
     explanation: str
     kind: str
     notes: list = field(default_factory=list)
+    occurrence: int = 0
 
 
 def detail_entry(line, bitrate, value_list):
@@ -539,6 +580,21 @@ def detail_entry(line, bitrate, value_list):
     return None
 
 
+def wrapped_parts(source, width):
+    """Yield each rendered fragment and its starting character in the source paragraph."""
+    offset = 0
+    for part in wrap_cells(source, width):
+        start = source.index(part, offset)
+        yield part, start
+        offset = start + len(part)
+
+
+def note_rows(source, width, indent=""):
+    """Track a qualification through wrapping inside a column or across the full pane."""
+    for part, start in wrapped_parts(source[0], width - len(indent)):
+        yield DetailRow(indent + part, positions=[(source, start)])
+
+
 def wrapped_entry(entry, width, accent):
     """Wrap one entry within its column and emphasize only the literal's cells."""
     text = entry.prefix + entry.literal + entry.explanation
@@ -546,17 +602,15 @@ def wrapped_entry(entry, width, accent):
     literal_end = literal_start + len(entry.literal)
     style = curses.A_BOLD | accent if entry.kind == "option" else curses.A_UNDERLINE
     rows = []
-    offset = 0
-    for line in wrap_cells(text, width):
-        start = text.index(line, offset)
+    for line, start in wrapped_parts(text, width):
         offset = start + len(line)
         first, last = max(start, literal_start), min(offset, literal_end)
         highlights = []
         if first < last:
             highlights.append((sum(map(cell_width, text[start:first])), text[first:last], style))
-        rows.append(DetailRow(line, highlights, entry.kind == "conversion"))
+        rows.append(DetailRow(line, highlights, entry.kind == "conversion", [((text, entry.occurrence), start)]))
     for note in entry.notes:
-        rows.extend(DetailRow("  " + part) for part in wrap_cells(note, width - 2))
+        rows.extend(note_rows(note, width, "  "))
     return rows
 
 
@@ -596,6 +650,7 @@ def list_rows(entries, width, accent):
                 row.text += " " * (start - sum(map(cell_width, row.text))) + cell.text
                 row.highlights.extend((start + x, word, attr) for x, word, attr in cell.highlights)
                 row.bitrate |= cell.bitrate
+                row.positions.extend(cell.positions)
         return rows
 
 
@@ -608,7 +663,7 @@ _DETAIL_TERM = re.compile(
     r"\b(?:[Dd]efault|[Rr]equires?|[Ee]xit status|If|Unless)\b")
 
 
-def prose_rows(line, width, accent, section_color, heading):
+def prose_rows(line, width, accent, section_color, heading, occurrence):
     """Wrap once and overlay section titles and technical terms at terminal-cell offsets."""
     spans = []
     end = len(heading)
@@ -616,9 +671,8 @@ def prose_rows(line, width, accent, section_color, heading):
         spans.append((0, end, curses.A_BOLD | section_color))
     for match in _DETAIL_TERM.finditer(line, end):
         spans.append((*match.span(), curses.A_UNDERLINE | accent))
-    offset = span_index = 0
-    for part in wrap_cells(line, width):
-        start = line.index(part, offset)
+    span_index = 0
+    for part, start in wrapped_parts(line, width):
         offset = start + len(part)
         highlights = []
         while span_index < len(spans):
@@ -631,16 +685,25 @@ def prose_rows(line, width, accent, section_color, heading):
             if right > offset:
                 break
             span_index += 1
-        yield DetailRow(part, highlights)
+        yield DetailRow(part, highlights, positions=[((line, occurrence), start)])
 
 
 def layout_details(lines, width, accent, section_color=0):
     """Flow adjacent entries as a list. Full-width headings and prose delimit each list."""
     rows = []
     index = 0
+    # A layout may prepend a summary or move notes below a table. Occurrence
+    # numbers distinguish repeated source paragraphs without using visual rows.
+    sources = []
+    occurrences = {}
+    for raw in lines:
+        text = display_text(raw)
+        occurrence = occurrences.get(text, 0)
+        sources.append((text, occurrence))
+        occurrences[text] = occurrence + 1
     bitrate = value_list = False
     while index < len(lines):
-        line = display_text(lines[index])
+        line, occurrence = sources[index]
         entry = detail_entry(line, bitrate, value_list)
         index += 1
         if entry is None:
@@ -654,13 +717,16 @@ def layout_details(lines, width, accent, section_color=0):
                     label and not value_list or
                     not heading and rows[-1].text.endswith((".", "!", "?")) and len(line.split()) >= 5):
                 rows.append(DetailRow())
-            rows.extend(prose_rows(line, width, accent, section_color, heading))
+            rows.extend(prose_rows(line, width, accent, section_color, heading, occurrence))
             continue
+        entry.occurrence = occurrence
         entries = [entry]
         while index < len(lines):
-            following = detail_entry(display_text(lines[index]), bitrate, value_list)
+            text, occurrence = sources[index]
+            following = detail_entry(text, bitrate, value_list)
             if not following or following.kind != entry.kind:
                 break
+            following.occurrence = occurrence
             entries.append(following)
             index += 1
         # Single-form qualifications belong to that literal, including when a column breaks.
@@ -672,19 +738,19 @@ def layout_details(lines, width, accent, section_color=0):
                 names[item.literal] = None if item.literal in names else item
             shared = []
             while index < len(lines):
-                note_line = display_text(lines[index])
+                note_line = sources[index][0]
                 name, separator, _ = note_line.partition(": ")
                 if not separator:
                     break
                 if names.get(name) is not None:
-                    names[name].notes.append(note_line)
+                    names[name].notes.append(sources[index])
                 elif name in names or (", " in name and all(word in names for word in name.split(", "))):
-                    shared.append(lines[index])
+                    shared.append(sources[index])
                 else:
                     break
                 index += 1
             rows.extend(list_rows(entries, width, accent))
-            rows.extend(DetailRow(part) for note in shared for part in wrap_cells(note, width))
+            rows.extend(row for note in shared for row in note_rows(note, width))
         else:
             rows.extend(list_rows(entries, width, accent))
         bitrate = value_list = False
@@ -778,8 +844,7 @@ def draw_compact(screen, browser, keys, searching, preview):
         lines = layout_details(paragraphs, width, browser.accent, browser.section_color)
         body = stop - start
         last = max(0, len(lines) - body)
-        offset = browser.detail_offset = min(max(0, browser.detail_offset), last)
-        browser.next_detail_offset = min(offset + body, last) if offset < last else 0
+        offset = browser.position_details(lines, body, (width + 1, height))
         for row, line in enumerate(lines[offset:offset + body], start):
             write(screen, row, 0, line.text, width)
             for column, word, attr in line.highlights:
@@ -879,6 +944,11 @@ def draw_frame(screen, browser: Browser, keys, searching, preview):
         detail.extend(level_guidance(view, level))
         if ellipsize_cells(summary, description_width) != summary:
             detail.append(summary)
+        # A reader may be on the compact pane's introductory summary when the
+        # wide list has enough room to display it inline. Keep that phrase in Details.
+        if (browser.guided and browser.compact_page == "details" and view.summary not in detail
+                and (level == "Simple" or browser.reading_anchor and browser.reading_anchor[0][0] == view.summary)):
+            detail.insert(0, view.summary)
         if clipped_label and sum(map(cell_width, label)) > width - 22:
             detail.insert(0, label)
     else:
@@ -947,9 +1017,7 @@ def draw_frame(screen, browser: Browser, keys, searching, preview):
             write(screen, y, left + 2, flag, fw, curses.A_BOLD | browser.accent)
     if not options:
         write(screen, top, left, "No matches. Clear the filter or change category.", budget)
-    browser.detail_offset = min(max(0, browser.detail_offset), max(0, len(lines) - body))
-    offset = browser.detail_offset
-    browser.next_detail_offset = min(offset + body, len(lines) - body) if offset + body < len(lines) else 0
+    offset = browser.position_details(lines, body, (width, height))
     if header:
         counter = f"Lines {offset + 1}–{offset + body}/{len(lines)}" if body < len(lines) else ""
         header_width = width - len(counter) - 2
@@ -1051,6 +1119,7 @@ def run_browser(screen, profile, query, keys, preview=False):
             browser.scroll_summaries = not browser.scroll_summaries
             continue
         if action == "cycle_detail":
+            browser.reading_anchor = None
             browser.level = LEVELS[(LEVELS.index(browser.level) + 1) % len(LEVELS)]
             browser.detail_offset = 0
             continue
@@ -1069,6 +1138,7 @@ def run_browser(screen, profile, query, keys, preview=False):
                     destination = "details"
                 if destination == page:
                     continue
+                browser.reading_anchor = None
                 browser.compact_page = destination
                 browser.focus = "categories" if destination == "categories" else "options"
                 browser.detail_offset = 0
@@ -1087,12 +1157,14 @@ def run_browser(screen, profile, query, keys, preview=False):
             browser.move_category(1)
         elif action == "focus":
             browser.focus = "categories" if browser.focus == "options" else "options"
-        elif action == "detail_page":
-            browser.detail_offset = browser.next_detail_offset
-        elif action == "detail_up":
-            browser.detail_offset = max(0, browser.detail_offset - 1)
-        elif action == "detail_down":
-            browser.detail_offset += 1
+        elif action in ("detail_up", "detail_down", "detail_page"):
+            browser.reading_anchor = None
+            if browser.guided and page is None and browser.focus == "options":
+                browser.compact_page = "details"
+            if action == "detail_page":
+                browser.detail_offset = browser.next_detail_offset
+            else:
+                browser.detail_offset += 1 if action == "detail_down" else -1
         elif action == "clear_search":
             browser.set_query("")
         elif action == "search":
