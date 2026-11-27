@@ -49,7 +49,7 @@ The local evidence directory `tests/reports/phase2-details/` contains the captur
 
 ## Phase 3 combined verification
 
-The starting checkout at `70d2d29a0b01562767abe044e9ebdc60f3e5a2e7` had a clean index and working tree. The report-only selector compared the integrated checkout with the pre-review base `5783021`. It found 85 shared or unmapped source paths, zero missing inputs and 2,066 discovered test IDs. Full discovery was reserved for the final matrix.
+The starting checkout at `70d2d29a0b01562767abe044e9ebdc60f3e5a2e7` had a clean index and working tree. The report-only selector compared the integrated checkout with the pre-review base `5783021`. It found 85 shared or unmapped source paths, zero missing inputs and 2,066 discovered test IDs. The final matrix ran the full suite once per target.
 
 Each target passed 93 focused tests across the Details columns, menu levels, argument syntax, five Ubuntu provider and fixed-source modules, CI shard tooling and documentation retries. The installed Bash and package help matched the edition-specific captures on each target. The Phase 2 binding, runtime, profiles, configuration and capture harness still matched `e631cfb`. The saved frames passed the seven-size cell checks again. The five routine passes, seven visual reviews and live resize retain their original attribution. [Terminal evidence](#phase-2-terminal-audit)
 
