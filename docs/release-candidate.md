@@ -5,7 +5,23 @@
 
 ## v0.5.0-alpha local candidate
 
-The Ubuntu coverage release is selected for local packaging. Its source handoff is accepted. Both reproducibility builds and all three exact-package runs are pending. The earlier matrix verified the command coverage on the host and two Noble targets. It supplies the provider and terminal baseline for the installed checks. [Release checklist and target status](../ROADMAP.md#remaining-work) · [Accepted verification](audit-history.md#phase-3-combined-verification)
+**Local publication status: blocked pending a corrected source commit.** The two builds of `d13b3e67bae4b8ac00027a4ec7979175bb6a9528` reproduced exactly. All three offline suites then stopped at the numerical preflight. Leave this revision and both output directories out of publication. [Remaining steps](../ROADMAP.md#remaining-work) · [Accepted Ubuntu source verification](audit-history.md#phase-3-combined-verification)
+
+The checkout was clean on `main`. The accepted provider, Bash adapter, renderer, profile, configuration and test files matched their Phase 3 versions. The checkout gallery matched all 224 recorded source hashes and eight asset hashes. Offline Lychee reported zero errors, 31 focused repository-policy and documentation-link tests passed, and the whitespace, attribute and ignore checks passed. The impacted selector proposed full discovery. Actionlint 1.7.12 passed with a local label entry for `ubuntu-26.04`; the stock catalog flagged that label, which GitHub had already assigned to a hosted runner. [Earlier hosted runner](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45799373693/job/139838263441)
+
+Two independent source copies supplied 1,130 tracked files from Git blobs with their recorded modes. The builder included 1,118 files. On Ubuntu 26.04.1 x86_64, GCC 15.2.0 and Python 3.14.4 produced eleven byte-identical files under `dist/candidate-v0.5.0-alpha/` and `dist/candidate-v0.5.0-alpha-2/`. Both builds passed their checksums, installer self-verification and launcher version check. The package verifier matched the archives, their metadata, the launcher and the embedded payload. The launcher's highest required glibc symbol was 2.34.
+
+| Target | Ubuntu / Python | Fixture manifest SHA-256 | Full-suite result |
+| --- | --- | --- | --- |
+| host | 26.04.1 / 3.14.4 | `f08addd63144ff211587db461169f9f26302e5a969aea6865ec70ff879e19984` | Numerical preflight exit 1 before discovery |
+| noble310 | 24.04.5 / 3.10.20 | `585b29b53ef075b24e12ddad0d32b612f0182e32824f4f300be2800b1babee8c` | Numerical preflight exit 1 before discovery |
+| noble312 | 24.04.5 / 3.12.3 | `585b29b53ef075b24e12ddad0d32b612f0182e32824f4f300be2800b1babee8c` | Numerical preflight exit 1 before discovery |
+
+Each target verified the frozen file manifest, first build and historical v0.1.1-alpha package. No unittest case started, so discovery totals, test outcomes, skips and the upgrade result are unavailable. The focused reproduction gave one `review_stale` error for `source||.github/workflows/ci.yml`. The workflow change adds two comments above the existing package step. Updating its single reviewed fingerprint cleared inventory reconciliation and both prospective and strict gates in the working tree. All 4,426 required contracts were complete, with 93 warnings, 11 informational diagnostics and zero errors or debt.
+
+Separate installed-prefix checks on the first build passed on all three targets. All 57 reference shards matched the manifest. With the manual tool unavailable, `/usr/bin/hostname` offered `--alias` from the applicable packaged reference. Bare `echo` used Bash help. External `/usr/bin/echo` used the Resolute reference on the host and gave revision-specific guidance for Noble coreutils 9.4-3ubuntu6.3. The installed APT route exposed `--simulate` for `apt install`. In a 100×24 private Bash terminal, cancelling preserved the pending line and cursor. Selecting `install` completed `apt ins` while preserving the quoted operand. The disposable prefixes were removed. Repeat these checks on the corrected first build.
+
+The ignored evidence directory `tests/reports/v050-d13b3e6/` contains the Git manifest, first-attempt asset sizes and hashes, per-target logs, focused reproduction and corrected gate reports. The final upload directory and tag target can be selected after a new commit containing the correction passes the combined gate. A later documentation-only commit may describe that verified source separately.
 
 ## v0.4.1-alpha local candidate
 
