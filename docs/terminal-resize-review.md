@@ -1,6 +1,6 @@
 # Terminal resize tests and visual review
 
-The first review asks whether a user can still identify the command and the selected option after resizing. Later phases cover resizing while typing, reading, scrolling, inserting and cancelling. The compact header was accepted after Phase 1. Phase 2 is complete. The [six-case results and snapshot gallery](terminal-resize-results.md) are ready for the Phase 3 review.
+The maintainer accepted the compact header and all six resize cases. The review covers command identity, search, Details, animated summaries, minimum dimensions and returning to Bash. [Six-case results and snapshot gallery](terminal-resize-results.md)
 
 ## Phase 1 · Review the layout boundary
 
@@ -24,7 +24,7 @@ The four baseline PNGs follow one live Bash/tmux session on Resolute. The pendin
 
 The second live session repeated the same keystrokes and dimensions. At 60×16 only the title row changed. The three other PNGs matched the baseline images byte for byte. Both sessions returned to Bash with the original quoted line and cursor at offset 20. The maintainer accepted the compact title.
 
-The focused group passed 23 checks each on Resolute (Python 3.14) and Noble (Python 3.10 and 3.12), including the formerly failing Git assertion. Tests cover all three levels, split and narrow layouts, wide characters and remapped level keys. The strict numerical gate passed. The combined full-suite run remains in phase 4.
+The focused group passed 23 checks each on Resolute (Python 3.14) and Noble (Python 3.10 and 3.12), including the formerly failing Git assertion. Tests cover all three levels, split and narrow layouts, wide characters and remapped level keys. The strict numerical gate passed. Phase 4 records the combined full-suite results.
 
 ## Phase 2 · Exercise operations already in progress
 
@@ -51,11 +51,25 @@ Record automated outcomes separately from what the reviewer can see. A tmux capt
 | --- | --- | --- | --- |
 | Command identity at minimum width | Phase 1 before/after pair above | Keep the compact header | Complete. |
 | A, C, D and E | [Original gallery](terminal-resize-results.md) | Keep the search, summary, list and size-warning behavior | Complete. All 36 replayed frames matched the original terminal cells. |
-| B · Paged Details | [Reading position and grouped rules](terminal-resize-results.md#b-and-f-follow-up) | Keep Details open at the same phrase and group equivalent value rules across command pages | Review the revised split and guided frames. |
-| F · Wrapped Bash prompt | [Redraw controls and recovery](terminal-resize-results.md#f-recovery) | Investigate the duplicate row | Review the plain Bash control and decide whether the documented Ctrl-L recovery is sufficient. |
+| B · Paged Details | [Reading position and grouped rules](terminal-resize-results.md#b-and-f-follow-up) | Keep Details open at the same phrase and group equivalent value rules across command pages | Complete. The maintainer accepted B as shown. |
+| F · Wrapped Bash prompt | [Redraw controls and recovery](terminal-resize-results.md#f-recovery) | Accept the documented Ctrl-L recovery at the Bash prompt | Closed. |
 
 For feedback, record the frame number, what became hard to find, and the desired outcome. Mark the case **keep**, **revise** or **defer**. Put accepted changes and their exact comparison frames in the roadmap. Keep open preferences separate from reproduced defects. Record any architecture decision for explicit approval.
 
 ## Phase 4 · Verify the accepted changes together
 
-Use focused rendering and Bash checks while implementing the chosen changes. Recapture only affected transitions and place the original and revised frames side by side for sign-off. Group approved runtime changes for the existing combined offline gate on the host and both Noble targets. Documentation and snapshot-only reviews use the recorder assertions, visual comparison, diff check and offline Markdown link check. Subsequent resize or navigation proposals should identify the operation, expected state, comparison snapshots and human decision before the next implementation batch. [Project verification procedure](development.md#auditing-command-help)
+The combined offline run used the 1,237 tracked files at commit `266e75694170c0c21c356d08d8afbd78d698271d`. The working tree and index matched that commit at freeze. All three targets received the same source archive (SHA-256 `f3f75b0574659d64b4c9a265ad990fd3243e326eb2980cb71a44f60f46204390`). The four runtime and profile hashes in the [B and F capture record](assets/resize-review/bf/terminal-cells.json) matched the archive.
+
+Each target used the [offline fixture loaders](test-selection-plan.md#reproduce-the-paired-offline-baseline) and ran `bash tests/run.sh` once with ordinary, unsharded discovery. Fixture manifest SHA-256 was `f08addd63144ff211587db461169f9f26302e5a969aea6865ec70ff879e19984` for host and `585b29b53ef075b24e12ddad0d32b612f0182e32824f4f300be2800b1babee8c` for both Noble targets.
+
+| Target | Ubuntu | Python | Discovered | Passed | Failed or errored | Skipped | Exit |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| host | 26.04.1 | 3.14.4 | 2,086 | 2,085 | 0 | 1 | 0 |
+| noble310 | 24.04.5 | 3.10.20 | 2,086 | 2,085 | 0 | 1 | 0 |
+| noble312 | 24.04.5 | 3.12.3 | 2,086 | 2,085 | 0 | 1 | 0 |
+
+All three transcripts contained the same test IDs and outcomes. The sole skip was `test_functional_matrix.EdgeCaseTests.test_probe_reports_the_windows_limitation`, with the reason “POSIX hosts complete the probe normally”. Numerical preflight and both collection validations passed on every target. This closes Phase 4.
+
+The transcripts, per-target results, source archive and fixture manifests are retained locally under `tests/reports/resize-phase4-266e756/`.
+
+For future resize proposals, identify the operation, expected state, comparison snapshots and maintainer decision before grouping changes for another verification batch. [Project verification procedure](development.md#auditing-command-help)

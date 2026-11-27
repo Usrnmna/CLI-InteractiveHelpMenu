@@ -84,7 +84,7 @@ After a shrink to 60×16, Esc and Ctrl-C each restored the original Unicode comm
 
 ## B and F follow-up
 
-The maintainer accepted A, C, D and E. All 36 frames from those cases matched their original terminal cells on replay. The B and F comparisons below are ready for review. The follow-up record identifies the base commit, runtime hashes, dimensions, cursor positions and captured cells. [Terminal cells and control results](assets/resize-review/bf/terminal-cells.json)
+The maintainer accepted A, C, D and E. All 36 frames from those cases matched their original terminal cells on replay. The maintainer accepted B as shown and closed F with Ctrl-L recovery at the Bash prompt. The follow-up record identifies the base commit, runtime hashes, dimensions, cursor positions and captured cells. [Terminal cells and control results](assets/resize-review/bf/terminal-cells.json)
 
 **B · Reading position.** With rsync’s bandwidth Details scrolled so the top left column ends a sentence with “supported”, shrinking from 160×40 to 60×16 keeps “fractions are supported” on the first text row. Guided navigation opens directly in Details. The split layout keeps the phrase in its Details pane. Growing back restores the same wide cells and line range (6–24 of 41). On the separate 80×24 → 80×16 height change, “Input NB · B/s” stayed at the top. All 55 lines at the destination matched a fresh open, including 13 input forms and one shared zero rule.
 
@@ -112,4 +112,4 @@ At the Bash prompt, the default Ctrl-L binding redrew the pending command once. 
 
 [Plain Bash before Ctrl-L](assets/resize-review/bf/F-plain-before.png) · [Plain Bash after Ctrl-L](assets/resize-review/bf/F-plain-after.png)
 
-**Verification.** On host, noble310 and noble312, 121 focused tests passed per target. After the final-page adjustment, 10 focused checks per target passed, including the new end-of-page and cross-command regressions. A separate rendering pass prepared Expanded text for all 76 bundled profiles, including 4,096 options with value declarations. Both collection checks and the strict numerical gate passed with 4,426 of 4,426 required records complete. The combined full-suite gate follows maintainer review.
+**Verification.** On host, noble310 and noble312, 121 focused tests passed per target. After the final-page adjustment, 10 focused checks per target passed, including the new end-of-page and cross-command regressions. A separate rendering pass prepared Expanded text for all 76 bundled profiles, including 4,096 options with value declarations. Both collection checks and the strict numerical gate passed with 4,426 of 4,426 required records complete. The [Phase 4 record](terminal-resize-review.md#phase-4--verify-the-accepted-changes-together) covers the combined offline suite.

@@ -20,10 +20,7 @@ The split view resumes at 80 columns. The prototype follows the frozen release b
 
 ### Terminal resizing during operations
 
-The maintainer accepted the compact header. All six Phase 2 cases have live before/after captures. [Accepted header](docs/terminal-resize-review.md#phase-1--review-the-layout-boundary) · [Six-case gallery](docs/terminal-resize-results.md)
-
-- [ ] **Review the revised B and F frames.** The maintainer accepted A, C, D and E. B now keeps the reading position through reflow and groups repeated value rules across command pages. F also reproduces in plain Bash. Decide whether the documented Ctrl-L recovery closes F or whether to investigate automatic recovery separately. [B and F comparisons](docs/terminal-resize-results.md#b-and-f-follow-up)
-- [ ] **Verify the accepted changes in one batch.** Compare affected before/after frames, collect sign-off and share one combined gate for runtime changes. [Verification plan](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
+**Phase 4 complete.** The maintainer accepted all six resize cases, keeping B as shown and closing F with Ctrl-L recovery at the Bash prompt. At `266e756`, host, noble310 and noble312 each ran the full offline suite once. Each recorded 2,085 passes, zero failures or errors, one Windows-only skip and exit 0. All per-test outcomes matched. [Per-target verification and fixture identities](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together) · [B and F snapshots](docs/terminal-resize-results.md#b-and-f-follow-up)
 
 ### Unresolved provider findings
 
