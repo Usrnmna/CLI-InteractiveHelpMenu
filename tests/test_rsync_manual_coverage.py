@@ -216,7 +216,7 @@ class RsyncMenuTests(TerminalTestCase):
     def find_option(self, shell, query, flag):
         """Search an unfiltered 60-column menu and navigate to the matching row."""
         menu = shell.open_menu()
-        self.assertEqual(menu.cells[2].rstrip(), "Filter:")
+        self.assertEqual(menu.cells[2].rstrip(), "")
         shell.keys("/")
         shell.text(query)
         shell.keys("Enter")

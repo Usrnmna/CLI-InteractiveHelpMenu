@@ -2,6 +2,22 @@
 
 The browser began as a way to choose a command option in Bash and return to an editable command line. The early reviews tested that editing boundary. Later audits checked which documented choices the bundled menus described and which options discovery recovered from fixed help and manual replies. The sections below follow that sequence through the three-level menu and release-candidate checks. [Remaining work](../ROADMAP.md#remaining-work)
 
+## Narrow menu navigation preview
+
+The post-`9274a1a` working tree adds an opt-in three-screen browser below 80 columns. A Bash/tmux session opened rsync at 60×16, selected Network and `--bwlimit=RATE`, and read through the final suffix explanation using Space. The same key returned to the opening page. Live resizing at 79, 80, 160 and 60 columns exercised both layouts. Escape restored the original line and cursor. A second invocation inserted `--archive` before a quoted operand from Details. The command execution guard remained untouched. [Preview controls](usage.md#narrow-menu-preview) · [Interaction tests](../tests/test_menu_levels.py)
+
+The focused host run passed 87 renderer, navigation, editing, sanitization and terminal checks. The private tmux captures under `tests/reports/narrow-menu-preview/` include plain cells, color attributes and PNGs for the three narrow screens and the 100×24 split view. The package matrix for `9274a1a` uses the renderer from that commit.
+
+The level control now displays `Shift+D change view` in both layouts. The Bash/tmux regression cycled levels on the narrow Options and Details screens while keeping rsync’s second Network option selected under the `--` filter. The arrows traversed screens independently. Crossing the 80-column boundary retained the selection and reading level. The final menu run passed 15 checks, including the default-on, unlisted scrolling toggle and remapped level labels. [Menu regressions](../tests/test_menu_levels.py)
+
+### Scrolling option summaries
+
+A keyboard-only prototype compared a static row with a single horizontal pass over the selected summary. At 60×16, rsync’s `--bwlimit=RATE` first moved at 2.01 seconds and finished revealing “KiB/s)” at 3.01 seconds. Only the summary cells changed. Reselecting the option restored its opening text and restarted the pause. The first motion after reselection was observed at 2.00 seconds. The short `--compress` summary and the full `--bwlimit=RATE` summary at 100×24 stayed still throughout the two-second observation periods. The trace and animation are in `tests/reports/narrow-menu-preview/`.
+
+At 60 columns, 35 of the 38 Network summaries exceed the prototype’s 32-cell description column. At four cells per second after a fixed two-second dwell, the calculated median time to the end of those 35 summaries is 4.75 seconds. The longest takes 7.00 seconds. Opening Details gives immediate access to the complete summary.
+
+The development browser now offers the same two-second pause and single pass in split and narrow Options views. Scrolling starts enabled. The focused checks cover the unlisted keyboard toggle, the environment override for static rows, fitting summaries, Unicode cell boundaries, returning to an option, and Bash cancellation. Existing custom key assignments take precedence. [Browser controls](usage.md#scrolling-option-summaries) · [Integration checks](../tests/test_menu_levels.py)
+
 ## Ubuntu default and optional commands
 
 The Ubuntu batch added edition-aware package-manager and Bash help, a bundled reference for installed commands with missing help, and a root result for every shipped name, kernel companion and ranked optional row. The family audit records source versions, the six image results and the verification matrix. [Ubuntu coverage audit](ubuntu-coverage-audit.md) The corrected combined snapshot passed 2,021 tests with one Windows-only skip on each of the three offline targets. [Verification matrix](ubuntu-coverage-audit.md#combined-offline-matrix-2026-11-26)

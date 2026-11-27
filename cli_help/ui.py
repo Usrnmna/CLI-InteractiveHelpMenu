@@ -2,9 +2,11 @@
 
 import curses
 from dataclasses import dataclass, field
+import math
 import os
 import re
 from pathlib import Path
+import time
 import unicodedata
 
 from core import HelpError, read_json
@@ -20,7 +22,8 @@ DEFAULT_KEYS = {
     "previous_category": ["left", "h"], "next_category": ["right", "l"],
     "focus": ["tab"], "accept": ["enter"], "cancel": ["esc", "ctrl-c", "q"],
     "search": ["/"], "clear_search": ["ctrl-u"],
-    "detail_up": ["["], "detail_down": ["]"], "cycle_detail": ["D"],
+    "detail_up": ["["], "detail_down": ["]"], "detail_page": ["space"], "cycle_detail": ["D"],
+    "toggle_summary_scroll": ["m"],
 }
 
 NAMED_KEYS = {
@@ -28,7 +31,7 @@ NAMED_KEYS = {
     "left": curses.KEY_LEFT, "right": curses.KEY_RIGHT,
     "pageup": curses.KEY_PPAGE, "pagedown": curses.KEY_NPAGE,
     "home": curses.KEY_HOME, "end": curses.KEY_END,
-    "f6": curses.KEY_F6, "tab": "\t", "enter": "\n", "esc": "\x1b",
+    "space": " ", "f6": curses.KEY_F6, "tab": "\t", "enter": "\n", "esc": "\x1b",
     "ctrl-c": "\x03", "ctrl-u": "\x15",
 }
 
@@ -44,6 +47,10 @@ def load_keys(path: Path | None = None) -> dict:
             if action not in bindings:
                 raise HelpError(f"Unknown key action: {action}")
             bindings[action] = keys
+        # Preserve older bindings that already assign m to another action.
+        if "toggle_summary_scroll" not in document["keys"] and any(
+                isinstance(values, list) and "m" in values for values in document["keys"].values()):
+            del bindings["toggle_summary_scroll"]
         if "cycle_detail" not in document["keys"]:
             occupied = {key for action, values in bindings.items() if action != "cycle_detail"
                         and isinstance(values, list) for key in values if isinstance(key, str)}
@@ -51,6 +58,16 @@ def load_keys(path: Path | None = None) -> dict:
             if not fallback:
                 raise HelpError("Configure a free key for cycle_detail (D, V and F6 are occupied).")
             bindings["cycle_detail"] = [fallback]
+        if "detail_page" not in document["keys"]:
+            occupied = {NAMED_KEYS.get(k, k) for action, values in bindings.items() if action != "detail_page"
+                        and isinstance(values, list) for k in values if isinstance(k, str)}
+            for candidate in ("space", "P", "f6"):
+                if NAMED_KEYS.get(candidate, candidate) not in occupied:
+                    bindings["detail_page"] = [candidate]
+                    break
+            else:
+                # Older configurations can already own every suggested key.
+                del bindings["detail_page"]
     used = set()
     for action, keys in bindings.items():
         if not isinstance(keys, list) or not keys:
@@ -79,6 +96,13 @@ class Browser:
     focus: str = "options"
     level: str = "Simple"
     accent: int = 0
+    section_color: int = 0
+    key_color: int = 0
+    guided: bool = False
+    scroll_summaries: bool = True
+    summary_field: tuple | None = field(default=None, init=False, repr=False)
+    compact_page: str | None = None
+    next_detail_offset: int = field(default=0, init=False)
     _text: dict = field(default_factory=dict, init=False, repr=False)
 
     def __post_init__(self):
@@ -114,6 +138,15 @@ class Browser:
     def text(self, option):
         """Return the same derived explanation used by list, details and search."""
         return self._text[id(option)]
+
+    def visible_summary(self, option, text, row, column, width, focused):
+        """Register the exact on-screen summary field only when enabled and truncated."""
+        visible = ellipsize_cells(text, width)
+        if focused and self.scroll_summaries:
+            clean = display_text(text)
+            if visible != clean:
+                self.summary_field = (id(option), row, column, width, clean)
+        return visible
 
     def move_category(self, amount):
         self.category = max(0, min(len(self.profile["categories"]) - 1, self.category + amount))
@@ -164,6 +197,59 @@ def ellipsize_cells(text, width):
     if sum(cell_width(char) for char in text) <= width:
         return text
     return clip_cells(text, max(0, width - 1)) + ("…" if width > 0 else "")
+
+
+def summary_windows(text, width):
+    """Yield successive clipped views, keeping combining marks with each base character."""
+    text = display_text(text)
+    remaining = sum(map(cell_width, text))
+    start = 0
+    while remaining > width - 1 and start < len(text):
+        remaining -= cell_width(text[start])
+        start += 1
+        while start < len(text) and not cell_width(text[start]):
+            start += 1
+        if remaining <= width - 1:
+            yield "…" + text[start:], True
+            return
+        yield "…" + clip_cells(text[start:], width - 2) + "…", False
+
+
+class SummaryScroll:
+    """Schedule one horizontal pass for the active field and repaint only its cells."""
+
+    def __init__(self):
+        self.target = None
+        self.deadline = None
+        self.frames = None
+        self.visible = ""
+
+    def select(self, target, now):
+        """Restart after a changed selection or layout, measured from its opening frame."""
+        if target == self.target:
+            return
+        self.target = target
+        self.visible = ""
+        self.deadline = None
+        self.frames = None
+        if target:
+            _, _, _, width, text = target
+            self.frames = summary_windows(text, width)
+            self.deadline = now + 2.0
+
+    def paint(self, screen):
+        """Restore the visible slice after a full draw or paint a single timed step."""
+        _, row, column, width, _ = self.target
+        padding = width - sum(map(cell_width, self.visible))
+        write(screen, row, column, self.visible + " " * padding, width, curses.A_REVERSE)
+
+    def tick(self, screen, now):
+        """Advance a due frame once and stop polling the animation after the last slice."""
+        if self.deadline is not None and now >= self.deadline:
+            self.visible, finished = next(self.frames)
+            self.paint(screen)
+            screen.refresh()
+            self.deadline = None if finished else now + 0.25
 
 
 def wrap_cells(text, width):
@@ -236,7 +322,7 @@ _SHORT_CATEGORIES = {
     "Apple and Android devices": "Mobile devices", "Additional protocol options": "More protocols",
     "Archive and member selection": "Archive members", "Archive input and decoded data": "Archive input",
     "Build inputs and stages": "Build stages", "Build mounts and networking": "Mounts & net",
-    "Cache and registries": "Cache/registries", "Certificate checking": "Cert checks",
+    "Cache and registries": "Cache/registry", "Certificate checking": "Cert checks",
     "Certificate output": "Cert output", "Certificate printing": "Cert printing",
     "Certificate trust output": "Trust output", "Console and resource controls": "Console/limits",
     "Existing files and output paths": "Files & paths", "Expression permissions": "Expr access",
@@ -251,9 +337,14 @@ _SHORT_CATEGORIES = {
     "Environment and metadata": "Env & metadata", "Filtering and ordering": "Filter/order",
     "Matching and sorting": "Match & sort", "Optional codec builds A–M": "Extra codecs A–M",
     "Optional codec builds N–Z": "Extra codecs N–Z", "Merge comparisons": "Merge diffs",
-    "Container selection": "Select container", "Protocol and version": "Protocol/version",
-    "Actions and history": "Actions/history", "Test binary flags": "Test binary args",
-    "Runtime and security": "Runtime/security",
+    "Container selection": "Container", "Protocol and version": "Protocol/ver.",
+    "Change summaries": "Change summary", "Change detection": "Detect changes",
+    "Comparison rules": "Compare rules", "Borders and labels": "Borders/labels",
+    "Prompt and headers": "Prompt/headers", "Digest selectors": "Digest types",
+    "Queries and output": "Queries/output", "Users and security": "Users/security",
+    "Contents and usage": "Contents/usage",
+    "Actions and history": "Actions/history", "Test binary flags": "Test args",
+    "Runtime and security": "Runtime/secure",
 }
 
 
@@ -270,35 +361,102 @@ def category_label(name, budget):
 LEVELS = ("Simple", "Detailed", "Expanded")
 
 
-def option_accent():
-    """Use the terminal's foreground/background policy and fall back cleanly to monochrome."""
+def menu_colors():
+    """Choose distinct readable pairs for declarations, headings and keyboard hints.
+
+    A reported terminal background keeps its native appearance. With no reliable
+    report, give only the accented text an explicit background for contrast.
+    """
+    plain = (0, 0, 0)
     if os.environ.get("NO_COLOR"):
-        return 0
-    # COLORFGBG is optional. Use bold/markers when the terminal does not report
-    # its background; cyan on an unknown light background can be unreadable.
-    background = os.environ.get("COLORFGBG", "").rsplit(";", 1)[-1]
-    if not background.isascii() or not background.isdigit() or len(background) > 3:
-        return 0
+        return plain
     try:
-        if not curses.has_colors() or curses.COLOR_PAIRS < 2:
-            return 0
+        if not curses.has_colors() or curses.COLORS < 8:
+            return plain
+        report = os.environ.get("COLORFGBG", "").rsplit(";", 1)[-1]
+        background = curses.COLOR_BLACK
+        pair_background = background
+        try:
+            curses.use_default_colors()
+        except curses.error:
+            pass  # Explicit pairs remain usable on terminals without default colors.
+        else:
+            if report.isascii() and report.isdigit() and len(report) <= 3 and int(report) < curses.COLORS:
+                background = int(report)
+                pair_background = -1
 
         def luminance(index):
-            """Convert the terminal's reported RGB values to relative luminance."""
-            rgb = [component / 1000 for component in curses.color_content(index)]
+            """Convert the reported RGB channels to relative luminance."""
+            rgb = [channel / 1000 for channel in curses.color_content(index)]
             linear = [v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in rgb]
-            return sum(channel * weight for channel, weight in zip(linear, (0.2126, 0.7152, 0.0722)))
+            return sum(v * weight for v, weight in zip(linear, (0.2126, 0.7152, 0.0722)))
 
-        bg = luminance(int(background))
-        for accent in (curses.COLOR_CYAN, curses.COLOR_BLUE):
-            fg = luminance(accent)
-            if (max(bg, fg) + 0.05) / (min(bg, fg) + 0.05) >= 4.5:
-                curses.use_default_colors()
-                curses.init_pair(1, accent, -1)
-                return curses.color_pair(1)
+        bg = luminance(background)
+        # Each role takes the next unused color that meets text contrast.
+        candidates = (curses.COLOR_CYAN, curses.COLOR_YELLOW, curses.COLOR_GREEN,
+                      curses.COLOR_BLUE, curses.COLOR_MAGENTA, curses.COLOR_RED,
+                      curses.COLOR_WHITE, curses.COLOR_BLACK)
+        styles = []
+        for candidate in candidates:
+            fg = luminance(candidate)
+            if (max(bg, fg) + 0.05) / (min(bg, fg) + 0.05) < 4.5:
+                continue
+            pair = len(styles) + 1
+            if pair >= curses.COLOR_PAIRS:
+                break
+            curses.init_pair(pair, candidate, pair_background)
+            styles.append(curses.color_pair(pair))
+            if len(styles) == 3:
+                break
+        return tuple(styles) + plain[len(styles):]
     except (AttributeError, ValueError, curses.error):
-        pass
-    return 0
+        return plain
+
+
+def key_label(keys, action):
+    """Use terminal glyphs for named arrows and preserve custom key spellings."""
+    key = keys[action][0]
+    return {"up": "↑", "down": "↓", "left": "←", "right": "→", "space": "Space", " ": "Space"}.get(key, key)
+
+
+def key_pair(keys, first, second):
+    """Join a familiar glyph pair, or separate custom bindings for legibility."""
+    a, b = key_label(keys, first), key_label(keys, second)
+    return a + b if (a, b) in {("↑", "↓"), ("←", "→"), ("[", "]")} else a + "/" + b
+
+
+def detail_page_hint(browser, keys):
+    """Offer one page action, or the configured line controls for legacy bindings."""
+    if "detail_page" in keys:
+        return key_label(keys, "detail_page"), "next" if browser.next_detail_offset else "top"
+    return key_pair(keys, "detail_up", "detail_down"), "scroll"
+
+
+def draw_controls(screen, row, width, browser, keys, searching, preview, scrolling):
+    """Fit whole key hints by priority, leaving a gutter between neighboring actions."""
+    if searching:
+        hints = [("enter", "apply"), ("esc", "restore")]
+    else:
+        accept = "open" if browser.focus == "categories" else "inspect" if preview else "insert"
+        hints = [(key_pair(keys, "up", "down"), "move"), (keys["accept"][0], accept),
+                 (keys["cancel"][0], "cancel")]
+        if scrolling:
+            hints.append(detail_page_hint(browser, keys))
+        hints.extend([(key_pair(keys, "previous_category", "next_category"), "category"),
+                      (keys["search"][0], "search"), (keys["focus"][0], "focus")])
+    draw_hints(screen, row, width, hints, browser.key_color)
+
+
+def draw_hints(screen, row, width, hints, color):
+    """Draw complete shortcuts with bold keycaps and three-cell gutters."""
+    x = 0
+    for key, action in hints:
+        label = (key + " " + action).rstrip()
+        size = sum(map(cell_width, label))
+        if x + size <= width:
+            write(screen, row, x, label, size)
+            write(screen, row, x, key, size, curses.A_BOLD | color)
+            x += size + 3
 
 
 def shared_note(browser, options, budget):
@@ -497,14 +655,161 @@ def layout_details(lines, width, accent):
     return rows
 
 
-def draw(screen, browser: Browser, keys, searching=False, preview=False):
+def draw_title(screen, browser, keys, preview, width):
+    """Show the command and the effective level binding within the available cells."""
+    key = key_label(keys, "cycle_detail")
+    if len(key) == 1 and "A" <= key <= "Z":
+        key = "Shift+" + key
+    hint = browser.level + "   " + key + " change view"
+    hint_width = sum(map(cell_width, hint))
+    title = ("Help preview | " if preview else "Interactive help | ") + " ".join(browser.profile["command"])
+    title_width = width - hint_width - 1
+    write(screen, 0, 0, ellipsize_cells(title, title_width), title_width, curses.A_BOLD | browser.section_color)
+    write(screen, 0, width - hint_width, hint, hint_width, curses.A_BOLD)
+
+
+def level_guidance(view, level):
+    """Read the selected explanation lazily in both layouts."""
+    if level == "Expanded":
+        return view.expanded
+    if level == "Detailed":
+        return view.detailed
+    return ()
+
+
+def draw_compact(screen, browser, keys, searching, preview):
+    """Show one step of category selection, option selection or reading below 80 columns."""
+    height, width = screen.getmaxyx()
+    width -= 1
+    page = browser.compact_page
+    categories = browser.profile["categories"]
+    category = categories[browser.category]
+    options = browser.options()
+    selected = options[browser.selected] if options else None
+    draw_title(screen, browser, keys, preview, width)
+    context = "" if page == "categories" else "  ·  " + category["name"]
+    heading = page.capitalize() + context
+    if searching:
+        heading = "Search: " + browser.query
+    elif browser.query and page == "options":
+        heading = "Options  ·  Filter: " + browser.query
+    position = ""
+    if page != "details" and not searching:
+        total = len(categories) if page == "categories" else len(options)
+        index = browser.category if page == "categories" else browser.selected
+        position = f"{index + 1 if total else 0}/{total}"
+        write(screen, 1, width - len(position), position, len(position))
+    heading_width = width - len(position) - 2 if position else width
+    write(screen, 1, 0, ellipsize_cells(heading, heading_width), heading_width, curses.A_BOLD | browser.section_color)
+    write(screen, 2, 0, "━" * width, width)
+    start, stop = 4, height - 3  # Keep a blank row inside each horizontal boundary.
+    capacity = (stop - start + 1) // 2
+    key = lambda action: keys[action][0]
+    back = key_label(keys, "previous_category")
+    forward = key_label(keys, "next_category")
+    move = key_pair(keys, "up", "down")
+    accept = "inspect" if preview else "insert"
+    if page == "details":
+        heading = option_label(selected) if selected else category["name"]
+        write(screen, start - 1, 0, ellipsize_cells(heading, width), width, curses.A_BOLD | browser.accent)
+        if selected:
+            view = browser.text(selected)
+            paragraphs = list(level_guidance(view, browser.level))
+            if not paragraphs:
+                paragraphs = [view.summary]
+            elif view.summary not in paragraphs:
+                paragraphs = [view.summary, "", *paragraphs]
+            if ellipsize_cells(heading, width) != heading:
+                paragraphs.insert(0, heading)
+        else:
+            paragraphs = [terminal_prose(category.get("description", ""))]
+            if browser.profile.get("positional_group"):
+                paragraphs.append("Repeated value group: " + browser.profile["positional_group"]["argument"])
+        lines = layout_details(paragraphs, width, browser.accent)
+        body = stop - start
+        last = max(0, len(lines) - body)
+        offset = browser.detail_offset = min(max(0, browser.detail_offset), last)
+        browser.next_detail_offset = min(offset + body, last) if offset < last else 0
+        for row, line in enumerate(lines[offset:offset + body], start):
+            write(screen, row, 0, line.text, width)
+            for column, word, attr in line.highlights:
+                write(screen, row, column, word, width - column, attr)
+        hints = [(back, "back")]
+        if last:
+            hints.append(detail_page_hint(browser, keys))
+        if selected:
+            hints.append((key("accept"), accept))
+    else:
+        picking = page == "categories"
+        entries = categories if picking else options
+        index = browser.category if picking else browser.selected
+        first = max(0, min(len(entries) - capacity, index - (capacity - 1) // 2))
+        fw = option_label_width(category, width) if options and not picking else 0
+        for i, item in enumerate(entries[first:first + capacity], first):
+            row = start + 2 * (i - first)
+            label = item["name"] if picking else ellipsize_cells(option_label(item), fw)
+            prefix = "> " if i == index else "  "
+            text = prefix + label
+            if not picking:
+                summary = browser.visible_summary(item, row_summary(browser.text(item), ()), row,
+                                                  fw + 4, width - fw - 4, i == index and not searching)
+                text += " " * (fw - sum(map(cell_width, label)) + 2) + summary
+            write(screen, row, 0, ellipsize_cells(text, width), width, curses.A_REVERSE if i == index else 0)
+            if i != index:
+                write(screen, row, 2, label, width - 2, curses.A_BOLD | (browser.section_color if picking else browser.accent))
+        if not entries:
+            write(screen, start, 0, "No matches. Clear the filter or go back.", width)
+        hints = [(move, "move" if picking or width >= 65 else "")]
+        if picking:
+            hints.append((forward, "options"))
+        else:
+            hints.extend([(back, "back"), (forward, "details")])
+            if selected:
+                hints.append((key("accept"), accept))
+    hints.append((key("cancel"), "exit"))
+    if page != "details":
+        hints.append((key("search"), "find"))
+    if searching:
+        hints = [("enter", "apply"), ("esc", "restore")]
+    write(screen, height - 2, 0, "━" * width, width)
+    draw_hints(screen, height - 1, width, hints, browser.key_color)
+    return capacity
+
+
+def draw(screen, browser: Browser, keys, searching=False, preview=False, scroll=None):
+    """Present a complete frame, retaining the current slice on unrelated redraws."""
+    capacity = draw_frame(screen, browser, keys, searching, preview)
+    if scroll and scroll.target == browser.summary_field and scroll.visible:
+        scroll.paint(screen)
+    screen.refresh()
+    if scroll:
+        scroll.select(browser.summary_field, time.monotonic())
+    return capacity
+
+
+def draw_frame(screen, browser: Browser, keys, searching, preview):
     """Lay out one frame and return the focused pane's selectable page capacity."""
     height, width = screen.getmaxyx()
+    browser.summary_field = None
     screen.erase()
     if height < 16 or width < 60:
         write(screen, 0, 0, "Resize to at least 60 columns x 16 rows; Esc cancels.", width - 1)
-        screen.refresh()
         return 1
+    if browser.guided and width < 80:
+        if not browser.compact_page:
+            if browser.focus == "categories" or (not browser.query and len(browser.profile["categories"]) > 1):
+                browser.compact_page = "categories"
+            else:
+                browser.compact_page = "options"
+        browser.focus = "categories" if browser.compact_page == "categories" else "options"
+        return draw_compact(screen, browser, keys, searching, preview)
+    # Remember the narrow reading screen over a wide resize. Wide navigation
+    # still determines which pane has focus when the terminal shrinks again.
+    if browser.guided:
+        if browser.focus == "categories":
+            browser.compact_page = "categories"
+        elif browser.compact_page != "details" or searching:
+            browser.compact_page = "options"
     left = min(26, width // 3)
     budget = width - left - 1
     category = browser.profile["categories"][browser.category]
@@ -521,10 +826,7 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     if view:
         summary = row_summary(view, group)
         clipped_label = ellipsize_cells(label, fw) != label
-        if level == "Detailed":
-            detail.extend(view.detailed)
-        elif level == "Expanded":
-            detail.extend(view.expanded)
+        detail.extend(level_guidance(view, level))
         if ellipsize_cells(summary, description_width) != summary:
             detail.append(summary)
         if clipped_label and sum(map(cell_width, label)) > width - 22:
@@ -543,7 +845,7 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     top = 4 + bool(note)
     # Reserve at least two selectable rows at minimum size.
     available = height - 2 - top
-    body_cap = available - 3
+    body_cap = available - 4
     if level == "Expanded":
         body_cap = min(body_cap, max(6, height // 2 - 1))
     if level == "Simple":
@@ -554,42 +856,42 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
     header = bool(body or (clipped_label and browser.focus == "options"))
     end = height - 2 - body - header
     slots = end - top
-    stride = 2 if slots >= 3 else 1
-    capacity = (slots + stride - 1) // stride
+    capacity = (slots + 1) // 2
     first = max(0, min(len(options) - capacity, browser.selected - (capacity - 1) // 2))
 
-    hint = level + "   " + keys["cycle_detail"][0] + " change view"
-    hint_width = sum(map(cell_width, hint))
-    title = ("Help preview | " if preview else "Interactive help | ") + " ".join(browser.profile["command"])
-    write(screen, 0, 0, title, width - hint_width - 2, curses.A_BOLD)
-    write(screen, 0, width - hint_width - 1, hint, hint_width, curses.A_BOLD)
+    draw_title(screen, browser, keys, preview, width - 1)
     write(screen, 1, 0, ellipsize_cells(category_title, width - 1), width - 1)
-    write(screen, 2, 0, ("Search (Enter applies, Esc restores): " if searching else "Filter: ") + browser.query,
-          width - 1, curses.A_REVERSE if searching else 0)
-    write(screen, 3, 0, "CATEGORIES" + (" *" if browser.focus == "categories" else ""), left - 2, curses.A_BOLD)
-    write(screen, 3, left, "OPTIONS" + (" *" if browser.focus == "options" else ""), budget, curses.A_BOLD)
+    if searching or browser.query:
+        write(screen, 2, 0, ("Search: " if searching else "Filter: ") + browser.query,
+              width - 1, curses.A_REVERSE if searching else 0)
     count = f"{browser.selected + 1 if options else 0}/{len(options)}"
+    for x, pane, span in ((0, "categories", left - 3), (left, "options", budget - len(count) - 1)):
+        name = pane.upper() + (" *" if browser.focus == pane else "")
+        write(screen, 3, x, name, span, curses.A_BOLD | browser.section_color)
+        rule = span - len(name) - 1
+        write(screen, 3, x + len(name) + 1, "━" * rule, rule)
     write(screen, 3, width - len(count) - 1, count, len(count))
     if note:
         write(screen, 4, left, note, budget)
-    category_capacity = end - 4
-    start = max(0, browser.category - category_capacity + 1)
-    for y, c in enumerate(browser.profile["categories"][start:start + category_capacity], 4):
-        index = start + y - 4
+    start = max(0, browser.category - capacity + 1)
+    for index, c in enumerate(browser.profile["categories"][start:start + capacity], start):
+        y = top + (index - start) * 2
         selected = index == browser.category
         name = c["name"]
         count = f" ({len(browser.options(index))})" if browser.query else ""
-        name_budget = left - 4 - len(count)
+        name_budget = left - 5 - len(count)
         text = ("> " if selected else "  ") + category_label(name, name_budget) + count
-        write(screen, y, 0, text, left - 2, curses.A_BOLD if selected else 0)
+        write(screen, y, 0, text, left - 3, (curses.A_BOLD | browser.section_color) if selected else 0)
     for i, item in enumerate(options[first:first + capacity], first):
-        y = top + (i - first) * stride
+        y = top + (i - first) * 2
         selected = i == browser.selected
         flag = ellipsize_cells(option_label(item), fw)
         attr = curses.A_REVERSE if selected else 0
         marker = "> " if selected else "  "
         text = row_summary(browser.text(item), group)
-        row = marker + flag + " " * (fw - sum(map(cell_width, flag)) + 2) + ellipsize_cells(text, description_width)
+        visible = browser.visible_summary(item, text, y, left + fw + 4, description_width,
+                                          selected and browser.focus == "options" and not searching)
+        row = marker + flag + " " * (fw - sum(map(cell_width, flag)) + 2) + visible
         write(screen, y, left, row, budget, attr)
         if not selected:
             write(screen, y, left + 2, flag, fw, curses.A_BOLD | browser.accent)
@@ -597,6 +899,7 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
         write(screen, top, left, "No matches. Clear the filter or change category.", budget)
     browser.detail_offset = min(max(0, browser.detail_offset), max(0, len(lines) - body))
     offset = browser.detail_offset
+    browser.next_detail_offset = min(offset + body, len(lines) - body) if offset + body < len(lines) else 0
     if header:
         counter = f"Lines {offset + 1}–{offset + body}/{len(lines)}" if body < len(lines) else ""
         header_width = width - len(counter) - 2
@@ -617,17 +920,11 @@ def draw(screen, browser: Browser, keys, searching=False, preview=False):
             write(screen, y, 0, line.text, width - 1)
             for column, word, attr in line.highlights:
                 write(screen, y, column, word, width - 1 - column, attr)
-    key = lambda action: keys[action][0]
-    write(screen, height - 2, 0, f"{key('up')}/{key('down')} move  {key('previous_category')}/{key('next_category')} category  "
-          f"{key('focus')} focus  {key('search')} search", width - 1)
-    footer = f"{key('accept')} {'inspect' if preview else 'insert'}  {key('cancel')} cancel"
-    if body < len(lines):
-        footer += f"  {key('detail_up')}/{key('detail_down')} scroll details"
-    write(screen, height - 1, 0, footer, width - 1)
+    write(screen, height - 2, 0, "━" * (width - 1), width - 1)
+    draw_controls(screen, height - 1, width - 1, browser, keys, searching, preview, body < len(lines))
     for y in range(3, end):
         write(screen, y, left - 2, "│", 1)
-    screen.refresh()
-    return category_capacity if browser.focus == "categories" else capacity
+    return capacity
 
 
 def run_browser(screen, profile, query, keys, preview=False):
@@ -638,16 +935,18 @@ def run_browser(screen, profile, query, keys, preview=False):
         pass
     curses.raw()
     screen.keypad(True)
-    screen.timeout(150)
     curses.set_escdelay(escape_delay())
     actions = {NAMED_KEYS.get(key, key): action for action, names in keys.items() for key in names}
     if "\n" in actions:
         actions["\r"] = actions["\n"]
         actions[curses.KEY_ENTER] = actions["\n"]
-    browser = Browser(profile, query)
-    browser.accent = option_accent()
+    browser = Browser(profile, query, guided=os.environ.get("CLI_HELP_NARROW_MENU") == "1")
+    browser.accent, browser.section_color, browser.key_color = menu_colors()
+    scroll = SummaryScroll()
+    browser.scroll_summaries = os.environ.get("CLI_HELP_SCROLL_SUMMARIES", "1") == "1"
     searching = False
     saved_query = query
+    search_origin = None
     drawn_size = None
     while True:
         # A helper launched through Bash process substitution may not receive
@@ -659,8 +958,15 @@ def run_browser(screen, profile, query, keys, preview=False):
             curses.resizeterm(*geometry)
             drawn_size = None
         if geometry != drawn_size:
-            rows = draw(screen, browser, keys, searching, preview)
+            rows = draw(screen, browser, keys, searching, preview, scroll)
             drawn_size = geometry
+        if scroll.deadline is not None:
+            scroll.tick(screen, time.monotonic())
+        # Keep polling geometry while waiting for the next animation frame.
+        wait = 150
+        if scroll.deadline is not None:
+            wait = min(wait, max(1, math.ceil((scroll.deadline - time.monotonic()) * 1000)))
+        screen.timeout(wait)
         try:
             key = screen.get_wch()
         except curses.error:
@@ -674,6 +980,8 @@ def run_browser(screen, profile, query, keys, preview=False):
                 searching = False
             elif key == "\x1b":
                 browser.set_query(saved_query)
+                if browser.compact_page and search_origin:
+                    browser.compact_page = search_origin
                 searching = False
             elif key == "\x03":
                 return None
@@ -689,6 +997,37 @@ def run_browser(screen, profile, query, keys, preview=False):
             return None
         if screen.getmaxyx()[0] < 16 or screen.getmaxyx()[1] < 60:
             continue
+        if action == "toggle_summary_scroll":
+            browser.scroll_summaries = not browser.scroll_summaries
+            continue
+        if action == "cycle_detail":
+            browser.level = LEVELS[(LEVELS.index(browser.level) + 1) % len(LEVELS)]
+            browser.detail_offset = 0
+            continue
+        page = browser.compact_page if geometry[1] < 80 else None
+        if page:
+            if action in ("focus", "previous_category", "next_category", "accept"):
+                if action == "accept" and page != "categories":
+                    if browser.options():
+                        return browser.options()[browser.selected]
+                    continue
+                if action == "previous_category" or (action == "focus" and page != "categories"):
+                    destination = "options" if page == "details" else "categories"
+                elif page == "categories":
+                    destination = "options"
+                else:
+                    destination = "details"
+                if destination == page:
+                    continue
+                browser.compact_page = destination
+                browser.focus = "categories" if destination == "categories" else "options"
+                browser.detail_offset = 0
+                continue
+            if page == "details" and action not in ("detail_up", "detail_down", "detail_page"):
+                continue
+            if action == "search":
+                browser.compact_page = "options"
+                browser.focus = "options"
         move = browser.move_category if browser.focus == "categories" else browser.move_option
         if action in ("up", "down", "page_up", "page_down", "first", "last"):
             move({"up": -1, "down": 1, "page_up": -rows, "page_down": rows, "first": -1000000, "last": 1000000}[action])
@@ -698,9 +1037,8 @@ def run_browser(screen, profile, query, keys, preview=False):
             browser.move_category(1)
         elif action == "focus":
             browser.focus = "categories" if browser.focus == "options" else "options"
-        elif action == "cycle_detail":
-            browser.level = LEVELS[(LEVELS.index(browser.level) + 1) % len(LEVELS)]
-            browser.detail_offset = 0
+        elif action == "detail_page":
+            browser.detail_offset = browser.next_detail_offset
         elif action == "detail_up":
             browser.detail_offset = max(0, browser.detail_offset - 1)
         elif action == "detail_down":
@@ -708,6 +1046,7 @@ def run_browser(screen, profile, query, keys, preview=False):
         elif action == "clear_search":
             browser.set_query("")
         elif action == "search":
+            search_origin = page
             saved_query = browser.query
             searching = True
         elif action == "accept":

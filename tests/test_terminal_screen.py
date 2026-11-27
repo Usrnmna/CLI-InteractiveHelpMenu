@@ -331,7 +331,7 @@ class OptionsLayoutTests(TerminalTestCase):
                 shell.resize(60, 16)
                 for action in ("Escape", "Enter"):
                     menu = shell.open_menu()
-                    self.assertEqual(menu.cells[2].rstrip(), "Filter:")
+                    self.assertEqual(menu.cells[2].rstrip(), "")
                     shell.keys("/")
                     shell.text(query)
                     shell.keys("Enter")
@@ -354,7 +354,7 @@ class OptionsLayoutTests(TerminalTestCase):
         initial = shell.open_menu()
         self.assertIn("except the . and .. entries", " ".join(initial.cells))
         initial = shell.resize(60, 16)
-        self.assertEqual(initial.cells[2].rstrip(), "Filter:")
+        self.assertEqual(initial.cells[2].rstrip(), "")
         self.assertIn("> --all ", initial.cells[4])
         shell.keys("/")
         shell.text("allocated")

@@ -111,10 +111,12 @@ source /absolute/path/to/CLI-InteractiveHelpMenu/bash/interactive-help.bash
 | Up/Down or `k`/`j` | Move within the focused pane |
 | PageUp/PageDown | Scroll the focused category or option list by one page |
 | Home/End | Move to the first or last item |
-| Left/Right or `h`/`l` | Change category |
+| Left/Right or `h`/`l` | Change category in the split view, or go back/forward one screen in the narrow menu |
 | Tab | Switch focus between categories and options |
-| `D` | Cycle Simple → Detailed → Expanded → Simple |
-| `[` / `]` | Scroll the selected explanation, including a clipped category title |
+| Shift+D | Cycle Simple → Detailed → Expanded → Simple |
+| `m` | Toggle horizontal scrolling of the highlighted option summary for this menu |
+| Space | Next page of Details when text overflows. At the end, return to the top |
+| `[` / `]` | Scroll the selected explanation one line, including a clipped category title |
 | `/` | Edit the search filter |
 | Ctrl-U | Clear the filter |
 | Enter | Insert the selected option; in the category pane, focus its options |
@@ -141,10 +143,47 @@ as the value, and rules that apply to several values span the pane.
 
 Category names use short sidebar labels. The header shows the original category
 title. A title wider than the header can be read in full in the scrollable pane.
-Blank rows separate options when space permits. The `>` marker identifies the
-selection and `*` marks the focused pane. Terminals that report their background
-through `COLORFGBG` can show a contrasting cyan or blue option name. Set
-`NO_COLOR=1` for monochrome.
+Both lists start on the same row, with a blank row between choices. A rule
+separates the controls from content. The footer uses arrow symbols and shows
+only shortcuts that fit in full. Press **Space** for the next page of Details
+when the footer shows `Space next`. At the end, `Space top` returns to the first
+page. The `[` and `]` keys still move by one line.
+
+The `>` marker identifies the selection and `*` marks the focused split pane.
+Color terminals use separate accents for option names, headings and shortcuts
+when their palette supports enough contrasting pairs. `NO_COLOR=1` preserves
+the layout, markers and emphasis in monochrome.
+
+### Narrow menu preview
+
+In the development checkout, run `export CLI_HELP_NARROW_MENU=1` in the Bash
+session with the adapter loaded. Open a menu with **Alt-H** in a 60–79-column
+terminal. At 80 columns and above the split view resumes.
+
+**Shift+D** cycles Simple → Detailed → Expanded → Simple on any of the three screens.
+The header shows the active level. Categories and Options keep their lists visible.
+Use **→** to read the selected option at that level on the Details screen, where
+**Shift+D** changes the explanation in place. **←** returns to the same option and filter.
+
+| Screen | Actions |
+| --- | --- |
+| Categories | Select a category with ↑↓ and open it with → or Enter. A single category or an initial filter opens directly in Options. |
+| Options | Read short summaries. Press → for Details, Enter to insert, or ← for Categories. Use / to search. |
+| Details | Read the selected option at full width. Space pages through overflow, ← returns to the same option, and Esc cancels the entire menu. |
+
+Run `unset CLI_HELP_NARROW_MENU` to return to the split view at every size.
+
+### Scrolling option summaries
+
+Scrolling starts enabled in both layouts. Press **m** to toggle it for the open
+menu. This shortcut is omitted from the on-screen hints. To open menus with
+static summaries, set `export CLI_HELP_SCROLL_SUMMARIES=0` in Bash.
+
+A highlighted summary that exceeds its column stays still for two seconds, then
+slides horizontally once, one character at a time. The option name stays fixed.
+The final words remain visible until the selection changes. Returning to an option
+starts a fresh pause. During search entry, `m` types into the filter. The action
+can be rebound as `toggle_summary_scroll` if another action already uses `m`.
 
 A shared unit note names the options it covers. Search accepts forms such as
 `bps`, `KiB/s`, `µs`, and `MHz` wherever the corresponding meaning is documented.
@@ -267,6 +306,8 @@ one printable character. Duplicate assignments, unknown actions, and empty
 binding lists are rejected. If an older configuration assigns `D` to another
 action, the browser tries `V` and then `f6` for `cycle_detail`. If all three
 are occupied, assign a free key to `cycle_detail`. The menu header shows the
-effective key. Escape and Ctrl-C remain emergency cancellation
+effective key. The page action uses `space`. Older configurations that already
+assign Space use `P` or `f6` if free, then fall back to their line-scroll keys.
+Escape and Ctrl-C remain emergency cancellation
 keys and cannot be assigned to another action. Search-entry editing keys remain
 fixed. Configuration is read each time the browser opens.

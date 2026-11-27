@@ -468,7 +468,7 @@ class NumericalPresentationTests(unittest.TestCase):
         browser, _option, view = self.view("rsync", "--bwlimit=")
         text, screen = self.all_details(browser)
         self.assertIn("Expanded", screen.text())
-        self.assertIn("scroll", screen.text())
+        self.assertIn("Space top", screen.text())
         self.assertIn("No bandwidth limit", text)
         self.assertNotIn("Reference:", text)
         self.assertIn("3.4.1", text)
@@ -717,7 +717,7 @@ class NumericalPresentationTests(unittest.TestCase):
         with BrowserLoop(screen):
             selected = run_browser(screen, profile, "", keys)
         self.assertIs(selected, first_option(profile))
-        self.assertIn("u/d scroll", screen.text())
+        self.assertIn("Space next", screen.text())
         self.assertIn("Lines 2–", screen.text())
 
         class ResizingScreen(CellScreen):

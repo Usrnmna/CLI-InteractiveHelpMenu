@@ -118,7 +118,7 @@ class TarMenuTests(TerminalTestCase):
                 shell, prefix, suffix = self.pending_tar(60, 16)
                 for action in ("Escape", "Enter"):
                     menu = shell.open_menu()
-                    self.assertEqual(menu.cells[2].rstrip(), "Filter:")
+                    self.assertEqual(menu.cells[2].rstrip(), "")
                     shell.keys("/")
                     shell.text(query)
                     shell.keys("Enter")

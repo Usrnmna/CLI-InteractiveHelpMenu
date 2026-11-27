@@ -2,19 +2,21 @@
 
 ## Remaining work
 
-**Next action for the maintainer:** Review and commit the corrected workflow fingerprint in `docs/numerical-inventory/review.json` and these roadmap and candidate-audit updates. Supply the full new commit SHA for v0.5.0-alpha verification. The prior build from `d13b3e6` stopped at numerical preflight on all three targets. Its files are retained for comparison. [Attempt and correction](docs/release-candidate.md#v050-alpha-local-candidate) · [Coverage acceptance](docs/audit-history.md#ubuntu-coverage-handoff-acceptance)
+**Current release task:** Verify the first build of `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98` on all three targets. The corrected numerical gates passed, and all 11 files from two clean builds matched byte for byte. [Candidate audit](docs/release-candidate.md#v050-alpha-local-candidate)
 
-- [ ] **Freeze the corrected source.** Compare the new revision with the reviewed correction, confirm the prospective and strict numerical gates pass, then record its source manifest and modes. Reuse the prepared host and Noble fixtures, preserved historical installer, media provenance and repository-policy checks where their inputs match.
-- [ ] **Build and compare two copies.** Use fresh directories, the same frozen source and the same compiler. Match the source manifest to Git, compare all 11 outputs byte for byte, check archive members and modes, launcher version, installer payload and checksums. Confirm the archives and installed file list include both editions under `config/ubuntu-reference/`. Select the first build for all three targets.
-- [ ] **Verify one combined matrix.** Run full unsharded discovery once per target with that first build, the preserved v0.1.1-alpha installer and the corresponding offline fixtures. Run the three targets concurrently where practical. Include the discovered lifecycle and installed-terminal cases in that run. From a disposable installed prefix, exercise an Ubuntu reference with the local manual unavailable, a Bash builtin and its external form, and an APT verb. Check insertion and cancellation against a pending line. Add focused checks only for cases outside discovery. Record each target separately.
+| Target | Exact-package result |
+| --- | --- |
+| host · Ubuntu 26.04 / Python 3.14 | In progress |
+| noble310 · Ubuntu 24.04 / Python 3.10 | In progress |
+| noble312 · Ubuntu 24.04 / Python 3.12 | In progress |
 
-  | Target | Environment | Exact-package result |
-  | --- | --- | --- |
-  | host | Ubuntu 26.04 / Python 3.14 | Corrected build pending |
-  | noble310 | Ubuntu 24.04 / Python 3.10 | Corrected build pending |
-  | noble312 | Ubuntu 24.04 / Python 3.12 | Corrected build pending |
+After the combined gate, record the package and installed-prefix outcomes and finalize the release notes. The existing GitHub prerelease tag points to the corrected source. Its published assets still correspond to the earlier build from `d13b3e6`. The maintainer handles asset and release-body updates.
 
-- [ ] **Record local verification.** Retain the source and fixture identities, both build locations, checksums, per-target discovery, passes, failures, skip reasons and exit statuses. Reproduce any failure with the smallest relevant check first. If a fix changes a packaged input, rebuild and verify the corrected candidate across all targets. Keep final artifact hashes and transcripts outside the frozen inputs. When the gates pass, record the candidate as locally verified and unpublished. [Reporting procedure](docs/release-candidate.md#reproducibility-and-reporting)
+### Narrow terminal navigation preview
+
+Review the opt-in Categories → Options → Details flow from the development checkout.
+The split view resumes at 80 columns. The prototype follows the frozen release build. The development browser now offers the optional scrolling summary in both layouts.
+[Preview controls](docs/usage.md#narrow-menu-preview) · [Terminal verification](docs/audit-history.md#narrow-menu-navigation-preview)
 
 ### Unresolved provider findings
 

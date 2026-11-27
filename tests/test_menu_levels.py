@@ -1,6 +1,7 @@
 """Check the three viewports against the approved FFmpeg layout and actual input units."""
 import json
 import tempfile
+import time
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -62,26 +63,132 @@ class MenuLevelTests(unittest.TestCase):
         browser = Browser(profile)
         self.assertTrue({"bps", "B/s", "ms"} <= browser.text(option).prose_units)
 
-    def test_accent_respects_background_contrast_and_monochrome(self):
-        colors = {0: (0, 0, 0), 7: (1000, 1000, 1000), 6: (0, 800, 800), 4: (0, 0, 800)}
-        with patch.object(ui, "curses") as terminal:
-            terminal.COLOR_PAIRS = 8
-            terminal.COLOR_CYAN, terminal.COLOR_BLUE = 6, 4
-            terminal.color_content.side_effect = colors.__getitem__
-            terminal.color_pair.return_value = 123
-            for background, accent in (("0", 6), ("7", 4)):
-                with patch.dict(ui.os.environ, {"COLORFGBG": "7;" + background, "NO_COLOR": ""}):
-                    self.assertEqual(ui.option_accent(), 123)
-                    terminal.init_pair.assert_called_with(1, accent, -1)
-            for background, no_color in (("", ""), ("0", "1")):
-                with patch.dict(ui.os.environ, {"COLORFGBG": background, "NO_COLOR": no_color}):
-                    self.assertEqual(ui.option_accent(), 0)
+    def test_palette_uses_three_distinct_readable_roles_and_honors_no_color(self):
+        colors = [(0, 0, 0), (700, 0, 0), (0, 800, 0), (900, 900, 0),
+                  (0, 0, 700), (550, 0, 550), (0, 800, 800), (1000, 1000, 1000)]
+        with patch.object(ui.curses, "has_colors", return_value=True), \
+                patch.object(ui.curses, "COLORS", 8, create=True), \
+                patch.object(ui.curses, "COLOR_PAIRS", 8, create=True), \
+                patch.object(ui.curses, "use_default_colors"), \
+                patch.object(ui.curses, "color_content", side_effect=colors.__getitem__), \
+                patch.object(ui.curses, "color_pair", side_effect=lambda index: index), \
+                patch.object(ui.curses, "init_pair") as init:
+            for report, bg, choices in (("7;0", -1, [6, 3, 2]), ("0;7", -1, [4, 5, 1]),
+                                        ("", 0, [6, 3, 2]), ("999", 0, [6, 3, 2])):
+                with self.subTest(report=report), patch.dict(ui.os.environ, {"COLORFGBG": report, "NO_COLOR": ""}):
+                    init.reset_mock()
+                    self.assertEqual(ui.menu_colors(), (1, 2, 3))
+                    self.assertEqual([call.args for call in init.call_args_list],
+                                     [(i, fg, bg) for i, fg in enumerate(choices, 1)])
+            with patch.dict(ui.os.environ, {"NO_COLOR": "1"}):
+                init.reset_mock()
+                self.assertEqual(ui.menu_colors(), (0, 0, 0))
+                init.assert_not_called()
+
+    def test_split_lists_share_the_baseline_and_leave_gutters(self):
+        browser = Browser(self.profile)
+        browser.category, browser.selected = 1, 4
+        for height, width in ((16, 60), (24, 80), (40, 160)):
+            left = min(26, width // 3)
+            screen = CellScreen(height, width)
+            draw(screen, browser, load_keys())
+            rows = [(y, x, v) for (y, x, _), v in screen.cells.items() if v.startswith(("> ", "  "))]
+            names = [y for y, x, _ in rows if x == 0]
+            flags = [y for y, x, _ in rows if x == left]
+            self.assertEqual(names[0], flags[0])
+            self.assertEqual(names, list(range(names[0], names[-1] + 1, 2)))
+            self.assertEqual(flags, list(range(flags[0], flags[-1] + 1, 2)))
+            self.assertTrue(all(sum(map(ui.cell_width, v)) <= left - 3 for _, x, v in rows if x == 0))
+            self.assertEqual(screen.cells[height - 2, 0, 0], "━" * (width - 1))
+            self.assertIn("↑↓ move", screen.text())
+
+    def test_short_details_have_no_paging_hint_and_custom_space_is_preserved(self):
+        profile = {"command": ["short"], "description": "Short command", "categories": [{
+            "name": "General", "options": [{"flag": "-v", "summary": "Print version"}]}]}
+        browser = Browser(profile, guided=True)
+        screen = CellScreen(16, 60)
+        draw(screen, browser, load_keys())
+        self.assertEqual(browser.compact_page, "options")
+        browser.compact_page = "details"
+        draw(screen, browser, load_keys())
+        self.assertNotIn("Space", screen.text())
+        self.assertIn("Print version", screen.text())
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "keys.json"
+            path.write_text(json.dumps({"keys": {"accept": [" "]}}))
+            keys = load_keys(path)
+            self.assertEqual(keys["accept"], [" "])
+            self.assertEqual(keys["detail_page"], ["P"])
+
+    def test_level_hint_shows_shift_and_respects_remapped_keys(self):
+        profile = {"command": ["example"], "description": "Example", "categories": [{
+            "name": "General", "options": [{"flag": "-v", "summary": "Show version"}]}]}
+        for width in (60, 80, 200):
+            for binding, label in (("D", "Shift+D"), ("V", "Shift+V"), ("v", "v"), ("f6", "f6")):
+                keys = load_keys()
+                keys["cycle_detail"] = [binding]
+                screen = CellScreen(24, width)
+                draw(screen, Browser(profile, guided=True), keys)
+                self.assertIn("Simple   " + label + " change view", screen.text())
+                self.assertNotIn("motion", screen.text())
+
+    def test_motion_deadline_unicode_and_final_frame(self):
+        screen = CellScreen(16, 60)
+        motion = ui.SummaryScroll()
+        field = (1, 4, 24, 5, "界e\u0301ABCDE")
+        motion.select(field, 10)
+        motion.tick(screen, 11.999)
+        self.assertFalse(screen.cells)
+        motion.tick(screen, 12)
+        self.assertEqual(screen.cells[4, 24, ui.curses.A_REVERSE], "…e\u0301AB…")
+        motion.select(field, 12.1)
+        self.assertEqual(motion.deadline, 12.25)
+        motion.tick(screen, 12.25)
+        motion.tick(screen, 12.5)
+        self.assertEqual(screen.cells[4, 24, ui.curses.A_REVERSE], "…BCDE")
+        self.assertIsNone(motion.deadline)
+        motion.select((2, *field[1:]), 17)
+        self.assertEqual(motion.deadline, 19)
+        self.assertEqual(motion.visible, "")
+
+    def test_motion_requires_a_clipped_focused_summary(self):
+        profile = {"command": ["scroll"], "description": "Geometry", "categories": [{
+            "name": "General", "options": [{"flag": "--a", "summary": "A" * 120},
+                                           {"flag": "--b", "summary": "Short text"}]}]}
+        keys = load_keys()
+        for guided in (False, True):
+            browser = Browser(profile, guided=guided)
+            screen = CellScreen(16, 60)
+            self.assertTrue(browser.scroll_summaries)
+            draw(screen, browser, keys)
+            width = browser.summary_field[3]
+            text = browser.summary_field[4]
+            self.assertGreater(len(text), width)
+            draw(screen, browser, keys, searching=True)
+            self.assertIsNone(browser.summary_field)
+            browser.move_option(1)
+            draw(screen, browser, keys)
+            self.assertIsNone(browser.summary_field)
+            browser.move_option(-1)
+            browser.focus = browser.compact_page = "categories"
+            draw(screen, browser, keys)
+            self.assertIsNone(browser.summary_field)
+
+    def test_existing_m_binding_takes_precedence(self):
+        with tempfile.TemporaryDirectory() as folder:
+            config = Path(folder) / "keys.json"
+            config.write_text(json.dumps({"keys": {"last": ["m"]}}))
+            keys = load_keys(config)
+            self.assertEqual(keys["last"], ["m"])
+            self.assertNotIn("toggle_summary_scroll", keys)
+            config.write_text(json.dumps({"keys": {"last": ["m"], "toggle_summary_scroll": ["M"]}}))
+            self.assertEqual(load_keys(config)["toggle_summary_scroll"], ["M"])
 
     def test_bundled_categories_fit_and_remain_distinct_at_minimum_width(self):
         for path in sorted((ROOT / "profiles").glob("*.json")):
             with self.subTest(path=path.name):
                 categories = json.loads(path.read_text())["categories"]
-                labels = [category_label(category["name"], 16) for category in categories]
+                labels = [category_label(category["name"], 15) for category in categories]
                 self.assertTrue(all("…" not in label for label in labels), labels)
                 self.assertEqual(len(labels), len(set(labels)), labels)
 
@@ -114,6 +221,122 @@ class TerminalMenuLevelTests(TerminalTestCase):
             shell.wait_for(lambda s: "Simple" in s.cells[0] and "1/2" in s.cells[3])
             shell.cancel()
             self.assertEqual(shell.read_buffer(), ("ffmpeg ", len("ffmpeg ")))
+
+    def test_guided_narrow_flow_and_single_key_details_paging(self):
+        """Visit each real narrow pane and both width boundaries with a pending Bash line."""
+        shell = self.start()
+        shell.text("export CLI_HELP_NARROW_MENU=1")
+        shell.keys("Enter")
+        shell.resize(60, 16)
+        pending = "rsync "
+        shell.text(pending)
+        frame = shell.open_menu()
+        self.assertIn("Simple   Shift+D change view", frame.cells[0])
+        self.assertTrue(frame.cells[1].startswith("Categories"))
+        self.assertIn("↑↓ move", frame.cells[-1])
+        self.assertNotIn("Space", frame.cells[-1])
+        shell.keys("D")
+        shell.wait_for(lambda s: "Detailed" in s.cells[0] and s.cells[1].startswith("Categories"))
+        shell.keys(*(["Down"] * 6), "Right", "/", "C-u")
+        shell.text("--")
+        shell.keys("Enter", "Down")
+        for level in ("Detailed", "Expanded", "Simple"):
+            if level != "Detailed":
+                shell.keys("D")
+            options = shell.wait_for(lambda s: level in s.cells[0] and s.cells[1].startswith("Options  ·  Filter: --"))
+            self.assertIn("2/38", options.cells[1])
+            self.assertTrue(any("> --bwlimit=RATE" in row for row in options.cells))
+        shell.keys("Right")
+        simple = shell.wait_for(lambda s: "Simple" in s.cells[0] and s.cells[1].startswith("Details"))
+        self.assertIn("Limit bandwidth", simple.cells[4])
+        self.assertNotIn("For transfers", " ".join(simple.cells))
+        shell.keys("D")
+        detailed = shell.wait_for(lambda s: "Detailed" in s.cells[0] and s.cells[1].startswith("Details"))
+        self.assertIn("For transfers", " ".join(detailed.cells))
+        self.assertNotIn("Input N ·", " ".join(detailed.cells))
+        shell.keys("D")
+        frame = shell.wait_for(lambda s: "Expanded" in s.cells[0] and "--bwlimit=RATE" in s.cells[3]
+                               and "Space next" in s.cells[-1])
+        opening = frame.cells[4:-3]
+        seen = []
+        while "Space next" in frame.cells[-1]:
+            body = frame.cells[4:-3]
+            seen.extend(body)
+            shell.keys("Space")
+            frame = shell.wait_for(lambda s: s.cells[4:-3] != body)
+            self.assertLess(len(seen), 200)
+        seen.extend(frame.cells[4:-3])
+        self.assertIn("granularity", " ".join(seen))
+        self.assertIn("Space top", frame.cells[-1])
+        shell.keys("Space")
+        shell.wait_for(lambda s: s.cells[4:-3] == opening)
+        for width in (79, 80, 160, 60):
+            state = shell.resize(width, 24)
+            self.assertEqual("OPTIONS" in state.cells[3], width >= 80)
+        self.assertTrue(state.cells[1].startswith("Details"))
+        shell.keys("D")
+        shell.wait_for(lambda s: "Simple" in s.cells[0] and s.cells[1].startswith("Details")
+                       and "Limit bandwidth" in s.cells[4])
+        shell.keys("Left")
+        options = shell.wait_for(lambda s: "Simple" in s.cells[0] and s.cells[1].startswith("Options  ·  Filter: --"))
+        self.assertIn("2/38", options.cells[1])
+        self.assertTrue(any("> --bwlimit=RATE" in row for row in options.cells))
+        shell.keys("Left")
+        shell.wait_for(lambda s: any("> Network" in row for row in s.cells))
+        shell.cancel()
+        self.assertEqual(shell.read_buffer(), (pending, len(pending)))
+        shell.keys("C-u")
+        suffix = " 'untouched file'"
+        shell.text("rsync --arch" + suffix)
+        shell.keys(*(["Left"] * len(suffix)))
+        shell.open_menu()
+        shell.keys("Right", "Enter")
+        shell.wait_for(lambda s: s.alternate == 0)
+        self.assertEqual(shell.read_buffer(), ("rsync --archive" + suffix, len("rsync --archive ")))
+        self.assertFalse(shell.executed.exists())
+
+    def test_alt_h_scrolls_only_the_highlighted_summary(self):
+        """Check default motion, the static override, and the unlisted keyboard toggle through Bash."""
+        shell = self.start()
+        shell.resize(60, 16)
+        pending = "rsync "
+        for guided in (False, True):
+            with self.subTest(guided=guided):
+                if guided:
+                    shell.text("export CLI_HELP_NARROW_MENU=1 CLI_HELP_SCROLL_SUMMARIES=0")
+                    shell.keys("Enter")
+                shell.text(pending)
+                shell.open_menu()
+                navigation = ["Down"] * 6 + ["Right"] if guided else ["Right"] * 6
+                shell.keys(*navigation, "Down")
+                opening = shell.wait_for(lambda state: any("> --bwlimit=RATE" in line for line in state.cells))
+                row = next(i for i, v in enumerate(opening.cells) if "> --bwlimit=RATE" in v)
+                column = opening.cells[row].index("Limit bandwidth"[:8])
+                self.assertTrue(opening.cells[row].endswith("…"))
+                self.assertNotIn("motion", opening.cells[-1])
+                if guided:
+                    time.sleep(2.1)
+                    self.assertEqual(shell.capture().cells, opening.cells)
+                    shell.keys("m")
+                # Observe the moving field in raw captures without requiring an animated frame to settle.
+                start = time.monotonic()
+                while time.monotonic() - start < 5:
+                    cells = shell.capture().cells
+                    if cells[row][column:].startswith("…"):
+                        break
+                    time.sleep(.04)
+                self.assertTrue(cells[row][column:].startswith("…"))
+                self.assertEqual(cells[row][:column], opening.cells[row][:column])
+                self.assertEqual(cells[:row] + cells[row+1:-1], opening.cells[:row] + opening.cells[row+1:-1])
+                shell.keys("m")
+                stopped = shell.wait_for(lambda state: state.cells[row] == opening.cells[row])
+                self.assertEqual(stopped.cells[-1], opening.cells[-1])
+                time.sleep(2.1)
+                self.assertEqual(shell.capture().cells, stopped.cells)
+                shell.cancel()
+                self.assertEqual(shell.read_buffer(), (pending, len(pending)))
+                shell.keys("C-u")
+                self.assertFalse(shell.executed.exists())
 
     def test_complete_custom_category_reachable_at_both_sizes(self):
         """Navigate to a clipped category and read its original words through the last line."""

@@ -129,7 +129,7 @@ class GrepMenuTests(TerminalTestCase):
     def search(self, shell, query, flag):
         """Apply a manual spelling as a fresh search and inspect the selected row."""
         state = shell.open_menu()
-        self.assertEqual(state.cells[2].rstrip(), "Filter:")
+        self.assertEqual(state.cells[2].rstrip(), "")
         shell.keys("/")
         shell.text(query)
         shell.keys("Enter")

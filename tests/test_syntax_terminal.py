@@ -134,7 +134,7 @@ class SyntaxScreenTests(TerminalTestCase):
         """Read the file distinction at minimum size and insert a quoted query path."""
         shell, prefix, suffix, _ = self.pending_yq(60, 16)
         for action in ("Escape", "Enter"):
-            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
             shell.keys("/")
             shell.text("read the query")
             shell.keys("Enter")
@@ -168,7 +168,7 @@ class SyntaxScreenTests(TerminalTestCase):
         # A 60-column menu has 39 cells for the options column.
         label = ellipsize_cells(option_label(option), option_label_width(category, 39))
         for action in ("Escape", "Enter"):
-            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
             shell.keys("/")
             shell.text(query)
             shell.keys("Enter")
@@ -357,7 +357,7 @@ class SyntaxScreenTests(TerminalTestCase):
             "ffmpeg -i one.mkv", " -i 'last clip.mkv' out.mkv", 60, 16, ("ffmpeg",))
         qualification = "Place it before the input it should seek."
         for action in ("Escape", "Enter"):
-            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
             shell.keys("/")
             shell.text("end of file")
             shell.keys("Enter")
@@ -379,7 +379,7 @@ class SyntaxScreenTests(TerminalTestCase):
         shell, prefix, suffix = self.pending_stubbed_command("fzf", " --query 'some text'", 60, 16, ("fzf",))
         qualification = "Count fields in the original input."
         for action in ("Escape", "Enter"):
-            self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+            self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
             shell.keys("/")
             shell.text("output fields")
             shell.keys("Enter")
@@ -438,7 +438,7 @@ class SyntaxScreenTests(TerminalTestCase):
             qualification = "The extracted file keeps its original name."
             for action in ("Escape", "Enter"):
                 with self.subTest(executable=executable, action=action):
-                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
                     shell.keys("/")
                     shell.text(query)
                     shell.keys("Enter")
@@ -460,7 +460,7 @@ class SyntaxScreenTests(TerminalTestCase):
             qualification = "Pass a quoted semicolon to resume fd options."
             for action in ("Escape", "Enter"):
                 with self.subTest(executable=executable, action=action):
-                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                    self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
                     shell.keys("/")
                     shell.text("batch placeholder")
                     shell.keys("Enter")

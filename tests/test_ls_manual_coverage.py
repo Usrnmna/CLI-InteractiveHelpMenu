@@ -185,7 +185,7 @@ class LsMenuTests(TerminalTestCase):
         shell, prefix, suffix = self.pending(60, 16)
         for query, expected, key in (("--long", "-l", "Escape"), ("--tabsize=", "--tabsize=", "Enter")):
             with self.subTest(query=query):
-                self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
                 shell.keys("/")
                 shell.text(query)
                 shell.keys("Enter")

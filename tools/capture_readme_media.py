@@ -269,7 +269,7 @@ def capture_rsync(folder, demonstration):
         terminal.send("\x1bh", "Interactive help")
         terminal.send("\x15")
         frame("Alt-H, Ctrl-U | Browse the Transfer category in Simple view", 2500,
-              required=("Simple   D change view", "Category 1/13 | Transfer", "1/4", "> --archive", "Copy a tree with its metadata"),
+              required=("Simple   Shift+D change view", "Category 1/13 | Transfer", "1/4", "> --archive", "Copy a tree with its metadata"),
               absent=("Filter: --",)).save(OUTPUT / "help-browser.png")
         terminal.send("\tlllll")
         frame("Tab, Right x5 | Focus categories and browse Output", 1800,
@@ -282,13 +282,13 @@ def capture_rsync(folder, demonstration):
               required=("Category 13/13 | Recovery", "1/22", "> --partial", "--suffix="))
         terminal.send("hhhhhh\tj")
         frame("Network | Simple shows the unit beside the selected bandwidth option", 2000,
-              required=("Simple   D change view", "Category 7/13 | Network", "2/38", "> --bwlimit=RATE", "bare rate in KiB/s"))
+              required=("Simple   Shift+D change view", "Category 7/13 | Network", "2/38", "> --bwlimit=RATE", "bare rate in KiB/s"))
         terminal.send("D")
-        frame("D | Detailed explains average socket rate and rounding", 2400,
-              required=("Detailed   D change view", "2/38", "> --bwlimit=RATE", "nearest KiB/s"))
+        frame("Shift+D | Detailed explains average socket rate and rounding", 2400,
+              required=("Detailed   Shift+D change view", "2/38", "> --bwlimit=RATE", "nearest KiB/s"))
         terminal.send("D")
-        frame("D | Expanded shows the bare rate and supported suffixes", 2800,
-              required=("Expanded   D change view", "2/38", "> --bwlimit=RATE", "1024 bytes/second", "Input NK or NKiB", "Lines 1–11/", "Input NGB · GB/s")
+        frame("Shift+D | Expanded shows the bare rate and supported suffixes", 2800,
+              required=("Expanded   Shift+D change view", "2/38", "> --bwlimit=RATE", "1024 bytes/second", "Input NK or NKiB", "Lines 1–11/", "Input NGB · GB/s")
               ).save(OUTPUT / "numerical-guidance.png")
         terminal.send("/bytes/second\n")
         frame("Search bytes/second | Find displayed numerical meaning", 2200,
@@ -302,7 +302,7 @@ def capture_rsync(folder, demonstration):
         terminal.send("\x1bh", "Interactive help")
         terminal.send("/--exclude=")
         frame("Alt-H, /, --exclude= | Search another category without losing input", 2000,
-              required=("Search (Enter applies, Esc restores): --exclude=", "> --exclude=PATTERN", "Filtering (1)", "1/1"))
+              required=("Search: --exclude=", "> --exclude=PATTERN", "Filtering (1)", "1/1"))
         terminal.send("\n")
         frame("Enter applies the filter | A second Enter selects the option", 900,
               required=("Filter: --exclude=", "--exclude="))
@@ -348,11 +348,11 @@ def capture_ls(folder, demonstration):
               absent=("> --all",))
         terminal.send("jjD")
         frame("Down twice, D | Read how to quote a hide pattern in Detailed view", 2000,
-              required=("Detailed   D change view", "12/20", "> --hide=PATTERN", "Quote wildcards"),
+              required=("Detailed   Shift+D change view", "12/20", "> --hide=PATTERN", "Quote wildcards"),
               absent_options=("--almost-all",))
         terminal.send("D" + "]" * 16)
         frame("D, ] | Scroll Expanded to the override rule for --hide", 2400,
-              required=("Expanded   D change view", "12/20", "> --hide=PATTERN", "Lines 17–27/28",
+              required=("Expanded   Shift+D change view", "12/20", "> --hide=PATTERN", "Lines 17–27/28",
                         "Explicitly named files still appear.", "Either -a or -A overrides", "Argument required.")
               ).save(OUTPUT / "ls-browser.png")
         terminal.send("\n", "\x1b[?1049l")

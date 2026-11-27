@@ -99,7 +99,9 @@ See [installation, custom paths, updates, and removal](docs/installation.md) for
 
 ## Using the browser
 
-Each menu opens in **Simple**, with short option summaries and spare rows available for browsing. Use the arrow keys to navigate. The sidebar shortens long category names and the header shows the selected title. Press **D** once for **Detailed** guidance and again for **Expanded** forms, examples and limits. Press **D** a third time to return to Simple. The selection and filter stay in place.
+Each menu opens in **Simple**, with short option summaries and spare rows available for browsing. Use the arrow keys to navigate. The sidebar shortens long category names and the header shows the selected title. Press **Shift+D** once for **Detailed** guidance and again for **Expanded** forms, examples and limits. Press **Shift+D** a third time to return to Simple. The selection and filter stay in place.
+
+In the development checkout, clipped option summaries scroll by default after a two-second pause. Press **m** to toggle scrolling for the open menu.
 
 Use `/` to search and `[` or `]` to scroll a longer explanation. Enter applies a search. In the options pane, Enter inserts the selected spelling. Type any required value back at the prompt. Escape while entering a search restores the previous filter. Escape outside search or Ctrl-C returns to the original line and cursor.
 
@@ -111,7 +113,7 @@ See [browser controls and keybindings](docs/usage.md#browser-controls) for pagin
 
 [Open the full-size numerical guidance view](docs/assets/numerical-guidance.png)
 
-For rsync `--bwlimit=`, a bare `5000` means 5000 KiB/s. Search for `KiB/s` or `bytes/second` to find it. In Expanded, scroll with `[` and `]` to read the accepted input spellings before typing a value at the Bash prompt. FFmpeg’s `-b:v` uses bits per second and can be found with `bps`. The browser inserts the selected flag and leaves value entry to you.
+For rsync `--bwlimit=`, a bare `5000` means 5000 KiB/s. Search for `KiB/s` or `bytes/second` to find it. In the development checkout, press **Space** to page through overflowing Details. In the release, scroll with `[` and `]` to read the accepted input spellings before typing a value at the Bash prompt. FFmpeg’s `-b:v` uses bits per second and can be found with `bps`. The browser inserts the selected flag and leaves value entry to you.
 
 [Controls and unit search](docs/usage.md#browser-controls) · [The same FFmpeg option at 80×24 and 60×16](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md) · [Numerical metadata and applicability](docs/numerical-value-contract.md)
 

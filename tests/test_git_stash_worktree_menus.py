@@ -196,7 +196,7 @@ class GitMenuTests(TerminalTestCase):
         shell = self.pending(prefix, suffix, 60, 16)
         for action in ("Escape", "Enter"):
             with self.subTest(path=path, action=action):
-                self.assertEqual(shell.open_menu().cells[2].rstrip(), "Filter:")
+                self.assertEqual(shell.open_menu().cells[2].rstrip(), "")
                 shell.keys("/")
                 shell.text(query)
                 shell.keys("Enter")
