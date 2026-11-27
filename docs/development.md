@@ -304,7 +304,7 @@ privacy review; diagnostic summaries require local-path redaction before sharing
 ## Continuous integration
 
 The [Linux tests and documentation workflow](../.github/workflows/ci.yml) runs on
-pushes, pull requests, and manual dispatch. Each Linux test job runs the
+pushes, pull requests, and manual dispatch. By default each Linux test job runs the
 complete `bash tests/run.sh` suite, including Bash syntax, configuration validation,
 and all Python tests with real Bash pseudoterminal interactions. The matrix covers
 Python 3.10 and 3.12 on Ubuntu 24.04 and Python 3.14 on Ubuntu 26.04.
@@ -312,6 +312,40 @@ Each Linux job has 90 minutes for setup, the full suite and package verification
 The tests use the Python standard library, tmux for rendered
 terminal state, Git for ignore-policy checks, and GCC for native release-package tests; media-generation dependencies and optional
 live-program compatibility probes are not required.
+
+### Manual three-shard pilot
+
+In **Actions → Linux tests and documentation → Run workflow**, select a ref and
+the Linux test layout. Pushes, pull requests and the default `full` layout use the
+ordinary three Linux jobs. The documentation check runs independently in every mode.
+
+1. Run `timed-control`. Each version runs normal full discovery and uploads its
+   manifest and timing events alongside the usual evidence. Record the run ID.
+2. After the control finishes, run `three-shard-pilot` on the same commit and
+   enter the control run ID. This starts three runners per Python version. Leaving
+   the ID blank checks shard coverage alone. Dispatches have separate concurrency
+   groups so that an experiment can finish alongside normal CI.
+3. Inspect **Verify Linux shard coverage**. It checks the three assignments and
+   their recorded cases against full discovery on each target. It accounts for
+   explicit fixture skips, validates test order and suite completion, and fails
+   on missing artifacts, duplicate execution, or an unsuccessful Linux job.
+   With a control, it also compares runner image versions, interpreter versions,
+   discovered IDs, outcomes and skip reasons at the same commit.
+4. Compare run creation to the last required job's finish, queue delays and the
+   sum of job durations using the Actions run and job timestamps. Compare the
+   slowest shard per version with its control. Runner availability, fixture
+   setup and release checks affect the observed gain. Record hosted parity
+   and measured savings before proposing a default workflow change.
+
+The planner assigns whole modules longest-first using separate starting weights
+for each Python version. These are sums of case seconds from the November 24
+local Phase 4 full matrix, rounded to milliseconds. New modules use the target
+median and appear in the manifest. A 45-second estimate reserves room on shard 1
+for repository policy, inventory, diagnostics and release verification. All
+shards use the usual shell, numerical and collection preflights. The suite logs,
+manifests and JSON Lines timing events are retained per shard. [Shard planner and verifier](../tests/ci_shards.py) · [Module weights](../tests/ci-module-seconds.json) · [Timing and parity evidence](test-selection-plan.md#phase-4-pilot-evidence)
+
+### Linux verification and evidence
 
 A focused artifact-policy step first checks nested private-output exclusions,
 maintained-file visibility, binary attributes, and text line-ending rules. Its
@@ -374,15 +408,18 @@ with the Lychee report once available.
 Workflow and badge endpoints are checked
 alongside other external links. CI retries the full check once when every failure
 is a timeout at `manpages.ubuntu.com` or `www.gnu.org`, an HTTP 429 from
-`www.gnu.org`, or an HTTP 503 from a GitHub source file page.
+`www.gnu.org`, or an HTTP 503 from a GitHub source file page. The initial
+GitHub 503s appear as warnings. The final gate reads Lychee's exit code,
+publishes the job summary and emits an error if verification fails.
 If a plain GitHub file URL returns 503 on both attempts, the final gate checks
 the public Contents API at the exact revision in the URL. An HTTP 200 response
-with the matching file path, page URL and blob SHA produces a warning in the job
-and a verification record in the final report. This fallback covers simple
+with the matching file path, page URL and blob SHA records the verified warning
+in the final report. This fallback covers simple
 file paths and single-segment revision names. URLs with query strings or
 fragments require a successful page check. Any remaining broken or unverified
 link, incomplete retry report or unavailable API keeps the job failed.
-Both Lychee attempt reports are retained. The Actions summary includes the final report.
+Both Lychee attempt reports are retained. A successful fallback summary shows
+the verified files and their blob SHAs. A failed check shows the available failure evidence.
 Both attempts include the contribution guide and pull request template explicitly because the Markdown glob skips hidden directories.
 
 On a clean checkout, use Lychee 0.24.2 with the CI inputs.

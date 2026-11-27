@@ -166,14 +166,13 @@ def resolve_github_failures(first_report, retry_report):
             unresolved = True
         else:
             message = f"HTTP 503 for {url}. GitHub Contents API verified blob {sha}."
-            print(f"::warning::{message}", flush=True)
             evidence.append(f"- Warning: {message}")
     if not evidence:
         return 2, ""
     return (2 if unresolved else 0), "\n## GitHub exact-file verification\n\n" + "\n".join(evidence) + "\n"
 
 
-def finish(first_outcome, lychee="lychee"):
+def finish(first_outcome, lychee="lychee", first_exit_code=None):
     """Return the final check status after at most one eligible retry.
 
     A link-failure exit may pass with separate API evidence for every remaining
@@ -186,9 +185,21 @@ def finish(first_outcome, lychee="lychee"):
         print("Initial Lychee report is missing; failing without a retry.", flush=True)
         return 1
     shutil.copyfile(FIRST_REPORT, FINAL_REPORT)
-    if first_outcome == "success":
-        return 0
     first_report = FIRST_REPORT.read_text(encoding="utf-8")
+    if first_exit_code is not None:
+        # With the action's fail:false, link failures produce outcome=success, exit_code=2.
+        # Empty reports and action setup failures can still fail the action itself.
+        if first_outcome != "success" or first_exit_code not in ("0", "2"):
+            print(f"Initial Lychee action outcome={first_outcome!r}, exit_code={first_exit_code!r}.", flush=True)
+            return 1
+        first_outcome = "success" if first_exit_code == "0" else "failure"
+    if first_outcome == "success":
+        return 0 if re.search(r"\|[^|\n]*\bTotal\s*\|\s*[1-9]\d*\s*\|", first_report) else 1
+    for status, url in dict.fromkeys(reported_failures(first_report) or []):
+        if status == "503" and urlsplit(url).netloc == "github.com":
+            # Escape workflow-command data so encoded URL characters stay literal.
+            escaped_url = url.replace("%", "%25").replace("\r", "%0D")
+            print(f"::warning::Initial HTTP 503 for {escaped_url}.", flush=True)
     urls = retryable_failures(first_report)
     if urls is None:
         print("Initial report contains an ineligible or unidentified failure.", flush=True)
@@ -231,10 +242,6 @@ def finish(first_outcome, lychee="lychee"):
             result_code, appendix = resolve_github_failures(first_report, retry_report)
     final_report = SECOND_REPORT.read_text(encoding="utf-8") + appendix
     FINAL_REPORT.write_text(final_report, encoding="utf-8")
-    summary = os.environ.get("GITHUB_STEP_SUMMARY")
-    if summary:
-        with Path(summary).open("a", encoding="utf-8") as output:
-            output.write("\n## Documentation links: final retry\n\n" + final_report)
     print(final_report, flush=True)
     return result_code
 
@@ -242,14 +249,31 @@ def finish(first_outcome, lychee="lychee"):
 def main():
     """Read the initial action outcome and expose the final failure as an exit code."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--first-outcome", required=True, choices=["success", "failure"])
+    parser.add_argument("--first-outcome", required=True, choices=["success", "failure", "skipped", "cancelled"])
+    parser.add_argument("--first-exit-code", help="Raw Lychee exit_code output when the action uses fail:false")
     parser.add_argument("--lychee", default="lychee", help="Pinned Lychee executable")
     args = parser.parse_args()
     try:
-        return finish(args.first_outcome, args.lychee)
+        code = finish(args.first_outcome, args.lychee, args.first_exit_code)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         print(f"Documentation link gate failed: {error}", flush=True)
-        return 1
+        code = 1
+    if code:
+        print("::error::Documentation link verification failed. See the final report for unresolved links or checker failures.", flush=True)
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        details = FINAL_REPORT.read_text(encoding="utf-8") if FINAL_REPORT.is_file() else ""
+        verdict = "Failed" if code else "Passed"
+        if not code and SECOND_REPORT.is_file():
+            verdict = "Passed after retry"
+            # Raw Lychee error counts precede exact-file verification in the artifact.
+            # Show the resolved outcome on the job summary.
+            _, heading, verification = details.partition("## GitHub exact-file verification")
+            if heading:
+                details = heading + verification
+        with Path(summary).open("a", encoding="utf-8") as output:
+            output.write(f"\n## Documentation links — {verdict}\n\n{details}")
+    return code
 
 
 if __name__ == "__main__":

@@ -104,7 +104,7 @@ class DocumentationRetryTests(unittest.TestCase):
         self.assertIn("HTTP status: 429", evidence.getvalue())
         self.assertIn("Retry-After: 70", evidence.getvalue())
 
-    def run_gate(self, *, first_outcome="failure", first_report=FIRST_FAILURE,
+    def run_gate(self, *, first_outcome="success", first_exit_code="2", first_report=FIRST_FAILURE,
                  second_code=0, second_report="| Total | 1 |\n", delay=4,
                  timeout=False, version="lychee 0.24.2\n"):
         """Run the real controller with isolated reports and mocked time/processes."""
@@ -131,20 +131,38 @@ class DocumentationRetryTests(unittest.TestCase):
                 patch.object(retry.time, "sleep") as sleep, \
                 patch.object(retry, "probe_retry_after", return_value=delay), \
                 patch.object(retry.subprocess, "run", side_effect=process) as run, \
-                patch.dict(retry.os.environ, {"GITHUB_STEP_SUMMARY": str(directory / "summary.md")}):
-            try:
-                code = retry.finish(first_outcome)
-            except ValueError:
-                code = 1
+                patch.dict(retry.os.environ, {"GITHUB_STEP_SUMMARY": str(directory / "summary.md")}), \
+                patch("sys.argv", ["retry_documentation_links.py", "--first-outcome", first_outcome,
+                                   "--first-exit-code", first_exit_code]):
+            code = retry.main()
         return code, first, second, final, run, sleep
 
     def test_successful_initial_check_has_no_retry_or_delay(self):
-        code, first, second, final, run, sleep = self.run_gate(first_outcome="success")
+        code, first, second, final, run, sleep = self.run_gate(first_exit_code="0", first_report=github_report())
         self.assertEqual(code, 0)
         self.assertEqual(final.read_text(), first.read_text())
         self.assertFalse(second.exists())
         run.assert_not_called()
         sleep.assert_not_called()
+
+    def test_action_output_must_confirm_a_normal_nonempty_check(self):
+        for outcome, raw_code, report in (("failure", "0", "| Total | 0 |"), ("failure", "2", GITHUB_503),
+                                          ("success", "", GITHUB_503), ("success", "1", GITHUB_503),
+                                          ("success", "0", ""), ("skipped", "", None)):
+            with self.subTest(outcome=outcome, raw_code=raw_code), patch("sys.stdout", new_callable=io.StringIO) as log:
+                code, _, _, _, run, _ = self.run_gate(first_outcome=outcome, first_exit_code=raw_code,
+                                                      first_report=report)
+                self.assertNotEqual(code, 0)
+                self.assertIn("::error::", log.getvalue())
+                run.assert_not_called()
+
+    def test_initial_503_that_recovers_on_retry_only_warns(self):
+        with patch("sys.stdout", new_callable=io.StringIO) as log:
+            code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_report=github_report())
+        self.assertEqual(code, 0)
+        self.assertIn(f"::warning::Initial HTTP 503 for {GITHUB_SOURCE}", log.getvalue())
+        self.assertNotIn("::error::", log.getvalue())
+        self.assertIn("Passed after retry", final.with_name("summary.md").read_text())
 
     def test_retry_checks_same_markdown_as_initial_action_and_retains_both_reports(self):
         code, first, second, final, run, sleep = self.run_gate()
@@ -156,7 +174,11 @@ class DocumentationRetryTests(unittest.TestCase):
         inputs = ["**/*.md", ".github/CONTRIBUTING.md", ".github/pull_request_template.md"]
         self.assertEqual(command[command.index("--output") + 2:], inputs)
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
-        action_args = next(line.strip().removeprefix("args: ") for line in workflow.read_text().splitlines()
+        workflow_text = workflow.read_text()
+        self.assertIn("          fail: false\n", workflow_text)
+        self.assertIn("          jobSummary: false\n", workflow_text)
+        self.assertIn("steps.documentation-links.outputs.exit_code", workflow_text)
+        action_args = next(line.strip().removeprefix("args: ") for line in workflow_text.splitlines()
                            if line.strip().startswith("args: --config lychee.toml "))
         self.assertEqual(shlex.split(action_args), ["--config", "lychee.toml", "--no-progress", *inputs])
         self.assertIn("lychee.toml", command)  # The successful-response cache remains enabled.
@@ -223,6 +245,8 @@ class DocumentationRetryTests(unittest.TestCase):
         get.assert_called_once()
         self.assertEqual(get.call_args.args[0].full_url, API_URL)
         self.assertEqual(log.getvalue().count("::warning::"), 1)
+        self.assertNotIn("::error::", log.getvalue())
+        self.assertNotIn("| 🚫 Errors", final.with_name("summary.md").read_text())
         self.assertEqual(first.read_text(), report)
         self.assertEqual(second.read_text(), report)
         for evidence in (final, final.with_name("summary.md")):
@@ -247,9 +271,12 @@ class DocumentationRetryTests(unittest.TestCase):
 
     def test_verified_file_cannot_mask_a_broken_link(self):
         mixed = github_report(("503", GITHUB_SOURCE), ("404", GNU_URL))
-        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)):
+        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)), \
+                patch("sys.stdout", new_callable=io.StringIO) as log:
             code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_code=2, second_report=mixed)
         self.assertEqual(code, 2)
+        self.assertIn("::error::", log.getvalue())
+        self.assertIn("[404]", final.with_name("summary.md").read_text())
         self.assertIn("[404]", final.read_text())
         self.assertIn("Warning: HTTP 503", final.read_text())
 

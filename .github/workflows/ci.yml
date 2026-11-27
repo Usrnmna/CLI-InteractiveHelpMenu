@@ -4,23 +4,37 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      linux_suite:
+        description: Linux test layout
+        type: choice
+        default: full
+        options:
+          - full
+          - timed-control
+          - three-shard-pilot
+      control_run_id:
+        description: Optional same-commit timed-control run ID for outcome comparison
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ inputs.linux_suite && inputs.linux_suite != 'full' && format('-pilot-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
   linux-tests:
-    name: Linux tests (Python ${{ matrix.python }})
+    name: Linux tests (Python ${{ matrix.python }})${{ matrix.shard != 0 && format(' shard {0}/3', matrix.shard) || '' }}
     runs-on: ${{ matrix.os }}
     # The three-target discovery audit takes over 40 minutes before package verification.
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
+        python: ['3.10', '3.12', '3.14']
+        shard: ${{ fromJSON(inputs.linux_suite == 'three-shard-pilot' && '[1,2,3]' || '[0]') }}
         include:
           - os: ubuntu-24.04
             python: '3.10'
@@ -46,24 +60,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends tmux
       - name: Check repository artifact policy
+        if: matrix.shard <= 1
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p tests/reports/ci
           python3 -B -m unittest discover -s tests -p test_repository_config.py -v 2>&1 | tee tests/reports/ci/repository-policy.log
       - name: Reconcile numerical-description inventory
+        if: matrix.shard <= 1
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p tests/reports/ci
           python3 -B scripts/inventory_numerical_descriptions.py --check --summary | tee tests/reports/ci/numerical-inventory-summary.json
       - name: Enforce numerical coverage
+        if: matrix.shard <= 1
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p tests/reports/ci
           python3 -B scripts/check_numerical_coverage.py --output tests/reports/ci/numerical-coverage.json --summary
       - name: Smoke-test passive diagnostics
+        if: matrix.shard <= 1
         shell: bash
         env:
           CLI_HELP_DRIVERS: ${{ github.workspace }}/config/drivers.example
@@ -191,12 +209,39 @@ jobs:
           assert not Path(os.environ["CLI_HELP_CACHE_DIR"]).exists()
           PY
       - name: Run full Linux test suite
+        if: matrix.shard == 0 && inputs.linux_suite != 'timed-control'
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p tests/reports/ci
           bash tests/run.sh 2>&1 | tee tests/reports/ci/linux-tests.log
+      - name: Run timed control or assigned shard
+        if: matrix.shard != 0 || inputs.linux_suite == 'timed-control'
+        shell: bash
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          reports=tests/reports/ci
+          python3 -B tests/ci_shards.py plan "$reports" --commit "$GITHUB_SHA" --shard "$SHARD"
+          args=()
+          if [[ "$SHARD" != 0 ]]; then
+            mapfile -t ids < "$reports/selected.txt"
+            args=(--selected "${ids[@]}")
+          fi
+          CLI_HELP_TEST_TIMING=1 bash tests/run.sh "${args[@]}" 2>&1 | tee "$reports/linux-tests.log"
+      - name: Collect outer suite timing evidence
+        if: ${{ !cancelled() && (matrix.shard != 0 || inputs.linux_suite == 'timed-control') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          reports=tests/reports/ci
+          # The outer runner prints its fresh report path before preflight or nested tests.
+          events=$(sed -n '1s/^Test timing report: //p' "$reports/linux-tests.log")
+          test -s "$events"
+          cp -- "$events" "$reports/events.jsonl"
       - name: Build and verify local candidate artifacts
+        if: matrix.shard <= 1
         shell: bash
         run: |
           set -euo pipefail
@@ -213,11 +258,14 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: linux-tests-python-${{ matrix.python }}
+          name: linux-tests-python-${{ matrix.python }}${{ matrix.shard != 0 && format('-shard-{0}', matrix.shard) || '' }}
+          overwrite: ${{ matrix.shard != 0 || inputs.linux_suite == 'timed-control' }}
           # Only named synthetic diagnostics, logs, and package identity are retained.
           # Raw captures, downloaded targets, tool homes, and caches stay local.
           path: |
             tests/reports/ci/linux-tests.log
+            tests/reports/ci/manifest.json
+            tests/reports/ci/events.jsonl
             tests/reports/ci/repository-policy.log
             tests/reports/ci/numerical-inventory-summary.json
             tests/reports/ci/numerical-coverage.json
@@ -233,6 +281,45 @@ jobs:
             tests/reports/ci/release-build-info.json
           if-no-files-found: warn
           retention-days: 14
+
+  verify-shards:
+    name: Verify Linux shard coverage
+    if: ${{ always() && inputs.linux_suite == 'three-shard-pilot' }}
+    needs: linux-tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download shard evidence
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: linux-tests-python-*-shard-*
+          path: ${{ runner.temp }}/shards
+      - name: Download matched control
+        if: inputs.control_run_id != ''
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.control_run_id }}
+          pattern: linux-tests-python-*
+          path: ${{ runner.temp }}/control
+      - name: Reconcile assignments and outcomes
+        shell: bash
+        env:
+          MATRIX_RESULT: ${{ needs.linux-tests.result }}
+          CONTROL_RUN_ID: ${{ inputs.control_run_id }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -n "$CONTROL_RUN_ID" ]]; then args=(--control "$RUNNER_TEMP/control"); fi
+          python3 -B tests/ci_shards.py verify "$RUNNER_TEMP/shards" --commit "$GITHUB_SHA" "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          # Candidate verification and other standalone gates also contribute to the verdict.
+          test "$MATRIX_RESULT" = success
 
   documentation:
     name: Documentation links
@@ -260,21 +347,23 @@ jobs:
         id: documentation-links
         # Reserve time for the bounded retry, cache save and artifact upload.
         timeout-minutes: 35
-        # The final gate retains strict failure handling after one permitted retry.
-        continue-on-error: true
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           lycheeVersion: v0.24.2
           args: --config lychee.toml --no-progress '**/*.md' .github/CONTRIBUTING.md .github/pull_request_template.md
-          fail: true
+          # Return link failures through exit_code so the final gate can resolve them.
+          fail: false
           failIfEmpty: true
           output: tests/reports/documentation-links-attempt-1.md
-          jobSummary: true
+          jobSummary: false
       - name: Resolve documentation check with one bounded retry
         if: ${{ !cancelled() }}
         shell: bash
+        env:
+          FIRST_OUTCOME: ${{ steps.documentation-links.outcome }}
+          FIRST_EXIT_CODE: ${{ steps.documentation-links.outputs.exit_code }}
         run: |
-          python3 scripts/retry_documentation_links.py --first-outcome '${{ steps.documentation-links.outcome }}'
+          python3 scripts/retry_documentation_links.py --first-outcome "$FIRST_OUTCOME" --first-exit-code "$FIRST_EXIT_CODE"
       - name: Save successful link responses
         if: ${{ always() && steps.lychee-cache.outputs.cache-primary-key != '' && hashFiles('.lycheecache') != '' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
