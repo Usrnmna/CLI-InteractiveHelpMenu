@@ -21,6 +21,32 @@ RELATED = {"[": "test", "local": "declare", "readarray": "mapfile", "typeset": "
 HELP_SCRIPT = 'builtin help -- "$1"'
 
 
+def focused_topic(topic, label, source):
+    """Lead with the selected Bash declaration, keeping the rest of the topic in source order.
+
+    Bash aligns descriptions with tabs or spaces. Join only the indented continuation
+    lines belonging to this row. Unrecognized topics keep their original layout.
+    """
+    if not source.startswith(RELATED.get(topic, topic) + ": "):
+        return ""
+    lines = source.expandtabs(8).splitlines()
+    declaration = re.compile(r"^ {6}" + re.escape(label) + r" +(\S.*)$")
+    for index, raw in enumerate(lines[1:], 1):
+        match = declaration.fullmatch(raw)
+        if not match:
+            continue
+        end = index + 1
+        words = [match[1]]
+        while end < len(lines) and lines[end].startswith(" " * 12) and lines[end].strip():
+            words.append(lines[end].strip())
+            end += 1
+        # Skip only the selected row in the reference below. Keep command-wide
+        # rules, examples and all neighboring declarations available by scrolling.
+        return "\n".join(["Behavior: " + " ".join(words), "Builtin reference:",
+                          lines[0].partition(": ")[2], *lines[1:index], *lines[end:]])
+    return ""
+
+
 def builtin_profile(name, text, specification):
     """Build a selectable topic from the installed Bash synopsis and declaration rows.
 

@@ -144,26 +144,13 @@ def bash(rec):
     rec.select("-t timeout")
     rec.still("1-option", "1/3   Alt-H → -t timeout    Bash lists the argument beside its option.", "> -t timeout", "-d delim")
     s.keys("D")
-    state = s.wait_for(lambda f: "Detailed" in f.cells[0])
-    keys = "Shift+D"
-    if "within TIMEOUT seconds" not in " ".join(state.detail_body):
-        s.keys("D")
-        keys = "Shift+D twice"
-        state = s.wait_for(lambda f: "Expanded" in f.cells[0])
-    # Put the timeout rule at the top of the detail pane when the source permits.
-    for _ in range(100):
-        body = " ".join(" ".join(state.detail_body).split())
-        rule_visible = "time out and return failure" in body and "within TIMEOUT seconds" in body
-        start, end, total = state.detail_range
-        if rule_visible and (body.startswith("-t timeout") or end == total):
-            break
-        assert end < total, state.cells
-        s.keys("]")
-        state = s.wait_for(lambda f: f.detail_range[0] != start)
-    else:
-        raise AssertionError(state.cells)
-    rec.still("2-timeout", f"2/3   {keys}, then ]    Read the timeout rule from Bash's builtin help.",
-              "within TIMEOUT seconds", "> -t timeout")
+    detailed = s.wait_for(lambda f: "Detailed" in f.cells[0])
+    assert "within TIMEOUT seconds" in " ".join(detailed.detail_body)
+    s.keys("D")
+    expanded = s.wait_for(lambda f: "Expanded" in f.cells[0])
+    assert expanded.detail_range[0] == 1
+    rec.still("2-timeout", "2/3   Shift+D twice    Read the timeout, default, zero case and exit status together.",
+              "within TIMEOUT seconds", "TMOUT", "If TIMEOUT is 0", "greater than 128", "> -t timeout")
     s.keys("Enter")
     rec.pending("builtin read -t ", len("builtin read -t "))
     s.text("5 reply")

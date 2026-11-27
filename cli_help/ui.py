@@ -599,7 +599,42 @@ def list_rows(entries, width, accent):
         return rows
 
 
-def layout_details(lines, width, accent):
+_DETAIL_HEADING = re.compile(
+    r"^(?:Value(?: variant \d+)?(?: \([^)]+\))?|Component [^:]+|"
+    r"[A-Za-z][\w-]*(?: [A-Za-z][\w-]*){0,3}):(?=\s|$)")
+_DETAIL_TERM = re.compile(
+    r"(?<![\w/-])--?[A-Za-z][\w-]*|(?<!\w)\$?[A-Z][A-Z_0-9]+\b|"
+    r"(?<![\w.])\d+(?:\.\d+)?(?![\w.])|"
+    r"\b(?:[Dd]efault|[Rr]equires?|[Ee]xit status|If|Unless)\b")
+
+
+def prose_rows(line, width, accent, section_color, heading):
+    """Wrap once and overlay section titles and technical terms at terminal-cell offsets."""
+    spans = []
+    end = len(heading)
+    if heading:
+        spans.append((0, end, curses.A_BOLD | section_color))
+    for match in _DETAIL_TERM.finditer(line, end):
+        spans.append((*match.span(), curses.A_UNDERLINE | accent))
+    offset = span_index = 0
+    for part in wrap_cells(line, width):
+        start = line.index(part, offset)
+        offset = start + len(part)
+        highlights = []
+        while span_index < len(spans):
+            left, right, style = spans[span_index]
+            if left >= offset:
+                break
+            first, last = max(start, left), min(offset, right)
+            if first < last:
+                highlights.append((sum(map(cell_width, line[start:first])), line[first:last], style))
+            if right > offset:
+                break
+            span_index += 1
+        yield DetailRow(part, highlights)
+
+
+def layout_details(lines, width, accent, section_color=0):
     """Flow adjacent entries as a list. Full-width headings and prose delimit each list."""
     rows = []
     index = 0
@@ -611,14 +646,15 @@ def layout_details(lines, width, accent):
         if entry is None:
             bitrate = line == "Input             Result (bps)"
             value_list = line.casefold() in {"values:", "accepted values:", "accepted suffixes:", "choices:"}
-            heading = re.match(r"^(?:Value(?: variant \d+)?(?: \([^)]+\))?|Component [^:]+):", line)
-            for part in wrap_cells(line, width):
-                highlights = []
-                if bitrate or line.endswith(":"):
-                    highlights.append((0, part, curses.A_BOLD))
-                elif heading and part.startswith(heading[0]):
-                    highlights.append((0, heading[0], curses.A_BOLD))
-                rows.append(DetailRow(part, highlights))
+            label = _DETAIL_HEADING.match(line)
+            heading = line if bitrate or line.endswith(":") else label[0] if label else ""
+            # Keep list/table headers attached to their entries. Separate prose
+            # sections and complete paragraphs while leaving source hard wraps together.
+            if rows and rows[-1].text and (
+                    label and not value_list or
+                    not heading and rows[-1].text.endswith((".", "!", "?")) and len(line.split()) >= 5):
+                rows.append(DetailRow())
+            rows.extend(prose_rows(line, width, accent, section_color, heading))
             continue
         entries = [entry]
         while index < len(lines):
@@ -665,7 +701,11 @@ def draw_title(screen, browser, keys, preview, width):
     title = ("Help preview | " if preview else "Interactive help | ") + " ".join(browser.profile["command"])
     title_width = width - hint_width - 1
     write(screen, 0, 0, ellipsize_cells(title, title_width), title_width, curses.A_BOLD | browser.section_color)
-    write(screen, 0, width - hint_width, hint, hint_width, curses.A_BOLD)
+    hint_start = width - hint_width
+    write(screen, 0, hint_start, hint, hint_width)
+    write(screen, 0, hint_start, browser.level, len(browser.level), curses.A_BOLD)
+    write(screen, 0, hint_start + len(browser.level) + 3, key, sum(map(cell_width, key)),
+          curses.A_BOLD | (browser.key_color or browser.accent))
 
 
 def level_guidance(view, level):
@@ -725,7 +765,7 @@ def draw_compact(screen, browser, keys, searching, preview):
             paragraphs = [terminal_prose(category.get("description", ""))]
             if browser.profile.get("positional_group"):
                 paragraphs.append("Repeated value group: " + browser.profile["positional_group"]["argument"])
-        lines = layout_details(paragraphs, width, browser.accent)
+        lines = layout_details(paragraphs, width, browser.accent, browser.section_color)
         body = stop - start
         last = max(0, len(lines) - body)
         offset = browser.detail_offset = min(max(0, browser.detail_offset), last)
@@ -841,7 +881,7 @@ def draw_frame(screen, browser: Browser, keys, searching, preview):
     if browser.focus == "categories":
         detail = [category["name"], terminal_prose(category.get("description", "")),
                   terminal_prose(browser.profile["description"])]
-    lines = layout_details([line for line in detail if line], width - 1, browser.accent)
+    lines = layout_details([line for line in detail if line], width - 1, browser.accent, browser.section_color)
     top = 4 + bool(note)
     # Reserve at least two selectable rows at minimum size.
     available = height - 2 - top

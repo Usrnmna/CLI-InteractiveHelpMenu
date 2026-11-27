@@ -7,6 +7,29 @@ from ui import cell_width, layout_details
 
 
 class DetailColumnTests(unittest.TestCase):
+    def test_prose_sections_and_terms_in_both_layouts(self):
+        profile = specimen()
+        option = profile["categories"][0]["options"][0]
+        option.pop("value_semantics", None)
+        option.update(summary="Select the output.", detail="Limits: Requires 界 --format and RATE.\n"
+                      "Fallback: Use the default if the value is missing.")
+        for width in (60, 112):
+            for color in (0, 17):
+                with self.subTest(width=width, color=color):
+                    browser = Browser(profile, level="Expanded", guided=True)
+                    browser.compact_page = "details"
+                    browser.accent, browser.section_color = color, color * 2
+                    screen = CellScreen(36, width)
+                    draw(screen, browser, load_keys())
+                    roles = {word: (y, x, attr) for (y, x, attr), word in screen.cells.items()
+                             if word in {"Limits:", "Fallback:", "--format", "RATE"}}
+                    y, x, attr = roles["Limits:"]
+                    self.assertEqual((x, attr), (0, curses.A_BOLD | browser.section_color))
+                    self.assertEqual(roles["--format"], (y, len("Limits: Requires ") + 3,
+                                                         curses.A_UNDERLINE | browser.accent))
+                    self.assertEqual(roles["RATE"][2], curses.A_UNDERLINE | browser.accent)
+                    self.assertGreaterEqual(roles["Fallback:"][0], y + 2)
+
     def test_below_and_at_each_transition_in_both_color_modes(self):
         items = [f"v{i}: short" for i in range(12)]
         for width, starts in ((62, [0]), (63, [0, 33]), (95, [0, 49]), (96, [0, 33, 66])):

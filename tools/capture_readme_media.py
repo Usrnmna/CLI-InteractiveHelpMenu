@@ -202,6 +202,8 @@ def render(screen, title, caption, first_row=0, stop_row=ROWS):
             x, y = padding + column * cell_width, top + (row - first_row) * cell_height
             draw.rectangle((x, y, x + cell_width - 1, y + cell_height - 1), fill=background)
             draw.text((x, y), char.data, font=bold_font if char.bold else font, fill=foreground)
+            if char.underscore:
+                draw.line((x, y + 21, x + cell_width - 1, y + 21), fill=foreground)
     if not screen.cursor.hidden and first_row <= screen.cursor.y < stop_row:
         x = padding + min(screen.cursor.x, screen.columns - 1) * cell_width
         y = top + (screen.cursor.y - first_row) * cell_height

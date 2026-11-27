@@ -128,8 +128,14 @@ class MenuLevelTests(unittest.TestCase):
                 keys = load_keys()
                 keys["cycle_detail"] = [binding]
                 screen = CellScreen(24, width)
-                draw(screen, Browser(profile, guided=True), keys)
+                browser = Browser(profile, guided=True)
+                browser.key_color = 17
+                draw(screen, browser, keys)
                 self.assertIn("Simple   " + label + " change view", screen.text())
+                hint = "Simple   " + label + " change view"
+                start = width - 1 - len(hint)
+                self.assertEqual(screen.cells[0, start, 0], hint)
+                self.assertEqual(screen.cells[0, start + len("Simple   "), ui.curses.A_BOLD | 17], label)
                 self.assertNotIn("motion", screen.text())
 
     def test_motion_deadline_unicode_and_final_frame(self):

@@ -138,8 +138,13 @@ the available forms, conversions, constraints, examples and version qualificatio
 The level key shown at the top preserves selection and filtering. Use `[` and `]`
 when a line counter is visible. Long lists in Details use up to three columns
 when the entries fit. Read down each column, then move to the top of the next.
-Underlined text identifies literal values. Explanations wrap in the same column
-as the value, and rules that apply to several values span the pane.
+Details uses bold section labels, paragraph spacing and underlined terms in both
+layouts. Flags, placeholders, numbers and words such as “default” and “requires”
+stand out in running text. Color terminals also distinguish section labels from
+terms. Value-list explanations wrap in the same column as their literal, and
+rules that apply to several values span the pane. For Bash builtins with a
+matching help declaration, the selected option's behavior appears first.
+Expanded keeps the rest of the builtin reference available below it.
 
 Category names use short sidebar labels. The header shows the original category
 title. A title wider than the header can be read in full in the scrollable pane.

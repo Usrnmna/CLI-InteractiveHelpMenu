@@ -74,6 +74,22 @@ class UbuntuPackagingTests(unittest.TestCase):
 
 
 class UbuntuBuiltinTests(unittest.TestCase):
+    def test_read_leads_with_the_selected_rule_and_retains_the_reference(self):
+        from bash_builtins import builtin_profile
+        from presentation import option_text
+
+        for edition in ("noble", "resolute"):
+            source = json.loads((FIXTURES / f"{edition}-bash.json").read_text())["read"]
+            profile = builtin_profile("read", source, source)
+            category = profile["categories"][0]
+            view = option_text(profile, category, rows(profile)["-t"])
+            self.assertIn("within TIMEOUT seconds", view.detailed[0])
+            before = view.expanded.index("Builtin reference:")
+            self.assertIn("greater than 128", " ".join(view.expanded[:before]))
+            self.assertIn("Exit Status:", view.expanded[before:])
+            self.assertIn(source.casefold(), view.searchable)
+            self.assertEqual(rows(profile)["-t"]["detail"], source)
+
     def test_all_builtins_use_only_exact_bash_help(self):
         guidance = set(": bg break builtin caller continue eval exit false fg getopts let logout return shift times true".split())
         for edition in ("resolute", "noble"):

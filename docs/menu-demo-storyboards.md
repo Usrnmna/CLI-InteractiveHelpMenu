@@ -10,7 +10,7 @@ These five recordings show the development checkout running in real interactive 
 | rsync | Limit a transfer over a slow connection | Reveal clipped text without shifting the option name | Timed GIF |
 | ffmpeg | Find the last entry in a large codec menu | Page through a category and cancel back to an unfinished edit | Four PNGs |
 
-The recorder drove the Alt-H shortcut from Bash on Ubuntu 26.04.1 LTS, using checkout `4f1d31b`, Bash 5.3.9 and tmux. APT and Bash used installed-provider discovery. Git, rsync and FFmpeg used the bundled profiles. The menu images show the full pane. Prompt stills crop the empty rows below the cursor. Keystroke captions sit outside the terminal.
+The recorder drove the Alt-H shortcut from Bash on Ubuntu 26.04.1 LTS, using Bash 5.3.9 and tmux. All five recordings use the working tree based on `9d512ed` with the updated Details formatting and shortcut colors. APT and Bash used installed-provider discovery. Git, rsync and FFmpeg used the bundled profiles. The menu images show the full pane. Prompt stills crop the empty rows below the cursor. Keystroke captions sit outside the terminal.
 
 ## 1. APT · preview a package install
 
@@ -30,7 +30,7 @@ Start at 100×26 with `apt ins▏ 'graphviz'`.
 Start at 112×36 with `builtin read ▏`. The explicit `builtin` selects Bash’s own help topic.
 
 1. **Find the argument.** Press Alt-H and highlight `-t timeout`. Include the `builtin read` title and the adjacent declarations, such as `-d delim`, so the argument notation is visible.
-2. **Understand the timeout.** Press Shift+D twice to reach Expanded, then scroll with `]` to the `-t` entry. Bash's help explains that a timeout returns failure if a complete line has not arrived.
+2. **Understand the timeout.** Press Shift+D for the selected option’s behavior, then Shift+D again for Expanded. The first page shows the default, fractional timeouts, the zero case and the exit status, followed by the builtin reference.
 3. **Supply the value.** Accept `-t`. In Bash, type `5 reply`. End on `builtin read -t 5 reply▏` and caption which text the menu inserted and which text was typed.
 
 | Find the argument | Read the timeout rule | Fill in the value |
@@ -78,6 +78,6 @@ Start at 120×30 with `ffmpeg ▏ 'review clip.mp4'`. The cursor is between the 
 
 The Ubuntu packages installed during recording were APT `3.2.1ubuntu0.1`, Bash `5.3-2ubuntu1`, Git `1:2.53.0-1ubuntu1.1`, rsync `3.4.1+ds1-7ubuntu0.3`, FFmpeg `7:8.0.1-3ubuntu2` and tmux `3.6a-2ubuntu0.2`.
 
-The [scenario recorder](../tools/capture_scenario_demos.py) checks terminal dimensions, selected text, the returned Readline buffer and its cursor offset. In the recorded rsync session, the first change to the selected summary was observed at 2.010 seconds. The encoded GIF holds the opening highlight for exactly 2.000 seconds. The declaration and neighboring rows stay fixed through all six summary states.
+The [scenario recorder](../tools/capture_scenario_demos.py) checks terminal dimensions, selected text, the returned Readline buffer and its cursor offset. In the recorded rsync session, the first change to the selected summary was observed at 2.003 seconds. The encoded GIF holds the opening highlight for exactly 2.000 seconds. The declaration and neighboring rows stay fixed through all six summary states.
 
 With tmux installed and the [media environment](assets/README.md#regeneration) active, run `python tools/capture_scenario_demos.py` from the checkout. Pass one package name to repeat only that scenario. Original terminal text, cursor positions and animation timings are saved under `tests/reports/scenario-demos/`.

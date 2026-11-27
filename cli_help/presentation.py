@@ -7,6 +7,7 @@ profiles, perform I/O or inspect a pending command.
 
 from dataclasses import dataclass
 from functools import cached_property
+from bash_builtins import focused_topic
 from menu_units import expanded_rules, prose_aliases, unit_index
 import re
 
@@ -416,6 +417,8 @@ def option_text(profile, category, option, *, positional=None, shared_values=Non
         summary = summary or option.get("argument") or "Description unavailable"
     aliases = numerical.aliases | positional.aliases
     original = option["summary"] + "\n" + source
+    if len(profile["command"]) == 2 and profile["command"][0] == "builtin":
+        original = focused_topic(profile["command"][1], option_label(option), source) or original
     return OptionText(compact, tuple(lines), " ".join(searchable).casefold(), list_hint, notice, summary,
                       aliases, numerical.group if not notice else (), original, numerical, positional,
                       repeated, argument_rule)
