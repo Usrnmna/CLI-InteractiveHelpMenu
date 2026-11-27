@@ -6,11 +6,11 @@ See [version numbering and planned releases](versioning.md) when choosing the ne
 
 ## Version 0.5.0 - Alpha
 
-The selected candidate adds Ubuntu command coverage to the Bash menu, including package-manager routes, builtin help and edition-specific reference files. Those files install with the runtime. Optional tools are installed separately by the user. The filenames below describe the planned local outputs. Both builds and installed-package verification are pending. [Release contents](../CHANGELOG.md#version-050---alpha) · [Local candidate checklist](../ROADMAP.md#remaining-work)
+The selected candidate adds Ubuntu command coverage to the Bash menu, including package-manager routes, builtin help and edition-specific reference files. Those files install with the runtime. Optional tools are installed separately by the user. The corrected local builds correspond to the existing prerelease tag at `9274a1a`. Use the candidate audit for exact-package results, the eleven asset hashes and the manual publication handoff. [Candidate audit](release-candidate.md#v050-alpha-local-candidate) · [GitHub release body](release-notes-v0.5.0-alpha.md)
 
 ## Version 0.4.1 - Alpha
 
-The local candidate skips unchanged idle frames and reduces the cost of validating profile text on menu open. The two changes form one patch in the 0.4 series. Performance measurements and regression results are available for both. The first build was verified locally on all three offline targets and reproduced byte for byte. The candidate remains unpublished. [Changelog](../CHANGELOG.md#version-041---alpha) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate)
+The local candidate skips unchanged idle frames and reduces the cost of validating profile text on menu open. The two changes form one patch in the 0.4 series. Performance measurements and regression results are available for both. The first build was verified locally on all three offline targets and reproduced byte for byte. The earlier local audit preceded the [GitHub prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.4.1-alpha). [Changelog](../CHANGELOG.md#version-041---alpha) · [Local candidate status](release-candidate.md#v041-alpha-local-candidate)
 
 ## Version 0.4.0 - Alpha
 

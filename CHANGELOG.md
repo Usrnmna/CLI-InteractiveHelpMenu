@@ -2,7 +2,7 @@
 
 ## Version 0.5.0 - Alpha
 
-The maintainer selected the accepted Ubuntu coverage batch for this local release candidate. Package builds and installed-candidate verification are pending. [Release roadmap](ROADMAP.md#remaining-work)
+This release covers the accepted Ubuntu coverage batch at `9274a1a`. [GitHub release notes](docs/release-notes-v0.5.0-alpha.md) · [Exact-package verification and upload files](docs/release-candidate.md#v050-alpha-local-candidate)
 
 - Browse edition-specific APT verbs and dpkg actions while composing a command. The menu accounts for option aliases and required operands, including the three values for `dpkg --compare-versions`.
 - Browse installed Bash help for 61 builtin names. A bare `echo` and `/usr/bin/echo` select their respective providers. Topics with no selectable switch give usage guidance.
@@ -11,7 +11,7 @@ The maintainer selected the accepted Ubuntu coverage batch for this local releas
 
 ## Version 0.4.1 - Alpha
 
-Verified locally and unpublished. This patch combines two measured improvements to opening and using the menu. [Candidate verification](docs/release-candidate.md#v041-alpha-local-candidate)
+This patch combines two measured improvements to opening and using the menu. [Candidate verification](docs/release-candidate.md#v041-alpha-local-candidate)
 
 - An idle menu continues checking terminal size while skipping redraws of an unchanged frame. In 10-second idle intervals on the Ubuntu 26.04.1 benchmark host, repeated redraws fell from 66 to zero in both the FFmpeg and small Git menus. [Idle measurements and resize checks](docs/menu-cost-measurements.md#idle-redraw-experiment)
 - The loader validates an ordinary printable text field in one call. It still validates every bundled and custom profile, applies custom overrides in order and reports malformed fields. On the same host, median CPU time for loading 76 bundled profiles fell from 118.36 to 74.04 ms. [Validation and first-frame measurements](docs/menu-cost-measurements.md#serial-profile-validation-experiment)

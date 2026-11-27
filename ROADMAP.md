@@ -2,25 +2,11 @@
 
 ## Remaining work
 
-**Current release task:** Verify the first build of `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98` on all three targets. The corrected numerical gates passed, and all 11 files from two clean builds matched byte for byte. [Candidate audit](docs/release-candidate.md#v050-alpha-local-candidate)
-
-| Target | Exact-package result |
-| --- | --- |
-| host · Ubuntu 26.04 / Python 3.14 | In progress |
-| noble310 · Ubuntu 24.04 / Python 3.10 | In progress |
-| noble312 · Ubuntu 24.04 / Python 3.12 | In progress |
-
-After the combined gate, record the package and installed-prefix outcomes and finalize the release notes. The existing GitHub prerelease tag points to the corrected source. Its published assets still correspond to the earlier build from `d13b3e6`. The maintainer handles asset and release-body updates.
+**v0.5.0-alpha publication handoff.** The existing tag points to `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98`. The corrected first build has passed all three exact-package and installed-prefix gates. The remaining publication action belongs to the maintainer. Replace the nine differing GitHub assets, retain the two identical files, apply the reviewed release body and compare all eleven published digests and sizes against the upload list. [Candidate audit and upload list](docs/release-candidate.md#v050-alpha-local-candidate) · [Release body](docs/release-notes-v0.5.0-alpha.md)
 
 ### Narrow terminal navigation preview
 
-Review the opt-in Categories → Options → Details flow from the development checkout.
-The split view resumes at 80 columns. The prototype follows the frozen release build. The development browser now offers the optional scrolling summary in both layouts.
-[Preview controls](docs/usage.md#narrow-menu-preview) · [Terminal verification](docs/audit-history.md#narrow-menu-navigation-preview) · [Five live scenarios](docs/menu-demo-storyboards.md) · [APT option review](docs/ubuntu-coverage-audit.md#apt-option-guidance-in-simple-detailed-and-expanded)
-
-### Terminal resizing during operations
-
-**Phase 4 complete.** The maintainer accepted all six resize cases, keeping B as shown and closing F with Ctrl-L recovery at the Bash prompt. At `266e756`, host, noble310 and noble312 each ran the full offline suite once. Each recorded 2,085 passes, zero failures or errors, one Windows-only skip and exit 0. All per-test outcomes matched. [Per-target verification and fixture identities](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together) · [B and F snapshots](docs/terminal-resize-results.md#b-and-f-follow-up)
+The maintainer selected Categories → Options → Details for the narrow prototype, the split view for wide terminals, and accepted resize cases A–F. Phase 4 verification is complete at `266e756`. B preserves the reading phrase and F closes with Ctrl-L at the Bash prompt. The separate product decision is whether the three-screen flow should become the default at 60–79 columns in a future release. The development checkout currently requires `CLI_HELP_NARROW_MENU=1`. At 80 columns the split view resumes. Compare the same search at 79 columns with the [opt-in layout](docs/assets/resize-review/phase2/A-apply-narrow.png) and the [default layout](docs/assets/resize-review/phase2/A-control-narrow.png). [Five demos](docs/menu-demo-storyboards.md) · [Completed resize verification](docs/terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
 
 ### Unresolved provider findings
 
@@ -41,7 +27,7 @@ These decisions have their own triggers and can be taken up after the Ubuntu han
 | Trigger | Action and completion criterion |
 | --- | --- |
 | Noble package availability changes | Check rank 62 (`magick`) and rank 95 (`starship`) against the matching archive. Update the affected optional row and installation guidance when the package supplies that executable. [Ranked inventory](docs/ubuntu-command-coverage/optional.tsv) |
-| The maintainer authorizes the hosted shard comparison | Run `timed-control`, then `three-shard-pilot` on the same commit using the control run ID. Verify per-target discovery, outcomes and skip reasons. Record queue delays, elapsed time to the last required job, slowest shard and total runner-minutes. Use those results to decide whether to propose changing CI defaults. [Manual CI pilot](docs/development.md#manual-three-shard-pilot) |
+| A future hosted comparison has matching runner images per target and the maintainer requests another pair | The completed tagged pilot matched all 2,066 IDs and outcomes per target. Its required comparison failed on image revisions. Keep the ordinary unsharded CI default. A future default change requires a successful matched comparison and separate approval. [Run links, image differences and measurements](docs/audit-history.md#hosted-sharding-comparison-at-v050-alpha) |
 | Measurements identify a material menu or discovery cost | Isolate the measured operation, compare matched timings and verify the affected behavior. Obtain explicit approval before introducing selective loading, a persistent index or another process. [Performance plan](docs/ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 | Focused test selection still leaves substantial cost | Pilot opt-in result reuse for one group. Verify invalidation for changed sources, tests, targets, fixtures and environments, including interrupted runs. Compare executed, reused, failed and skipped counts to a full run. Record parity and measured savings before considering CI selection. [Result reuse](docs/test-selection-plan.md#5-reuse-green-results-only-after-selection-works) |
 

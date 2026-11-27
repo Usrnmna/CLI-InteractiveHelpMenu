@@ -15,6 +15,8 @@ The patch-9 carry applies even when the same plan continues. If several rules ca
 
 The selected Ubuntu coverage candidate uses `0.5.0-alpha` in the version file, `v0.5.0-alpha` as its identifier and **Version 0.5.0 - Alpha** for the changelog heading.
 
+The corrected packages from the existing v0.5.0-alpha tag retain this number. The differences from the earlier uploaded build are a numerical review fingerprint and two documents. For a subsequent release that ships the development checkout’s narrow navigation, keyboard preview, APT guidance and resize improvements together, the recommended number is **v0.6.0-alpha**. The goal shifts from expanding Ubuntu coverage to helping users navigate and read options across terminal sizes. A maintainer selects the number when preparing that separate release. [Development demos](menu-demo-storyboards.md) · [Verified resize behavior](terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
+
 ## Proposed targets
 
 A proposed release must change the working program. Eligible changes include a Bash keybinding fix, an improvement to menu performance, and corrections to the option descriptions or literal spellings that the menu displays or inserts. README edits, audit reports, demonstration media, CI changes and test-runner improvements are maintenance. They can accompany a program change and carry no version increment on their own.
@@ -25,7 +27,7 @@ The maintainer selected v0.5.0-alpha for a distinct goal. The 0.4 series improve
 
 | Proposed release | Change to the working program | Evidence for inclusion |
 | --- | --- | --- |
-| v0.5.0-alpha (selected) | Browse Ubuntu package-manager verbs, builtin topics and applicable shipped and optional command help. | [Accepted handoff](audit-history.md#ubuntu-coverage-handoff-acceptance) · [Pending package verification](release-candidate.md#v050-alpha-local-candidate) |
+| v0.5.0-alpha (selected) | Browse Ubuntu package-manager verbs, builtin topics and applicable shipped and optional command help. | [Accepted handoff](audit-history.md#ubuntu-coverage-handoff-acceptance) · [Exact-package verification](release-candidate.md#v050-alpha-local-candidate) |
 | Unassigned | Make searches and selection changes redraw faster in large menus. | If repeated matching or text wrapping accounts for the delay, measure time from a keypress to the updated screen before and after the change. Confirm that editing a query refreshes the matches, changing selection shows the correct Details, and resizing rewraps the text. [Redraw experiments](ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 | Unassigned | Open menus faster for commands whose installed identity must be checked before showing help. | If traces identify redundant discovery work, compare first display time and probe counts on the same fixtures. Verify matching and mismatched executable identities, stale entries and failed probes still produce the expected help or fallback. [Discovery investigation](runtime-architecture.md#optimization-candidates) |
 

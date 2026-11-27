@@ -2,6 +2,36 @@
 
 The browser began as a way to choose a command option in Bash and return to an editable command line. The early reviews tested that editing boundary. Later audits checked which documented choices the bundled menus described and which options discovery recovered from fixed help and manual replies. The sections below follow that sequence through the three-level menu and release-candidate checks. [Remaining work](../ROADMAP.md#remaining-work)
 
+## Hosted sharding comparison at v0.5.0-alpha
+
+**Keep the unsharded CI default.** All nine shard jobs succeeded. The required comparison job failed because the hosted runner images differed. The recorded test IDs, outcomes and skip reasons agreed. This single pair does not establish the time savings on matching images.
+
+Both manual dispatches used the existing `v0.5.0-alpha` tag at `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98`, attempt 1. The pilot named control run `45957954772` and both runs reported the full tagged SHA. The previous control on `main` used `70d2d29`. The branch moved before a matching pilot was available. [Tagged control](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45957954772) · [Tagged pilot](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45963081968) · [Comparison diagnostic](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45963081968/job/140392596245) · [Earlier control](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45926252463)
+
+| Hosted Python | Control image | Shard 1 / 2 / 3 images | IDs assigned to shards 1 / 2 / 3 | Control and pilot union |
+| --- | --- | --- | --- | --- |
+| 3.10.22 | `20261116.133.1` | All `20261122.23.1` | 508 / 510 / 1,048 | 2,026 pass, 40 skip |
+| 3.12.16 | `20261122.23.1` | `20261116.133.1` / `20261122.23.1` / `20261122.23.1` | 886 / 537 / 643 | 2,026 pass, 40 skip |
+| 3.14.10 | `20261116.88.1` | `20261116.202.1` / `20261116.202.1` / `20261122.9.1` | 459 / 1,059 / 548 | 2,026 pass, 40 skip |
+
+The independent transcript comparison checked all 2,066 unique IDs per target against every shard manifest and its completion events. There were zero missing, extra or duplicated IDs and zero differences in outcomes or skip reasons. The 40 skipped IDs per target include 19 individual skips and 21 covered by explicit fixture skips. Their reasons account for 12 Git version or capture checks, nine FFmpeg/ffprobe, eight fzf, six yq, four fdfind and one Windows-only probe. All three control Linux jobs, all nine pilot Linux jobs and both documentation jobs passed. Only the pilot image comparison failed. These hosted fixtures differ from the [local exact-package matrix](release-candidate.md#corrected-build-and-exact-package-verification).
+
+| Measured interval | Control | Pilot | Pilot minus control | Change |
+| --- | ---: | ---: | ---: | ---: |
+| Run creation to first job start | 3 s | 3 s | 0 s | 0% |
+| Maximum run creation to any Linux job start | 4 s | 4 s | 0 s | 0% |
+| Summed job queue time, each job’s creation to start | 7 s | 28 s | +21 s | +300.0% |
+| Run creation to last required job finish | 43m 09s | 18m 11s | −24m 58s | −57.9% |
+| Slowest Python 3.10 Linux job | 43m 05s | 16m 45s (shard 2) | −26m 20s | −61.1% |
+| Slowest Python 3.12 Linux job | 41m 03s | 15m 53s (shard 2) | −25m 10s | −61.3% |
+| Slowest Python 3.14 Linux job | 41m 35s | 17m 49s (shard 2) | −23m 46s | −57.2% |
+| Slowest Linux job across targets | 43m 05s | 17m 49s | −25m 16s | −58.6% |
+| Total measured runner-minutes | 126.02 | 138.50 | +12.48 | +9.9% |
+
+The wall-time difference came from concurrent execution. All Linux jobs in each run started within three to four seconds of run creation. Python 3.10 finished the control. In the pilot, Python 3.14 shards 2 and 3 finished together. The verifier started three seconds later and ran for 16 seconds. Runner-minutes sum actual job start-to-finish intervals for the three control Linux jobs and documentation, or the nine pilot Linux jobs, documentation and verifier. They include setup and artifact handling. The skipped control verifier consumed no runner interval. Billing data was outside the measurement.
+
+Local copies of both attempts’ timing events, manifests, test artifacts, job timestamps, verifier output and per-target comparisons are retained in `tests/reports/v050-9274a1a/handoff/`. A future comparison would need matching hosted image identities across each target’s control and three shards, plus a separately authorized dispatch. Preserve the image check and ordinary CI defaults.
+
 ## Narrow menu navigation preview
 
 The post-`9274a1a` working tree adds an opt-in three-screen browser below 80 columns. A Bash/tmux session opened rsync at 60×16, selected Network and `--bwlimit=RATE`, and read through the final suffix explanation using Space. The same key returned to the opening page. Live resizing at 79, 80, 160 and 60 columns exercised both layouts. Escape restored the original line and cursor. A second invocation inserted `--archive` before a quoted operand from Details. The command execution guard remained untouched. [Preview controls](usage.md#narrow-menu-preview) · [Interaction tests](../tests/test_menu_levels.py)

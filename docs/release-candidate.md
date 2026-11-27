@@ -5,7 +5,47 @@
 
 ## v0.5.0-alpha local candidate
 
-**Local publication status: blocked pending a corrected source commit.** The two builds of `d13b3e67bae4b8ac00027a4ec7979175bb6a9528` reproduced exactly. All three offline suites then stopped at the numerical preflight. Leave this revision and both output directories out of publication. [Remaining steps](../ROADMAP.md#remaining-work) · [Accepted Ubuntu source verification](audit-history.md#phase-3-combined-verification)
+**Ready for manual publication of the corrected assets.** The selected source is `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98`. The GitHub prerelease tag already resolves to this commit. At the handoff check, all eleven published asset digests and sizes matched the older build from `d13b3e6`. The launcher and its individual checksum also match the corrected build. The published body still describes binary verification as pending. [GitHub prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.5.0-alpha) · [Proposed release body](release-notes-v0.5.0-alpha.md)
+
+### Corrected build and exact-package verification
+
+The release builder ran twice from clean copies on Ubuntu 26.04.1 x86_64 with Python 3.14.4 and GCC 15.2.0. The handoff check matched all 1,130 tracked blobs and their Git executable bits to the commit, matched all 1,118 packaged paths and hashes to the manifest, and checked the first build’s archive members, metadata, launcher and embedded payload. The 11 outputs matched the independent rebuild byte for byte. Both installers passed `--verify` and both sets passed their individual and aggregate checksums. The source checksum manifest has SHA-256 `03886a50d1f53fda034cc2eb951a30a04b634d2f19a7cf7aff4d7d74ebfc5c22`. The eleven-file artifact manifest has SHA-256 `db7a8b31accc0b74a10359842afdff0727b0e8609ed652363aeba68cf05c7a11`.
+
+The original host run discovered 2,066 tests and exited 1. Both failures were subtests of `test_interrupted_pair_save_keeps_backup_and_guarded_recovery_restores_bytes`. The non-interactive Bash matrix launcher started the host command as an asynchronous job. With inherited SIGINT ignored, the first child reached `profile_replaced`, then remained blocked reading its control pipe after the parent sent SIGINT. Its locks were still held when the second subtest attempted to enter the same collection. The test registers child cleanup at method scope, after both subtests. A disposable run with SIGINT ignored reproduced both failures. A read-only observer saw the first child (sandbox PID 33) still sleeping with the SIGINT ignore bit set when PID 34 reported the scan lock. The scan and import lock inodes stayed 1313 and 1314 from the first checkpoint through the second failure. With the default disposition at process launch, the identical focused test completed both signal paths, including lock ownership and recovery assertions. The host rerun used the original target arguments and fixtures with normal SIGINT handling. Only the external launch condition changed.
+
+Each target verified the frozen sources, first build and historical v0.1.1-alpha fixture before the suite. The host fixture manifest is `f08addd63144ff211587db461169f9f26302e5a969aea6865ec70ff879e19984`. Both Noble targets used `585b29b53ef075b24e12ddad0d32b612f0182e32824f4f300be2800b1babee8c`. The two successful Noble runs were reused after matching every discovered ID to its outcome, their artifact and fixture inputs, all 15 candidate package and installed-screen tests, and the separate installed-prefix transcripts.
+
+| Target | Ubuntu / Python | Discovered | Passed | Failed or errored | Skipped | Exit | Separate installed-prefix check |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| host | 26.04.1 / 3.14.4 | 2,066 | 2,065 | 0 | 1 | 0 | Passed on repeat |
+| noble310 | 24.04.5 / 3.10.20 | 2,066 | 2,065 | 0 | 1 | 0 | Passed |
+| noble312 | 24.04.5 / 3.12.3 | 2,066 | 2,065 | 0 | 1 | 0 | Passed |
+
+All 2,066 normalized test IDs and outcomes matched across the three targets. Their common outcome digest is `902599b967a8c1b09c2db32a41c1fb229880a024870371f1feb8ad14b0a9a766`. All 15 exact-package tests passed on each, including historical upgrade and installed screens. The host repeat completed in 2,510.6 seconds, including the installed-prefix check. The expected skip is `test_functional_matrix.EdgeCaseTests.test_probe_reports_the_windows_limitation` with reason “POSIX hosts complete the probe normally”. The separate prefix check compares all 57 installed reference files with the manifest, checks hostname fallback, builtin and external echo, and APT simulation, then cancels and inserts at the cursor in a 100×24 Bash session with a quoted operand. Uninstall removes the temporary prefix. The original logs and exit records remain in `tests/reports/v050-9274a1a/`. The `handoff/` subdirectory contains the focused attempts, host repeat, per-target reconciliation and asset comparison.
+
+### Files for the existing GitHub prerelease
+
+The complete upload set comes from the first build. The directory is `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/`. The independent rebuild is its `-2` sibling. GitHub asset comparisons below use the digest and byte length returned by the release API.
+
+| Absolute file path | Bytes | SHA-256 | Existing asset |
+| --- | ---: | --- | --- |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/BUILD-INFO.json` | 129,475 | `ec72a16b6fdfd16e8c72bd7c449ee67eeba2d7425750e2f7efd6c8f57c96d510` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/BUILD-INFO.json.checksum` | 82 | `46393731146c0e0ca0304fdc6f580f5ed7fc597b7ff147c333b8c6bee944366c` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/SHA256SUMS.checksum` | 534 | `f63c07eeac464a1cb55a5d0b56cb3211edbafb80d1f9470aa90b91e3e81a3530` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-help-v0.5.0-alpha-linux-x86_64` | 14,384 | `7e6babb6e6c394dce6e9af7e52c53b2b59144ccd8efae59d9736655338fb2614` | Identical |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-help-v0.5.0-alpha-linux-x86_64.checksum` | 101 | `80c1d337e444029376aa7d7911c658d2ac5da5a33db443c0e22f23e925594211` | Identical |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-linux-x86_64.run` | 7,723,170 | `f43d03b3a7c29bbb3cbee06f277e8322c99d6eecbb6520eeab904cf1b8d56883` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-linux-x86_64.run.checksum` | 117 | `209bff7452fea551ca805a2a083e88ae45d8c21dc4d6660a3b17683bd49f7f06` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-linux-x86_64.tar.gz` | 7,722,011 | `97ec2f92342c4ba4010a2442dbf09a2e307cb29a2c4d2c968530979958d1468b` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-linux-x86_64.tar.gz.checksum` | 120 | `009b92e6fb907d205a9e9410716aa4d6088b3a5a92bc27f40ee4cc964100e6e9` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-source.tar.gz` | 7,719,381 | `8f30ab62a9bc8628a82a2fb549ee2bb26ce1a83c0bf603f5ddca9e38e4b06862` | Replace |
+| `/home/graham/Documents/CLI-InteractiveHelpMenu/dist/v0.5.0-alpha-9274a1a/cli-interactive-help-v0.5.0-alpha-source.tar.gz.checksum` | 114 | `206420c7d329626bdb913254a3a18bb6bab98a07da7456a64f80bc870cb2f375` | Replace |
+
+The maintainer can now replace the nine differing assets, retain the two identical files, apply the release body and verify the published set against this table. Retain the existing tag and prerelease setting. The opt-in narrow browser, scrolling summaries, richer APT option text and later resize behavior belong to the development checkout. Its three-target matrix at `266e756` is recorded separately. [Development resize verification](terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
+
+### Earlier d13b3e6 attempt
+
+**Superseded build.** The two builds of `d13b3e67bae4b8ac00027a4ec7979175bb6a9528` reproduced exactly. All three offline suites then stopped at the numerical preflight. Leave this revision and both output directories out of publication. [Remaining steps](../ROADMAP.md#remaining-work) · [Accepted Ubuntu source verification](audit-history.md#phase-3-combined-verification)
 
 The checkout was clean on `main`. The accepted provider, Bash adapter, renderer, profile, configuration and test files matched their Phase 3 versions. The checkout gallery matched all 224 recorded source hashes and eight asset hashes. Offline Lychee reported zero errors, 31 focused repository-policy and documentation-link tests passed, and the whitespace, attribute and ignore checks passed. The impacted selector proposed full discovery. Actionlint 1.7.12 passed with a local label entry for `ubuntu-26.04`; the stock catalog flagged that label, which GitHub had already assigned to a hosted runner. [Earlier hosted runner](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/runs/45799373693/job/139838263441)
 
@@ -19,9 +59,9 @@ Two independent source copies supplied 1,130 tracked files from Git blobs with t
 
 Each target verified the frozen file manifest, first build and historical v0.1.1-alpha package. No unittest case started, so discovery totals, test outcomes, skips and the upgrade result are unavailable. The focused reproduction gave one `review_stale` error for `source||.github/workflows/ci.yml`. The workflow change adds two comments above the existing package step. Updating its single reviewed fingerprint cleared inventory reconciliation and both prospective and strict gates in the working tree. All 4,426 required contracts were complete, with 93 warnings, 11 informational diagnostics and zero errors or debt.
 
-Separate installed-prefix checks on the first build passed on all three targets. All 57 reference shards matched the manifest. With the manual tool unavailable, `/usr/bin/hostname` offered `--alias` from the applicable packaged reference. Bare `echo` used Bash help. External `/usr/bin/echo` used the Resolute reference on the host and gave revision-specific guidance for Noble coreutils 9.4-3ubuntu6.3. The installed APT route exposed `--simulate` for `apt install`. In a 100×24 private Bash terminal, cancelling preserved the pending line and cursor. Selecting `install` completed `apt ins` while preserving the quoted operand. The disposable prefixes were removed. Repeat these checks on the corrected first build.
+Separate installed-prefix checks on the first build passed on all three targets. All 57 reference shards matched the manifest. With the manual tool unavailable, `/usr/bin/hostname` offered `--alias` from the applicable packaged reference. Bare `echo` used Bash help. External `/usr/bin/echo` used the Resolute reference on the host and gave revision-specific guidance for Noble coreutils 9.4-3ubuntu6.3. The installed APT route exposed `--simulate` for `apt install`. In a 100×24 private Bash terminal, cancelling preserved the pending line and cursor. Selecting `install` completed `apt ins` while preserving the quoted operand. The disposable prefixes were removed. The corrected candidate has its own installed-prefix gate above.
 
-The ignored evidence directory `tests/reports/v050-d13b3e6/` contains the Git manifest, first-attempt asset sizes and hashes, per-target logs, focused reproduction and corrected gate reports. The final upload directory and tag target can be selected after a new commit containing the correction passes the combined gate. A later documentation-only commit may describe that verified source separately.
+The ignored evidence directory `tests/reports/v050-d13b3e6/` contains the Git manifest, first-attempt asset sizes and hashes, per-target logs, focused reproduction and corrected gate reports.
 
 ## v0.4.1-alpha local candidate
 
