@@ -2,6 +2,8 @@
 
 [Project overview](../../README.md) · [Controls and usage](../usage.md) · [Development guide](../development.md)
 
+The [five Bash scenario demos](../menu-demo-storyboards.md) show APT, Bash, Git, rsync and FFmpeg across five terminal sizes. The rsync animation includes the two-second pause before a clipped summary starts scrolling.
+
 The seven screenshots and animation show the v0.5.0-alpha source checkout running in Bash on Ubuntu 26.04.1. The images contain the terminal’s actual text, highlights and cursor. Each caption describes the action at that point. The animation pauses on each step for readability. See the [menu measurements](../menu-cost-measurements.md) for timings.
 
 | Asset | What it shows |

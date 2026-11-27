@@ -185,7 +185,7 @@ def render(screen, title, caption, first_row=0, stop_row=ROWS):
     bold_font = ImageFont.truetype(str(bold_path), 18) if bold_path.is_file() else font
     cell_width, cell_height = round(font.getlength("M")), 24
     padding, top = 24, 62
-    width = COLUMNS * cell_width + padding * 2
+    width = screen.columns * cell_width + padding * 2
     height = (stop_row - first_row) * cell_height + top + 64
     image = Image.new("RGB", (width, height), BACKGROUND)
     draw = ImageDraw.Draw(image)
@@ -193,7 +193,7 @@ def render(screen, title, caption, first_row=0, stop_row=ROWS):
     version_label = (RUNTIME / "VERSION").read_text().strip()
     draw.text((padding, 10), f"{title} | v{version_label}", font=font, fill="#8cdef0")
     for row in range(first_row, stop_row):
-        for column in range(COLUMNS):
+        for column in range(screen.columns):
             char = screen.buffer[row][column]
             foreground = color(char.fg, FOREGROUND)
             background = color(char.bg, BACKGROUND)
@@ -203,7 +203,7 @@ def render(screen, title, caption, first_row=0, stop_row=ROWS):
             draw.rectangle((x, y, x + cell_width - 1, y + cell_height - 1), fill=background)
             draw.text((x, y), char.data, font=bold_font if char.bold else font, fill=foreground)
     if not screen.cursor.hidden and first_row <= screen.cursor.y < stop_row:
-        x = padding + min(screen.cursor.x, COLUMNS - 1) * cell_width
+        x = padding + min(screen.cursor.x, screen.columns - 1) * cell_width
         y = top + (screen.cursor.y - first_row) * cell_height
         draw.rectangle((x, y + 21, x + cell_width - 1, y + 23), fill="#77d6e5")
     draw.line((padding, height - 49, width - padding, height - 49), fill="#34495e")
