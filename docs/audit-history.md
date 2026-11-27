@@ -79,6 +79,10 @@ The host used Bubblewrap with the host's read-only system binaries. The local No
 
 Each unsharded transcript matched all 2,066 discovered IDs in order, including the five CI shard-tool tests. The only skip on each target was `test_functional_matrix.EdgeCaseTests.test_probe_reports_the_windows_limitation`, with reason “POSIX hosts complete the probe normally”. There were zero fixture-level skips. Each target ran the full suite once. The matrix closed on the first frozen snapshot. Subsequent edits recorded progress and the final results in the roadmap and audits.
 
+### Ubuntu coverage handoff acceptance
+
+On 2026-11-26, the maintainer accepted the reviewed Ubuntu coverage handoff recorded in `21ea4d9` and clarified in `aff740d`. This closes the batch on the Phase 3 snapshot verified above. The review confirmed that only handoff documentation differed from the frozen source and that all three targets’ fixtures matched their manifests. The [provider reopening conditions](../ROADMAP.md#unresolved-provider-findings) still apply.
+
 ## CI inventory and documentation follow-up
 
 Actions run `45799373693` stopped on inventory reconciliation before the Linux test suites. All three Linux jobs reported seven missing and 50 stale source reviews. The 50 changes comprise 44 edition-specific reference shards, five runtime modules and the reference builder. The seven new fixed inputs comprise four help texts, one argument-boundary table, one multi-command help capture and one rendered manual. All 57 are file-level census identities. The existing source-census disposition covers their roles. The corrected inventory assigned all 10,081 identities with zero diagnostics on the host (Python 3.14) and the prepared Noble Python 3.10 and 3.12 targets.

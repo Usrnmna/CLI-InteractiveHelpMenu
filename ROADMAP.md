@@ -2,11 +2,7 @@
 
 ## Remaining work
 
-**Next action: review the Ubuntu coverage handoff.** Phase 3 met its verification criteria on the frozen snapshot. The remaining closeout step is the maintainer’s review of the documentation. [Combined verification record](docs/audit-history.md#phase-3-combined-verification)
-
-- [ ] Review the handoff recorded in `21ea4d9` in this roadmap, the [audit history](docs/audit-history.md#phase-3-combined-verification) and the [Ubuntu provider audit](docs/ubuntu-coverage-audit.md#phase-2-follow-up-on-retained-guidance). Confirm that the three target results refer to the same snapshot and that the recorded guidance reflects the evidence for each applicable image. Accept the handoff or identify a specific discrepancy. Acceptance closes this batch.
-
-For a documentation correction, check the affected text and links. If review finds a discrepancy in a tested input, use the [batch procedure](#how-to-audit-a-batch) for the corrected snapshot. The existing three-target matrix covers the submitted program and fixtures.
+**No required work remains for the Ubuntu coverage batch.** [Maintainer acceptance](docs/audit-history.md#ubuntu-coverage-handoff-acceptance)
 
 ### Unresolved provider findings
 
