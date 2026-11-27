@@ -33,6 +33,31 @@ class UbuntuPackagingTests(unittest.TestCase):
             return build_profile([name, *subcommands], documents)
         return find_context(line, len(line) if cursor is None else cursor, [], lookup)
 
+    def test_apt_simulation_levels_aliases_and_short_option_scope(self):
+        from presentation import option_text
+
+        for edition in ("noble", "resolute"):
+            for program in ("apt", "apt-get"):
+                with self.subTest(edition=edition, program=program):
+                    prefix = program + " install --sim"
+                    context = self.menu(edition, prefix + " 'graphviz'", len(prefix))
+                    options = rows(context.profile)
+                    category = context.profile["categories"][0]
+                    for flag in ("--simulate", "-s", "--just-print", "--dry-run", "--recon", "--no-act"):
+                        view = option_text(context.profile, category, options[flag])
+                        self.assertEqual(view.summary, "Simulate package actions without changing the system")
+                        self.assertIn("current package state", view.detailed[0])
+                        self.assertIn("disables locks", view.detailed[1])
+                        expanded = " ".join(view.expanded)
+                        for meaning in ("Inst means unpack", "Conf means configure", "Remv means remove",
+                                        "broken packages", "non-root", "APT::Get::Simulate"):
+                            self.assertIn(meaning, expanded)
+                        result = program + " install " + flag + " "
+                        self.assertEqual(insert_option(context, options[flag]), (result + "'graphviz'", len(result)))
+            cache_file = rows(self.menu(edition, "apt search ").profile)["-s"]
+            self.assertEqual(cache_file["argument"], "FILE")
+            self.assertNotIn("disables locks", cache_file.get("detail", ""))
+
     def test_apt_verb_edition_alias_and_operand_boundaries(self):
         for edition in ("noble", "resolute"):
             with self.subTest(edition=edition):

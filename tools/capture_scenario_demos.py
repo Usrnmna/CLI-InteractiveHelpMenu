@@ -80,6 +80,11 @@ class Recording:
         assert not self.shell.executed.exists()
         self.evidence.append(dict(pending=line, point=point, terminal_cursor=[state.x, state.y]))
 
+    def next_level(self, expected):
+        """Send Shift+D and wait for the menu header to confirm the requested level."""
+        self.shell.keys("D")
+        return self.shell.wait_for(lambda state: state.cells[0].endswith(expected + "   Shift+D change view"))
+
     def select(self, label):
         """Move through a filtered option list until the exact visible declaration is selected."""
         state = self.shell.capture()
@@ -119,21 +124,28 @@ def apt(rec):
     s.text("apt ins" + suffix)
     s.keys(*["Left"] * len(suffix))
     rec.pending("apt ins" + suffix, len("apt ins"))
-    rec.still("1-before", "1/4   Complete the verb before the quoted package name.", "apt ins 'graphviz'")
+    rec.still("1-before", "1/6   Complete the verb before the quoted package name.", "apt ins 'graphviz'")
     s.open_menu()
     rec.select("install")
-    rec.still("2-verb", "2/4   Alt-H → install    Complete the APT verb.", "> install [keyword]")
+    rec.still("2-verb", "2/6   Alt-H → install    Complete the APT verb.", "> install [keyword]")
     s.keys("Enter")
     rec.pending("apt install" + suffix, len("apt install "))
     s.text("--sim ")
     s.keys("Left")
     s.open_menu()
     rec.select("--simulate")
-    rec.still("3-simulate", "3/4   Alt-H → --simulate    Browse options specific to apt install.",
-              "Interactive help | apt install", "> --simulate")
+    rec.still("3-simulate", "3/6   Alt-H → --simulate    Browse options specific to apt install.",
+              "Interactive help | apt install", "> --simulate", "Simple   Shift+D")
+    rec.next_level("Detailed")
+    rec.still("3a-detailed", "4/6   Shift+D    The simulation calculates a plan with locking disabled.",
+              "> --simulate", "Detailed   Shift+D", "Plan: Preview", "Locking: APT disables locks")
+    rec.next_level("Expanded")
+    rec.still("3b-expanded", "5/6   Shift+D    Decode the planned dpkg actions and check the non-root caveat.",
+              "> --simulate", "Expanded   Shift+D", "Inst means unpack", "Conf means configure",
+              "Remv means remove", "[]", "Permissions: A non-root user")
     s.keys("Enter")
     rec.pending("apt install --simulate" + suffix, len("apt install --simulate "))
-    rec.still("4-after", "4/4   Enter    Bash keeps the quotes and the command is ready to edit.", "--simulate 'graphviz'")
+    rec.still("4-after", "6/6   Enter    Bash keeps the quotes and the command is ready to edit.", "--simulate 'graphviz'")
 
 
 def bash(rec):
@@ -142,21 +154,21 @@ def bash(rec):
     s.text("builtin read ")
     s.open_menu()
     rec.select("-t timeout")
-    rec.still("1-option", "1/3   Alt-H → -t timeout    Bash lists the argument beside its option.", "> -t timeout", "-d delim")
-    s.keys("D")
-    detailed = s.wait_for(lambda f: "Detailed" in f.cells[0])
+    rec.still("1-option", "1/4   Alt-H → -t timeout    Bash lists the argument beside its option.", "> -t timeout", "-d delim", "Simple   Shift+D")
+    detailed = rec.next_level("Detailed")
     assert "within TIMEOUT seconds" in " ".join(detailed.detail_body)
-    s.keys("D")
-    expanded = s.wait_for(lambda f: "Expanded" in f.cells[0])
+    rec.still("1a-detailed", "2/4   Shift+D    Read when the selected timeout returns failure.",
+              "> -t timeout", "within TIMEOUT seconds", "Detailed   Shift+D")
+    expanded = rec.next_level("Expanded")
     assert expanded.detail_range[0] == 1
-    rec.still("2-timeout", "2/3   Shift+D twice    Read the timeout, default, zero case and exit status together.",
+    rec.still("2-timeout", "3/4   Shift+D again    Read the timeout, default, zero case and exit status together.",
               "within TIMEOUT seconds", "TMOUT", "If TIMEOUT is 0", "greater than 128", "> -t timeout")
     s.keys("Enter")
     rec.pending("builtin read -t ", len("builtin read -t "))
     s.text("5 reply")
     line = "builtin read -t 5 reply"
     rec.pending(line, len(line))
-    rec.still("3-value", "3/3   The menu inserted -t. The user typed 5 seconds and the variable name reply.", line)
+    rec.still("3-value", "4/4   The menu inserted -t. The user typed 5 seconds and the variable name reply.", line)
 
 
 def git(rec):
@@ -165,21 +177,27 @@ def git(rec):
     line = "git worktree list "
     s.text(line)
     s.open_menu()
-    rec.still("1-scope", "1/4   Alt-H    Seven options belong to git worktree list.", "> --porcelain", "1/7")
-    s.keys("Down", "D")
-    s.wait_for(lambda f: "Detailed" in f.cells[0])
-    rec.still("2-dependency", "2/4   ↓ and Shift+D    NUL-delimited fields require --porcelain.", "> -z ", "Requires --porcelain")
+    rec.still("1-scope", "1/6   Alt-H    Seven options belong to git worktree list.", "> --porcelain", "1/7")
+    s.keys("Down")
+    s.wait_for(lambda state: state.selected_row.startswith("> -z "))
+    rec.still("1a-simple", "2/6   ↓ to -z    Read the short NUL-termination summary.",
+              "> -z ", "Simple   Shift+D")
+    rec.next_level("Detailed")
+    rec.still("2-dependency", "3/6   Shift+D    NUL-delimited fields require --porcelain.", "> -z ", "Requires --porcelain")
+    rec.next_level("Expanded")
+    rec.still("2a-expanded", "4/6   Shift+D    Read how Git separates worktree records.",
+              "> -z ", "Expanded   Shift+D", "Paths can contain newlines.")
     s.keys("Up", "Enter")
     line += "--porcelain "
     rec.pending(line, len(line))
-    rec.still("3-porcelain", "3/4   ↑ and Enter    Insert the stable output format first.", line.rstrip())
+    rec.still("3-porcelain", "5/6   ↑ and Enter    Insert the stable output format first.", line.rstrip())
     s.open_menu()
     s.keys("Down")
     s.wait_for(lambda f: f.selected_row.startswith("> -z "))
     s.keys("Enter")
     line += "-z "
     rec.pending(line, len(line))
-    rec.still("4-final", "4/4   Alt-H → -z → Enter    Both switches are on the pending line.", line.rstrip())
+    rec.still("4-final", "6/6   Alt-H → -z → Enter    Both switches are on the pending line.", line.rstrip())
 
 
 def ffmpeg(rec):
@@ -192,19 +210,25 @@ def ffmpeg(rec):
     s.open_menu()
     s.keys(*["Right"] * 13)
     s.wait_for(lambda f: f.selected_row.startswith("> -alpha_mode "))
-    rec.still("1-first", "1/4   Alt-H → Codec parameters    Start at the first of 92 entries.", "> -alpha_mode", "1/92")
+    rec.still("1-first", "1/6   Alt-H → Codec parameters    Start at the first of 92 entries.", "> -alpha_mode", "1/92")
     s.keys("PageDown")
     page = s.wait_for(lambda f: f.selected_row and not f.selected_row.startswith("> -alpha_mode "))
     label = page.selected_row.split()[1]
     count = re.search(r"(\d+)/92$", page.cells[3])[1]
     assert 1 < int(count) < 92
-    rec.still("2-page", f"2/4   PageDown    The next page selects {label}, entry {count} of 92.", "> " + label + " ", count + "/92")
+    rec.still("2-page", f"2/6   PageDown    The next page selects {label}, entry {count} of 92.", "> " + label + " ", count + "/92")
     s.keys("End")
     s.wait_for(lambda f: f.selected_row.startswith("> -trellis "))
-    rec.still("3-last", "3/4   End    Reach the final codec parameter in one keystroke.", "> -trellis", "92/92")
+    rec.still("3-last", "3/6   End    Reach the final codec parameter in one keystroke.", "> -trellis", "92/92", "Simple   Shift+D")
+    rec.next_level("Detailed")
+    rec.still("3a-detailed", "4/6   Shift+D    Read where -trellis belongs in the FFmpeg command.",
+              "> -trellis", "92/92", "Detailed   Shift+D", "Before the output filename")
+    rec.next_level("Expanded")
+    rec.still("3b-expanded", "5/6   Shift+D    Inspect the numerical guidance for -trellis.",
+              "> -trellis", "92/92", "Expanded   Shift+D")
     s.cancel()
     rec.pending(prefix + suffix, len(prefix))
-    rec.still("4-restored", "4/4   Esc returns to the edit    The cursor and quoted filename are restored.", suffix)
+    rec.still("4-restored", "6/6   Esc returns to the edit    The cursor and quoted filename are restored.", suffix)
 
 
 def rsync(rec):
@@ -254,6 +278,17 @@ def rsync(rec):
         add(frame, "Bare rate in KiB/s    Only the clipped summary moves.", delay)
     time.sleep(1)
     assert rec.frame().cells == motion[-1][1].cells
+    s.keys("Right")
+    s.wait_for(lambda state: state.cells[1].startswith("Details"))
+    for level, caption in (
+            ("Simple", "→ Details    Read the selected option's summary."),
+            ("Detailed", "Shift+D    Read the bandwidth and rounding rules."),
+            ("Expanded", "Shift+D    Inspect the documented rate and units.")):
+        if level != "Simple":
+            rec.next_level(level)
+        frame = rec.still(level.lower(), caption, "Details", "--bwlimit=RATE", level + "   Shift+D")
+        add(frame, caption, 3200 if level != "Expanded" else 4500)
+
     s.keys("Enter")
     prefix = "rsync --bwlimit="
     rec.pending(prefix, len(prefix))

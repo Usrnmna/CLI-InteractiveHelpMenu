@@ -46,6 +46,20 @@ APT_VALUES = {
     "-f": "FILE", "-o": "KEY=VALUE", "-p": "FILE", "-s": "FILE", "-t": "RELEASE",
 }
 
+# Both reviewed apt(8) editions refer install to apt-get(8), whose --simulate
+# entry documents these spellings. Other APT tools can assign -s a different role.
+SIMULATION_FLAGS = frozenset({"-s", "--simulate", "--just-print", "--dry-run", "--recon", "--no-act"})
+SIMULATION_DETAIL = (
+    "Plan: Preview the operations for the current package state without applying them.\n"
+    "Locking: APT disables locks during simulation, so the package state can change during the run.\n"
+    "Output: Inst means unpack, Conf means configure, and Remv means remove.\n"
+    "Brackets: Square brackets mark broken packages, with [] for rare breaks of no consequence.\n"
+    "Permissions: A non-root user can get a different plan if some APT configuration is unreadable.\n"
+    "Configuration: APT::Get::Simulate enables simulation. "
+    "APT::Get::Show-User-Simulation-Note controls the notice shown by default to non-root users.\n"
+    "Source: apt-get(8), --simulate."
+)
+
 
 def apt_document(text, command):
     """Select options by the edition printed in root help or the packaged manual footer."""
@@ -62,6 +76,8 @@ def apt_document(text, command):
             summary = DESCRIPTIONS.get(flag) or f"Set the {flag} option for {' '.join(command)}."
             entry = {"flag": flag, "argument": APT_VALUES[flag] if required else "",
                      "summary": summary, "category": "Options"}
+            if name in {"apt", "apt-get"} and "--simulate" in verbs[verb] and flag in SIMULATION_FLAGS and not required:
+                entry.update(summary=DESCRIPTIONS["--simulate"], detail=SIMULATION_DETAIL)
             if required and len(flag) == 2:
                 entry["attached"] = True
             rows.append(entry)
