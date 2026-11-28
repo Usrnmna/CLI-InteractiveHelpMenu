@@ -90,6 +90,23 @@ class DocumentationRetryTests(unittest.TestCase):
         mixed = report.replace("Errors | 0", "Errors | 1")
         self.assertEqual(retry.retryable_failures(mixed + f"* [429] <{GNU_URL}>\n"), [GNU_URL])
 
+    def test_cached_duplicate_of_a_known_timeout_allows_one_retry(self):
+        package = "https://packages.ubuntu.com/noble/yq"
+        source = "https://anongit.mindrot.org/openssh.git/tree/scp.c?h=V_9_6_P1#n508"
+        report = (f"| Total | 4 |\n| Errors | 2 |\n| Timeouts | 2 |\n"
+                  f"* [ERROR] <{source}> (at 97:697) | Error (cached)\n"
+                  f"* [503] <{GITHUB_SOURCE}>\n"
+                  f"* [TIMEOUT] <{package}>\n* [TIMEOUT] <{source}>\n")
+        code, _, _, _, _, _ = self.run_gate(first_report=report, second_report="| Total | 4 |\n")
+        self.assertEqual(code, 0)
+        code, *_ = self.run_gate(first_report=report, second_code=2, second_report=report)
+        self.assertNotEqual(code, 0)
+        for invalid in (report.replace("Error (cached)", "Invalid fragment"),
+                        report.replace("#n508>", "#n509>", 1),
+                        report.replace("anongit.mindrot.org", "other.example")):
+            with self.subTest(report=invalid):
+                self.assertIsNone(retry.retryable_failures(invalid))
+
     def test_http_429_probe_retains_headers_and_reads_retry_after(self):
         headers = Message()
         headers["Retry-After"] = "70"

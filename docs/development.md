@@ -420,8 +420,10 @@ is interrupted before a report is available. The final gate replaces that file
 with the Lychee report once available.
 Workflow and badge endpoints are checked
 alongside other external links. CI retries the full check once when every failure
-is a timeout at `manpages.ubuntu.com` or `www.gnu.org`, an HTTP 429 from
-`www.gnu.org`, or an HTTP 503 from a GitHub source file page. The initial
+is a timeout at `manpages.ubuntu.com`, `packages.ubuntu.com`, `anongit.mindrot.org`
+or `www.gnu.org`, an HTTP 429 from `www.gnu.org`, or an HTTP 503 from a GitHub
+source file page. A cached error is eligible only when the same report records
+an eligible timeout for the exact URL, including its query and fragment. The initial
 GitHub 503s appear as warnings. The final gate reads Lychee's exit code,
 publishes the job summary and emits an error if verification fails.
 If a plain GitHub file URL returns 503 on both attempts, the final gate checks

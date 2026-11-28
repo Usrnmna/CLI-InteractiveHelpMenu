@@ -23,6 +23,7 @@ RETRY_AFTER_MARGIN_SECONDS = 5
 HEADER_TIMEOUT_SECONDS = 20
 RETRY_TIMEOUT_SECONDS = 180
 API_BUDGET_SECONDS = 120
+TIMEOUT_HOSTS = {"anongit.mindrot.org", "manpages.ubuntu.com", "packages.ubuntu.com", "www.gnu.org"}
 # Keep GNU diagnostics consistent with the GNU-only header in lychee.toml.
 GNU_USER_AGENT = "CLI-InteractiveHelpMenu-link-check (+https://github.com/Usrnmna/CLI-InteractiveHelpMenu)"
 REPORT_DIRECTORY = Path("tests/reports")
@@ -49,7 +50,9 @@ def retry_after_seconds(value, now):
 
 def reported_failures(report):
     """Read Lychee failure entries only when they account for its error and timeout counts."""
-    entries = re.findall(r"^\* \[([^\]\n]+)\] <([^>\n]+)>", report, re.MULTILINE)
+    rows = re.findall(r"^\* \[([^\]\n]+)\] <([^>\n]+)>(.*)$", report, re.MULTILINE)
+    entries = [("CACHED_ERROR" if status == "ERROR" and detail.endswith(" | Error (cached)") else status, url)
+               for status, url, detail in rows]
     errors = re.search(r"\|[^|\n]*Errors\s*\|\s*(\d+)\s*\|", report)
     timeouts = re.search(r"\|[^|\n]*Timeouts\s*\|\s*(\d+)\s*\|", report)
     timeout_count = sum(status == "TIMEOUT" for status, _ in entries)
@@ -64,12 +67,15 @@ def retryable_failures(report):
     entries = reported_failures(report)
     if entries is None:
         return None
+    # Lychee can report a repeated occurrence of a timed-out URL as a cached error.
+    # Only the live timeout for that exact URL establishes what can be retried.
+    timeouts = {url for status, url in entries if status == "TIMEOUT"}
     gnu_urls = []
     for status, url in entries:
         target = urlsplit(url)
         if target.scheme != "https":
             return None
-        if status == "TIMEOUT" and target.netloc in ("manpages.ubuntu.com", "www.gnu.org"):
+        if status in ("TIMEOUT", "CACHED_ERROR") and url in timeouts and target.netloc in TIMEOUT_HOSTS:
             continue
         if status == "429" and target.netloc == "www.gnu.org":
             if url not in gnu_urls:
