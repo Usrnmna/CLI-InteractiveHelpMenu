@@ -362,6 +362,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
         env:
+          DOCS_GITHUB_TOKEN: ${{ github.token }}
           FIRST_OUTCOME: ${{ steps.documentation-links.outcome }}
           FIRST_EXIT_CODE: ${{ steps.documentation-links.outputs.exit_code }}
         run: |

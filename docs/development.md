@@ -426,13 +426,17 @@ source file page. A cached error is eligible only when the same report records
 an eligible timeout for the exact URL, including its query and fragment. The initial
 GitHub 503s appear as warnings. The final gate reads Lychee's exit code,
 publishes the job summary and emits an error if verification fails.
-If a plain GitHub file URL returns 503 on both attempts, the final gate checks
-the public Contents API at the exact revision in the URL. An HTTP 200 response
-with the matching file path, page URL and blob SHA records the verified warning
-in the final report. This fallback covers simple
-file paths and single-segment revision names. URLs with query strings or
-fragments require a successful page check. Any remaining broken or unverified
-link, incomplete retry report or unavailable API keeps the job failed.
+If the same GitHub file URL returns 503 on both attempts, the final gate uses
+the workflow's read-only token to query the GitHub Contents API at the linked
+revision. Verification requires an HTTP 200 response from the exact endpoint
+with the matching file path, canonical page URL and a blob SHA. Multiple
+citations to the same file and revision share one successful API response.
+For a line (`#L42`) or inclusive range (`#L42-L46`), the checker also validates
+the size and Git blob SHA of the decoded UTF-8 source and checks the line bounds.
+A line citation fails if the API omits the contents. The fallback supports
+simple paths and single-segment revisions. Queries and other fragments require
+a successful page check. Any remaining broken or unverified link, incomplete
+retry report or unavailable API keeps the job failed.
 Both Lychee attempt reports are retained. A successful fallback summary shows
 the verified files and their blob SHAs. A failed check shows the available failure evidence.
 Both attempts include the contribution guide and pull request template explicitly because the Markdown glob skips hidden directories.

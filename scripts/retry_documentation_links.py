@@ -1,8 +1,10 @@
 """Retry transient documentation failures once and retain both Lychee reports."""
 
 import argparse
+import base64
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+import hashlib
 from http.client import HTTPException
 import json
 import math
@@ -118,12 +120,14 @@ def retry_delay(delays):
     return delay
 
 
-def verify_github_file(match, timeout):
-    """Check a canonical blob URL anonymously at its explicit ref. Return its blob SHA or raise."""
+def fetch_github_file(match, timeout, token):
+    """Return Contents API metadata for the exact repository, revision and file or raise."""
     repo, ref, path = match.groups()
     api_url = f"https://api.github.com/repos/{repo}/contents/{path}?ref={ref}"
     request = Request(api_url, headers={"Accept": "application/vnd.github.object+json",
                                        "User-Agent": "CLI-InteractiveHelpMenu-link-check"})
+    if token:
+        request.add_unredirected_header("Authorization", f"Bearer {token}")
     with urlopen(request, timeout=timeout) as response:
         if response.status != 200 or response.geturl() != api_url:
             raise ValueError("unexpected API status or redirect")
@@ -133,10 +137,29 @@ def verify_github_file(match, timeout):
             or metadata.get("submodule_git_url") or not isinstance(metadata.get("sha"), str)
             or not re.fullmatch(r"[0-9a-f]{40}", metadata["sha"])):
         raise ValueError("API metadata did not identify the exact linked file")
-    return metadata["sha"]
+    return metadata
 
 
-def resolve_github_failures(first_report, retry_report):
+def verify_github_lines(metadata, lines):
+    """Check a one-based inclusive line range against the complete UTF-8 Git blob."""
+    encoded = metadata.get("content")
+    if metadata.get("encoding") != "base64" or not isinstance(encoded, str):
+        raise ValueError("API response lacks inline file contents")
+    content = base64.b64decode(encoded.replace("\n", ""), validate=True)
+    header = f"blob {len(content)}\0".encode("ascii")
+    if metadata.get("size") != len(content) or hashlib.sha1(header + content).hexdigest() != metadata["sha"]:
+        raise ValueError("file contents do not match the reported size and blob SHA")
+    text = content.decode("utf-8")
+    if "\0" in text:
+        raise ValueError("binary file has no verifiable source lines")
+    # A final newline terminates a line. It does not create another source line.
+    count = text.count("\n") + int(bool(text) and not text.endswith("\n"))
+    first, last = lines.groups()
+    if not 1 <= int(first) <= int(last or first) <= count:
+        raise ValueError(f"cited line range is outside the file's {count} lines or reversed")
+
+
+def resolve_github_failures(first_report, retry_report, token=None):
     """Resolve repeated blob-page 503s in a complete retry report. Return exit code and evidence."""
     entries = reported_failures(retry_report)
     counts = dict(re.findall(r"^\|[^|\n]*?\b(Total|Successful|Timeouts|Errors|Unknown|Unsupported|Excluded)"
@@ -152,33 +175,39 @@ def resolve_github_failures(first_report, retry_report):
     initial = set(reported_failures(first_report) or [])
     unresolved = False
     evidence = []
+    files = {}
     deadline = time.monotonic() + API_BUDGET_SECONDS
     for status, url in dict.fromkeys(entries):
-        # Restrict interpolation to plain path segments. Queries, anchors and encoded
-        # separators need independent verification of their browser semantics.
+        page, separator, fragment = url.partition("#")
         match = re.fullmatch(r"https://github\.com/([\w.-]+/[\w.-]+)/blob/([\w.-]+)/"
-                             r"([\w.-]+(?:/[\w.-]+)*)", url, re.ASCII)
+                             r"([\w.-]+(?:/[\w.-]+)*)", page, re.ASCII)
+        lines = re.fullmatch(r"L([1-9][0-9]*)(?:-L([1-9][0-9]*))?", fragment)
         if (status != "503" or (status, url) not in initial or not match
-                or {".", ".."}.intersection(url.split("/"))):
+                or (separator and not lines) or {".", ".."}.intersection(page.split("/"))):
             unresolved = True
             continue
         try:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise TimeoutError("API time budget exhausted")
-            sha = verify_github_file(match, min(HEADER_TIMEOUT_SECONDS, remaining))
+            if page not in files:
+                files[page] = fetch_github_file(match, min(HEADER_TIMEOUT_SECONDS, remaining), token)
+            metadata = files[page]
+            if lines:
+                verify_github_lines(metadata, lines)
         except (OSError, ValueError, HTTPException) as error:
             evidence.append(f"- Unverified HTTP 503: <{url}> ({error})")
             unresolved = True
         else:
-            message = f"HTTP 503 for {url}. GitHub Contents API verified blob {sha}."
+            detail = f" and source lines {fragment}" if lines else ""
+            message = f"HTTP 503 for {url}. GitHub Contents API verified blob {metadata['sha']}{detail}."
             evidence.append(f"- Warning: {message}")
     if not evidence:
         return 2, ""
     return (2 if unresolved else 0), "\n## GitHub exact-file verification\n\n" + "\n".join(evidence) + "\n"
 
 
-def finish(first_outcome, lychee="lychee", first_exit_code=None):
+def finish(first_outcome, lychee="lychee", first_exit_code=None, token=None):
     """Return the final check status after at most one eligible retry.
 
     A link-failure exit may pass with separate API evidence for every remaining
@@ -245,7 +274,7 @@ def finish(first_outcome, lychee="lychee", first_exit_code=None):
             print("Retry produced no verifiable link count; failing the check.", flush=True)
             result_code = 1
         elif result_code == 2:
-            result_code, appendix = resolve_github_failures(first_report, retry_report)
+            result_code, appendix = resolve_github_failures(first_report, retry_report, token)
     final_report = SECOND_REPORT.read_text(encoding="utf-8") + appendix
     FINAL_REPORT.write_text(final_report, encoding="utf-8")
     print(final_report, flush=True)
@@ -260,7 +289,9 @@ def main():
     parser.add_argument("--lychee", default="lychee", help="Pinned Lychee executable")
     args = parser.parse_args()
     try:
-        code = finish(args.first_outcome, args.lychee, args.first_exit_code)
+        # Keep the workflow credential out of Lychee's inherited environment.
+        token = os.environ.pop("DOCS_GITHUB_TOKEN", None)
+        code = finish(args.first_outcome, args.lychee, args.first_exit_code, token)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         print(f"Documentation link gate failed: {error}", flush=True)
         code = 1

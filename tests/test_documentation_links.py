@@ -1,9 +1,11 @@
 """Verify retry bounds, evidence retention and the final documentation failure gate."""
 
+import base64
 from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from email.message import Message
+import hashlib
 import importlib.util
 import io
 import json
@@ -14,6 +16,7 @@ import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError
+from urllib.request import HTTPRedirectHandler
 
 
 SPEC = importlib.util.spec_from_file_location(
@@ -137,6 +140,7 @@ class DocumentationRetryTests(unittest.TestCase):
         second.write_text("| Total | 999 |\n")  # Old evidence must never mask a missing new report.
 
         def process(command, **kwargs):
+            self.assertNotIn("DOCS_GITHUB_TOKEN", retry.os.environ)
             if "--version" in command:
                 return subprocess.CompletedProcess(command, 0, version, "")
             if timeout:
@@ -305,9 +309,44 @@ class DocumentationRetryTests(unittest.TestCase):
         self.assertIn("[404]", final.read_text())
         self.assertIn("Warning: HTTP 503", final.read_text())
 
-    def test_only_repeated_plain_file_urls_from_complete_reports_use_api(self):
+    def test_repeated_line_references_verify_the_same_blob_with_a_scoped_token(self):
+        content = b"first\r\nsecond\nlast"
+        sha = hashlib.sha1(b"blob 18\0" + content).hexdigest()
+        metadata = dict(FILE_METADATA, sha=sha, encoding="base64", size=len(content),
+                        content=base64.encodebytes(content).decode())
+        report = github_report(("503", GITHUB_SOURCE + "#L1-L3"), ("503", GITHUB_SOURCE + "#L3"))
+        with patch.dict(retry.os.environ, {"DOCS_GITHUB_TOKEN": "test-only"}), \
+                patch.object(retry, "urlopen", return_value=api_response(metadata)) as get:
+            code, _, _, final, *_ = self.run_gate(first_report=report, second_code=2, second_report=report)
+        self.assertEqual(code, 0)
+        get.assert_called_once()
+        request = get.call_args.args[0]
+        self.assertEqual(request.full_url, API_URL)
+        self.assertEqual(request.get_header("Authorization"), "Bearer test-only")
+        redirected = HTTPRedirectHandler().redirect_request(request, None, 302, "", {}, "https://example.org")
+        self.assertFalse(redirected.has_header("Authorization"))
+        for fragment in ("#L1-L3", "#L3"):
+            self.assertIn(GITHUB_SOURCE + fragment, final.read_text())
+        self.assertIn(sha, final.read_text())
+        self.assertNotIn("test-only", final.read_text())
+
+    def test_unverified_lines_keep_gate_failed(self):
+        content = b"a\nb\n"
+        metadata = dict(FILE_METADATA, encoding="base64", size=4, content="YQpiCg==",
+                        sha=hashlib.sha1(b"blob 4\0" + content).hexdigest())
+        for fragment, change in (("#L3", {}), ("#L2-L1", {}), ("#L1-L3", {}),
+                                 ("#L1", {"content": "!!!!"}), ("#L1", {"encoding": "none"}),
+                                 ("#L1", {"size": 30}), ("#L1", {"sha": "f" * 40}),
+                                 ("#L1", {"content": None})):
+            with self.subTest(fragment=fragment, change=change), \
+                    patch.object(retry, "urlopen", return_value=api_response({**metadata, **change})):
+                report = github_report(("503", GITHUB_SOURCE + fragment))
+                code, _ = retry.resolve_github_failures(report, report)
+                self.assertEqual(code, 2)
+
+    def test_only_repeated_supported_file_urls_from_complete_reports_use_api(self):
         with patch.object(retry, "urlopen") as get:
-            for suffix in ("#L10", "?plain=1", "%2Fextra", "/../other"):
+            for suffix in ("#L0", "#L1-L0", "#heading", "#", "?plain=1", "%2Fextra", "/../other", "/..#L1"):
                 report = github_report(("503", GITHUB_SOURCE + suffix))
                 self.assertEqual(retry.resolve_github_failures(report, report), (2, ""))
             for report in (GITHUB_503.replace("Unknown | 0", "Unknown | 1"),
