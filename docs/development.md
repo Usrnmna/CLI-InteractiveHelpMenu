@@ -264,7 +264,7 @@ subject to their own validation.
 
 ## Repository configuration
 
-For the v0.5.0-alpha freeze, keep the reviewed Ubuntu TSV ledgers and both runtime
+For release verification, keep the reviewed Ubuntu TSV ledgers and both runtime
 JSON Lines editions in the source manifest. Store raw image downloads, fixture
 payloads, build copies and transcripts under the ignored output directories.
 The Git and package exclusions also cover temporary `cli-help-provider-*` and

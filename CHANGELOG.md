@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.6.0 - Alpha
+
+- Browse Categories, Options and Details on separate screens at 60–79 columns with `CLI_HELP_NARROW_MENU=1`. Wider terminals use the split view. Shift+D cycles the detail level while preserving the selected option and filter.
+- Read clipped summaries after a two-second hold. Page overflowing Details with Space, follow labeled sections and grouped values, and preserve the reading position during reflow.
+- Read option-specific APT guidance on Noble and Resolute and focused Bash builtin help. Five captured Bash scenarios show how to select, inspect, insert and cancel at different terminal sizes. [Scenario gallery](docs/menu-demo-storyboards.md) · [Release notes](docs/release-notes-v0.6.0-alpha.md)
+
 ## Version 0.5.0 - Alpha
 
 This release covers the accepted Ubuntu coverage batch at `9274a1a`. [GitHub release notes](docs/release-notes-v0.5.0-alpha.md) · [Exact-package verification and upload files](docs/release-candidate.md#v050-alpha-local-candidate)

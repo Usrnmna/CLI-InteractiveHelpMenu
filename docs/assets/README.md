@@ -4,7 +4,7 @@
 
 The [five Bash scenario demos](../menu-demo-storyboards.md) show APT, Bash, Git, rsync and FFmpeg across five terminal sizes. The rsync animation includes the two-second pause before a clipped summary starts scrolling.
 
-The seven screenshots and animation show the v0.5.0-alpha source checkout running in Bash on Ubuntu 26.04.1. The images contain the terminal’s actual text, highlights and cursor. Each caption describes the action at that point. The animation pauses on each step for readability. See the [menu measurements](../menu-cost-measurements.md) for timings.
+The seven screenshots and animation show the v0.6.0-alpha source checkout running in Bash on Ubuntu 26.04.1. The images contain the terminal’s actual text, highlights and cursor. Each caption describes the action at that point. The animation pauses on each step for readability. See the [menu measurements](../menu-cost-measurements.md) for timings.
 
 | Asset | What it shows |
 | --- | --- |
@@ -12,8 +12,10 @@ The seven screenshots and animation show the v0.5.0-alpha source checkout runnin
 | [Help browser](help-browser.png) | Simple view opens on Transfer, category 1 of 13. The selected `--archive` row reads “Copy a tree with its metadata.” |
 | [Numerical guidance](numerical-guidance.png) | Expanded view shows the bare rate for `--bwlimit=RATE` (1024 bytes/second) and the units for explicit suffixes, including `B/s`, `kB/s` and `KiB/s`. |
 | [Assembled command](option-inserted.png) | After Escape, the two-line rsync command still contains its original flags, the bandwidth limit, the quoted exclusion and both paths. |
-| [Scrolled ls browser](ls-browser.png) | Expanded view shows lines 17–27 of 28 for `--hide=PATTERN`, option 12 of 20 in Display. Explicitly named files still appear, and `-a` or `-A` overrides the pattern. |
+| [Scrolled ls browser](ls-browser.png) | Expanded view shows lines 17–27 of 44 for `--hide=PATTERN`, option 12 of 20 in Display. The uutils wildcard variant explains how `--all` or `--almost-all` can override the pattern. |
 | [Guided review](guided-review.png) | The [guided reviewer](../review.md#interactive-review-and-correction) shows an edited summary and the prompt for the option’s argument placeholder in a disposable example collection. |
+
+The [coverage chart](ubuntu-coverage.png) plots the six selectable and usage-guidance counts from the [Ubuntu image audit](../ubuntu-coverage-audit.md). Counts are distinct within each image. Images share many of the same commands.
 
 ## Ubuntu command menus
 
@@ -56,7 +58,7 @@ For an unpacked candidate, pass its runtime root with `--runtime-root`. Omit `--
 
 ## Capture evidence
 
-The November 26 checkout recording used Bash 5.3.9, APT 3.2.1ubuntu0.1, Python 3.14.4, Pillow 13.0.0, pyte 0.8.2 and wcwidth 0.9.2. The recorder identified 224 source files, including the two Ubuntu reference editions. The seven PNGs and 21 animation frames were inspected. Raw recordings, displayed cells, input positions, and source and image digests are retained locally under `tests/reports/v050-checkout-media/`. Installed-package checks are listed in the [candidate roadmap](../../ROADMAP.md#remaining-work).
+The November 27 navigation candidate recording used Bash 5.3.9, APT 3.2.1ubuntu0.1, Python 3.14.4, Pillow 13.0.0, pyte 0.8.2 and wcwidth 0.9.2. The recorder identified 225 source files, including the two Ubuntu reference editions. The seven PNGs and 21 animation frames were inspected. Raw recordings, displayed cells, input positions, and source and image digests are retained locally under `tests/reports/v060/gallery/`. The five scenario sessions add 30 PNGs and one timed GIF. Their original cells and animation timings are retained separately. [Scenario walkthroughs](../menu-demo-storyboards.md) · [Package verification](../release-candidate.md#v060-alpha-local-candidate)
 
 ### November 25 historical capture
 

@@ -4,7 +4,7 @@
 
 ## Implemented batch
 
-This is the accepted command inventory for v0.5.0-alpha. The historical comparison below uses the pre-implementation snapshot. The edition and image result columns describe the implemented coverage. [Release scope](../CHANGELOG.md#version-050---alpha) · [Local package verification status](../ROADMAP.md#remaining-work)
+This is the accepted command inventory for v0.5.0-alpha. The historical comparison below uses the pre-implementation snapshot. The edition and image result columns describe the implemented coverage. [Release scope](../CHANGELOG.md#version-050---alpha) · [Ubuntu coverage package verification](release-candidate.md#v050-alpha-local-candidate)
 
 The result columns in the linked inventories report the implemented root coverage. All 119 ranked command rows across 100 packages and all eight kernel paths have selectable results in the Resolute reference replay. After the Phase 1 provider review, the shipped union has 2,189 names with selectable coverage and 196 with command-specific usage or documentation guidance. The tables below retain the comparison against the original project snapshot. [Results, evidence, result codes and limitations](ubuntu-coverage-audit.md)
 

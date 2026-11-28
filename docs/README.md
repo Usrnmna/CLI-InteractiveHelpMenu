@@ -12,7 +12,9 @@ Start with [installation](installation.md), then try the
 check [driver activation and supported paths](compatibility.md#enable-the-drivers)
 or [build a help collection](bulk-scan.md#first-collection-walkthrough).
 
-The operating guides describe the local `0.5.0-alpha` checkout. The [release guide](releases.md#version-050---alpha) identifies the candidate being prepared and the [changelog](../CHANGELOG.md) records earlier versions.
+The operating guides describe the local `0.6.0-alpha` checkout. The [release guide](releases.md#version-060---alpha) identifies the candidate being prepared and the [changelog](../CHANGELOG.md) records earlier versions.
+
+The [five Bash scenarios](menu-demo-storyboards.md) show both layouts, three detail levels and the resulting command lines. The [resize review](terminal-resize-results.md) shows the accepted behavior at layout boundaries. [Release notes](release-notes-v0.6.0-alpha.md)
 
 The [terminal gallery](assets/README.md) shows the candidate checkout. The [Ubuntu coverage audit](ubuntu-coverage-audit.md) lists shipped commands, builtin editions, kernel companions and ranked optional packages. The [audit history](audit-history.md) follows the development cycle from source review through repairs and terminal verification. The [visual and configuration review](media-and-configuration-review.md) records earlier captures and policy checks.
 

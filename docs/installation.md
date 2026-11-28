@@ -8,7 +8,7 @@ are required. Run the scripts as the account that will use the browser, without
 `sudo`. No packages are downloaded or installed by these scripts.
 Automatic resize recovery also uses the standard Linux `stty` utility.
 
-These procedures install v0.5.0-alpha from the current checkout. The installer copies the Noble and Resolute command references into `config/ubuntu-reference/` inside the prefix. Optional command packages remain a separate installation choice. [Ubuntu coverage](compatibility.md#ubuntu-default-coverage)
+These procedures install v0.6.0-alpha from the current checkout. The installer copies the Noble and Resolute command references into `config/ubuntu-reference/` inside the prefix. Optional command packages remain a separate installation choice. [Ubuntu coverage](compatibility.md#ubuntu-default-coverage)
 
 The earlier
 [v0.1.2-alpha packages](releases.md#version-012---alpha) provide a versioned

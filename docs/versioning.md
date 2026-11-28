@@ -13,9 +13,7 @@ For a plan transition, record the outgoing and incoming goals, what users gain f
 
 The patch-9 carry applies even when the same plan continues. If several rules call for a minor bump in the same release, advance the minor number once.
 
-The selected Ubuntu coverage candidate uses `0.5.0-alpha` in the version file, `v0.5.0-alpha` as its identifier and **Version 0.5.0 - Alpha** for the changelog heading.
-
-The corrected packages from the existing v0.5.0-alpha tag retain this number. The differences from the earlier uploaded build are a numerical review fingerprint and two documents. For a subsequent release that ships the development checkout’s narrow navigation, keyboard preview, APT guidance and resize improvements together, the recommended number is **v0.6.0-alpha**. The goal shifts from expanding Ubuntu coverage to helping users navigate and read options across terminal sizes. A maintainer selects the number when preparing that separate release. [Development demos](menu-demo-storyboards.md) · [Verified resize behavior](terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
+The navigation candidate uses `0.6.0-alpha` in VERSION and `v0.6.0-alpha` for its artifacts. The preceding 0.5 release expanded Ubuntu command coverage. The 0.6 release adds a distinct way to navigate and read that help across terminal sizes, including a three-screen workflow, a keyboard scrolling preview and preservation of the reading position during resize. The APT guidance and scenario gallery ship with the same batch. [Five recorded workflows](menu-demo-storyboards.md) · [Resize verification](terminal-resize-review.md#phase-4--verify-the-accepted-changes-together)
 
 ## Proposed targets
 
@@ -27,7 +25,8 @@ The maintainer selected v0.5.0-alpha for a distinct goal. The 0.4 series improve
 
 | Proposed release | Change to the working program | Evidence for inclusion |
 | --- | --- | --- |
-| v0.5.0-alpha (selected) | Browse Ubuntu package-manager verbs, builtin topics and applicable shipped and optional command help. | [Accepted handoff](audit-history.md#ubuntu-coverage-handoff-acceptance) · [Exact-package verification](release-candidate.md#v050-alpha-local-candidate) |
+| v0.6.0-alpha (local candidate) | Navigate help and read option details across terminal sizes. | [Candidate](release-candidate.md#v060-alpha-local-candidate) · [Release notes](release-notes-v0.6.0-alpha.md) |
+| v0.5.0-alpha (previous) | Browse Ubuntu package-manager verbs, builtin topics and applicable shipped and optional command help. | [Accepted handoff](audit-history.md#ubuntu-coverage-handoff-acceptance) · [Exact-package verification](release-candidate.md#v050-alpha-local-candidate) |
 | Unassigned | Make searches and selection changes redraw faster in large menus. | If repeated matching or text wrapping accounts for the delay, measure time from a keypress to the updated screen before and after the change. Confirm that editing a query refreshes the matches, changing selection shows the correct Details, and resizing rewraps the text. [Redraw experiments](ffmpeg-menu-performance-plan.md#deferred-follow-up-on-prose-and-redraws) |
 | Unassigned | Open menus faster for commands whose installed identity must be checked before showing help. | If traces identify redundant discovery work, compare first display time and probe counts on the same fixtures. Verify matching and mismatched executable identities, stale entries and failed probes still produce the expected help or fallback. [Discovery investigation](runtime-architecture.md#optimization-candidates) |
 

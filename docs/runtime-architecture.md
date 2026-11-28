@@ -39,6 +39,9 @@ the helper and requests a Readline redraw if it changed. The optional native
 runtime modes. The Alt-H binding invokes Python directly.
 [Bash adapter](../bash/interactive-help.bash#L13) · [Python entry point](../cli_help/main.py#L65) · [Native launcher](../native/cli_help.c#L14)
 
+
+The curses browser presents the same selected option and filter in both layouts. At 60–79 columns an opt-in narrow view gives Categories, Options and Details their own screens. The shared renderer pages overflowing Details and anchors reflow to the text being read. The highlighted summary scrolls only after a two-second hold when clipped. Both layouts retain the same Bash insertion and cancellation boundary. [Controls](usage.md#browser-controls) · [Resize evidence](terminal-resize-results.md)
+
 ## 2. Which reference files are read
 
 ```mermaid

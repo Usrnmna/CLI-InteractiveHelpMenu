@@ -3,6 +3,12 @@
 [Release formats and build procedure](releases.md) · [Development and tests](development.md) ·
 [Installation and recovery](installation.md) · [Documentation index](README.md)
 
+## v0.6.0-alpha local candidate
+
+The navigation candidate uses the working tree based on `e6dee01` and the version in `VERSION`. The first build is `dist/candidate-v0.6.0-alpha/`. The independent rebuild uses the sibling directory ending in `-2`. The eleven-file upload set comprises the installer, Linux bundle, source archive, native launcher, build manifest, five individual checksums and the aggregate checksum. The manifest identifies the packaged bytes, including the README, terminal snapshots and the five scenario demos. Before tagging, compare the planned commit's packaged source contents to that manifest.
+
+The local verification record is `tests/reports/v060/HANDOFF.md`. It identifies the frozen snapshot, byte comparisons, target-specific fixtures and exact-package test results. The historical matrix below belongs to the Ubuntu coverage release. [Release notes](release-notes-v0.6.0-alpha.md) · [Installation and archive formats](releases.md#version-060---alpha) · [Scenario gallery](menu-demo-storyboards.md)
+
 ## v0.5.0-alpha local candidate
 
 **Ready for manual publication of the corrected assets.** The selected source is `9274a1a1bf1fe83ea8428a3c651dd113f09e6d98`. The GitHub prerelease tag already resolves to this commit. At the handoff check, all eleven published asset digests and sizes matched the older build from `d13b3e6`. The launcher and its individual checksum also match the corrected build. The published body still describes binary verification as pending. [GitHub prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.5.0-alpha) · [Proposed release body](release-notes-v0.5.0-alpha.md)
@@ -187,11 +193,11 @@ At both 80×24 and 60×16, cancellation restored the original screen, cursor, Re
 From a clean copy of the maintainer-confirmed revision, build the first set and check its digests:
 
 ```bash
-python3 scripts/build_release.py --output dist/candidate-v0.5.0-alpha
-(cd dist/candidate-v0.5.0-alpha && sha256sum -c SHA256SUMS.checksum)
+python3 scripts/build_release.py --output dist/candidate-v0.6.0-alpha
+(cd dist/candidate-v0.6.0-alpha && sha256sum -c SHA256SUMS.checksum)
 ```
 
-Build again from a second clean copy of the same revision with the same toolchain in a fresh directory, such as `dist/candidate-v0.5.0-alpha-2/`. Verify the manifest against the Git blobs and compare all 11 files byte for byte. Supply the first set and the historical installer to each offline sandbox before running its full suite. The [v0.4.0-alpha record](#combined-candidate-verification) gives the fixture and launch procedure.
+Build again from a second clean copy of the same revision with the same toolchain in a fresh directory, such as `dist/candidate-v0.6.0-alpha-2/`. Verify the manifest against the Git blobs and compare all 11 files byte for byte. Supply the first set and the historical installer to each offline sandbox before running its full suite. The [v0.4.0-alpha record](#combined-candidate-verification) gives the fixture and launch procedure.
 The five artifacts, five individual checksum files, and aggregate checksum use
 the existing release format. No artifact is uploaded automatically.
 
@@ -199,7 +205,7 @@ The package regression harness can inspect and exercise these exact artifacts
 instead of building its own temporary candidate:
 
 ```bash
-export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.5.0-alpha"
+export CLI_HELP_TEST_RELEASE_DIR="$PWD/dist/candidate-v0.6.0-alpha"
 export CLI_HELP_TEST_HISTORICAL_DIR="$PWD/releases/v0.1.1-alpha"
 python3 -B -m unittest discover -s tests -p test_release_snapshot.py -v
 python3 -B -m unittest discover -s tests -p test_release_terminal.py -v
@@ -242,13 +248,13 @@ and isolated locations rather than personal shell files. For example, from the
 repository root:
 
 ```bash
-candidate="$PWD/dist/candidate-v0.5.0-alpha"
+candidate="$PWD/dist/candidate-v0.6.0-alpha"
 scratch=$(mktemp -d)
 mkdir -p "$scratch/home" "$scratch/config" "$scratch/cache" "$scratch/data" "$scratch/tmp"
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" TMPDIR="$scratch/tmp" \
   CLI_HELP_PYTHON="$(command -v python3)" PYTHONDONTWRITEBYTECODE=1 \
-  bash "$candidate/cli-interactive-help-v0.5.0-alpha-linux-x86_64.run" \
+  bash "$candidate/cli-interactive-help-v0.6.0-alpha-linux-x86_64.run" \
   install --prefix "$scratch/runtime" --no-rc
 env -i PATH="$PATH" HOME="$scratch/home" XDG_CONFIG_HOME="$scratch/config" \
   XDG_CACHE_HOME="$scratch/cache" XDG_DATA_HOME="$scratch/data" \

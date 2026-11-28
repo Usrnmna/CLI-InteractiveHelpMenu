@@ -353,9 +353,10 @@ def capture_ls(folder, demonstration):
               required=("Detailed   Shift+D change view", "12/20", "> --hide=PATTERN", "Quote wildcards"),
               absent_options=("--almost-all",))
         terminal.send("D" + "]" * 16)
-        frame("D, ] | Scroll Expanded to the override rule for --hide", 2400,
-              required=("Expanded   Shift+D change view", "12/20", "> --hide=PATTERN", "Lines 17–27/28",
-                        "Explicitly named files still appear.", "Either -a or -A overrides", "Argument required.")
+        frame("Shift+D, ] | Read the uutils wildcard variant and override rule", 2400,
+              required=("Expanded   Shift+D change view", "12/20", "> --hide=PATTERN", "Lines 17–27/44",
+                        "Hidden-name wildcard pattern", "uutils 0.10.0", "--all/--almost-all",
+                        "override this behavior.")
               ).save(OUTPUT / "ls-browser.png")
         terminal.send("\n", "\x1b[?1049l")
         terminal.check_buffer(LS_PREFIX + "--hide=")

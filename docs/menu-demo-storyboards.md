@@ -1,6 +1,6 @@
 # Five Bash menu demonstrations
 
-These five recordings show the development checkout running in real interactive Bash sessions. Each uses a different terminal width and height. In the starting lines below, `▏` marks the Readline cursor. Enter in a menu returns to editing. Each recording ends with the command still pending.
+These five recordings show the v0.6.0-alpha candidate running in real interactive Bash sessions. Each uses a different terminal width and height. In the starting lines below, `▏` marks the Readline cursor. Enter in a menu returns to editing. Each recording ends with the command still pending.
 
 | Package | User’s task | Capability shown | Capture |
 | --- | --- | --- | --- |
@@ -10,7 +10,7 @@ These five recordings show the development checkout running in real interactive 
 | rsync | Limit a transfer over a slow connection | Reveal clipped text without shifting the option name | Timed GIF and four PNGs |
 | ffmpeg | Find the last entry in a large codec menu | Page through a category and cancel back to an unfinished edit | Seven PNGs |
 
-The recorder drove the Alt-H shortcut from Bash on Ubuntu 26.04.1 LTS, using Bash 5.3.9 and tmux. The runtime uses the working tree based on `35d23aa`, including the reviewed APT option guidance. Each three-level comparison keeps the same option selected and uses Shift+D to advance. APT and Bash used installed-provider discovery. Git, rsync and FFmpeg used the bundled profiles. The menu images show the full pane. Prompt stills crop the empty rows below the cursor. Keystroke captions sit outside the terminal.
+The recorder drove the Alt-H shortcut from Bash on Ubuntu 26.04.1 LTS, using Bash 5.3.9 and tmux. The November 27 capture uses the candidate runtime based on `e6dee01`, including the grouped value guidance and phrase-preserving reflow. Each three-level comparison keeps the same option selected and uses Shift+D to advance. APT and Bash used installed-provider discovery. Git, rsync and FFmpeg used the bundled profiles. The menu images show the full pane. Prompt stills crop the empty rows below the cursor. Keystroke captions sit outside the terminal.
 
 ## 1. APT · preview a package install
 
@@ -109,6 +109,6 @@ Start at 120×30 with `ffmpeg ▏ 'review clip.mp4'`. The cursor is between the 
 
 The Ubuntu packages installed during recording were APT `3.2.1ubuntu0.1`, Bash `5.3-2ubuntu1`, Git `1:2.53.0-1ubuntu1.1`, rsync `3.4.1+ds1-7ubuntu0.3`, FFmpeg `7:8.0.1-3ubuntu2` and tmux `3.6a-2ubuntu0.2`.
 
-The [scenario recorder](../tools/capture_scenario_demos.py) checks terminal dimensions, selected text, the returned Readline buffer and its cursor offset. In the recorded rsync session, the first change to the selected summary was observed at 1.999 seconds. The encoded GIF holds the opening highlight for exactly 2.000 seconds. The declaration and neighboring rows stay fixed through all six summary states.
+The [scenario recorder](../tools/capture_scenario_demos.py) checks terminal dimensions, selected text, the returned Readline buffer and its cursor offset. In the recorded rsync session, the first change to the selected summary was observed at 2.011 seconds. The encoded GIF holds the opening highlight for exactly 2.000 seconds. The declaration and neighboring rows stay fixed through all six summary states.
 
 With tmux installed and the [media environment](assets/README.md#regeneration) active, run `python tools/capture_scenario_demos.py` from the checkout. Pass one package name to repeat only that scenario. Original terminal text, cursor positions and animation timings are saved under `tests/reports/scenario-demos/`.

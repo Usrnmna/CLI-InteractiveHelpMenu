@@ -1,8 +1,12 @@
 # Documentation visuals and repository configuration review
 
+## November 27, 2026 navigation candidate
+
+The v0.6.0-alpha README combines the five real Bash scenarios, a wide-terminal animation, a collection editor snapshot and a per-image Ubuntu coverage chart. Navigation links and expandable galleries keep the install commands and examples accessible on GitHub. [Live scenarios](menu-demo-storyboards.md) · [Capture evidence](assets/README.md#capture-evidence) · [Image counts](ubuntu-coverage-audit.md)
+
 ## November 26, 2026 candidate checkout
 
-The current source gallery includes the APT install and Bash read menus alongside the refreshed rsync, ls and guided-review views. The recorder used the working checkout with `VERSION` set to `0.5.0-alpha`. The local candidate package checks are pending. [Checkout capture evidence](assets/README.md#capture-evidence) · [Release checklist](../ROADMAP.md#remaining-work)
+The v0.5.0-alpha source gallery added the APT install and Bash read menus to the rsync, ls and guided-review views. The historical package results identify the bytes verified for that release. [Ubuntu candidate record](release-candidate.md#v050-alpha-local-candidate)
 
 ## November 25, 2026 local build
 

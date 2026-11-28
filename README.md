@@ -2,209 +2,139 @@
 
 [![Linux tests and documentation](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml/badge.svg)](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/actions/workflows/ci.yml)
 
-**Local candidate source · 0.5.0-alpha · package verification pending** · [Selected prerelease contents](CHANGELOG.md#version-050---alpha)
+Press **Alt-H** in an unfinished Bash command to find a flag, check what its value means, and insert it at the cursor. Keep typing, or press **Esc** to recover the original line and cursor. Bash runs the command when you press Enter **at the prompt**.
 
-**Find the right option without leaving an unfinished Bash command.**
+**Linux · Bash 4.4+ · Python 3.10+** · [v0.6.0-alpha candidate notes](docs/release-notes-v0.6.0-alpha.md)
 
-Press **Alt-H** to browse categorized help, search descriptions, and insert an
-option into the line being edited. Continue typing its value or another option;
-the pending command runs only after a separate **Enter at the Bash prompt**.
-This Linux Bash prototype is intended for terminal users assembling commands
-whose flags and argument syntax are difficult to remember.
+[Get started](#get-started) · [Five live examples](#five-recorded-bash-scenarios) · [Ubuntu coverage](#ubuntu-command-coverage) · [Build a collection](#build-and-refine-a-help-collection) · [Documentation](docs/README.md)
 
-[Get started](#get-started) · [Browser controls](#using-the-browser) ·
-[Compatibility](#compatibility-and-execution-boundaries) · [All guides](docs/README.md)
+![Real Bash session selecting a bandwidth limit, searching by unit and returning to the completed rsync command](docs/assets/option-insertion.gif)
 
-![Bash demonstration cycling through three detail levels for the rsync bandwidth limit, inserting options and returning to the pending command.](docs/assets/option-insertion.gif)
-
-Recorded from the v0.5.0-alpha source checkout with discovery off. The same rsync option stays selected as the explanation expands. After insertion, Bash resumes editing the pending command. [Static browser view](docs/assets/help-browser.png) ·
-[Scrolled option list](docs/assets/ls-browser.png) ·
-[Resulting command line](docs/assets/option-inserted.png) ·
-[Capture method and limits](docs/assets/README.md)
-
-## What it provides
-
-- **Help while typing:** categories, description search, scrollable option lists,
-  and argument placeholders in a keyboard-controlled terminal browser. Choose Simple, Detailed or Expanded for the selected option.
-- **Literal option insertion:** replace a partial flag, preserve surrounding
-  input, and return to editing. Cancellation retains the original line and cursor.
-- **Value guidance:** see units, scale, counted subjects and accepted forms in
-  Expanded. Search for units such as `bps`, `KiB/s` or `MHz` without changing the value you type.
-- **Several help sources:** bundled and custom profiles, installed help output,
-  local manuals, and explicit drivers for supported subcommand paths.
-- **Ubuntu command coverage:** browse APT verbs, dpkg actions and Bash builtin topics. For eligible installed commands, a packaged Ubuntu reference supplies selectable options or usage guidance when local help is missing. [Coverage by edition and image](docs/ubuntu-coverage-audit.md)
-- **Editable help collections:** import a manual, scan installed commands, and
-  correct options, categories, and routes through guided forms and previews.
-- **Configurable operation:** launch and navigation keys, discovery modes,
-  passive diagnostics, and per-user updates with backups and conflict review.
-
-**Execution boundary:** selecting an option does not execute the pending command.
-Default automatic discovery can separately invoke an installed program's help
-route. Use `CLI_HELP_DISCOVERY=man` for manual-only discovery or `off` for static
-profiles. [Discovery modes and limitations](docs/discovery-and-safety.md)
+*Follow the highlighted `rsync --bwlimit=RATE` through Simple, Detailed and Expanded, then insert the flag and type its value.* [Static menu](docs/assets/help-browser.png) · [Resulting command](docs/assets/option-inserted.png) · [Capture details](docs/assets/README.md)
 
 ## Get started
 
-### Requirements
-
-- **Linux**, **Bash 4.4+**, and **Python 3.10+** with its standard-library `curses`
-  module. The runtime requires no third-party Python packages.
-- A UTF-8 locale, a terminal at least **60 columns × 16 rows**, and the standard
-  Linux `stty` utility for resize detection.
-- Optional: Linux `man-db` and local manual pages for manual discovery, installed
-  manual imports, and bulk scans. Static profiles and text-file imports do not
-  require `man`.
-
-The project is an **alpha prototype**. Windows PowerShell and other shells do not
-provide the Bash integration; Linux sessions under WSL are included in the
-[recorded validation](docs/development.md#recorded-validation).
-
 ### Install for the current user
 
-Obtain the source checkout:
-
-```bash
-git clone https://github.com/Usrnmna/CLI-InteractiveHelpMenu.git
-cd CLI-InteractiveHelpMenu
-```
-
-From that directory, run as the account that will use the browser, without `sudo`:
+From the checkout you want to install, run the following as your own user. A new interactive Bash session picks up the binding automatically. The second command enables it immediately in the current shell.
 
 ```bash
 bash install.sh
 source "${XDG_DATA_HOME:-$HOME/.local/share}/cli-interactive-help/bash/interactive-help.bash"
 ```
 
-Installation copies the runtime and adds a marked block to `.bashrc`, backing up
-existing contents. New interactive Bash sessions load it automatically.
-For a temporary session in an existing Bash shell, source
-`"$PWD/bash/interactive-help.bash"` from the checkout. The
-[terminal-pane setup](docs/usage.md#run-in-a-terminal-pane) gives the exact
-launch command for an editor or app.
-
-To build a v0.5.0-alpha installer or archive locally, follow the [local build and checksum instructions](docs/releases.md#build-from-source). The earlier [v0.1.2-alpha prerelease](https://github.com/Usrnmna/CLI-InteractiveHelpMenu/releases/tag/v0.1.2-alpha) has published downloads and its own [installation examples](docs/release-notes-v0.1.2-alpha.md). The native launcher requires an adjacent Bash/Python runtime.
+To obtain the public checkout, use `git clone https://github.com/Usrnmna/CLI-InteractiveHelpMenu.git`. Run the install commands inside `CLI-InteractiveHelpMenu`. To try a checkout for one session, source `"$PWD/bash/interactive-help.bash"` directly. The installer backs up changes to `.bashrc` and supports `--no-rc` and custom prefixes. [Installation guide](docs/installation.md) · [Binary packages and checksums](docs/releases.md#verify-and-install)
 
 ### Insert the first option
 
-1. Type `rsync --ar` at the Bash prompt **without pressing Enter**.
-2. Press **Alt-H**. The partial flag filters the bundled rsync profile.
-3. With `--archive` selected in the options pane, press **Enter**.
-4. Continue editing `rsync --archive ` at the prompt. The command remains pending.
+1. Type `rsync --ar` and leave the cursor at the end.
+2. Press **Alt-H**. The partial flag filters the bundled rsync menu to matching options.
+3. Select **`--archive`** and press **Enter**. Bash returns to `rsync --archive `, ready for source and destination paths.
 
-This example uses a bundled static profile; an installed `rsync` is not required
-to browse it. If Alt-H is unavailable, press Escape followed by `h`.
+This example works from the bundled profile even without rsync installed. If your terminal intercepts Alt-H, press **Esc**, then **h**.
 
-See [installation, custom paths, updates, and removal](docs/installation.md) for
-`--no-rc`, startup configuration, and recovery procedures.
+### Requirements
+
+Linux, Bash 4.4+, Python 3.10+ with standard-library `curses`, a UTF-8 terminal of at least **60×16** cells, and `stty`. Local manual lookup and import can use Linux `man-db`. WSL Bash has recorded validation. PowerShell and other shells fall outside the Bash adapter’s scope. [Compatibility](docs/compatibility.md) · [Terminal-pane setup](docs/usage.md#run-in-a-terminal-pane)
 
 ## Using the browser
 
-Each menu opens in **Simple**, with short option summaries and spare rows available for browsing. Use the arrow keys to navigate. The sidebar shortens long category names and the header shows the selected title. Press **Shift+D** once for **Detailed** guidance and again for **Expanded** forms, examples and limits. Press **Shift+D** a third time to return to Simple. The selection and filter stay in place.
+| While composing a command | Keys | Result |
+| --- | --- | --- |
+| Find an option or unit | **/**, type, **Enter** | Filter by spelling, description or value such as `KiB/s`. An arrow key moves the selection. |
+| Read the selected option | **Shift+D** | Cycle Simple → Detailed → Expanded while keeping the same selection and filter. |
+| Read more Details | **Space**, or **[** / **]** | Page overflowing text or scroll one line. Resizing rewraps the text around the reading position. |
+| Choose or cancel | **Enter** on an option, or **Esc** | Insert the literal spelling at the cursor, or restore the edit. A quoted operand after the cursor stays in place. |
 
-In the development checkout, clipped option summaries scroll by default after a two-second pause. Press **m** to toggle scrolling for the open menu.
+### Read the value before you insert it
 
-Use `/` to search and `[` or `]` to scroll a longer explanation. Enter applies a search. In the options pane, Enter inserts the selected spelling. Type any required value back at the prompt. Escape while entering a search restores the previous filter. Escape outside search or Ctrl-C returns to the original line and cursor.
+A bare `5000` for rsync’s bandwidth limit means **5,000 KiB/s**. FFmpeg’s `-b:v` uses **bits per second**. Search by unit to find the right option. Expanded Details groups related input spellings with their meanings, including qualifications for individual tools and versions.
 
-See [browser controls and keybindings](docs/usage.md#browser-controls) for paging, pane focus, Vi mode and custom shortcuts.
+![Expanded rsync Details showing the bare rate and accepted suffixes grouped with their meanings](docs/assets/numerical-guidance.png)
 
-### Understand the value before inserting it
+### Navigate a narrow terminal
 
-![Expanded rsync bandwidth limit showing 1024 bytes per second for each unit of an unsuffixed value, followed by accepted suffixes.](docs/assets/numerical-guidance.png)
+The default split layout keeps categories and options side by side. For a dedicated screen per task at **60–79 columns**, set `export CLI_HELP_NARROW_MENU=1`. Use **→** for Categories → Options → Details and **←** to return. The split view resumes at 80 columns.
 
-[Open the full-size numerical guidance view](docs/assets/numerical-guidance.png)
+<details>
+<summary>Watch the 60×16 rsync demo, including the two-second pause</summary>
 
-For rsync `--bwlimit=`, a bare `5000` means 5000 KiB/s. Search for `KiB/s` or `bytes/second` to find it. In the development checkout, press **Space** to page through overflowing Details. In the release, scroll with `[` and `]` to read the accepted input spellings before typing a value at the Bash prompt. FFmpeg’s `-b:v` uses bits per second and can be found with `bps`. The browser inserts the selected flag and leaves value entry to you.
+![At 60 columns the selected bandwidth summary pauses, scrolls, opens Details at three levels and returns the chosen flag to Bash](docs/assets/scenarios/rsync-bandwidth.gif)
 
-[Controls and unit search](docs/usage.md#browser-controls) · [The same FFmpeg option at 80×24 and 60×16](docs/superpowers/plans/2026-11-24-menu-detail-levels-verification.md) · [Numerical metadata and applicability](docs/numerical-value-contract.md)
+Only a clipped, highlighted summary moves. Press **m** to toggle motion for the open menu. Use `unset CLI_HELP_NARROW_MENU` to restore the default layout.
 
-```mermaid
-flowchart TD
-    A[Pending Bash command] -->|Alt-H| B[Browse and search help]
-    B -->|Command has usage guidance only| D
-    B -->|Select option or keyword with Enter| C[Insert literal spelling]
-    B -->|Cancel| D[Keep original line and cursor]
-    C --> E[Continue editing at Bash prompt]
-    D --> E
-    E -->|Separate Enter| F[Bash executes command]
-```
+</details>
 
-### Ubuntu package and builtin help
+[Controls and keybindings](docs/usage.md#browser-controls) · [Before-and-after resize snapshots](docs/terminal-resize-results.md)
 
-Type `apt install ` in Bash and press **Alt-H** to browse the options for that verb. The trailing space places the cursor after the verb. Escape returns to the prompt with the command still pending.
+## Five recorded Bash scenarios
 
-![APT install in Simple view on Ubuntu 26.04, showing a scrollable list of 75 options.](docs/assets/ubuntu-apt.png)
+Each walkthrough shows actual terminal cells, compares more than one option, and follows the edit back to Bash. Open a walkthrough for the full-size frames and all three detail levels.
 
-For a shell builtin, try `builtin read `. For a shared name such as `echo`, the bare name selects Bash help and the absolute path selects the external utility. [Bash read snapshot](docs/assets/bash-read.png) · [Coverage by Ubuntu image and edition](docs/compatibility.md#ubuntu-default-coverage)
+| Terminal | Task | What to look for |
+| --- | --- | --- |
+| **APT · 100×26** | [Preview installing Graphviz](docs/menu-demo-storyboards.md#1-apt--preview-a-package-install) | Complete `apt ins` before a quoted operand. Inspect simulation, locking and verbose versions. |
+| **Bash · 112×36** | [Give a prompt five seconds](docs/menu-demo-storyboards.md#2-bash--time-out-a-prompt) | Read `builtin read -t` and `-r` guidance, then enter the timeout at the prompt. |
+| **Git · 80×24** | [List worktrees for a script](docs/menu-demo-storyboards.md#3-git--list-worktrees-for-a-script) | Discover why `-z` uses `--porcelain` and assemble both options. |
+| **rsync · 60×16** | [Limit a transfer](docs/menu-demo-storyboards.md#4-rsync--read-a-clipped-bandwidth-limit) | Compare the bandwidth limit with an inactivity timeout in the narrow layout. |
+| **FFmpeg · 120×30** | [Find a codec setting](docs/menu-demo-storyboards.md#5-ffmpeg--find-a-codec-setting-and-return-to-an-edit) | Page through 92 codec parameters, inspect `-trellis` and `-threads`, then cancel before a quoted filename. |
+
+<details>
+<summary>Compare the APT simulation and Bash timeout Details screens</summary>
+
+**APT · simulation plan at 100×26**
+
+![APT Expanded Details identifies the simulated dpkg actions and the non-root configuration caveat](docs/assets/scenarios/apt-3b-expanded.png)
+
+**Bash · timed input at 112×36**
+
+![Expanded Details for builtin read -t showing the timeout sections and required argument](docs/assets/scenarios/bash-2-timeout.png)
+
+</details>
+
+## Ubuntu command coverage
+
+Across six audited Ubuntu 26.04 amd64 images, **2,189 of 2,385 distinct shipped names** offer a selectable option or keyword on at least one applicable invocation. The other **196** have command-specific usage or documentation guidance. The same command can appear in several images.
+
+![Selectable entries and usage guidance by Ubuntu image. Desktop Default 1860 and 181, Desktop Extended 1901 and 186, Server Default 1609 and 130, Server Minimized 1321 and 116, Ubuntu Base 506 and 36, Server Cloud 1424 and 76.](docs/assets/ubuntu-coverage.png)
+
+| Command family | Verified scope |
+| --- | --- |
+| Package managers | Five APT tools cover 112 command-to-verb routes on Resolute and 104 on Noble. dpkg actions preserve aliases and operand boundaries. |
+| Bash builtins | 61 builtin names use fixed Bash help topics. Bare `echo` and `/usr/bin/echo` select their respective providers. |
+| Optional packages | 100 ranked packages cover 119 selectable command rows on Resolute and 117 on Noble. Optional tools install separately. |
+| Kernel companions | All eight inventoried paths in the audited versioned kernel tools package have selectable results. |
+
+[Per-image counts and provider limits](docs/ubuntu-coverage-audit.md) · [Shipped, optional and kernel inventories](docs/ubuntu-command-coverage.md)
 
 ## Compatibility and execution boundaries
 
-The checkout includes 76 bundled command profiles. Ordinary profiles work without an installed target. Vendor/version-guarded profiles require executable identity verification in automatic discovery mode. The [bundled audit](docs/audit-history.md#bundled-menu-progress) records the manual editions, aliases and limits by family.
+The browser uses 76 bundled profiles, custom profiles, installed help and manuals, explicit drivers, and edition-matched Ubuntu references. APT options follow the selected verb. A manual-light installation can use its packaged reference for an eligible command. Example drivers need explicit activation and some profiles require a matching executable identity. [Supported commands and driver setup](docs/compatibility.md#enable-the-drivers)
 
-The [command compatibility matrix](docs/compatibility.md) lists maintained paths,
-version constraints, verification limits, and **explicit activation instructions
-for supplied drivers**. Those drivers are not enabled merely by installation.
-[Supported invocation forms](docs/invocation-and-structured-arguments.md) include
-bounded `sudo`/`env`/`command` chains, selected Python modules, and specific keyword
-and stream-selector forms.
-
-The browser accepts simple commands with balanced quoting. Pipelines,
-redirection, shell substitutions, unsupported prefixes, and alias/function
-resolution are outside its supported grammar. Subcommand support depends on
-profiles and drivers. Automatic help invocations can have startup side effects;
-timeouts and output limits do not provide a sandbox.
-
-To prevent target-program invocations during browsing, select a mode before the
-next help request:
-
-```bash
-export CLI_HELP_DISCOVERY=man
+```mermaid
+flowchart TD
+    A["Pending Bash line"] -->|"Alt-H"| B["Browse help for this command and cursor"]
+    B -->|"Select with Enter"| C["Insert a spelling at the cursor"]
+    B -->|"Cancel with Esc"| D["Restore original line and cursor"]
+    C --> E["Continue editing in Bash"]
+    D --> E
+    E -->|"Enter at the prompt"| F["Run the command"]
 ```
 
-For external commands, manual-only lookup requires an installed executable. Eligible Ubuntu roots can also use the packaged reference when a local manual is missing. A builtin in this mode points to the Bash documentation.
-`CLI_HELP_DISCOVERY=off` restricts browsing to static profiles. Bulk manual scanning,
-manual import, and review preview do not invoke target programs. The
-[discovery and safety guide](docs/discovery-and-safety.md) explains all modes,
-fixed routes, cache behavior, and remaining limitations.
+Automatic discovery may separately invoke an installed program’s fixed help route, which can have startup side effects. Use `export CLI_HELP_DISCOVERY=man` for manual-only lookup or `off` for static profiles. The parser supports simple commands with balanced quotes, bounded `sudo`, `env` and `command` prefixes, and selected subcommand routes. Pipelines, redirection, substitutions and alias/function resolution are outside the supported grammar. [Discovery modes](docs/discovery-and-safety.md) · [Invocation forms](docs/invocation-and-structured-arguments.md)
 
 ## Build and refine a help collection
 
-Import one manual or scan installed commands, inspect the generated report, and
-correct entries through guided forms before activating the collection.
-The reviewer can preview the actual browser and saves validated changes with
-backups. JSON editing is optional.
+Import a manual or scan installed commands. Review the generated options in a guided form, preview them in the browser, then save and activate the collection. The reviewer validates edits and keeps backups.
 
-- [Scan, review, and activate a first collection](docs/bulk-scan.md#first-collection-walkthrough)
-- [Import a single manual or text file](docs/manual-import.md)
-- [Edit options and categories with guided forms](docs/review.md)
-- [Inspect collection consistency and recover saved backups](docs/collection-recovery.md)
+![Guided reviewer editing an option argument placeholder in a disposable collection](docs/assets/guided-review.png)
+
+[First collection walkthrough](docs/bulk-scan.md#first-collection-walkthrough) · [Import one manual](docs/manual-import.md) · [Guided editor](docs/review.md) · [Inspect or recover a collection](docs/collection-recovery.md)
 
 ## Updates and removal
 
-From a separate new source directory, run `bash update.sh` to upgrade an existing
-installation. Edited files and custom settings are preserved; conflicts retain
-incoming copies and a full backup for [guided review](docs/update-review.md).
-
-To check published releases, run `bash update-from-github.sh --check --prerelease`.
-The alpha channel requires `--prerelease`. Omit `--check` to apply an upgrade;
-equal versions are not reinstalled, and unpublished changes require a local-source
-update. See [GitHub release updates](docs/github-updates.md) for verification and
-conflict handling.
-
-Run `bash uninstall.sh` to remove the default installation. Edited files and
-custom collections are retained. The [installation guide](docs/installation.md)
-covers custom destinations and existing shell sessions after removal.
+Run `bash update.sh` from a new source directory to update an installation. Edited files and settings are preserved, and conflicts retain incoming copies and a backup. Use `bash update-from-github.sh --check --prerelease` to check published alpha releases. Run `bash uninstall.sh` to remove the default installation while retaining edited files and custom collections. [GitHub updates](docs/github-updates.md) · [Conflict review](docs/update-review.md) · [Installation and removal](docs/installation.md)
 
 ## Further documentation
 
-| Task | Guide |
-| --- | --- |
-| Customize controls, discovery, or startup loading | [Usage and keybindings](docs/usage.md) |
-| Diagnose configuration and command recognition without probes | [Passive diagnostics](docs/diagnostics.md) |
-| Add command help or enable nested routes | [Profiles and drivers](docs/profiles-and-drivers.md) |
-| Check supported syntax, value forms, and bundles | [Invocation forms](docs/invocation-and-structured-arguments.md) and [argument syntax](docs/argument-syntax.md) |
-| Choose packages or compare release scope | [Release guide](docs/releases.md) and [v0.5.0-alpha changes](CHANGELOG.md#version-050---alpha) |
-| Understand the implementation or run checks | [Architecture and validation](docs/development.md) |
-| Find the next development task and its completion criteria | [Project roadmap](ROADMAP.md) |
-
-The [documentation index](docs/README.md) links the operating guides. The [audit history](docs/audit-history.md) traces the development and verification of the help content. [Terminal media capture](docs/assets/README.md) describes the
-demonstrations, annotations, and regeneration procedure.
+[All guides](docs/README.md) · [Passive diagnostics](docs/diagnostics.md) · [Profiles and drivers](docs/profiles-and-drivers.md) · [Architecture and validation](docs/development.md) · [Changelog](CHANGELOG.md) · [Roadmap](ROADMAP.md)

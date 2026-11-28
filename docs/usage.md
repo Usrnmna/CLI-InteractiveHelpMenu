@@ -135,6 +135,8 @@ category is selected automatically.
 Simple opens with a one-line purpose for each option and gives spare rows to the
 option list. Detailed adds a short explanation of the selection. Expanded includes
 the available forms, conversions, constraints, examples and version qualifications.
+Each Details section has a distinct heading. Related spellings with the same meaning share a group. Resizing keeps the reading phrase visible where the available text permits. [Live rsync resize](terminal-resize-results.md#b-and-f-follow-up)
+
 The level key shown at the top preserves selection and filtering. Use `[` and `]`
 when a line counter is visible. Long lists in Details use up to three columns
 when the entries fit. Read down each column, then move to the top of the next.
@@ -164,7 +166,7 @@ the layout, markers and emphasis in monochrome.
 
 ### Narrow menu preview
 
-In the development checkout, run `export CLI_HELP_NARROW_MENU=1` in the Bash
+In v0.6.0-alpha, run `export CLI_HELP_NARROW_MENU=1` in the Bash
 session with the adapter loaded. Open a menu with **Alt-H** in a 60–79-column
 terminal. At 80 columns and above the split view resumes.
 
