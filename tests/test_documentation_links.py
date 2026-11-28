@@ -1,5 +1,6 @@
 """Verify retry bounds, evidence retention and the final documentation failure gate."""
 
+from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from email.message import Message
@@ -123,8 +124,8 @@ class DocumentationRetryTests(unittest.TestCase):
 
     def run_gate(self, *, first_outcome="success", first_exit_code="2", first_report=FIRST_FAILURE,
                  second_code=0, second_report="| Total | 1 |\n", delay=4,
-                 timeout=False, version="lychee 0.24.2\n"):
-        """Run the real controller with isolated reports and mocked time/processes."""
+                 timeout=False, version="lychee 0.24.2\n", output=None):
+        """Run the controller with isolated reports and capture its CI commands for optional assertions."""
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         directory = Path(temporary.name)
@@ -151,7 +152,8 @@ class DocumentationRetryTests(unittest.TestCase):
                 patch.dict(retry.os.environ, {"GITHUB_STEP_SUMMARY": str(directory / "summary.md")}), \
                 patch("sys.argv", ["retry_documentation_links.py", "--first-outcome", first_outcome,
                                    "--first-exit-code", first_exit_code]):
-            code = retry.main()
+            with redirect_stdout(output if output is not None else io.StringIO()):
+                code = retry.main()
         return code, first, second, final, run, sleep
 
     def test_successful_initial_check_has_no_retry_or_delay(self):
@@ -166,16 +168,17 @@ class DocumentationRetryTests(unittest.TestCase):
         for outcome, raw_code, report in (("failure", "0", "| Total | 0 |"), ("failure", "2", GITHUB_503),
                                           ("success", "", GITHUB_503), ("success", "1", GITHUB_503),
                                           ("success", "0", ""), ("skipped", "", None)):
-            with self.subTest(outcome=outcome, raw_code=raw_code), patch("sys.stdout", new_callable=io.StringIO) as log:
+            with self.subTest(outcome=outcome, raw_code=raw_code):
+                log = io.StringIO()
                 code, _, _, _, run, _ = self.run_gate(first_outcome=outcome, first_exit_code=raw_code,
-                                                      first_report=report)
+                                                      first_report=report, output=log)
                 self.assertNotEqual(code, 0)
                 self.assertIn("::error::", log.getvalue())
                 run.assert_not_called()
 
     def test_initial_503_that_recovers_on_retry_only_warns(self):
-        with patch("sys.stdout", new_callable=io.StringIO) as log:
-            code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_report=github_report())
+        log = io.StringIO()
+        code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_report=github_report(), output=log)
         self.assertEqual(code, 0)
         self.assertIn(f"::warning::Initial HTTP 503 for {GITHUB_SOURCE}", log.getvalue())
         self.assertNotIn("::error::", log.getvalue())
@@ -201,9 +204,13 @@ class DocumentationRetryTests(unittest.TestCase):
         self.assertIn("lychee.toml", command)  # The successful-response cache remains enabled.
         self.assertEqual([call.args[0] for call in sleep.call_args_list], [10, 60])
 
-    def test_unresolved_retry_still_fails(self):
-        code, *_ = self.run_gate(second_code=2, second_report="| Total | 1 |\n" + FIRST_FAILURE)
+    def test_unresolved_retry_fails_without_annotating_the_test_job(self):
+        job_log = io.StringIO()
+        with redirect_stdout(job_log):
+            code, *_ = self.run_gate(first_report=github_report(("503", GITHUB_SOURCE), ("429", GNU_URL)),
+                                     second_code=2, second_report=github_report(("429", GNU_URL)))
         self.assertEqual(code, 2)
+        self.assertEqual(job_log.getvalue(), "")
 
     def test_missing_or_empty_retry_report_cannot_pass(self):
         for report in (None, "| Total | 0 |\n"):
@@ -254,10 +261,10 @@ class DocumentationRetryTests(unittest.TestCase):
 
     def test_verified_repeated_503_is_one_warning_with_original_reports_retained(self):
         report = github_report(("503", GITHUB_SOURCE), ("503", GITHUB_SOURCE))
-        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)) as get, \
-                patch("sys.stdout", new_callable=io.StringIO) as log:
+        log = io.StringIO()
+        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)) as get:
             code, first, second, final, *_ = self.run_gate(first_report=report, second_code=2,
-                                                           second_report=report)
+                                                           second_report=report, output=log)
         self.assertEqual(code, 0)
         get.assert_called_once()
         self.assertEqual(get.call_args.args[0].full_url, API_URL)
@@ -288,9 +295,10 @@ class DocumentationRetryTests(unittest.TestCase):
 
     def test_verified_file_cannot_mask_a_broken_link(self):
         mixed = github_report(("503", GITHUB_SOURCE), ("404", GNU_URL))
-        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)), \
-                patch("sys.stdout", new_callable=io.StringIO) as log:
-            code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_code=2, second_report=mixed)
+        log = io.StringIO()
+        with patch.object(retry, "urlopen", return_value=api_response(FILE_METADATA)):
+            code, _, _, final, *_ = self.run_gate(first_report=GITHUB_503, second_code=2,
+                                                  second_report=mixed, output=log)
         self.assertEqual(code, 2)
         self.assertIn("::error::", log.getvalue())
         self.assertIn("[404]", final.with_name("summary.md").read_text())
